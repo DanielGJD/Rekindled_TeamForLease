@@ -29,12 +29,12 @@ namespace ForLeaseEngine {
     /*!
         Constructor for Engine.  Creates a new instance of Engine using given values.
         
-        \param resolutionX
-            The width of the window to run in.
-        \param resolutionY
-            The height of the window to run in.
-        \param frameRate
-            The rate at which to refresh the window.
+        \param rx
+            The width (x-resolution) of the window to run in.
+        \param ry
+            The height (y-resolution) of the window to run in.
+        \param fr
+            The frame rate, or at which to refresh the window.
     */
     Engine::Engine(int rx, int ry, int fr) : resolutionX(rx), resolutionY(ry), frameRate(fr) {}
 
