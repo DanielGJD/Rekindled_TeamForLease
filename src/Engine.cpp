@@ -36,7 +36,13 @@ namespace ForLeaseEngine {
         \param frameRate
             The rate at which to refresh the window.
     */
+    Engine::Engine(int rx, int ry, int fr) : resolutionX(rx), resolutionY(ry), frameRate(fr) {}
 
-    Engine::Engine(int resolutionX, int resolutionY, int frameRate) : resolutionX(resolutionX), resolutionY(resolutionY), frameRate(frameRate) {}
+    /*!
+        Handles the main game loop.  Essentially calls FrameRateController and GameStateManager.
+    */
+    Engine::Run() {
+        // Empty for now, as nothing has been implemented.
+    }
 
 } // ForLeaseEngine

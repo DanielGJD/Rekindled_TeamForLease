@@ -22,7 +22,7 @@ namespace ForLeaseEngine {
         public:
             Engine();
             Engine(int resolutionX, int resolutionY, int frameRate);
-
+            void Run();
         private:
             //! Width of the screen
             int resolutionX;
