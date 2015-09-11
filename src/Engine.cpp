@@ -21,8 +21,8 @@ namespace ForLeaseEngine {
     */
     Engine::Engine() {
         // Default values
-        resolutionX = 1280;
-        resolutionY = 720;
+        resolutionX = 800;
+        resolutionY = 600;
         frameRate   = 60;
     }
 
