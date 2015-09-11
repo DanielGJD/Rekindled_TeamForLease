@@ -41,7 +41,7 @@ namespace ForLeaseEngine {
     /*!
         Handles the main game loop.  Essentially calls FrameRateController and GameStateManager.
     */
-    Engine::Run() {
+    void Engine::Run() {
         // Empty for now, as nothing has been implemented.
     }
 
