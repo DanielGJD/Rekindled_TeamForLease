@@ -21,22 +21,24 @@ namespace ForLeaseEngine {
     */
     Engine::Engine() {
         // Default values
-        resolutionX = 800;
-        resolutionY = 600;
-        frameRate   = 60;
+        ResolutionX = 800;
+        ResolutionY = 600;
+        FrameRate   = 60;
     }
 
     /*!
         Constructor for Engine.  Creates a new instance of Engine using given values.
         
-        \param rx
+        \param resolutionX
             The width (x-resolution) of the window to run in.
-        \param ry
+        \param resolutionY
             The height (y-resolution) of the window to run in.
-        \param fr
+        \param frameRate
             The frame rate, or at which to refresh the window.
     */
-    Engine::Engine(int rx, int ry, int fr) : resolutionX(rx), resolutionY(ry), frameRate(fr) {}
+    Engine::Engine(int resolutionX, int resolutionY, int frameRate)
+        : ResolutionX(resolutionX), ResolutionY(resolutionY),
+          FrameRate(frameRate) {}
 
     /*!
         Handles the main game loop.  Essentially calls FrameRateController and GameStateManager.

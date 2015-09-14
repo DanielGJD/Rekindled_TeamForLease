@@ -3,7 +3,7 @@
     \author Sean McGeer
     \date   9/9/15
     \brief
-        Defines the Engine class, which is an instance of the For Lease Engine.
+        Defines the Engine class.
     \see Engine.cpp
 */
 
@@ -21,15 +21,15 @@ namespace ForLeaseEngine {
 
         public:
             Engine();
-            Engine(int rx, int ry, int fr);
+            Engine(int resolutionX, int resolutionY, int frameRate);
             void Run();
         private:
             //! Width of the screen
-            int resolutionX;
+            int ResolutionX;
             //! Height of the screen
-            int resolutionY;
+            int ResolutionY;
             //! Frame rate of the game
-            int frameRate;
+            int FrameRate;
 
     };
 
