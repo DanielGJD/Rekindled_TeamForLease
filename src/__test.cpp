@@ -20,7 +20,6 @@ int main() {
     frc.Start();
     frc.End();
 
-    std::cout << std::fixed << std::setprecision(5);
     std::cout << frc.GetDt() << std::endl;
     std::cout << frc.GetFrameTime() << std::endl;
 
