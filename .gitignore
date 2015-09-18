@@ -1,2 +1,7 @@
 docs/
 bin/
+
+# Annoying files
+*.exe
+.DS_Store
+*.o
