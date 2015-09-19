@@ -9,6 +9,7 @@
 
 #include "Vector.h"
 #include <iostream>
+#include <cmath>
 namespace ForLeaseEngine {
 
 	/*!
@@ -135,7 +136,7 @@ namespace ForLeaseEngine {
 	void Vector::Normalize()
 	{
 		float mag = DotProduct(*this, *this);
-		mag = sqrtf(mag);
+		mag = sqrt(mag);
 		x /= mag;
 		y /= mag;
 	}
@@ -153,9 +154,42 @@ namespace ForLeaseEngine {
 	  \return
 	    Result of the dot product
 	*/
-	float DotProduct(Vector vec1, Vector vec2)
+	float Vector::DotProduct(Vector vec1, Vector vec2)
 	{
 		return vec1[0] * vec2[0] + vec1[1] * vec2[1];
+	}
+
+	/*!
+	  \brief
+	    Rotates a vector
+
+      \param vec
+        Vector to rotate
+
+      \param angle
+        Angle of rotation
+	*/
+	Vector Vector::Rotate(Vector vec, float angle)
+	{
+	    float sinAngle = sin(angle);
+	    float cosAngle = cos(angle);
+
+	    return Vector(vec[0] * cosAngle - vec[1] * sinAngle,
+                      vec[0] * sinAngle + vec[1] * cosAngle);
+	}
+
+	/*!
+	  \brief
+	    Rotates a vector
+
+      \param vec
+        Vector to rotate
+
+      \param magnitude
+        Scale magnitude
+	*/
+	Vector Vector::Scale(Vector vec, float magnitude) {
+        return Vector(vec[0] * magnitude, vec[1] * magnitude);
 	}
 
 	/*!
@@ -168,5 +202,14 @@ namespace ForLeaseEngine {
 		result[0] = (*this)[0] - rhs[0];
 		result[1] = (*this)[1] - rhs[1];
 		return result;
+	}
+
+    /*!
+	  \brief
+	    Displaces a point by a vector
+	*/
+	Point Point::operator+(const Vector& rhs) const
+	{
+	    return Point(x + rhs[0], y + rhs[1]);
 	}
 }
