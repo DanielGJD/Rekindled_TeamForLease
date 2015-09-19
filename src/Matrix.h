@@ -34,12 +34,12 @@ namespace ForLeaseEngine {
 		Matrix operator+(const Matrix& rhs) const;
 		Matrix operator-(const Matrix& rhs) const;
 		void Print() const;
-	};
 
-	Matrix RotationRad(float radians);
-	Matrix RotationDeg(float degrees);
-	Matrix Translation(const Vector& v);
-	Matrix Scale(float x, float y);
+		static Matrix RotationRad(float radians);
+        static Matrix RotationDeg(float degrees);
+        static Matrix Translation(const Vector& v);
+        static Matrix Scale(float x, float y);
+	};
 }
 
 #endif

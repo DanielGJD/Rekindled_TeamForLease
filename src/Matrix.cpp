@@ -29,7 +29,7 @@ namespace ForLeaseEngine {
 	/*!
 	  \brief
 	    Matrix copy constructor
-	  
+
 	  \param rhs
 	    Matrix being copied from
 	*/
@@ -171,7 +171,7 @@ namespace ForLeaseEngine {
 	  \return
 	    Resulting matrix
 	*/
-	Matrix RotationRad(float radians)
+	Matrix Matrix::RotationRad(float radians)
 	{
 		Matrix result;
 		result[0][0] = cosf(radians);
@@ -191,7 +191,7 @@ namespace ForLeaseEngine {
 	  \return
 	    Resulting matrix
 	*/
-	Matrix RotationDeg(float degrees)
+	Matrix Matrix::RotationDeg(float degrees)
 	{
 		Matrix result;
 		float radians = degrees * 22.0f / 7 / 180;
@@ -212,7 +212,7 @@ namespace ForLeaseEngine {
 	  \return
 	    Resulting matrix
 	*/
-	Matrix Translation(const Vector& v)
+	Matrix Matrix::Translation(const Vector& v)
 	{
 		Matrix result;
 		result[0][2] = v[0];
@@ -233,7 +233,7 @@ namespace ForLeaseEngine {
 	  \return
 	    Resulting matrix
 	*/
-	Matrix Scale(float x, float y)
+	Matrix Matrix::Scale(float x, float y)
 	{
 		Matrix result;
 		result[0][0] = x;
@@ -251,7 +251,7 @@ namespace ForLeaseEngine {
 		for (int i = 0; i < 3; i++)
 		{
 			for (int j = 0; j < 3; j++)
-				printf("%4.3f ", m[i][j]);
+				//printf("%4.3f ", m[i][j]);
 
 			std::cout << std::endl;
 		}
