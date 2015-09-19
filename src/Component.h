@@ -3,7 +3,8 @@
     \author Sean McGeer
     \date   9/18/15
     \brief
-        Defines the Component class.  Also defines the ComponentID enum and 
+        Defines the Component class.  Also defines the ComponentID enum and
+        corresponding operator overloads.
     \see Component.h
 */
 
