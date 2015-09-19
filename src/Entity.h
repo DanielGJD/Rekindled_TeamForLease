@@ -19,6 +19,7 @@ namespace ForLeaseEngine {
 
         public:
             Entity();
+            ~Entity();
             long unsigned GetID();
             void AddComponent(Component* component);
         private:

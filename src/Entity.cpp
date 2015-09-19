@@ -14,23 +14,29 @@ namespace ForLeaseEngine {
     long unsigned Entity::TotalEntities = 0;
 
     Entity::Entity() : ID(++TotalEntities), ComponentMask(ComponentID::cidNone) {}
+    Entity::~Entity() {
+        for (std::vector<Component *>::iterator it = Components.begin();
+                it != Components.end(); ++it)
+            delete *it;
+    }
 
     long unsigned Entity::GetID() {
         return ID;
     }
 
     void Entity::AddComponent(Component* component) {
-        ComponentMask = static_cast<ComponentID>(static_cast<unsigned long>(component->GetID()) | static_cast<unsigned long>(ComponentMask));
+        ComponentMask |= component->GetID();
         Components.push_back(component);
     }
 
 
     void AddComponentToEntity(ComponentID id, Entity* entity)
     {
-        Component* component = new Component(id);
+        Component* component;
 
         switch (id) {
             default:
+                component = new Component(id);
                 break;
         }
 

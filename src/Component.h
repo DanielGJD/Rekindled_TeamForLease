@@ -3,7 +3,7 @@
     \author Sean McGeer
     \date   9/18/15
     \brief
-        Defines the Component class.
+        Defines the Component class.  Also defines the ComponentID enum and 
     \see Component.h
 */
 
@@ -20,6 +20,9 @@ namespace ForLeaseEngine {
         cidCamera           = 1 << 3,
         cidDraw             = 1 << 4
     };
+
+    ComponentID operator|(const ComponentID& lhs, const ComponentID& rhs);
+    ComponentID& operator|=(ComponentID& lhs, const ComponentID& rhs);
 
     /*!
         \class Component
