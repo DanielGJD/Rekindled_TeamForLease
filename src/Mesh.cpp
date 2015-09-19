@@ -177,7 +177,7 @@ namespace ForLeaseEngine {
         \return
             Indexed edge at given index
     */
-    const IndexedEdge Mesh::GetIndexedEdge(int index) const {
+    const IndexedEdge& Mesh::GetIndexedEdge(int index) const {
         if(index >= EdgeCount) {
             throw new Exception("Tried to get edge out of bounds");
         }

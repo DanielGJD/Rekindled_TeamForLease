@@ -18,6 +18,8 @@ namespace ForLeaseEngine {
 
             void SetDrawingColor(float r, float g, float b);
 
+            void Clear();
+
             // Slow, each use is a single draw call.  For testing only. Might Get removed.
             void DrawRectangle(Point position, float width, float height, float rotation = 0);
             void DrawPolygon(Point position, float radius, int sides);

@@ -20,6 +20,7 @@
 namespace ForLeaseEngine {
     Renderer::Renderer() {
         SetDrawingColor(1.0f, 1.0f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     }
 
     void Renderer::SetProjection(Point position, float width, float height, float near, float far, float rotation) {
@@ -50,6 +51,10 @@ namespace ForLeaseEngine {
 
     void Renderer::SetDrawingColor(float r, float g, float b) {
         glColor3f(r, g, b);
+    }
+
+    void Renderer::Clear() {
+        glClear(GL_COLOR_BUFFER_BIT);
     }
 
     void Renderer::DrawRectangle(Point position, float width, float height, float rotation) {
