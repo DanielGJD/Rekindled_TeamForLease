@@ -3,6 +3,9 @@
 
 #include "Vector.h"
 #include "Matrix.h"
+#include "Face.h"
+#include "Edge.h"
+#include "Mesh.h"
 
 namespace ForLeaseEngine {
     class Renderer {
@@ -15,7 +18,7 @@ namespace ForLeaseEngine {
 
             void SetDrawingColor(float r, float g, float b);
 
-            // Slow, each use is a single draw call.  For testing only.
+            // Slow, each use is a single draw call.  For testing only. Might Get removed.
             void DrawRectangle(Point position, float width, float height, float rotation = 0);
             void DrawPolygon(Point position, float radius, int sides);
             void DrawLine(Point start, Point end);
@@ -26,6 +29,13 @@ namespace ForLeaseEngine {
             //void DrawArrow(Point start, Vector direction, float magnitude);
             void DrawRectangleFilled(Point position, float width, float height, float rotation = 0);
             void DrawPolygonFilled(Point position, float radius, int sides);
+
+            // Do not use any of these. For testing only. Will be removed
+            void DrawFace(Face& face);
+            void DrawEdge(Edge& edge);
+
+            // This one is ok to use, uses a minimum number of draw calls
+            void DrawMesh(Mesh& mesh, Point& location, float scaleX = 1, float scaleY = 1, float rotation = 0);
 
             void PrintMatrices();
 
