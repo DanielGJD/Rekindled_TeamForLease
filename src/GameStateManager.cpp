@@ -16,9 +16,9 @@ namespace ForLeaseEngine {
     */
     GameStateManager::GameStateManager() {
         // Default values
-        Previous = slLevel;
-        Current = slLevel;
-        Next = slLevel;
+        Previous = slContinue;
+        Current = slContinue;
+        Next = slContinue;
     }
 
     /*!

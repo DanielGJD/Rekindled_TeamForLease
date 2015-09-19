@@ -23,9 +23,6 @@ namespace ForLeaseEngine {
             GameStateManager();
             void Update();
         private:
-            //! All the states that the game can be on
-            enum STATE_LIST { slLevel, slRestart, slQuit };
-
             //! The previous state
             STATE_LIST Previous;
             //! The current state
