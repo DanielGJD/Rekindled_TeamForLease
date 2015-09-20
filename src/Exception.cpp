@@ -30,7 +30,7 @@ namespace ForLeaseEngine {
         \brief
             Sets the exception message
 
-        \param exeptionMessage
+        \param exceptionMessage
             New exceptionMessage message
     */
     void Exception::SetInfo(const std::string& exceptionMessage) {
