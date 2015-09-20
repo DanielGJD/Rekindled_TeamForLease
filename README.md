@@ -42,5 +42,5 @@ As of commit ade1673, we've written 2854 lines of code:
 - 38 src/Transform.h
 - 215 src/Vector.cpp
 - 69 src/Vector.h
-- 45 src/__test.cpp
-- 10 src/__test__state.h
+- 45 src/\_\_test.cpp
+- 10 src/\_\_test\_\_state.h
