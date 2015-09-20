@@ -11,6 +11,7 @@
 #define STATE_H
 
 #include <vector>
+#include <string>
 #include "Entity.h"
 
 namespace ForLeaseEngine {
@@ -23,10 +24,28 @@ namespace ForLeaseEngine {
     class State {
 
         public:
-            State() : Entities();
+            State();
             virtual void Update() = 0;
+            Entity* GetEntityByID(long unsigned id, bool throwOnFail = false);
         private:
-            std::vector<Entity *> Entities;
+            std::vector<Entity*> Entities;
+
+    };
+
+    /*!
+        \class EntityNotFoundException
+        \brief
+            A customized exception for when finding an entity fails.
+    */
+    class EntityNotFoundException : public Exception {
+
+        public:
+            EntityNotFoundException();
+            EntityNotFoundException(const long unsigned id);
+            EntityNotFoundException(const long unsigned id, const std::string& message);
+            long unsigned GetID();
+        private:
+            const long unsigned ID;
 
     };
 
