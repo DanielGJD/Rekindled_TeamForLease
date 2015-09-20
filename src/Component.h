@@ -3,7 +3,7 @@
     \author Sean McGeer
     \date   9/18/15
     \brief
-        Defines the Component class.  Also defines the ComponentID enum and
+        Defines the Component class.  Also defines the ComponentType enum and
         corresponding operator overloads.
     \see Component.cpp
 */
@@ -11,29 +11,32 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
+#include <iostream>
+
 namespace ForLeaseEngine {
 
     /*!
-        \enum ComponentID
+        \enum ComponentType
         \brief
-            The ID for a component.  We treat it as an unsigned long to allow
+            The type of a component.  We treat it as an unsigned long to allow
             for 64 components.  This is unlikely to be enough for a game of any
             scale unless we implement scripting or some other solution for
             loading game code.
     */
-    enum class ComponentID : unsigned long {
-        cidNone             = 0,        //! No component
-        cidTransform        = 1 << 0,   //! Transform
-        cidPlayerController = 1 << 1,   //! Player controls
-        cidPhysics          = 1 << 2,   //! Physics
-        cidCamera           = 1 << 3,   //! Camera
-        cidDraw             = 1 << 4    //! Draw
+    enum class ComponentType : unsigned long {
+        None             = 0,        //! No component
+        Transform        = 1 << 0,   //! Transform
+        PlayerController = 1 << 1,   //! Player controls
+        Physics          = 1 << 2,   //! Physics
+        Camera           = 1 << 3,   //! Camera
+        Draw             = 1 << 4    //! Draw
 
     };
 
-    ComponentID operator|(const ComponentID& lhs, const ComponentID& rhs);
-    ComponentID operator&(const ComponentID& lhs, const ComponentID& rhs);
-    ComponentID& operator|=(ComponentID& lhs, const ComponentID& rhs);
+    ComponentType operator|(const ComponentType& lhs, const ComponentType& rhs);
+    ComponentType operator&(const ComponentType& lhs, const ComponentType& rhs);
+    ComponentType& operator|=(ComponentType& lhs, const ComponentType& rhs);
+    std::ostream& operator<<(std::ostream& os, const ComponentType& type);
 
     /*!
         \class Component
@@ -45,11 +48,12 @@ namespace ForLeaseEngine {
     {
 
         public:
-            Component(ComponentID id = ComponentID::cidNone);
-            ComponentID GetID();
+            Component(ComponentType id = ComponentType::None);
+            virtual ~Component() {};
+            ComponentType GetType();
             virtual void Update() = 0;
         private:
-            ComponentID ID; //! The type of component.
+            ComponentType Type; //! The type of component.
 
     };
 

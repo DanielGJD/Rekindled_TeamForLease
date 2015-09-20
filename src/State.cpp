@@ -7,12 +7,27 @@
     \see State.h
 */
 
+#include "State.h"
+
 namespace ForLeaseEngine {
 
     /*!
         Constructor for a State.  Initializes Entities.
     */
     State::State() : Entities() {}
+
+    /*!
+        Adds an entity to the Entities vector in the state.
+
+        \return
+            A pointer to the newly-created entity.
+    */
+    Entity* State::AddEntity() {
+        Entity* entity = new Entity();
+        Entities.push_back(entity);
+
+        return entity;
+    }
 
     /*!
         Get a pointer to an entity with the given ID.
@@ -29,7 +44,7 @@ namespace ForLeaseEngine {
         for (std::vector<Entity*>::iterator it = Entities.begin();
              it != Entities.end(); ++it) {
 
-            if (*(it->GetID()) == id)
+            if ((*it)->GetID() == id)
                 return *it;
         }
 
@@ -37,35 +52,5 @@ namespace ForLeaseEngine {
 
         else return 0;
     }
-
-    /*!
-        Constructor for an EntityNotFoundException.  Sets the ID to 0, which basically
-        means none.  Also sets a generic error message.
-    */
-    EntityNotFoundException::EntityNotFoundException()
-        : Exception("Entity not found."), ID(0) {}
-
-    /*!
-        Constructor for an EntityNotFoundException.  Sets the ID to a given ID.
-        Also sets a generic error message.
-
-        \param id
-            A long unsigned int denoting the ID given by the user.
-    */
-    EntityNotFoundException::EntityNotFoundException(const long unsigned id)
-        : Exception("Entity not found."), ID(id) {}
-
-    /*!
-        Constructor for an EntityNotFoundException.  Sets the ID to a given ID.
-        Also sets the message to a given error message.
-
-        \param id
-            A long unsigned int denoting the ID given by the user.
-
-        \param message
-            The error message to use.
-    */
-    EntityNotFoundException::EntityNotFoundException(const long unsigned id,
-        const std::string& message) : Exception(message), ID(id) {}
 
 }

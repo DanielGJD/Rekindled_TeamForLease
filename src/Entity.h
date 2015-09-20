@@ -12,7 +12,7 @@
 
 #include <vector>
 #include "ComponentsInclude.h"
-#include "Exception.h"
+#include "EntityExceptions.h"
 
 namespace ForLeaseEngine {
 
@@ -28,37 +28,21 @@ namespace ForLeaseEngine {
             ~Entity();
             long unsigned GetID();
             void AddComponent(Component* component);
+            ComponentType GetComponentMask();
+            Component* GetComponent(ComponentType type, bool throwOnFail = false);
         private:
-            //! The mask of all components ORd together that this Entity has.
-            ComponentID ComponentMask;
-            //! The std::vector of pointers to all Components on this Entity.
-            std::vector<Component *> Components;
             //! The ID of this Entity, to differentiate from other Entities.
             long unsigned ID;
+            //! The mask of all components ORd together that this Entity has.
+            ComponentType ComponentMask;
+            //! The std::vector of pointers to all Components on this Entity.
+            std::vector<Component *> Components;
             //! A static ID of all Entities that have been created by the game.
             static long unsigned TotalEntities;
 
     };
 
-    void AddComponentsToEntity(ComponentID mask, Entity* entity);
-
-    /*!
-        \class AddComponentException
-        \brief
-            A customized exception for when adding a component to an entity fails.
-    */
-    class AddComponentException : public Exception {
-
-        public:
-            AddComponentException();
-            AddComponentException(const ComponentID id);
-            AddComponentException(const ComponentID id, const std::string& message);
-            ComponentID GetID();
-        private:
-            ComponentID ID; //! The type of component that caused the exception.
-
-    };
-
+    void AddComponentsToEntity(ComponentType mask, Entity* entity);
 
 } // ForLeaseEngine
 

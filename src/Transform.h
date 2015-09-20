@@ -23,7 +23,12 @@ namespace ForLeaseEngine {
                 the X and Y coordinates in world space.
         */
         class Transform : public Component {
-            void Update() {};
+
+            public:
+                Transform();
+                ~Transform() {};
+                void Update() {};
+                
         };
 
     } // Components

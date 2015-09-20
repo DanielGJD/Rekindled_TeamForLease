@@ -12,6 +12,7 @@
 
 #include "Engine.h"
 #include "FrameRateController.h"
+#include "__test__state.h"
 
 int main() {
     ForLeaseEngine::Engine engine;
@@ -22,6 +23,23 @@ int main() {
 
     std::cout << frc.GetDt() << std::endl;
     std::cout << frc.GetFrameTime() << std::endl;
+
+    TestState state;
+
+    ForLeaseEngine::Entity * entity = state.AddEntity();
+
+    std::cout << entity->GetComponentMask() << std::endl;
+
+    entity = state.GetEntityByID(entity->GetID());
+
+    ForLeaseEngine::AddComponentsToEntity(
+        ForLeaseEngine::ComponentType::Transform
+        | ForLeaseEngine::ComponentType::None,
+        entity);
+
+    std::cout << entity->GetID() << std::endl;
+    std::cout << entity->GetComponentMask() << std::endl;
+    std::cout << entity->GetComponent(ForLeaseEngine::ComponentType::Transform)->GetType() << std::endl;
 
     return 0;
 }

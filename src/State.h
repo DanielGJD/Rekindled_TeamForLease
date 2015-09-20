@@ -13,6 +13,7 @@
 #include <vector>
 #include <string>
 #include "Entity.h"
+#include "StateExceptions.h"
 
 namespace ForLeaseEngine {
 
@@ -26,26 +27,10 @@ namespace ForLeaseEngine {
         public:
             State();
             virtual void Update() = 0;
+            Entity* AddEntity();
             Entity* GetEntityByID(long unsigned id, bool throwOnFail = false);
         private:
             std::vector<Entity*> Entities;
-
-    };
-
-    /*!
-        \class EntityNotFoundException
-        \brief
-            A customized exception for when finding an entity fails.
-    */
-    class EntityNotFoundException : public Exception {
-
-        public:
-            EntityNotFoundException();
-            EntityNotFoundException(const long unsigned id);
-            EntityNotFoundException(const long unsigned id, const std::string& message);
-            long unsigned GetID();
-        private:
-            const long unsigned ID;
 
     };
 

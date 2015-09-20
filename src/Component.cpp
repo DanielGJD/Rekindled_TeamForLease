@@ -12,30 +12,30 @@
 namespace ForLeaseEngine {
 
     /*!
-        Overload for the | operator, to allow the user to OR two ComponentIDs.
+        Overload for the | operator, to allow the user to OR two ComponentTypes.
         \param lhs
-            A constant reference to the ComponentID on the left.
+            A constant reference to the ComponentType on the left.
         \param rhs
-            A constant reference to the ComponentID on the right.
+            A constant reference to the ComponentType on the right.
         \return
-            A ComponentID that is the result of the OR on the two ComponentIDs.
+            A ComponentType that is the result of the OR on the two ComponentTypes.
     */
-    ComponentID operator|(const ComponentID& lhs, const ComponentID& rhs) {
-        return static_cast<ComponentID>(static_cast<unsigned long>(lhs)
+    ComponentType operator|(const ComponentType& lhs, const ComponentType& rhs) {
+        return static_cast<ComponentType>(static_cast<unsigned long>(lhs)
             | static_cast<unsigned long>(rhs));
     }
 
     /*!
-        Oerload for the & operator, to allow the user to AND two ComponentIDs.
+        Oerload for the & operator, to allow the user to AND two ComponentTypes.
         \param lhs
-            A constant reference to the ComponentID on the left.
+            A constant reference to the ComponentType on the left.
         \param rhs
-            A constant reference to the ComponentID on the right.
+            A constant reference to the ComponentType on the right.
         \return
-            A ComponentID that is the result of the AND on the two ComponentIDs.
+            A ComponentType that is the result of the AND on the two ComponentTypes.
     */
-    ComponentID operator&(const ComponentID& lhs, const ComponentID& rhs) {
-        return static_cast<ComponentID>(static_cast<unsigned long>(lhs)
+    ComponentType operator&(const ComponentType& lhs, const ComponentType& rhs) {
+        return static_cast<ComponentType>(static_cast<unsigned long>(lhs)
             & static_cast<unsigned long>(rhs));
     }
 
@@ -43,31 +43,36 @@ namespace ForLeaseEngine {
         Overload for the |= operator.  Simply calls | on lhs and rhs and stores
         it back into lhs.
         \param lhs
-            A reference to the ComponentID we want to OR with rhs and assign the
+            A reference to the ComponentType we want to OR with rhs and assign the
             result to.
         \param rhs
-            A constant reference to the ComponentID on the right.
+            A constant reference to the ComponentType on the right.
         \return
             A reference to the modified lhs.
     */
-    ComponentID& operator|=(ComponentID& lhs, const ComponentID& rhs) {
+    ComponentType& operator|=(ComponentType& lhs, const ComponentType& rhs) {
         lhs = lhs | rhs;
         return lhs;
     }
 
-    /*!
-        Constructor for a new Component.
-        \param id
-            A ComponentID that we want to assign to this Component.
-    */
-    Component::Component(ComponentID id) : ID(id) {}
+    std::ostream& operator<<(std::ostream& os, const ComponentType& type) {
+        os << static_cast<unsigned long>(type);
+        return os;
+    }
 
     /*!
-        Returns the ID of this component, which lets the user know the type of
+        Constructor for a new Component.
+        \param type
+            A ComponentType that we want to assign to this Component.
+    */
+    Component::Component(ComponentType type) : Type(type) {}
+
+    /*!
+        Returns the Type of this component, which lets the user know the type of
         Component that this is.
         \return
-            A ComponentID that determines this Component's type.
+            A ComponentType that determines this Component's type.
     */
-    ComponentID Component::GetID() { return ID; }
+    ComponentType Component::GetType() { return Type; }
 
 } // ForLeaseEngine
