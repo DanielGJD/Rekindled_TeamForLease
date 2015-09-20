@@ -17,7 +17,7 @@
 
 namespace ForLeaseEngine {
     /*!
-        \class Graphics Exception
+        \class GraphicsException
 
         \brief
             Exception class for graphics exceptions
