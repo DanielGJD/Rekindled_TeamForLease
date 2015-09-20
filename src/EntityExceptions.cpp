@@ -101,10 +101,9 @@ namespace ForLeaseEngine {
 
         \param message
             A std::string that is the message to set for this exception.
-
     */
     AddComponentException::AddComponentException(const ComponentType type,
-        const unsigned long id, const std::string& message)
+        const long unsigned id, const std::string& message)
         : EntityException(id, message), Type(type) {}
 
     /*!

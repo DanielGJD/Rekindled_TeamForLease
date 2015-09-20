@@ -131,7 +131,7 @@ namespace ForLeaseEngine {
         \param edge
             New values for the indexed edge
 
-        \param
+        \param index
             Index of the edge to change
     */
     void Mesh::SetEdge(const IndexedEdge& edge, int index) {

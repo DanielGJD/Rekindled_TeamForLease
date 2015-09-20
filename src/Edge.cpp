@@ -27,7 +27,7 @@ namespace ForLeaseEngine {
         \param vert1
             First vertex
 
-        \param vert 2
+        \param vert2
             Second vertex
     */
     Edge::Edge(Point vert1, Point vert2) : Vertices({vert1, vert2}) {}

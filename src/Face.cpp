@@ -29,7 +29,7 @@ namespace ForLeaseEngine {
         \param vert2
             Second vertex
 
-        \param vert 3
+        \param vert3
             Third vertex
     */
     Face::Face(const Point& vert1, const Point& vert2, const Point& vert3) : Vertices({vert1, vert2, vert3}) {}
