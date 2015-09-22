@@ -33,6 +33,9 @@ namespace ForLeaseEngine {
     /*!
         Constructor for Engine.  Creates a new instance of Engine using given values.
         
+        \param states
+            A vector of all states in the game.  This gets passed to the game
+            state manager.
         \param resolutionX
             The width (x-resolution) of the window to run in.
         \param resolutionY

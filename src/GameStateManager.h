@@ -20,7 +20,7 @@ namespace ForLeaseEngine {
     namespace Modules {
 
         /*!
-            \enum StateActions
+            \enum StateAction
             \brief
                 The actions to take on the GameStateManager.  Used to switch
                 between states or even quit the game.

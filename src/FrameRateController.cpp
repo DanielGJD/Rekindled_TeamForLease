@@ -29,6 +29,8 @@ namespace ForLeaseEngine {
         /*!
             Constructor for FrameRateController.  Creates a new instance of FrameRateController, using either a default value or a user-provided one.
             
+            \param parent
+                A reference to the parent engine.  Saved in Parent.
             \param framesPerSecond
                 The number of frames to draw per second.  Default is 60.
         */
