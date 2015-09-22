@@ -19,7 +19,7 @@ namespace ForLeaseEngine {
     /*!
         Constructor for Engine.  Creates a new instance of Engine using default values.
     */
-    Engine::Engine() {
+    Engine::Engine() : GSM(*this) {
         // Default values
         ResolutionX = 800;
         ResolutionY = 600;
@@ -38,7 +38,7 @@ namespace ForLeaseEngine {
     */
     Engine::Engine(int resolutionX, int resolutionY, int frameRate)
         : ResolutionX(resolutionX), ResolutionY(resolutionY),
-          FrameRate(frameRate) {}
+          FrameRate(frameRate), GSM(*this) {}
 
     /*!
         Handles the main game loop.  Essentially calls FrameRateController and GameStateManager.

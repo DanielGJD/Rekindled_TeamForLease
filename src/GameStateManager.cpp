@@ -11,21 +11,34 @@
 
 namespace ForLeaseEngine {
 
-    /*!
-        Constructor for GameStateManager.  Creates a new instance of GameStateManager using default values.
-    */
-    GameStateManager::GameStateManager() {
-        // Default values
-        Previous = slContinue;
-        Current = slContinue;
-        Next = slContinue;
-    }
+    namespace Modules {
+        /*!
+            Constructor for GameStateManager.  Creates a new instance of GameStateManager using default values.
+        */
+        // GameStateManager::GameStateManager() {
+        // }
 
-    /*!
-        Handles the main game loop.  Calls the current state's Update function.
-    */
-    void GameStateManager::Update() {
-        // Empty for now
+        /*!
+            Constructor for GameStateManager.  Creates a new instance of GameStateManager using a provided Engine as its parent.
+        */
+        GameStateManager::GameStateManager(const Engine& parent) : Parent(parent) {}
+
+        /*!
+            Constructor for GameStateManager.  Creates a new instance of GameStateManager using a provided State list.
+        */
+        GameStateManager::GameStateManager(const Engine& parent, std::vector<State *> states)
+            : Parent(parent), States(states) {}
+
+        /*!
+            Handles the main game loop.  Calls the current state's Update function.
+        */
+        void GameStateManager::Update() {
+            for (State* state : States) {
+                Parent.FrameRateController().Start();
+                state->Update();
+                Parent.FrameRateController().End();
+            }
+        }
     }
 
 } // ForLeaseEngine

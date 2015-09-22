@@ -6,7 +6,7 @@ EXE=$(BIN)Game
 
 ################################################################################
 
-TEST_OBJECTS=$(BIN)test.o $(BIN)Component.o $(BIN)Engine.o $(BIN)Entity.o $(BIN)EntityExceptions.o $(BIN)Exception.o $(BIN)FrameRateController.o $(BIN)State.o $(BIN)StateExceptions.o $(BIN)Transform.o
+TEST_OBJECTS=$(BIN)test.o $(BIN)Component.o $(BIN)Engine.o $(BIN)Entity.o $(BIN)EntityExceptions.o $(BIN)Exception.o $(BIN)FrameRateController.o $(BIN)GameStateManager.o $(BIN)State.o $(BIN)StateExceptions.o $(BIN)Transform.o
 TEST_EXE=$(BIN)fle
 
 $(TEST_EXE): $(TEST_OBJECTS)

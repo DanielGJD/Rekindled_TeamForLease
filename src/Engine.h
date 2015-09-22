@@ -7,8 +7,15 @@
     \see Engine.cpp
 */
 
+namespace ForLeaseEngine {
+    class Engine;
+}
+
 #ifndef ENGINE_H
 #define ENGINE_H
+
+#include "GameStateManager.h"
+#include "FrameRateController.h"
 
 namespace ForLeaseEngine {
 
@@ -23,6 +30,8 @@ namespace ForLeaseEngine {
             Engine();
             Engine(int resolutionX, int resolutionY, int frameRate);
             void Run();
+            Modules::GameStateManager& GameStateManager();
+            Modules::FrameRateController& FrameRateController();
         private:
             //! Width of the screen
             int ResolutionX;
@@ -30,6 +39,8 @@ namespace ForLeaseEngine {
             int ResolutionY;
             //! Frame rate of the game
             int FrameRate;
+            Modules::GameStateManager GSM;
+            Modules::FrameRateController FRC;
 
     };
 
