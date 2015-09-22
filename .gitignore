@@ -5,3 +5,4 @@ bin/
 *.exe
 .DS_Store
 *.o
+*.stackdump
