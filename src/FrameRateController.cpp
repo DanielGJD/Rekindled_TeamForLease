@@ -8,11 +8,22 @@
 */
 
 #include "FrameRateController.h"
+#include "Engine.h"
 #include <chrono>
 #include <thread>
 
 namespace ForLeaseEngine {
     
+    /*!
+    \namespace Modules
+    \brief
+        The wrapper namespace for every engine module.
+
+        Examples:
+            - FrameRateController
+            - GameStateManager
+            - Debug
+    */
     namespace Modules {
 
         /*!
@@ -21,8 +32,8 @@ namespace ForLeaseEngine {
             \param framesPerSecond
                 The number of frames to draw per second.  Default is 60.
         */
-        FrameRateController::FrameRateController(int framesPerSecond)
-            : FramesPerSecond(framesPerSecond) {
+        FrameRateController::FrameRateController(Engine& parent, int framesPerSecond)
+            : Parent(parent), FramesPerSecond(framesPerSecond) {
                 FrameTime = std::chrono::microseconds(1000000/FramesPerSecond); // Set the frame time
                 LastFrameTime = std::chrono::microseconds(0);
             }
@@ -58,5 +69,6 @@ namespace ForLeaseEngine {
         */
         double FrameRateController::GetFrameTime() { return FrameTime.count() / double(1000); }
     
-    }
+    } // Modules
+
 } // ForLeaseEngine

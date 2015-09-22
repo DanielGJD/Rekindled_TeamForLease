@@ -14,7 +14,10 @@
 
 namespace ForLeaseEngine {
 
+    class Engine;
+
     namespace Modules {
+
         /*!
             \class FrameRateController
             \brief
@@ -23,14 +26,17 @@ namespace ForLeaseEngine {
         class FrameRateController {
 
             public:
-                FrameRateController(int framesPerSecond = 60);
+                FrameRateController(Engine& parent, int framesPerSecond = 60);
 
                 void Start();
                 void End();
 
                 double GetDt();
+
                 double GetFrameTime();
             private:
+                //! A reference to the engine
+                Engine& Parent;
                 //! Frames per second
                 int FramesPerSecond;
                 //! The time allotted for each frame -- 1 / FramesPerSecond
@@ -42,9 +48,12 @@ namespace ForLeaseEngine {
                 //! The time of the last frame, in microseconds
                 std::chrono::microseconds LastFrameTime;
 
+                //! Made private and deactivated because we NEED Parent
+                FrameRateController() = delete;
+
         };
 
-    }
+    } // Modules
 
 } // ForLeaseEngine
 

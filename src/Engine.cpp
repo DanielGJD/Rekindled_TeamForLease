@@ -8,6 +8,7 @@
 */
 
 #include "Engine.h"
+#include "__test__state.h"
 
 /*!
     \namespace ForLeaseEngine
@@ -16,10 +17,19 @@
 */
 namespace ForLeaseEngine {
 
+    Engine::Engine() {
+        ResolutionX = 800;
+        ResolutionY = 600;
+        FrameRate   = 60;
+
+        std::vector<State *> states;
+        states.push_back(new TestState());
+    }
+
     /*!
         Constructor for Engine.  Creates a new instance of Engine using default values.
     */
-    Engine::Engine() : GSM(*this) {
+    Engine::Engine(std::vector<State *> states) : GSM(*this, states), FRC(*this) {
         // Default values
         ResolutionX = 800;
         ResolutionY = 600;
@@ -36,15 +46,30 @@ namespace ForLeaseEngine {
         \param frameRate
             The frame rate, or at which to refresh the window.
     */
-    Engine::Engine(int resolutionX, int resolutionY, int frameRate)
-        : ResolutionX(resolutionX), ResolutionY(resolutionY),
-          FrameRate(frameRate), GSM(*this) {}
+    Engine::Engine(std::vector<State *> states, int resolutionX, int resolutionY,
+        int frameRate) : ResolutionX(resolutionX), ResolutionY(resolutionY),
+        FrameRate(frameRate), GSM(*this, states), FRC(*this) {}
 
     /*!
         Handles the main game loop.  Essentially calls FrameRateController and GameStateManager.
     */
     void Engine::Run() {
-        // Empty for now, as nothing has been implemented.
+        GSM.Run();
     }
+
+    /*!
+        Returns a reference to the current GameStateManager used by the engine.
+        \return
+            A reference to the GameStateManager used by the engine.
+    */
+    Modules::GameStateManager& Engine::GameStateManager() { return GSM; }
+
+    /*!
+        Returns a reference to the current FrameRateController used by the
+        engine.
+        \return
+            A reference to the FrameRateController used by the engine.
+    */
+    Modules::FrameRateController& Engine::FrameRateController() { return FRC; }
 
 } // ForLeaseEngine

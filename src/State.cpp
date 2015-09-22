@@ -8,13 +8,14 @@
 */
 
 #include "State.h"
+#include "Engine.h"
 
 namespace ForLeaseEngine {
 
     /*!
         Constructor for a State.  Initializes Entities.
     */
-    State::State() : Entities() {}
+    State::State(Engine& parent) : Parent(parent), Entities() {}
 
     /*!
         Adds an entity to the Entities vector in the state.

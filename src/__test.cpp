@@ -9,14 +9,18 @@
 
 #include <iostream>
 #include <iomanip>
+#include <vector>
 
 #include "Engine.h"
 #include "__test__state.h"
+#include "State.h"
 
 int main() {
-    TestState state;
+    std::vector<ForLeaseEngine::State *> states;
+    states.push_back(new TestState());
 
-    ForLeaseEngine::Engine engine;
+    ForLeaseEngine::Engine engine(states);
+    engine.Run();
 
     return 0;
 }

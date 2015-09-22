@@ -12,11 +12,26 @@
 
 #include <vector>
 #include "State.h"
-#include "Engine.h"
 
 namespace ForLeaseEngine {
 
+    class Engine;
+
     namespace Modules {
+
+        /*!
+            \enum StateActions
+            \brief
+                The actions to take on the GameStateManager.  Used to switch
+                between states or even quit the game.
+        */
+        enum class StateAction {
+            Quit,
+            Continue,
+            Restart,
+            Next
+        };
+
         /*!
             \class GameStateManager
             \brief
@@ -28,19 +43,17 @@ namespace ForLeaseEngine {
                 // GameStateManager();
                 GameStateManager(Engine& parent);
                 GameStateManager(Engine& parent, std::vector<State *> states);
-                void Update();
+                void Run();
+                void SetAction(StateAction action);
             private:
                 //! A reference to the engine
                 Engine& Parent;
-                // //! The previous state
-                // STATE_LIST Previous;
-                // //! The current state
-                // STATE_LIST Current;
-                // //! The next state
-                // STATE_LIST Next;
                 //! The vector of all possible states
                 std::vector<State *> States;
+                unsigned StateIndex;
+                StateAction Action;
 
+                //! Made private and deactivated, since we NEED Parent
                 GameStateManager() = delete;
 
         };
