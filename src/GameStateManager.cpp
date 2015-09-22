@@ -35,7 +35,10 @@ namespace ForLeaseEngine {
                 States[StateIndex]->Load();
 
                 do {
+
                     States[StateIndex]->Initialize();
+
+                    Action = StateAction::Continue;
 
                     do {
                         Parent.FrameRateController().Start();
@@ -44,6 +47,7 @@ namespace ForLeaseEngine {
                     } while (Action == StateAction::Continue);
 
                     States[StateIndex]->Deinitialize();
+
                 } while (Action == StateAction::Restart);
 
                 States[StateIndex]->Unload();

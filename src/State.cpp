@@ -15,7 +15,7 @@ namespace ForLeaseEngine {
     /*!
         Constructor for a State.  Initializes Entities.
     */
-    State::State(Engine& parent) : Parent(parent), Entities() {}
+    State::State() : Entities() {}
 
     /*!
         Adds an entity to the Entities vector in the state.

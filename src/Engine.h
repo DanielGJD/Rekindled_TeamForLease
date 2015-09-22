@@ -25,7 +25,6 @@ namespace ForLeaseEngine {
 
         public:
             Engine(std::vector<State *> states);
-            Engine(State* state);
             Engine(std::vector<State *> states, int resolutionX, int resolutionY, int frameRate);
             void Run();
             Modules::GameStateManager& GameStateManager();
@@ -42,9 +41,11 @@ namespace ForLeaseEngine {
             //! Frame rate controller--handles timing
             Modules::FrameRateController FRC;
 
-            //Engine() = delete;
+            Engine() = delete;
     };
 
 } // ForLeaseEngine
+
+extern ForLeaseEngine::Engine * ForLease;
 
 #endif

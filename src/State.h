@@ -14,7 +14,6 @@
 #include <string>
 #include "Entity.h"
 #include "StateExceptions.h"
-#include "GameStateManager.h"
 
 namespace ForLeaseEngine {
 
@@ -28,7 +27,7 @@ namespace ForLeaseEngine {
     class State {
 
         public:
-            State(Engine& parent);
+            State();
             virtual void Load() = 0;
             virtual void Initialize() = 0;
             virtual void Update() = 0;
@@ -38,7 +37,6 @@ namespace ForLeaseEngine {
             Entity* AddEntity();
             Entity* GetEntityByID(long unsigned id, bool throwOnFail = false);
         private:
-            Engine& Parent;
             std::vector<Entity*> Entities;
 
     };

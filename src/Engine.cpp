@@ -8,7 +8,8 @@
 */
 
 #include "Engine.h"
-#include "__test__state.h"
+
+ForLeaseEngine::Engine * ForLease;
 
 /*!
     \namespace ForLeaseEngine
@@ -16,15 +17,6 @@
         The wrapper namespace for everything involved in the For Lease %Engine.
 */
 namespace ForLeaseEngine {
-
-    Engine::Engine() {
-        ResolutionX = 800;
-        ResolutionY = 600;
-        FrameRate   = 60;
-
-        std::vector<State *> states;
-        states.push_back(new TestState());
-    }
 
     /*!
         Constructor for Engine.  Creates a new instance of Engine using default values.
@@ -34,6 +26,8 @@ namespace ForLeaseEngine {
         ResolutionX = 800;
         ResolutionY = 600;
         FrameRate   = 60;
+
+        ForLease = this;
     }
 
     /*!
@@ -48,7 +42,7 @@ namespace ForLeaseEngine {
     */
     Engine::Engine(std::vector<State *> states, int resolutionX, int resolutionY,
         int frameRate) : ResolutionX(resolutionX), ResolutionY(resolutionY),
-        FrameRate(frameRate), GSM(*this, states), FRC(*this) {}
+        FrameRate(frameRate), GSM(*this, states), FRC(*this) { ForLease = this; }
 
     /*!
         Handles the main game loop.  Essentially calls FrameRateController and GameStateManager.
