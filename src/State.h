@@ -17,6 +17,8 @@
 
 namespace ForLeaseEngine {
 
+    class Engine;
+
     /*!
         \class State
         \brief
@@ -26,7 +28,12 @@ namespace ForLeaseEngine {
 
         public:
             State();
+            virtual void Load() = 0;
+            virtual void Initialize() = 0;
             virtual void Update() = 0;
+            virtual void Deinitialize() = 0;
+            virtual void Unload() = 0;
+
             Entity* AddEntity();
             Entity* GetEntityByID(long unsigned id, bool throwOnFail = false);
         private:

@@ -4,7 +4,15 @@
 #include "State.h"
 
 class TestState : public ForLeaseEngine::State {
-    void Update() {};
+    public:
+        void Load();
+        void Initialize();
+        void Update();
+        void Deinitialize();
+        void Unload();
+    private:
+        int lives;
+        int health;
 };
 
 #endif

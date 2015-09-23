@@ -8,6 +8,7 @@
 */
 
 #include "State.h"
+#include "Engine.h"
 
 namespace ForLeaseEngine {
 

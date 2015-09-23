@@ -14,34 +14,46 @@
 
 namespace ForLeaseEngine {
 
-    /*!
-        \class FrameRateController
-        \brief
-            Handles elapsed timing, as well as sleeping to maintain a stable framerate.
-    */
-    class FrameRateController {
+    class Engine;
 
-        public:
-            FrameRateController(int framesPerSecond = 60);
+    namespace Modules {
 
-            void Start();
-            void End();
+        /*!
+            \class FrameRateController
+            \brief
+                Handles elapsed timing, as well as sleeping to maintain a stable framerate.
+        */
+        class FrameRateController {
 
-            double GetDt();
-            double GetFrameTime();
-        private:
-            //! Frames per second
-            int FramesPerSecond;
-            //! The time allotted for each frame -- 1 / FramesPerSecond
-            std::chrono::microseconds FrameTime;
-            //! The start time of the current frame
-            std::chrono::high_resolution_clock::time_point StartTime;
-            //! The end time of the current frame
-            std::chrono::high_resolution_clock::time_point EndTime;
-            //! The time of the last frame, in microseconds
-            std::chrono::microseconds LastFrameTime;
+            public:
+                FrameRateController(Engine& parent, int framesPerSecond = 60);
 
-    };
+                void Start();
+                void End();
+
+                double GetDt();
+
+                double GetFrameTime();
+            private:
+                //! A reference to the engine
+                Engine& Parent;
+                //! Frames per second
+                int FramesPerSecond;
+                //! The time allotted for each frame -- 1 / FramesPerSecond
+                std::chrono::microseconds FrameTime;
+                //! The start time of the current frame
+                std::chrono::high_resolution_clock::time_point StartTime;
+                //! The end time of the current frame
+                std::chrono::high_resolution_clock::time_point EndTime;
+                //! The time of the last frame, in microseconds
+                std::chrono::microseconds LastFrameTime;
+
+                //! Made private and deactivated because we NEED Parent
+                FrameRateController() = delete;
+
+        };
+
+    } // Modules
 
 } // ForLeaseEngine
 
