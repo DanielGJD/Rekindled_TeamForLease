@@ -48,12 +48,14 @@ namespace ForLeaseEngine {
     {
 
         public:
-            Component(ComponentType id = ComponentType::None);
+            Component(ComponentType type = ComponentType::None,
+                      ComponentType required = ComponentType::None);
             virtual ~Component() {};
             ComponentType GetType();
             virtual void Update() = 0;
         private:
-            ComponentType Type; //! The type of component.
+            const ComponentType Type;     //! The type of component.
+            const ComponentType Required; //! A mask of all components required for this component
 
     };
 

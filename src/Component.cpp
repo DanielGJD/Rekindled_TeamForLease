@@ -64,8 +64,12 @@ namespace ForLeaseEngine {
         Constructor for a new Component.
         \param type
             A ComponentType that we want to assign to this Component.
+        \param required
+            A ComponentType mask of all Components that must already be on the
+            parent Entity to allow this Component to be added too.
     */
-    Component::Component(ComponentType type) : Type(type) {}
+    Component::Component(ComponentType type, ComponentType required)
+        : Type(type), Required(required) {}
 
     /*!
         Returns the Type of this component, which lets the user know the type of
