@@ -1,7 +1,7 @@
 /*!
     \file   Exception.h
     \author Christopher Hudson
-    \date   09/12/15
+    \date   09/22/15
 
     \brief
         Defines a class that all other exception should inherit from

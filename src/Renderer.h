@@ -1,3 +1,14 @@
+/*!
+    \file   Renderer.h
+    \author Christopher Hudson
+    \date   09/22/15
+
+    \brief
+        Defines a class that draws things to the screen
+
+    \see Renderer.cpp
+*/
+
 #ifndef RENDERER_H
 #define RENDERER_H
 
@@ -8,6 +19,12 @@
 #include "Mesh.h"
 
 namespace ForLeaseEngine {
+    /*!
+        \class Renderer
+
+        \brief
+            Class that can draw things to the screen
+    */
     class Renderer {
         public:
             Renderer();
@@ -22,7 +39,7 @@ namespace ForLeaseEngine {
 
             // Slow, each use is a single draw call.  For testing only. Might Get removed.
             void DrawRectangle(Point position, float width, float height, float rotation = 0);
-            void DrawPolygon(Point position, float radius, int sides);
+            //void DrawPolygon(Point position, float radius, int sides);
             void DrawLine(Point start, Point end);
             void DrawLine(Point start, Vector displacement);
             //void DrawLine(Point start, Vector direction, float magnitude);
@@ -30,7 +47,7 @@ namespace ForLeaseEngine {
             void DrawArrow(Point start, Vector displacement);
             //void DrawArrow(Point start, Vector direction, float magnitude);
             void DrawRectangleFilled(Point position, float width, float height, float rotation = 0);
-            void DrawPolygonFilled(Point position, float radius, int sides);
+            //void DrawPolygonFilled(Point position, float radius, int sides);
 
             // Do not use any of these. For testing only. Will be removed
             void DrawFace(Face& face);
@@ -39,12 +56,14 @@ namespace ForLeaseEngine {
             // This one is ok to use, uses a minimum number of draw calls
             void DrawMesh(Mesh& mesh, Point& location, float scaleX = 1, float scaleY = 1, float rotation = 0);
 
-            void PrintMatrices();
-
         private:
+            //! The projection matrix
             Matrix Projection;
+            //! The modelview matrix
             Matrix ModelView;
+            //! The current drawing color
             Hcoord color;
+
             void ToScreenSpace(const Point& vertex, Point& transformed);
             void DrawTris(Point* vertices, int vertexCount);
             void DrawQuads(Point* vertices, int vertexCount);

@@ -18,11 +18,37 @@
 #include "GraphicsException.h"
 
 namespace ForLeaseEngine {
+    /*!
+        \brief
+            Creates a renderer with black clear color and white drawing color
+    */
     Renderer::Renderer() {
         SetDrawingColor(1.0f, 1.0f, 1.0f);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     }
 
+    /*!
+        \brief
+            Sets the projection matrix
+
+        \param position
+            Position of the center of the viewport
+
+        \param width
+            Width of the viewport
+
+        \param height
+            Height of the viewport
+
+        \param near
+            Near clip plane of the viewport (Unused)
+
+        \param far
+            Far clip plane of the viewport (Unused)
+
+        \param rotation
+            Rotation of the viewport
+    */
     void Renderer::SetProjection(Point position, float width, float height, float near, float far, float rotation) {
         Point origin;
         Matrix trans = Matrix::Translation(origin - position);
@@ -32,10 +58,33 @@ namespace ForLeaseEngine {
         Projection = scale * rot * trans;
     }
 
+    /*!
+        \brief
+            Sets the projection matrix to a given matrix
+
+        \param projectionMatrix
+            The new projection matrix
+    */
     void Renderer::SetProjection(Matrix projectionMatrix) {
         Projection = projectionMatrix;
     }
 
+    /*!
+        \brief
+            Sets the ModelView matrix
+
+        \param position
+            Position of the object
+
+        \param scaleX
+            X scale of the object
+
+        \param scaleY
+            Y scale of the object
+
+        \param rotation
+            Rotation of the object
+    */
     void Renderer::SetModelView(Point position, float scaleX, float scaleY, float rotation) {
         Point origin;
         Matrix trans = Matrix::Translation(position - origin);
@@ -45,18 +94,58 @@ namespace ForLeaseEngine {
         ModelView = trans * rot * scale;
     }
 
+    /*!
+        \brief
+            Sets the ModelView matrix from another matrix
+
+        \param modelViewMatrix
+            The new ModelView matrix
+    */
     void Renderer::SetModelView(Matrix modelViewMatrix) {
         ModelView = modelViewMatrix;
     }
 
+    /*!
+        \brief
+            Sets the drawing color
+
+        \param r
+            Red component
+
+        \param g
+            Green component
+
+        \param b
+            Blue component
+    */
     void Renderer::SetDrawingColor(float r, float g, float b) {
         glColor3f(r, g, b);
     }
 
+    /*!
+        \brief
+            Clears the pixel buffer color data
+    */
     void Renderer::Clear() {
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
+    /*!
+        \brief
+            Draws a rectangle with given properties
+
+        \param position
+            Position of the rectangle
+
+        \param width
+            Width of the rectangle
+
+        \param height
+            Height of the rectangle
+
+        \param rotation
+            Rotation of the rectangle
+    */
     void Renderer::DrawRectangle(Point position, float width, float height, float rotation) {
         ModelView = Matrix::RotationRad(rotation);
         float halfWidth = width / 2;
@@ -70,16 +159,46 @@ namespace ForLeaseEngine {
         DrawLineStrip(rectanglePoints, 5);
     }
 
+    /*!
+        \brief
+            Draws a line
+
+        \param start
+            Starting point of the line
+
+        \param end
+            Ending point of the line
+    */
     void Renderer::DrawLine(Point start, Point end) {
         ModelView = Matrix();
         Point vertices[] = {start, end};
         DrawLines(vertices, 2);
     }
 
+    /*!
+        \brief
+            Draws a line
+
+        \param start
+            Starting point of the line
+
+        \param displacement
+            Displacement from the start to the end
+    */
     void Renderer::DrawLine(Point start, Vector displacement) {
         DrawLine(start, start + displacement);
     }
 
+    /*!
+        \brief
+            Draws an arrow
+
+        \param start
+            Starting point of the arrow
+
+        \param end
+            Ending point of the arrow
+    */
     void Renderer::DrawArrow(Point start, Point end) {
         ModelView = Matrix();
         float headLength = 10.0f;
@@ -96,10 +215,36 @@ namespace ForLeaseEngine {
         DrawLineStrip(vertices, 5);
     }
 
+    /*!
+        \brief
+            Draws an arrow
+
+        \param start
+            Starting point of the arrow
+
+        \param displacement
+            Displacement from the start to the end of the arrow
+    */
     void Renderer::DrawArrow(Point start, Vector displacement) {
         DrawArrow(start, start + displacement);
     }
 
+    /*!
+        \brief
+            Draws a filled rectangle
+
+        \param position
+            Position of the rectangle
+
+        \param width
+            Width of the rectangle
+
+        \param height
+            Height of the rectangle
+
+        \param rotation
+            Rotation of the rectangle
+    */
     void Renderer::DrawRectangleFilled(Point position, float width, float height, float rotation) {
         ModelView = Matrix::RotationRad(rotation);
         float halfWidth = width / 2;
@@ -112,15 +257,41 @@ namespace ForLeaseEngine {
         DrawQuads(vertices, 4);
     }
 
+    /*!
+        \brief
+            Draws a triangle face
+
+        \param face
+            The face to draw
+    */
     void Renderer::DrawFace(Face& face) {
         Point vertices[] = {face.Vertices[0], face.Vertices[1], face.Vertices[2]};
 
         DrawTris(vertices, 3);
     }
 
-    void Renderer::DrawMesh(Mesh& mesh, Point& location, float scaleX, float scaleY, float rotation) {
+    /*!
+        \brief
+            Draws a mesh
+
+        \param mesh
+            The mesh to draw
+
+        \param position
+            The position of the mesh
+
+        \param scaleX
+            X scale of the mesh
+
+        \param scaleY
+            Y scale of the mesh
+
+        \param rotation
+            rotation of the mesh
+    */
+    void Renderer::DrawMesh(Mesh& mesh, Point& position, float scaleX, float scaleY, float rotation) {
         Point o;
-        ModelView = Matrix::Translation(location) * Matrix::Translation(mesh.GetCenter() - o) * Matrix::RotationRad(rotation) * Matrix::Scale(scaleX, scaleY) * Matrix::Translation(o - mesh.GetCenter());
+        ModelView = Matrix::Translation(position) * Matrix::Translation(mesh.GetCenter() - o) * Matrix::RotationRad(rotation) * Matrix::Scale(scaleX, scaleY) * Matrix::Translation(o - mesh.GetCenter());
         Point transformed[mesh.GetVertexCount()];
         for(int i = 0; i < mesh.GetVertexCount(); ++i) {
             ToScreenSpace(mesh.GetVertex(i), transformed[i]);
@@ -136,6 +307,16 @@ namespace ForLeaseEngine {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*!
+        \brief
+            Draws tris from a list of vertices
+
+        \param vertices
+            Vertex data to draw
+
+        \param vertexCount
+            Number of vertices to draw
+    */
     void Renderer::DrawTris(Point* vertices, int vertexCount)
     {
         if(vertexCount % 3) {
@@ -156,6 +337,16 @@ namespace ForLeaseEngine {
         glEnd();
     }
 
+    /*!
+        \brief
+            Draws quads from a list of vertices
+
+        \param vertices
+            Vertex data to draw
+
+        \param vertexCount
+            Number of vertices to draw
+    */
     void Renderer::DrawQuads(Point* vertices, int vertexCount) {
         if(vertexCount % 4) {
             throw new GraphicsException("Incorrect number of vertices to draw quads");
@@ -172,6 +363,16 @@ namespace ForLeaseEngine {
         glEnd();
     }
 
+    /*!
+        \brief
+            Draws lines from a list of vertices
+
+        \param vertices
+            Vertex data to draw
+
+        \param vertexCount
+            Number of vertices to draw
+    */
     void Renderer::DrawLines(Point* vertices, int vertexCount) {
         if(vertexCount % 2)
             throw new GraphicsException("Incorrect number of vertices to draw lines");
@@ -188,6 +389,16 @@ namespace ForLeaseEngine {
         glEnd();
     }
 
+    /*!
+        \brief
+            Draws a line strip from a list of vertices
+
+        \param vertices
+            Vertex data to draw
+
+        \param vertexCount
+            Number of vertices
+    */
     void Renderer::DrawLineStrip(Point* vertices, int vertexCount) {
         Point transformed[vertexCount];
         for(int i = 0; i < vertexCount; ++i) {
@@ -201,6 +412,16 @@ namespace ForLeaseEngine {
         glEnd();
     }
 
+    /*!
+        \brief
+            Transforms a vertex from local space into screen space
+
+        \param vertex
+            The vertex to transform
+
+        \param transformed
+            The transformed vertex
+    */
     void Renderer::ToScreenSpace(const Point& vertex, Point& transformed) {
         Hcoord temp;
         temp = (Projection * ModelView * vertex);
