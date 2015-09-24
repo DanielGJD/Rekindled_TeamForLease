@@ -52,6 +52,10 @@ namespace ForLeaseEngine {
             delete component;
             return;
         }
+        if ((ComponentMask & component->GetRequired()) != component->GetRequired()) {
+            delete component;
+            return;
+        }
 
         ComponentMask |= component->GetType();
         Components.push_back(component);
