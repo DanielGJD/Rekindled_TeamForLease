@@ -174,6 +174,9 @@ namespace ForLeaseEngine {
             DestroyGraphics();
             throw GraphicsException(errorMessage);
         }
+
+        std::cout << glGetString(GL_VERSION) << std::endl;
+        std::cout << glGetString(GL_EXTENSIONS) << std::endl;
     }
 
     /*!

@@ -64,7 +64,7 @@ namespace ForLeaseEngine {
             std::deque<Listener> listeners = EventListeners.at(e->EventName);
             //std::cout << "Listeners registered: " << listeners.size() << std::endl;
             for(std::deque<Listener>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
-                if((*i).Sender == sender){
+                if((*i).Sender == NULL || (*i).Sender == sender){
                     //std::cout << "Sending " << e->EventName << " to " << (*i).Receiver << std::endl;
                     (*i).Callback(e);
                 }

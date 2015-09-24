@@ -257,6 +257,29 @@ namespace ForLeaseEngine {
         DrawQuads(vertices, 4);
     }
 
+    void Renderer::DrawTexture(Point position, Texture* texture, float scaleX, float scaleY, float rotation) {
+        Point o;
+        ModelView = Matrix::Translation(position - o) * Matrix::RotationRad(rotation) * Matrix::Scale(scaleX, scaleY);
+        float halfWidth = texture->GetWidth() / 2;
+        float halfHeight = texture->GetHeight() / 2;
+        Point vertices[] = {Point(halfWidth, halfHeight), Point(-halfWidth, halfHeight),
+                            Point(-halfWidth, -halfHeight), Point(halfWidth, - halfHeight)};
+        Point uv[] = {Point(1, 1), Point(0, 1), Point(0, 0), Point(1, 0)};
+        for(int i = 0; i < 4; ++i) {
+            ToScreenSpace(vertices[i], vertices[i]);
+        }
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, texture->GetID());
+        glBegin(GL_QUADS);
+            for(int i = 0; i < 4; ++i) {
+                glTexCoord2f(uv[i][0], uv[i][1]);
+                glVertex2f(vertices[i][0], vertices[i][1]);
+            }
+        glEnd();
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glDisable(GL_TEXTURE_2D);
+    }
+
     /*!
         \brief
             Draws a triangle face

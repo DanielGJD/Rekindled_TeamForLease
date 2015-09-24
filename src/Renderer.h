@@ -12,6 +12,7 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include "Texture.h"
 #include "Vector.h"
 #include "Matrix.h"
 #include "Face.h"
@@ -48,6 +49,7 @@ namespace ForLeaseEngine {
             //void DrawArrow(Point start, Vector direction, float magnitude);
             void DrawRectangleFilled(Point position, float width, float height, float rotation = 0);
             //void DrawPolygonFilled(Point position, float radius, int sides);
+            void DrawTexture(Point position, Texture* texture, float scaleX = 1, float scaleY = 1, float rotation = 0);
 
             // Do not use any of these. For testing only. Will be removed
             void DrawFace(Face& face);
