@@ -1,12 +1,12 @@
 COMPILER=g++
-FLAGS=-Wall -Wextra -Werror -ansi -pedantic -std=c++11
+FLAGS=-Wall -Wextra -Werror -std=c++11
 SRC=src/
 BIN=bin/
 EXE=$(BIN)Game
 
 ################################################################################
 
-TEST_OBJECTS=$(BIN)test.o $(BIN)testState.o $(BIN)Component.o $(BIN)Engine.o $(BIN)Entity.o $(BIN)EntityExceptions.o $(BIN)Exception.o $(BIN)FrameRateController.o $(BIN)GameStateManager.o $(BIN)State.o $(BIN)StateExceptions.o $(BIN)Transform.o $(BIN)Vector.o
+TEST_OBJECTS=$(BIN)test.o $(BIN)testState.o $(BIN)Component.o $(BIN)ComponentTransform.o $(BIN)Engine.o $(BIN)Entity.o $(BIN)EntityExceptions.o $(BIN)Exception.o $(BIN)FrameRateController.o $(BIN)GameStateManager.o $(BIN)State.o $(BIN)StateExceptions.o $(BIN)Vector.o
 TEST_EXE=$(BIN)fle
 
 $(TEST_EXE): $(TEST_OBJECTS)
@@ -22,6 +22,9 @@ $(BIN)testState.o: $(SRC)__test__state.h $(SRC)__test__state.cpp
 
 $(BIN)Component.o: $(SRC)Component.cpp $(SRC)Component.h
 	$(COMPILER) -c $(FLAGS) $(SRC)Component.cpp -o $(BIN)Component.o
+
+$(BIN)ComponentTransform.o: $(SRC)ComponentTransform.cpp $(SRC)ComponentTransform.h
+	$(COMPILER) -c $(FLAGS) $(SRC)ComponentTransform.cpp -o $(BIN)ComponentTransform.o
 
 $(BIN)Engine.o: $(SRC)Engine.cpp $(SRC)Engine.h
 	$(COMPILER) -c $(FLAGS) $(SRC)Engine.cpp -o $(BIN)Engine.o
@@ -52,9 +55,6 @@ $(BIN)State.o: $(SRC)State.cpp $(SRC)State.h
 
 $(BIN)StateExceptions.o: $(SRC)StateExceptions.cpp $(SRC)StateExceptions.h
 	$(COMPILER) -c $(FLAGS) $(SRC)StateExceptions.cpp -o $(BIN)StateExceptions.o
-
-$(BIN)Transform.o: $(SRC)Transform.cpp $(SRC)Transform.h
-	$(COMPILER) -c $(FLAGS) $(SRC)Transform.cpp -o $(BIN)Transform.o
 
 $(BIN)Vector.o: $(SRC)Vector.cpp $(SRC)Vector.h
 	$(COMPILER) -c $(FLAGS) $(SRC)Vector.cpp -o $(BIN)Vector.o

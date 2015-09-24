@@ -10,6 +10,6 @@
 #define COMPONENTS_INCLUDE_H
 
 #include "Component.h"
-#include "Transform.h"
+#include "ComponentTransform.h"
 
 #endif

@@ -7,7 +7,7 @@
     \see Transform.h
 */
 
-#include "Transform.h"
+#include "ComponentTransform.h"
 
 namespace ForLeaseEngine {
     
