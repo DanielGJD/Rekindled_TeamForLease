@@ -24,7 +24,7 @@ namespace ForLeaseEngine {
     */
     Renderer::Renderer() {
         SetDrawingColor(1.0f, 1.0f, 1.0f);
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
     }
 
     /*!
@@ -302,6 +302,22 @@ namespace ForLeaseEngine {
                 for(int j = 0; j < 3; ++j) {
                     glVertex2f(transformed[face.Indices[j]][0], transformed[face.Indices[j]][1]);
                 }
+            }
+        glEnd();
+    }
+
+    void Renderer::DrawWireframeMesh(Mesh& mesh, Point& position, float scaleX, float scaleY, float rotation) {
+        Point o;
+        ModelView = Matrix::Translation(position) * Matrix::Translation(mesh.GetCenter() - o) * Matrix::RotationRad(rotation) * Matrix::Scale(scaleX, scaleY) * Matrix::Translation(o - mesh.GetCenter());
+        Point transformed[mesh.GetVertexCount()];
+        for(int i = 0; i < mesh.GetVertexCount(); ++i) {
+            ToScreenSpace(mesh.GetVertex(i), transformed[i]);
+        }
+        glBegin(GL_LINES);
+            for(int i = 0; i < mesh.GetEdgeCount(); ++i) {
+                IndexedEdge edge = mesh.GetIndexedEdge(i);
+                glVertex2f(transformed[edge.Indices[0]][0], transformed[edge.Indices[0]][1]);
+                glVertex2f(transformed[edge.Indices[1]][0], transformed[edge.Indices[1]][1]);
             }
         glEnd();
     }

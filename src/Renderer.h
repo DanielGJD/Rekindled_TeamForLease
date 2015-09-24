@@ -54,7 +54,8 @@ namespace ForLeaseEngine {
             void DrawEdge(Edge& edge);
 
             // This one is ok to use, uses a minimum number of draw calls
-            void DrawMesh(Mesh& mesh, Point& location, float scaleX = 1, float scaleY = 1, float rotation = 0);
+            void DrawMesh(Mesh& mesh, Point& position, float scaleX = 1, float scaleY = 1, float rotation = 0);
+            void DrawWireframeMesh(Mesh& mesh, Point& position, float scaleX = 1, float scaleY = 1, float rotation = 0);
 
         private:
             //! The projection matrix

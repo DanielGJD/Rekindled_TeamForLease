@@ -16,6 +16,12 @@
 #include "Edge.h"
 
 namespace ForLeaseEngine {
+    /*!
+        \class Mesh
+
+        \brief
+            Class that contains mesh data
+    */
     class Mesh {
         public:
             Mesh(int numVerts, int numEdges, int numFaces);
