@@ -8,6 +8,7 @@
 */
 
 #include "Component.h"
+#include "Entity.h"
 
 namespace ForLeaseEngine {
 
@@ -68,8 +69,8 @@ namespace ForLeaseEngine {
             A ComponentType mask of all Components that must already be on the
             parent Entity to allow this Component to be added too.
     */
-    Component::Component(ComponentType type, ComponentType required)
-        : Type(type), Required(required) {}
+    Component::Component(Entity& parent, ComponentType type, ComponentType required)
+        : Parent(parent), Type(type), Required(required) {}
 
     /*!
         Returns the Type of this component, which lets the user know the type of
@@ -78,5 +79,14 @@ namespace ForLeaseEngine {
             A ComponentType that determines this Component's type.
     */
     ComponentType Component::GetType() { return Type; }
+
+    /*!
+        Returns a mask of the Components that need to be on the Entity for this
+        component to work.
+        \return
+            A ComponentType that contains all of the ComponentTypes of the
+            required components.
+    */
+    ComponentType Component::GetRequired() { return Required; }
 
 } // ForLeaseEngine

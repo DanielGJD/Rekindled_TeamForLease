@@ -14,6 +14,7 @@
 #include <iostream>
 
 namespace ForLeaseEngine {
+    class Entity; // Forward declaration for Entity
 
     /*!
         \enum ComponentType
@@ -48,11 +49,14 @@ namespace ForLeaseEngine {
     {
 
         public:
-            Component(ComponentType type = ComponentType::None,
+            Component(Entity& parent, ComponentType type = ComponentType::None,
                       ComponentType required = ComponentType::None);
             virtual ~Component() {};
             ComponentType GetType();
+            ComponentType GetRequired();
             virtual void Update() = 0;
+        protected:
+            const Entity& Parent;
         private:
             const ComponentType Type;     //! The type of component.
             const ComponentType Required; //! A mask of all components required for this component

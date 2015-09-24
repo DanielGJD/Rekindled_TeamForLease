@@ -103,7 +103,7 @@ namespace ForLeaseEngine {
             throw AddComponentException(mask, entity->GetID(), "No component provided.");
 
         if (static_cast<bool>(mask & ComponentType::Transform))
-            entity->AddComponent(new Components::Transform());
+            entity->AddComponent(new Components::Transform(*entity));
         else
             throw AddComponentException(mask, entity->GetID(), "Unimplemented component.");
     }
