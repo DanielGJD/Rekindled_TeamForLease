@@ -280,6 +280,27 @@ namespace ForLeaseEngine {
         glDisable(GL_TEXTURE_2D);
     }
 
+    void Renderer::DrawTextureRegion(Point position, TextureRegion* region, float scaleX, float scaleY, float rotation) {
+        SetModelView(position, scaleX, scaleY, rotation);
+        float halfWidth = region->GetWidth() / 2;
+        float halfHeight = region->GetHeight() / 2;
+        Point vertices[] = {Point(halfWidth, halfHeight), Point(-halfWidth, halfHeight),
+                            Point(-halfWidth, -halfHeight), Point(halfWidth, - halfHeight)};
+        for(int i = 0; i < 4; ++i) {
+            ToScreenSpace(vertices[i], vertices[i]);
+        }
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, region->GetTextureID());
+        glBegin(GL_QUADS);
+            for(int i = 0; i < 4; ++i) {
+                glTexCoord2f(region->GetUV()[i][0], region->GetUV()[i][1]);
+                glVertex2f(vertices[i][0], vertices[i][1]);
+            }
+        glEnd();
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glDisable(GL_TEXTURE_2D);
+    }
+
     /*!
         \brief
             Draws a triangle face
