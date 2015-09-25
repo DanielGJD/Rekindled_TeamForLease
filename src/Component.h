@@ -25,12 +25,13 @@ namespace ForLeaseEngine {
             loading game code.
     */
     enum class ComponentType : unsigned long {
-        None             = 0,        //! No component
-        Transform        = 1 << 0,   //! Transform
-        PlayerController = 1 << 1,   //! Player controls
-        Physics          = 1 << 2,   //! Physics
-        Camera           = 1 << 3,   //! Camera
-        Draw             = 1 << 4    //! Draw
+        None                = 0,        //! No component
+        Transform           = 1 << 0,   //! Transform
+        PlayerController    = 1 << 1,   //! Player controls
+        Physics             = 1 << 2,   //! Physics
+        Collision           = 1 << 3,   //! Collision
+        Camera              = 1 << 4,   //! Camera
+        Draw                = 1 << 5    //! Draw
 
     };
 

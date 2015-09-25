@@ -41,30 +41,11 @@ namespace ForLeaseEngine {
                 ~Transform() {};
                 void Update() {};
 
-                void SetPositionX(float x);
-                float GetPositionX();
-                void SetPositionY(float y);
-                float GetPositionY();
-                void SetPosition(float x, float y);
-                void SetPosition(Point position);
-                Point GetPosition();
-
-                void SetScaleX(float x);
-                float GetScaleX();
-                void SetScaleY(float y);
-                float GetScaleY();
-                void SetScale(float x, float y);
-                void SetScale(Vector scale);
-                Vector GetScale();
-
-                void SetRotation(float rotation);
-                float GetRotation();
-            private:
                 Point Position; //! The position of the object
                 float ScaleX;   //! Scale on the X axis
                 float ScaleY;   //! Scale on the Y axis
                 float Rotation; //! Rotation in radians
-
+            private:
                 Transform() = delete;
 
         };
