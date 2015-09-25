@@ -21,7 +21,7 @@ namespace ForLeaseEngine {
     class System {
         public:
             System(Engine& owner, ComponentType componentMask = ComponentType::None);
-            virtual void Update(std::vector<Entity *> entities) = 0;
+            virtual void Update(std::vector<Entity *>& entities) = 0;
             bool CheckEntityCompatibility(Entity*  entity);
         private:
             Engine& Owner;

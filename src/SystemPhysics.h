@@ -22,7 +22,9 @@ namespace ForLeaseEngine {
         class Physics : public System {
             public:
                 Physics(Engine& owner, Vector gravity = Vector(0, -1));
-                void Update(std::vector<Entity *> entities);
+                void Update(std::vector<Entity *>& entities);
+                void Compute(Entity* entity);
+                void Cleanup(Entity* entity);
                 void ApplyGravity(Entity* entity);
                 void SetGravity(Vector gravity);
                 Vector GetGravity();

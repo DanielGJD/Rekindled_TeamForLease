@@ -13,24 +13,37 @@ namespace ForLeaseEngine {
 
         Physics::Physics(Engine& owner) : System(owner, ComponentType::Physics) {}
 
-        void Physics::Update(std::vector<Entity *> entities) {
+        void Physics::Update(std::vector<Entity *>& entities) {
 
             for (Entity* entity : entities) {
                 if (CheckEntityCompatibility(entity)) {
-                    ApplyGravity();
+                    ApplyGravity(entity);
+                    Compute(entity);
+                    Cleanup(entity);
                 }
             }
 
         }
-
-        void ApplyGravity(Entity* entity) {
+        
+        void Physics::Compute(Entity* entity) {
             Components::Physics* physicsComponent = entity->GetComponent(ComponentType::Physics);
             Components::Transform* transformComponent = entity->GetComponent(ComponentType::Transform);
+        
+            physicsComponent->Velocity += Acceleration * ForLease->FrameRateController().GetDt();
+            transformComponent->Position += physicsComponent->Velocity * ForLease->FrameRateController().GetDt();
+        }
+        
+        void Physics::Cleanup(Entity* entity) {
+            entity->Acceleration[0] = 0;
+            entity->Acceleration[1] = 0;
+            entity->Force[0] = 0;
+            entity->Force[1] = 0;
+        }
 
-            physicsComponent->Acceleration = Gravity;
-            physicsComponent->Velocity = physicsComponent->Velocity + Acceleration * ForLease->FrameRateController().GetDt();
-            transformComponent->Position = transformComponent->Position + physicsComponent->Velocity * ForLease->FrameRateController()>GetDt();
+        void Physics::ApplyGravity(Entity* entity) {
+            Components::Physics* physicsComponent = entity->GetComponent(ComponentType::Physics);
 
+            physicsComponent->Acceleration += Gravity;
         }
 
         void Physics::SetGravity(Vector gravity) { Gravity = gravity };
