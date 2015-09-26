@@ -12,6 +12,7 @@
 
 #include "ComponentCollision.h"
 #include "ComponentTransform.h"
+#include "ComponentPhysics.h"
 #include "Vector.h"
 #include "Entity.h"
 #include "System.h"
@@ -26,6 +27,7 @@ namespace ForLeaseEngine {
                 void Update(std::vector<Entity *>& entities);
                 bool CheckCollision(Entity* entity1, Entity* entity2);
                 void ResolveCollision(Entity* entity1, Entity* entity2);
+                void ResolveCollisionOneEntityOnly(Entity* toResolve, Entity* other);
         };
         
     }

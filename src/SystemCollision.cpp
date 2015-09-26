@@ -60,6 +60,34 @@ namespace ForLeaseEngine {
             if (!entity1Collision->ResolveCollisions || !entity2Collision->ResolveCollisions) return;
                 return;
 
+            bool entity1HasPhysics = static_cast<bool>(entity1->GetComponentMask() & ComponentType::Physics);
+            bool entity2HasPhysics = static_cast<bool>(entity2->GetComponentMask() & ComponentType::Physics);
+
+            // Only one entity has physics--only going to resolve on one entity
+            if (entity1HasPhysics != entity2HasPhysics) {
+                if (entity1HasPhysics) {
+                    ResolveCollisionOneEntityOnly(entity1, entity2);
+                    return;
+                } else {
+                    ResolveCollisionOneEntityOnly(entity2, entity1);
+                    return;
+                }
+            }
+
+            // No physics on either entity--not going to resolve.
+            if (entity1HasPhysics == false) return;
+
+            // Both entities have physics.  We'll try to resolve the collision on both.
+            // We'll do it stupidlly for now
+            ResolveCollisionOneEntityOnly(entity1, entity2);
+            ResolveCollisionOneEntityOnly(entity2, entity1);
+        }
+
+        void Collision::ResolveCollisionOneEntityOnly(Entity* toResolve, Entity* other) {
+            Components::Transform* toResolveTransform = reinterpret_cast<Components::Transform *>(toResolve->GetComponent(ComponentType::Transform));
+            Components::Physics*   toResolvePhysics   = reinterpret_cast<Components::Physics   *>(toResolve->GetComponent(ComponentType::Physics));
+
+            toResolveTransform->Position -= toResolvePhysics->Velocity;
         }
 
     } // Systems

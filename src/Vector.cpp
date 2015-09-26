@@ -245,4 +245,11 @@ namespace ForLeaseEngine {
 
 		return *this;
 	}
+
+	Point& Point::operator-=(const Vector& rhs) {
+		x -= rhs[0];
+		y -= rhs[1];
+
+		return *this;
+	}
 }

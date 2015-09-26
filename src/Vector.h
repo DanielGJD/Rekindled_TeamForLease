@@ -66,6 +66,7 @@ namespace ForLeaseEngine {
 		Vector operator-(const Point& rhs) const;
 		Point operator+(const Vector& rhs) const;
 		Point& operator+=(const Vector& rhs);
+		Point& operator-=(const Vector& rhs);
 	};
 }
 
