@@ -7,7 +7,10 @@
     \see Engine.h
 */
 
+#define SDL_MAIN_HANDLED
+#include <SDL.h>
 #include "Engine.h"
+#include "Graphics.h"
 
 ForLeaseEngine::Engine * ForLease;
 
@@ -32,7 +35,7 @@ namespace ForLeaseEngine {
 
     /*!
         Constructor for Engine.  Creates a new instance of Engine using given values.
-        
+
         \param states
             A vector of all states in the game.  This gets passed to the game
             state manager.
@@ -51,7 +54,14 @@ namespace ForLeaseEngine {
         Handles the main game loop.  Essentially calls FrameRateController and GameStateManager.
     */
     void Engine::Run() {
+        //SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
+        //ForLeaseEngine::GraphicsProperties properties = ForLeaseEngine::GraphicsProperties();
+        //properties.xResolution = ResolutionX;
+        //properties.yResolution = ResolutionY;
+        //Window = Graphics::CreateGraphics();
         GSM.Run();
+        //Graphics::DestroyGraphics(Window);
+        //SDL_Quit();
     }
 
     /*!

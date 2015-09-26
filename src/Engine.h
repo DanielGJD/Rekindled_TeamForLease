@@ -12,6 +12,9 @@
 
 #include "GameStateManager.h"
 #include "FrameRateController.h"
+#include "Graphics.h"
+#include "Input.h"
+#include "EventDispatcher.h"
 #include <vector>
 
 namespace ForLeaseEngine {
@@ -29,6 +32,7 @@ namespace ForLeaseEngine {
             void Run();
             Modules::GameStateManager& GameStateManager();
             Modules::FrameRateController& FrameRateController();
+            ForLeaseEngine::Graphics* Window;
         private:
             //! Width of the screen
             int ResolutionX;
