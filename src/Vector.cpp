@@ -193,6 +193,32 @@ namespace ForLeaseEngine {
 	}
 
 	/*!
+		Adds another vector to this vector.
+
+		\param rhs
+			Vector to add to this vector.
+
+		\return
+			A reference to this vector.
+	*/
+	Vector& Vector::operator+=(const Vector& rhs) {
+		x += rhs.x;
+		y += rhs.y;
+		return *this;
+	}
+
+	/*!
+		Scales the vector with an operator overload.
+
+		\param rhs
+			Float to scale this by.
+
+		\return
+			The scaled vector.
+	*/
+	Vector Vector::operator*(float rhs) { return Scale(*this, rhs); }
+
+	/*!
 	  \brief
 	    Generates an Identity matrix
 	*/
@@ -211,5 +237,12 @@ namespace ForLeaseEngine {
 	Point Point::operator+(const Vector& rhs) const
 	{
 	    return Point(x + rhs[0], y + rhs[1]);
+	}
+
+	Point& operator+=(const Vector& rhs) {
+		x += rhs[0];
+		y += rhs[1];
+
+		return *this;
 	}
 }

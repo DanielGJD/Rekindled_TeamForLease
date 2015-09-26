@@ -7,11 +7,14 @@
     \see SystemPhysics.h
 */
 
+#include "SystemPhysics.h"
+
 namespace ForLeaseEngine {
 
     namespace Systems {
 
-        Physics::Physics(Engine& owner) : System(owner, ComponentType::Physics) {}
+        Physics::Physics(Engine& owner, Vector gravity)
+            : System(owner, ComponentType::Physics), Gravity(gravity) {}
 
         void Physics::Update(std::vector<Entity *>& entities) {
 
@@ -26,27 +29,28 @@ namespace ForLeaseEngine {
         }
         
         void Physics::Compute(Entity* entity) {
-            Components::Physics* physicsComponent = entity->GetComponent(ComponentType::Physics);
-            Components::Transform* transformComponent = entity->GetComponent(ComponentType::Transform);
+            Components::Physics* physicsComponent = reinterpret_cast<Components::Physics *>(entity->GetComponent(ComponentType::Physics));
+            Components::Transform* transformComponent = reinterpret_cast<Components::Transform *>(entity->GetComponent(ComponentType::Transform));
         
-            physicsComponent->Velocity += Acceleration * ForLease->FrameRateController().GetDt();
+            physicsComponent->Velocity += physicsComponent->Acceleration * ForLease->FrameRateController().GetDt();
             transformComponent->Position += physicsComponent->Velocity * ForLease->FrameRateController().GetDt();
         }
         
         void Physics::Cleanup(Entity* entity) {
-            entity->Acceleration[0] = 0;
-            entity->Acceleration[1] = 0;
-            entity->Force[0] = 0;
-            entity->Force[1] = 0;
+            Components::Physics* physicsComponent = reinterpret_cast<Components::Physics *>(entity->GetComponent(ComponentType::Physics));
+            physicsComponent->Acceleration[0] = 0;
+            physicsComponent->Acceleration[1] = 0;
+            physicsComponent->Force[0] = 0;
+            physicsComponent->Force[1] = 0;
         }
 
         void Physics::ApplyGravity(Entity* entity) {
-            Components::Physics* physicsComponent = entity->GetComponent(ComponentType::Physics);
+            Components::Physics* physicsComponent = reinterpret_cast<Components::Physics *>(entity->GetComponent(ComponentType::Physics));
 
             physicsComponent->Acceleration += Gravity;
         }
 
-        void Physics::SetGravity(Vector gravity) { Gravity = gravity };
+        void Physics::SetGravity(Vector gravity) { Gravity = gravity; };
 
         Vector Physics::GetGravity() { return Gravity; }
 

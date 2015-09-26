@@ -20,8 +20,6 @@ namespace ForLeaseEngine {
               Mass(mass), Velocity(velocity), Acceleration(acceleration),
               Force(force) {}
 
-        }
-
     } // Components
 
 } // ForLeaseEngine

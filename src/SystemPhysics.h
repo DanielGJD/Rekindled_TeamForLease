@@ -14,6 +14,7 @@
 #include "ComponentPhysics.h"
 #include "ComponentTransform.h"
 #include "Vector.h"
+#include "Engine.h"
 
 namespace ForLeaseEngine {
 
