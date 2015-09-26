@@ -40,13 +40,13 @@ namespace ForLeaseEngine {
                 //! Frames per second
                 int FramesPerSecond;
                 //! The time allotted for each frame -- 1 / FramesPerSecond
-                std::chrono::microseconds FrameTime;
+                std::chrono::nanoseconds FrameTime;
                 //! The start time of the current frame
                 std::chrono::high_resolution_clock::time_point StartTime;
                 //! The end time of the current frame
                 std::chrono::high_resolution_clock::time_point EndTime;
-                //! The time of the last frame, in microseconds
-                std::chrono::microseconds LastFrameTime;
+                //! The time of the last frame, in nanoseconds
+                std::chrono::nanoseconds LastFrameTime;
 
                 //! Made private and deactivated because we NEED Parent
                 FrameRateController() = delete;
