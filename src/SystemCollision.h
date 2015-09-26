@@ -12,6 +12,9 @@
 
 #include "ComponentCollision.h"
 #include "ComponentTransform.h"
+#include "Vector.h"
+#include "Entity.h"
+#include "System.h"
 
 namespace ForLeaseEngine {
     
@@ -20,8 +23,10 @@ namespace ForLeaseEngine {
         class Collision : public System {
             public:
                 Collision(Engine& owner);
-                void Update(std::vector<Entity *> entities); 
-        }
+                void Update(std::vector<Entity *>& entities);
+                bool CheckCollision(Entity* entity1, Entity* entity2);
+                void ResolveCollision(Entity* entity1, Entity* entity2);
+        };
         
     }
     

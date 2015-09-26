@@ -7,6 +7,8 @@
     \see ComponentCollision.h
 */
 
+#include "ComponentCollision.h"
+
 namespace ForLeaseEngine {
     
     namespace Components {

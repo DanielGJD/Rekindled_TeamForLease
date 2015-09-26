@@ -11,7 +11,7 @@
 #define COMPONENT_COLLISION_H
 
 #include "Component.h"
-#include "Transform.h"
+#include "ComponentTransform.h"
 
 namespace ForLeaseEngine {
     
@@ -20,6 +20,11 @@ namespace ForLeaseEngine {
         class Collision : public Component {
             public:
                 Collision(Entity& owner);
+                void Update() {}
+                float Height;           //! Height of the collision box
+                float Width;            //! Width of the collision box
+                bool CollidedLastFrame; //! Whether or not the entity collided on the last frame.  This should be handled by an event.
+                bool ResolveCollisions; //! Whether we want to resolve collisions by moving entities
         };
         
     }
