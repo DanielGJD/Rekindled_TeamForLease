@@ -24,7 +24,7 @@ namespace ForLeaseEngine {
             public:
                 Physics(Entity& owner, float mass = 1, Vector velocity = Vector(0,0),
                     Vector acceleration = Vector(0,0), Vector force = Vector(0,0));
-
+                void Update() {}
                 float Mass;
                 Vector Velocity;
                 Vector Acceleration;
