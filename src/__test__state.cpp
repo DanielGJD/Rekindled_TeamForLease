@@ -9,6 +9,8 @@ void TestState::Initialize() { std::cout << "Initializing" << std::endl; health 
 
 void TestState::Update() {
     --health;
+    double dt = ForLease->FrameRateController().GetDt();
+    std::cout << "dt: " << dt << std::endl;
     if (health == 0) {
         if (lives == 0)
             ForLease->GameStateManager().SetAction(ForLeaseEngine::Modules::StateAction::Quit);

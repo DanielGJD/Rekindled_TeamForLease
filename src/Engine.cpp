@@ -54,14 +54,15 @@ namespace ForLeaseEngine {
         Handles the main game loop.  Essentially calls FrameRateController and GameStateManager.
     */
     void Engine::Run() {
-        //SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
-        //ForLeaseEngine::GraphicsProperties properties = ForLeaseEngine::GraphicsProperties();
-        //properties.xResolution = ResolutionX;
-        //properties.yResolution = ResolutionY;
-        //Window = Graphics::CreateGraphics();
+        SDL_Init(0);
+        GraphicsProperties properties = GraphicsProperties();
+        properties.xResolution = ResolutionX;
+        properties.yResolution = ResolutionY;
+        Window = Graphics::CreateGraphics();
+        OSInput.dispatcher = &Dispatcher;
         GSM.Run();
-        //Graphics::DestroyGraphics(Window);
-        //SDL_Quit();
+        Graphics::DestroyGraphics(Window);
+        SDL_Quit();
     }
 
     /*!

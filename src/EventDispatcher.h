@@ -14,6 +14,7 @@
 #include <deque>
 #include <unordered_map>
 #include <string>
+#include <functional>
 #include "Event.h"
 #include "Listener.h"
 

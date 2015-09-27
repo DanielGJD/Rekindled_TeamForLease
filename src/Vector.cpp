@@ -239,7 +239,7 @@ namespace ForLeaseEngine {
 	    return Point(x + rhs[0], y + rhs[1]);
 	}
 
-	Point& operator+=(const Vector& rhs) {
+	Point& Point::operator+=(const Vector& rhs) {
 		x += rhs[0];
 		y += rhs[1];
 

@@ -10,7 +10,7 @@
     \see Graphics.h
 */
 #include <iostream>
-#include "SDL.h"
+#include <SDL.h>
 #include "GraphicsException.h"
 #include "Graphics.h"
 
@@ -120,6 +120,7 @@ namespace ForLeaseEngine {
     */
     void Graphics::UpdateWindow() {
         SDL_GL_SwapWindow(window);
+        glClear(GL_COLOR_BUFFER_BIT);
     }
 
     /*!

@@ -33,6 +33,8 @@ namespace ForLeaseEngine {
             Modules::GameStateManager& GameStateManager();
             Modules::FrameRateController& FrameRateController();
             ForLeaseEngine::Graphics* Window;
+            ForLeaseEngine::EventDispatcher Dispatcher;
+            ForLeaseEngine::Input OSInput;
         private:
             //! Width of the screen
             int ResolutionX;
