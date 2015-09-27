@@ -108,6 +108,10 @@ namespace ForLeaseEngine {
 
         if (static_cast<bool>(mask & ComponentType::Transform))
             entity->AddComponent(new Components::Transform(*entity));
+        if (static_cast<bool>(mask & ComponentType::Physics))
+            entity->AddComponent(new Components::Physics(*entity));
+        if (static_cast<bool>(mask & ComponentType::Collision))
+            entity->AddComponent(new Components::Collision(*entity));
         else
             throw AddComponentException(mask, entity->GetID(), "Unimplemented component.");
     }
