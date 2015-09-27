@@ -11,5 +11,7 @@
 
 #include "Component.h"
 #include "ComponentTransform.h"
+#include "ComponentPhysics.h"
+#include "ComponentCollision.h"
 
 #endif
