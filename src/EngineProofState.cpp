@@ -9,8 +9,13 @@
 #include "Texture.h"
 #include "TextureRegion.h"
 #include "Mesh.h"
+#include "SpriteText.h"
+#include "BmFont.h"
 #include <iostream>
 #include <cmath>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
 
 /*class EngineProofState : public ForLeaseEngine::State {
     public:
@@ -46,6 +51,9 @@ ForLeaseEngine::Texture* FullTextureDemo;
 ForLeaseEngine::Texture* TransparencyDemo;
 ForLeaseEngine::TextureRegion TextureRegionDemo;
 ForLeaseEngine::Mesh* ModelDemo;
+ForLeaseEngine::SpriteText* TextDemo;
+ForLeaseEngine::Font* FontDemo;
+ForLeaseEngine::SpriteText* FPSCounter;
 
 
 TestObject::TestObject() : Model(5, 6, 2) {
@@ -220,6 +228,13 @@ void EngineProofState::Load() {
     FullTextureDemo = ForLeaseEngine::Texture::CreateTexture("STONE2.png");
     TextureRegionDemo = ForLeaseEngine::TextureRegion(FullTextureDemo, 64, 576 , 384, 640);
 
+    std::ifstream fontFile("Arial.fnt", std::ios_base::in | std::ios_base::binary);
+    ForLeaseEngine::BmFont bmFont;
+    fontFile >> bmFont;
+    FontDemo = new ForLeaseEngine::Font(bmFont);
+    TextDemo = new ForLeaseEngine::SpriteText(FontDemo, "It does text too!\nMulti-line in fact!");
+    FPSCounter = new ForLeaseEngine::SpriteText(FontDemo);
+
     ModelDemo = new ForLeaseEngine::Mesh(5, 6, 2);
     ModelDemo->SetCenter(ForLeaseEngine::Point(0, 0));
 
@@ -270,6 +285,9 @@ void EngineProofState::Initialize() {
 
 void EngineProofState::Update() {
     double dt = ForLease->FrameRateController().GetDt();
+    std::ostringstream sstream;
+    sstream << std::setprecision(2) << "FPS: " << 1 / dt;
+    FPSCounter->SetText(sstream.str());
     timer += dt;
     // std::cout << dt << std::endl;
     Physics.Update(Entities);
@@ -294,12 +312,12 @@ void EngineProofState::Update() {
 
     // Draw main models
     render.SetDrawingColor(0.0f, 0.0f, 0.5f);
-    //ForLeaseEngine::Point p(-200, 0);
-    render.DrawMesh(*ModelDemo, ObjectTransform->Position, 400, 50, timer);
-    render.DrawMesh(*ModelDemo, ObjectTransform->Position, 400, 50, 3.1415927 / 2 + timer);
+    ForLeaseEngine::Point p(-200, 0);
+    render.DrawMesh(*ModelDemo, p, 400, 50, timer);
+    render.DrawMesh(*ModelDemo, p, 400, 50, 3.1415927 / 2 + timer);
     render.SetDrawingColor(0.5f, 0.0f, 0.0f);
-    render.DrawMesh(*ModelDemo, ObjectTransform->Position, 400, 50, 3.1415927 / 4 + timer);
-    render.DrawMesh(*ModelDemo, ObjectTransform->Position, 400, 50, 3.1415927 / 2 + 3.1415927 / 4 + timer);
+    render.DrawMesh(*ModelDemo, p, 400, 50, 3.1415927 / 4 + timer);
+    render.DrawMesh(*ModelDemo, p, 400, 50, 3.1415927 / 2 + 3.1415927 / 4 + timer);
     render.SetDrawingColor(0, 1, 0);
     render.DrawMesh(Object->Model, ObjectTransform->Position, ObjectTransform->ScaleX, ObjectTransform->ScaleY, ObjectTransform->Rotation);
     render.DrawMesh(Floor->Model, FloorTransform->Position, FloorTransform->ScaleX, FloorTransform->ScaleY, FloorTransform->Rotation);
@@ -320,7 +338,12 @@ void EngineProofState::Update() {
         render.DrawRectangle(FloorTransform->Position, FloorCollider->Width, FloorCollider->Height, 0);
         render.DrawRectangle(ObjectTransform->Position, ObjectCollider->Width, ObjectCollider->Height, 0);
         render.DrawRectangle(CollideTransform->Position, CollideCollider->Width, CollideCollider->Height, 0);
+        render.SetDrawingColor(1, 1, 1);
+        render.DrawSpriteText(*FPSCounter, ForLeaseEngine::Point(-500, 200));
     }
+
+    render.SetDrawingColor(1, 1, 1);
+    render.DrawSpriteText(*TextDemo, ForLeaseEngine::Point(-100, 200));
 
     ForLease->Window->UpdateWindow();
 }
@@ -331,6 +354,8 @@ void EngineProofState::Deinitialize() {
 void EngineProofState::Unload() {
     delete Object;
     delete ModelDemo;
+    delete TextDemo;
+    delete FontDemo;
     ForLeaseEngine::Texture::DeleteTexture(FullTextureDemo);
     ForLeaseEngine::Texture::DeleteTexture(TransparencyDemo);
 }
