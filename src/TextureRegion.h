@@ -7,6 +7,7 @@
 namespace ForLeaseEngine {
     class TextureRegion {
         public:
+            TextureRegion();
             TextureRegion(Texture* texture, int left, int right, int top, int bottom);
             GLuint GetTextureID();
             int GetWidth();

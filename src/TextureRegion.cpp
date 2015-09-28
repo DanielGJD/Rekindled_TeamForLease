@@ -1,6 +1,10 @@
 #include "TextureRegion.h"
 
 namespace ForLeaseEngine {
+    TextureRegion::TextureRegion() {
+
+    }
+
     TextureRegion::TextureRegion(Texture* texture, int left, int right, int top, int bottom) {
         //Source = texture;
         TextureID = texture->GetID();

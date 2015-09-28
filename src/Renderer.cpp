@@ -25,6 +25,8 @@ namespace ForLeaseEngine {
     Renderer::Renderer() {
         SetDrawingColor(1.0f, 1.0f, 1.0f);
         glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     /*!
@@ -259,6 +261,7 @@ namespace ForLeaseEngine {
 
     void Renderer::DrawTexture(Point position, Texture* texture, float scaleX, float scaleY, float rotation) {
         Point o;
+        scaleY = -scaleY;
         ModelView = Matrix::Translation(position - o) * Matrix::RotationRad(rotation) * Matrix::Scale(scaleX, scaleY);
         float halfWidth = texture->GetWidth() / 2;
         float halfHeight = texture->GetHeight() / 2;

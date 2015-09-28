@@ -44,9 +44,12 @@ namespace ForLeaseEngine {
         uint8_t      Identifier;
         uint32_t     BlockSize;
         std::string* PageNames;
+
+        BmFontPages();
+        ~BmFontPages();
     };
 
-    struct BmFontChar {
+    struct BmFontCharInfo {
         uint32_t ID;
         uint16_t X;
         uint16_t Y;
@@ -62,7 +65,10 @@ namespace ForLeaseEngine {
     struct BmFontChars {
         uint8_t     Identifier;
         uint32_t    BlockSize;
-        BmFontChar* Chars;
+        BmFontCharInfo* Chars;
+
+        BmFontChars();
+        ~BmFontChars();
     };
 
     struct BmFont {
@@ -80,7 +86,7 @@ namespace ForLeaseEngine {
     std::istream& operator>>(std::istream& is, BmFontCommon& font);
     std::istream& operator>>(std::istream& is, BmFontPages& font);
     std::istream& operator>>(std::istream& is, BmFontChars& font);
-    std::istream& operator>>(std::istream& is, BmFontChar& font);
+    std::istream& operator>>(std::istream& is, BmFontCharInfo& font);
 }
 
 #endif // BMFONT_H

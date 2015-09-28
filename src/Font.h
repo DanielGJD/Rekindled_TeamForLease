@@ -4,17 +4,21 @@
 #include <string>
 #include <GL\gl.h>
 #include "Glyph.h"
+#include "BmFont.h"
+#include "TextureRegion.h"
 
 namespace ForLeaseEngine {
     class Font {
         public:
-            Font(std::string fontName);
+            Font(BmFont& font);
             ~Font();
+            TextureRegion* GetLetter(char letter);
+            Texture* GetTexture(int texture);
         private:
-            std::string Name;
-            GLuint TextureID;
-            Texture* FontTexture;
+            Texture** FontTextures;
+            int NumTextures;
             int LineHeight;
+            int Base;
             Glyph Glyphs[256];
     };
 }
