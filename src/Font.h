@@ -13,8 +13,9 @@ namespace ForLeaseEngine {
             Font(BmFont& font);
             ~Font();
             TextureRegion* GetLetter(char letter);
+            const Glyph& GetGlyph(char letter);
             Texture* GetTexture(int texture);
-        private:
+        //private:
             Texture** FontTextures;
             int NumTextures;
             int LineHeight;

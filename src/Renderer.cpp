@@ -369,6 +369,32 @@ namespace ForLeaseEngine {
         glEnd();
     }
 
+    void Renderer::DrawSpriteText(SpriteText& spriteText, Point position, float scaleX, float scaleY, float rotation) {
+        //SetModelView(position, scaleX, scaleY, rotation);
+        std::string text = spriteText.GetText();
+        Font* font = spriteText.GetFont();
+        float xMargin = position[0];
+        Point currentDrawingLoc(position[0], position[1] - font->Base);
+        for(unsigned int i = 0; i < text.length(); ++i) {
+            char currentLetter = text.at(i);
+            if(currentLetter == '\n') {
+                currentDrawingLoc[0] = xMargin;
+                currentDrawingLoc[1] -= font->LineHeight;
+            } else {
+                Glyph currentGlyph = font->GetGlyph(currentLetter);
+                Point glyphDrawingLoc;
+                glyphDrawingLoc[0] = currentDrawingLoc[0] + currentGlyph.Offset[0] + currentGlyph.Width / 2;
+                glyphDrawingLoc[1] = currentDrawingLoc[1] - currentGlyph.Offset[1] - currentGlyph.Height / 2;
+                DrawTextureRegion(glyphDrawingLoc, &currentGlyph.Region, scaleX, scaleY, rotation);
+                //DrawRectangle(glyphDrawingLoc, currentGlyph.Region.GetWidth(), currentGlyph.Region.GetHeight());
+                //DrawTextureRegion(Point(shiftedLoc[0] - currentGlyph.Offset[0] * 3, shiftedLoc[1] - currentGlyph.Offset[1] * 0.5f), &currentGlyph.Region, scaleX, scaleY, rotation);
+                //DrawRectangle(Point(shiftedLoc[0] - currentGlyph.Offset[0] * 3, shiftedLoc[1] - currentGlyph.Offset[1] * 0.5f), currentGlyph.Region.GetWidth(), currentGlyph.Region.GetHeight());
+                currentDrawingLoc[0] += currentGlyph.XAdvance;
+                //shiftedLoc[0] += currentGlyph.XAdvance;
+            }
+        }
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /*!
         \brief

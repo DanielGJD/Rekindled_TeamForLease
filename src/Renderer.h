@@ -19,6 +19,7 @@
 #include "Face.h"
 #include "Edge.h"
 #include "Mesh.h"
+#include "SpriteText.h"
 
 namespace ForLeaseEngine {
     /*!
@@ -61,6 +62,7 @@ namespace ForLeaseEngine {
             void DrawMesh(Mesh& mesh, Point& position, float scaleX = 1, float scaleY = 1, float rotation = 0);
             void DrawWireframeMesh(Mesh& mesh, Point& position, float scaleX = 1, float scaleY = 1, float rotation = 0);
 
+            void DrawSpriteText(SpriteText& spriteText, Point position, float scaleX = 1, float scaleY = 1, float rotation = 0);
         private:
             //! The projection matrix
             Matrix Projection;
