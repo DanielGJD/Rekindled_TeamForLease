@@ -51,7 +51,7 @@ class EngineProofState : public ForLeaseEngine::State {
         ForLeaseEngine::Engine* MainEngine;
         TestObject* Object;
         TestFloor* Floor;
-        TestCollide* Collide;
+        TestCollision* Collide;
         ForLeaseEngine::Renderer render;
         ForLeaseEngine::Systems::Physics Physics;
         ForLeaseEngine::Systems::Collision Collision;

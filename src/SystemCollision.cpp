@@ -10,11 +10,11 @@
 #include "SystemCollision.h"
 
 namespace ForLeaseEngine {
-    
+
     namespace Systems {
-        
+
         Collision::Collision(Engine& owner) : System(owner, ComponentType::Collision) {}
-        
+
         /*!
             \bug This is not well done.  Complexity O(n^2).  This will be reworked
             after Engine Proof, and I'll include mesh vertex collision checking
@@ -92,10 +92,13 @@ namespace ForLeaseEngine {
             Components::Transform* toResolveTransform = reinterpret_cast<Components::Transform *>(toResolve->GetComponent(ComponentType::Transform));
             Components::Physics*   toResolvePhysics   = reinterpret_cast<Components::Physics   *>(toResolve->GetComponent(ComponentType::Physics));
 
-            toResolveTransform->Position -= toResolvePhysics->Velocity * 2 * ForLease->FrameRateController().GetDt();
+            //toResolveTransform->Position -= toResolvePhysics->Velocity * 2 * ForLease->FrameRateController().GetDt();
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            toResolveTransform->Position[1] -= toResolvePhysics->Velocity[1] * 2 * ForLease->FrameRateController().GetDt();
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             toResolvePhysics->Velocity[1] = 0;
         }
 
     } // Systems
-    
+
 } // ForLeaseEngine

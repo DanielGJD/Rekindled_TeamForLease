@@ -24,7 +24,7 @@ int main(int argc, char** argv){
 
     //ForLeaseEngine::GraphicsProperties properties;
     //ForLeaseEngine::Graphics* graphics = ForLeaseEngine::Graphics::CreateGraphics(properties);
-    ForLeaseEngine::Engine engine(states, 800, 600, 60);
+    ForLeaseEngine::Engine engine(states, 1280, 720, 60);
     engine.Run();
     //while(true);
 

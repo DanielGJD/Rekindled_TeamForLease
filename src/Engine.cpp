@@ -26,8 +26,8 @@ namespace ForLeaseEngine {
     */
     Engine::Engine(std::vector<State *> states) : GSM(*this, states), FRC(*this) {
         // Default values
-        ResolutionX = 800;
-        ResolutionY = 600;
+        ResolutionX = 1280;
+        ResolutionY = 720;
         FrameRate   = 60;
 
         ForLease = this;
@@ -58,7 +58,8 @@ namespace ForLeaseEngine {
         GraphicsProperties properties = GraphicsProperties();
         properties.xResolution = ResolutionX;
         properties.yResolution = ResolutionY;
-        Window = Graphics::CreateGraphics();
+        properties.fullscreen = false;
+        Window = Graphics::CreateGraphics(properties);
         OSInput.dispatcher = &Dispatcher;
         GSM.Run();
         Graphics::DestroyGraphics(Window);

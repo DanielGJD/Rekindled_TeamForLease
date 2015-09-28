@@ -10,16 +10,18 @@ namespace ForLeaseEngine {
             FontTextures[i] = Texture::CreateTexture(font.Pages.PageNames[i]);
         }
         int numChars = font.Chars.BlockSize / sizeof(BmFontCharInfo);
+        char ID;
         for(int i = 0; i < numChars; ++i) {
             BmFontCharInfo info = font.Chars.Chars[i];
-            Glyphs[i].ID = info.ID;
+            ID = info.ID;
+            Glyphs[ID].ID = info.ID;
             int left = info.X;
             int right = info.X + info.Width;
             int top = info.Y;
-            int bottom = info.Y - info.Height;
-            Glyphs[i].Region = TextureRegion(*(FontTextures + info.Page), left, right, top, bottom);
-            Glyphs[i].Offset = Vector(info.XOffset, info.YOffset);
-            Glyphs[i].XAdvance = info.XAdvance;
+            int bottom = info.Y + info.Height;
+            Glyphs[ID].Region = TextureRegion(*(FontTextures + info.Page), left, right, top, bottom);
+            Glyphs[ID].Offset = Vector(info.XOffset, info.YOffset);
+            Glyphs[ID].XAdvance = info.XAdvance;
         }
         LineHeight = font.Common.LineHeight;
         Base = font.Common.Base;
@@ -34,7 +36,7 @@ namespace ForLeaseEngine {
     }
 
     TextureRegion* Font::GetLetter(char letter) {
-        return &(Glyphs[letter].Region);
+        return &(Glyphs[static_cast<int>(letter)].Region);
     }
 
     Texture* Font::GetTexture(int texture) {
