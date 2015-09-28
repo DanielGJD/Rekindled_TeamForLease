@@ -36,7 +36,7 @@ namespace ForLeaseEngine {
 
             Entity* AddEntity();
             Entity* GetEntityByID(long unsigned id, bool throwOnFail = false);
-        private:
+        protected:
             std::vector<Entity*> Entities;
 
     };

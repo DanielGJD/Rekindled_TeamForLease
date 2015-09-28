@@ -6,8 +6,12 @@
 #include "Vector.h"
 #include "Engine.h"
 #include "Event.h"
+#include "Entity.h"
+#include "ComponentsInclude.h"
+#include "SystemPhysics.h"
+#include "SystemCollision.h"
 
-class TestObject {
+class TestObject : public ForLeaseEngine::Entity {
     public:
         ForLeaseEngine::Mesh Model;
         ForLeaseEngine::Point Translation;
@@ -22,6 +26,12 @@ class TestObject {
         void OnKeyUp(const ForLeaseEngine::Event* e);
 };
 
+class TestFloor : public ForLeaseEngine::Entity {
+    public:
+        ForLeaseEngine::Mesh Model;
+        TestFloor();
+};
+
 class EngineProofState : public ForLeaseEngine::State {
     public:
         EngineProofState();
@@ -34,7 +44,10 @@ class EngineProofState : public ForLeaseEngine::State {
         ForLeaseEngine::Renderer Render;
         ForLeaseEngine::Engine* MainEngine;
         TestObject* Object;
+        TestFloor* Floor;
         ForLeaseEngine::Renderer render;
+        ForLeaseEngine::Systems::Physics Physics;
+        ForLeaseEngine::Systems::Collision Collision;
 };
 
 

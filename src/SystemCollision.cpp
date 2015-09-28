@@ -27,7 +27,7 @@ namespace ForLeaseEngine {
                 reinterpret_cast<Components::Collision *>(entity1->GetComponent(ComponentType::Collision))->CollidedLastFrame = false;
 
                 for (Entity* entity2 : entities) {
-                    if (!CheckEntityCompatibility(entity2)) continue;
+                    if (entity2 == entity1 || !CheckEntityCompatibility(entity2)) continue;
 
                     if(CheckCollision(entity1, entity2))
                         ResolveCollision(entity1, entity2);
@@ -42,23 +42,28 @@ namespace ForLeaseEngine {
             Components::Collision* entity1Collision = reinterpret_cast<Components::Collision *>(entity1->GetComponent(ComponentType::Collision));
             Components::Collision* entity2Collision = reinterpret_cast<Components::Collision *>(entity2->GetComponent(ComponentType::Collision));
 
-            if (entity2Position[0] + entity2Collision->Width < entity1Position[0] ||
-                entity1Position[0] + entity1Collision->Width > entity2Position[0] ||
-                entity2Position[1] + entity2Collision->Height > entity1Position[1] ||
-                entity1Position[1] + entity1Collision->Height > entity2Position[1])
-                    return false;
+            if (entity2Position[0] + entity2Collision->Width > entity1Position[0] &&
+                entity1Position[0] + entity1Collision->Width > entity2Position[0] &&
+                entity2Position[1] + entity2Collision->Height > entity1Position[1] &&
+                entity1Position[1] + entity1Collision->Height > entity2Position[1]) {
+                    entity1Collision->CollidedLastFrame = true;
+                    entity2Collision->CollidedLastFrame = true;
+                    std::cout << "Collision detected." << std::endl;
+                    return true;
+                }
 
-            entity1Collision->CollidedLastFrame = true;
-            entity2Collision->CollidedLastFrame = true;
-            return true;
+            return false;
         }
 
         void Collision::ResolveCollision(Entity* entity1, Entity* entity2) {
             Components::Collision* entity1Collision = reinterpret_cast<Components::Collision *>(entity1->GetComponent(ComponentType::Collision));
             Components::Collision* entity2Collision = reinterpret_cast<Components::Collision *>(entity2->GetComponent(ComponentType::Collision));
 
-            if (!entity1Collision->ResolveCollisions || !entity2Collision->ResolveCollisions) return;
-                return;
+            std::cout << entity1Collision->ResolveCollisions << " " << entity2Collision->ResolveCollisions << std::endl;
+
+            if (!(entity1Collision->ResolveCollisions) || !(entity2Collision->ResolveCollisions)) return;
+
+            std::cout << "Resolving collision." << std::endl;
 
             bool entity1HasPhysics = static_cast<bool>(entity1->GetComponentMask() & ComponentType::Physics);
             bool entity2HasPhysics = static_cast<bool>(entity2->GetComponentMask() & ComponentType::Physics);
@@ -87,7 +92,8 @@ namespace ForLeaseEngine {
             Components::Transform* toResolveTransform = reinterpret_cast<Components::Transform *>(toResolve->GetComponent(ComponentType::Transform));
             Components::Physics*   toResolvePhysics   = reinterpret_cast<Components::Physics   *>(toResolve->GetComponent(ComponentType::Physics));
 
-            toResolveTransform->Position -= toResolvePhysics->Velocity;
+            toResolveTransform->Position -= toResolvePhysics->Velocity * 2 * ForLease->FrameRateController().GetDt();
+            toResolvePhysics->Velocity[1] = 0;
         }
 
     } // Systems

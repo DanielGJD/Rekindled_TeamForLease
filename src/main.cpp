@@ -6,6 +6,7 @@
 #include "Input.h"
 #include "FrameRateController.h"
 #include <SDL.h>
+#undef main
 
 bool quit = false;
 using namespace ForLeaseEngine;

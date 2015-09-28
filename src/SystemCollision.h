@@ -16,6 +16,7 @@
 #include "Vector.h"
 #include "Entity.h"
 #include "System.h"
+#include "Engine.h"
 
 namespace ForLeaseEngine {
     
