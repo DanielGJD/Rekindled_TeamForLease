@@ -120,6 +120,45 @@ void TestObject::OnKeyUp(const ForLeaseEngine::Event* e){
     }
 }
 
+TestCollision::TestCollision() : Model(5, 6, 2)
+{
+    Model.SetCenter(ForLeaseEngine::Point(0, 0));
+
+    Model.SetVertex(ForLeaseEngine::Point(0, 0), 0);
+    Model.SetVertex(ForLeaseEngine::Point(1, -1), 1);
+    Model.SetVertex(ForLeaseEngine::Point(1, 1), 2);
+    Model.SetVertex(ForLeaseEngine::Point(-1, 1), 3);
+    Model.SetVertex(ForLeaseEngine::Point(-1, -1), 4);
+
+    Model.SetFace(ForLeaseEngine::IndexedFace(0, 1, 2), 0);
+    Model.SetFace(ForLeaseEngine::IndexedFace(0, 3, 4), 1);
+
+    Model.SetEdge(ForLeaseEngine::IndexedEdge(0, 1), 0);
+    Model.SetEdge(ForLeaseEngine::IndexedEdge(1, 2), 1);
+    Model.SetEdge(ForLeaseEngine::IndexedEdge(2, 0), 2);
+    Model.SetEdge(ForLeaseEngine::IndexedEdge(0, 3), 3);
+    Model.SetEdge(ForLeaseEngine::IndexedEdge(3, 4), 4);
+    Model.SetEdge(ForLeaseEngine::IndexedEdge(4, 0), 5);
+    
+    ForLeaseEngine::AddComponentsToEntity(ForLeaseEngine::ComponentType::Transform
+        | ForLeaseEngine::ComponentType::Collision, this);
+    
+    ForLeaseEngine::Components::Collision * collision = reinterpret_cast<ForLeaseEngine::Components::Collision *>(GetComponent(ForLeaseEngine::ComponentType::Collision));
+    collision->ResolveCollisions = false;
+    collision->Width = 10;
+    collision->Height = 10;
+}
+
+void TestCollision::Update()
+{
+    ForLeaseEngine::Components::Collision * collision = reinterpret_cast<ForLeaseEngine::Components::Collision *>(GetComponent(ForLeaseEngine::ComponentType::Collision));
+    
+    if (collision->CollidedLastFrame)
+    {
+      ForLease.GameStateManager().SetAction(ForLeaseEngine::Modules::StateAction::Quit);
+    }
+}
+
 TestFloor::TestFloor() : Model(4, 5, 2) {
     Model.SetCenter(ForLeaseEngine::Point(0, 0));
 
@@ -156,6 +195,8 @@ void EngineProofState::Load() {
     Entities.push_back(Object);
     Floor = new TestFloor();
     Entities.push_back(Floor);
+    Collide = new TestCollision();
+    Entities.push_back(Collide);
 }
 
 void EngineProofState::Initialize() {
@@ -170,6 +211,12 @@ void EngineProofState::Initialize() {
     FloorTransform->Rotation = 0;
     FloorTransform->ScaleX = 100;
     FloorTransform->ScaleY = 10;
+    
+    ForLeaseEngine::Components::Transform * CollideTransform = reinterpret_cast<ForLeaseEngine::Components::Transform *>(Collide->GetComponent(ForLeaseEngine::ComponentType::Transform));
+    CollideTransform->Position = ForLeaseEngine::Point(-100, -15);
+    CollideTransform->Rotation = 0;
+    CollideTransform->ScaleX = 10;
+    CollideTransform->ScaleY = 10;
 
     ForLeaseEngine::Components::Physics * ObjectPhysics = reinterpret_cast<ForLeaseEngine::Components::Physics *>(Object->GetComponent(ForLeaseEngine::ComponentType::Physics));
     ObjectPhysics->Velocity = ForLeaseEngine::Vector(0, 0);
@@ -187,14 +234,17 @@ void EngineProofState::Update() {
     ForLeaseEngine::Components::Transform * ObjectTransform = reinterpret_cast<ForLeaseEngine::Components::Transform *>(Object->GetComponent(ForLeaseEngine::ComponentType::Transform));
     ForLeaseEngine::Components::Physics * ObjectPhysics = reinterpret_cast<ForLeaseEngine::Components::Physics *>(Object->GetComponent(ForLeaseEngine::ComponentType::Physics));
     ForLeaseEngine::Components::Transform * FloorTransform = reinterpret_cast<ForLeaseEngine::Components::Transform *>(Floor->GetComponent(ForLeaseEngine::ComponentType::Transform));
+    ForLeaseEngine::Components::Transform * CollideTransform = reinterpret_cast<ForLeaseEngine::Components::Transform *>(Collide->GetComponent(ForLeaseEngine::ComponentType::Transform));
     std::cout << ObjectTransform->Position[0] << "," << ObjectTransform->Position[1] << std::endl;
     // ObjectTransform->Position = ObjectTransform->Position + ForLeaseEngine::Vector::Scale(ForLeaseEngine::Vector::Scale(ObjectPhysics->Velocity, dt), Object->Speed);
     ForLease->OSInput.ProcessAllInput();
     Collision.Update(Entities);
+    Collide.Update();
     render.SetDrawingColor(1, 0, 0);
     render.SetProjection(ForLeaseEngine::Point(0, 0), 800, 600, 0, 100, 0);
     render.DrawMesh(Object->Model, ObjectTransform->Position, ObjectTransform->ScaleX, ObjectTransform->ScaleY, ObjectTransform->Rotation);
     render.DrawMesh(Floor->Model, FloorTransform->Position, FloorTransform->ScaleX, FloorTransform->ScaleY, FloorTransform->Rotation);
+    render.DrawMesh(Collide->Model, CollideTransform->Position, CollideTransform->ScaleX, CollideTransform->ScaleY, CollideTransform->Rotation);
     ForLease->Window->UpdateWindow();
 }
 

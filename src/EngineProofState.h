@@ -25,7 +25,13 @@ class TestObject : public ForLeaseEngine::Entity {
         void OnKeyDown(const ForLeaseEngine::Event* e);
         void OnKeyUp(const ForLeaseEngine::Event* e);
 };
-
+class TestCollision : public ForLeaseEngine::Entity {
+    public:
+        ForLeaseEngine::Mesh Model;
+        ForLeaseEngine::Point Translation;
+        TestCollision();
+        void Update();
+};
 class TestFloor : public ForLeaseEngine::Entity {
     public:
         ForLeaseEngine::Mesh Model;
@@ -45,6 +51,7 @@ class EngineProofState : public ForLeaseEngine::State {
         ForLeaseEngine::Engine* MainEngine;
         TestObject* Object;
         TestFloor* Floor;
+        TestCollide* Collide;
         ForLeaseEngine::Renderer render;
         ForLeaseEngine::Systems::Physics Physics;
         ForLeaseEngine::Systems::Collision Collision;
