@@ -53,6 +53,7 @@ ForLeaseEngine::TextureRegion TextureRegionDemo;
 ForLeaseEngine::Mesh* ModelDemo;
 ForLeaseEngine::SpriteText* TextDemo;
 ForLeaseEngine::Font* FontDemo;
+ForLeaseEngine::Font* FontDemo2;
 ForLeaseEngine::SpriteText* FPSCounter;
 
 
@@ -232,6 +233,14 @@ void EngineProofState::Load() {
     ForLeaseEngine::BmFont bmFont;
     fontFile >> bmFont;
     FontDemo = new ForLeaseEngine::Font(bmFont);
+//    fontFile.open("ComicSans.fnt", std::ios_base::in | std::ios_base::binary);
+//    ForLeaseEngine::BmFont bmFont2;
+//    try{
+//        fontFile >> bmFont2;
+//    } catch(std::exception e) {
+//        std::cout << e.what() << std::endl;
+//    }
+//    FontDemo2 = new ForLeaseEngine::Font(bmFont2);
     TextDemo = new ForLeaseEngine::SpriteText(FontDemo, "It does text too!\nMulti-line in fact!");
     FPSCounter = new ForLeaseEngine::SpriteText(FontDemo);
 

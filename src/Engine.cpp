@@ -58,7 +58,7 @@ namespace ForLeaseEngine {
         GraphicsProperties properties = GraphicsProperties();
         properties.xResolution = ResolutionX;
         properties.yResolution = ResolutionY;
-        properties.fullscreen = false;
+        properties.fullscreen = true;
         Window = Graphics::CreateGraphics(properties);
         OSInput.dispatcher = &Dispatcher;
         GSM.Run();
