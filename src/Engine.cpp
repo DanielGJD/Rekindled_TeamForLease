@@ -10,7 +10,7 @@
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
 #include "Engine.h"
-#include "Graphics.h"
+#include "Window.h"
 
 ForLeaseEngine::Engine * ForLease;
 
@@ -55,14 +55,14 @@ namespace ForLeaseEngine {
     */
     void Engine::Run() {
         SDL_Init(0);
-        GraphicsProperties properties = GraphicsProperties();
+        Systems::WindowProperties properties = Systems::WindowProperties();
         properties.xResolution = ResolutionX;
         properties.yResolution = ResolutionY;
         properties.fullscreen = true;
-        Window = Graphics::CreateGraphics(properties);
+        GameWindow = Systems::Window::CreateGameWindow(properties);
         OSInput.dispatcher = &Dispatcher;
         GSM.Run();
-        Graphics::DestroyGraphics(Window);
+        Systems::Window::DestroyGameWindow(GameWindow);
         SDL_Quit();
     }
 

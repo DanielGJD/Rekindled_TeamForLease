@@ -1,11 +1,8 @@
 #include <vector>
 #include <iostream>
+#include "State.h"
+#include "Engine.h"
 #include "EngineProofState.h"
-#include "__test__state.h"
-#include "Graphics.h"
-#include "Input.h"
-#include "FrameRateController.h"
-#include <SDL.h>
 #undef main
 
 bool quit = false;

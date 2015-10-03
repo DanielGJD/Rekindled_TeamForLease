@@ -12,7 +12,7 @@
 
 #include "GameStateManager.h"
 #include "FrameRateController.h"
-#include "Graphics.h"
+#include "Window.h"
 #include "Input.h"
 #include "EventDispatcher.h"
 #include <vector>
@@ -32,7 +32,7 @@ namespace ForLeaseEngine {
             void Run();
             Modules::GameStateManager& GameStateManager();
             Modules::FrameRateController& FrameRateController();
-            ForLeaseEngine::Graphics* Window;
+            Systems::Window* GameWindow;
             ForLeaseEngine::EventDispatcher Dispatcher;
             ForLeaseEngine::Input OSInput;
         private:
