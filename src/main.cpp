@@ -3,6 +3,7 @@
 #include "State.h"
 #include "Engine.h"
 #include "EngineProofState.h"
+#include "TestingState.h"
 #undef main
 
 bool quit = false;
@@ -10,7 +11,8 @@ using namespace ForLeaseEngine;
 
 int main(int argc, char** argv){
     std::vector<ForLeaseEngine::State *> states;
-    states.push_back(new EngineProofState());
+    TestingState* state = new TestingState();
+    states.push_back(state);
 
 //    SDL_Init(0);
 //    GraphicsProperties properties = GraphicsProperties();
@@ -21,7 +23,7 @@ int main(int argc, char** argv){
 
     //ForLeaseEngine::GraphicsProperties properties;
     //ForLeaseEngine::Graphics* graphics = ForLeaseEngine::Graphics::CreateGraphics(properties);
-    ForLeaseEngine::Engine engine(states, 1920, 1080, 60);
+    ForLeaseEngine::Engine engine(states, 1280, 720, 60);
     engine.Run();
     //while(true);
 
