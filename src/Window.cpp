@@ -46,7 +46,7 @@ namespace ForLeaseEngine {
                 << mouseConstrained;
         }
 
-        void WindowProperties::() {
+        void WindowProperties::ReadCfg() {
             std::ifstream in;
             in.open(DEFAULT_FILENAME, std::istream::in);
             std::getline(in, windowTitle);
