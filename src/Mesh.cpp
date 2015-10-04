@@ -1,7 +1,7 @@
 /*!
     \file   Mesh.cpp
     \author Christopher Hudson
-    \date   09/19/15
+    \date   10/03/15
 
     \brief
         Defines classes to hold data about a triangular face
@@ -12,6 +12,7 @@
 #include "Exception.h"
 #include "Edge.h"
 #include "Face.h"
+#include "Color.h"
 #include "Mesh.h"
 
 namespace ForLeaseEngine {
@@ -30,8 +31,10 @@ namespace ForLeaseEngine {
     */
     Mesh::Mesh(int numVerts, int numEdges, int numFaces) : VertexCount(numVerts), EdgeCount(numEdges), FaceCount(numFaces) {
         Vertices = new Point[numVerts];
+        UVs = new Point[numVerts];
         Edges = new IndexedEdge[numEdges];
         Faces = new IndexedFace[numFaces];
+        FaceColors = new Color[numFaces];
     }
 
     /*!
@@ -111,6 +114,42 @@ namespace ForLeaseEngine {
         }
 
         return Vertices[index];
+    }
+
+    /*!
+        \brief
+            Sets the value for a vertex in the mesh
+
+        \param vertex
+            New value of the vertex
+
+        \param index
+            Index of the vertex to change
+    */
+    void Mesh::SetUV(const Point& uv, int index) {
+        if(index >= VertexCount) {
+            throw new Exception("Tried to get uv out of bounds");
+        }
+
+        UVs[index] = uv;
+    }
+
+    /*!
+        \brief
+            Gets a uv from the mesh
+
+        \param index
+            Index of the uv to retrieve
+
+        \return
+            uv at the given index
+    */
+    const Point& Mesh::GetUV(int index) const {
+        if(index >= VertexCount) {
+            throw new Exception("Tried to get UV out of bounds");
+        }
+
+        return UVs[index];
     }
 
     /*!
@@ -257,5 +296,68 @@ namespace ForLeaseEngine {
         }
 
         return Faces[index];
+    }
+
+    /*!
+        \brief
+            Sets a face color
+
+        \param index
+            Index of the face to color
+
+        \param color
+            New color of the face
+    */
+    void Mesh::SetFaceColor(const Color& color, int index) {
+        if(index >= FaceCount) {
+            throw new Exception("Tried to set face color out of bounds");
+        }
+
+        FaceColors[index] = color;
+    }
+
+    /*!
+        \brief
+            Sets a face color
+
+        \param index
+            Index of the face to color
+
+        \param r
+            Red component of the face
+
+        \param b
+            Blue component of the face
+
+        \param g
+            Green component of the face
+
+        \param a
+            Alpha component of the face
+    */
+    void Mesh::SetFaceColor(float r, float g, float b, float a, int index) {
+        if(index >= FaceCount) {
+            throw new Exception("Tried to set face color out of bounds");
+        }
+
+        FaceColors[index].SetAll(r, g, b, a);
+    }
+
+    /*!
+        \brief
+            Gets the color of a face
+
+        \param index
+            Index of the color to retrieve
+
+        \return
+            Color of the face
+    */
+    Color Mesh::GetFaceColor(int index) const {
+        if(index >= FaceCount) {
+            throw new Exception("Tried to get face color out of bounds");
+        }
+
+        return FaceColors[index];
     }
 }
