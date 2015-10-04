@@ -13,5 +13,6 @@
 #include "ComponentTransform.h"
 #include "ComponentPhysics.h"
 #include "ComponentCollision.h"
+#include "ComponentSprite.h"
 
 #endif

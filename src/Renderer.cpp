@@ -24,9 +24,9 @@ namespace ForLeaseEngine {
     */
     Renderer::Renderer() {
         SetDrawingColor(1.0f, 1.0f, 1.0f);
-        glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
-        glEnable(GL_BLEND);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_BLEND);
     }
 
     /*!
@@ -293,8 +293,9 @@ namespace ForLeaseEngine {
             ToScreenSpace(vertices[i], vertices[i]);
         }
         glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, region->GetTextureID());
+        //glBindTexture(GL_TEXTURE_2D, region->GetTextureID());
         glBegin(GL_QUADS);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             for(int i = 0; i < 4; ++i) {
                 glTexCoord2f(region->GetUV()[i][0], region->GetUV()[i][1]);
                 glVertex2f(vertices[i][0], vertices[i][1]);

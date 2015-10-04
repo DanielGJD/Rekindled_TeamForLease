@@ -43,8 +43,10 @@ namespace ForLeaseEngine {
     */
     Mesh::~Mesh() {
         delete Vertices;
+        delete UVs;
         delete Edges;
         delete Faces;
+        delete FaceColors;
     }
 
     /*!

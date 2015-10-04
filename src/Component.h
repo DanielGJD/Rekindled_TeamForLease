@@ -31,7 +31,7 @@ namespace ForLeaseEngine {
         Physics             = 1 << 2,   //! Physics
         Collision           = 1 << 3,   //! Collision
         Camera              = 1 << 4,   //! Camera
-        Draw                = 1 << 5    //! Draw
+        Sprite              = 1 << 5    //! Sprite
 
     };
 

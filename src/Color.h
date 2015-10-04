@@ -48,6 +48,12 @@ namespace ForLeaseEngine {
         private:
             float ColorComponents[4]; /**< Components of the color */
     };
+
+    enum BlendMode {
+        ALPHA,
+        ADDITIVE,
+        MULTIPLY
+    };
 }
 
 #endif // COLOR_H
