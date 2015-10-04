@@ -45,10 +45,8 @@ namespace ForLeaseEngine {
             //void DrawPolygon(Point position, float radius, int sides);
             void DrawLine(Point start, Point end);
             void DrawLine(Point start, Vector displacement);
-            //void DrawLine(Point start, Vector direction, float magnitude);
             void DrawArrow(Point start, Point end);
             void DrawArrow(Point start, Vector displacement);
-            //void DrawArrow(Point start, Vector direction, float magnitude);
             void DrawRectangleFilled(Point position, float width, float height, float rotation = 0);
             //void DrawPolygonFilled(Point position, float radius, int sides);
             void DrawTexture(Point position, Texture* texture, float scaleX = 1, float scaleY = 1, float rotation = 0);

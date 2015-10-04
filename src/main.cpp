@@ -4,6 +4,7 @@
 #include "Engine.h"
 #include "EngineProofState.h"
 #include "TestingState.h"
+#include "Exception.h"
 #undef main
 
 bool quit = false;
@@ -23,8 +24,15 @@ int main(int argc, char** argv){
 
     //ForLeaseEngine::GraphicsProperties properties;
     //ForLeaseEngine::Graphics* graphics = ForLeaseEngine::Graphics::CreateGraphics(properties);
-    ForLeaseEngine::Engine engine(states, 1280, 720, 60);
-    engine.Run();
+    ForLeaseEngine::Engine engine(states, 720, 720, 60);
+    try {
+        engine.Run();
+    }
+    catch(Exception* e) {
+        std::cout << e->GetInfo() << std::endl;
+        char c;
+        std::cin >> c;
+    }
     //while(true);
 
 //    Graphics::DestroyGraphics(graphics);
