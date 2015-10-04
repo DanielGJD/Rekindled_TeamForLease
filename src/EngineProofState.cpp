@@ -351,7 +351,7 @@ void EngineProofState::Update() {
         render.DrawSpriteText(*FPSCounter, ForLeaseEngine::Point(-500, 200));
     }
 
-    render.SetDrawingColor(1, 1, 1);
+    render.SetDrawingColor(1.0f, 1.0f, 1.0f);
     render.DrawSpriteText(*TextDemo, ForLeaseEngine::Point(-100, 200));
 
     ForLease->GameWindow->UpdateGameWindow();
