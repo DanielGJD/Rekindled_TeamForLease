@@ -1,28 +1,35 @@
 /*!
-    \file   SystemCollision.h
+    \file   LevelComponentCollision.h
     \author Sean McGeer
     \date   9/25/15
     \brief
         Defines the Collision system.
-    \see SystemCollision.cpp
+    \see LevelComponentCollision.cpp
 */
 
-#ifndef SYSTEM_COLLISION_H
-#define SYSTEM_COLLISION_H
+#ifndef LC_COLLISION_H
+#define LC_COLLISION_H
 
 #include "ComponentCollision.h"
 #include "ComponentTransform.h"
 #include "ComponentPhysics.h"
 #include "Vector.h"
 #include "Entity.h"
-#include "System.h"
+#include "LevelComponent.h"
 #include "Engine.h"
 
 namespace ForLeaseEngine {
     
-    namespace Systems {
+    namespace LevelComponents {
         
-        class Collision : public System {
+        /*!
+            \class Collision
+
+            \brief
+                A Collision level component.  Used to detect and resolve collisions
+                between entities in the level.
+        */
+        class Collision : public LevelComponent {
             public:
                 Collision(Engine& owner);
                 void Update(std::vector<Entity *>& entities);
@@ -31,8 +38,8 @@ namespace ForLeaseEngine {
                 void ResolveCollisionOneEntityOnly(Entity* toResolve, Entity* other);
         };
         
-    }
+    } // LevelComponents
     
-}
+} // ForLeaseEngine
 
 #endif

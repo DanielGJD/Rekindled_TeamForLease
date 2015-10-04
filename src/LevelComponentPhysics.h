@@ -1,16 +1,16 @@
 /*!
-    \file   SystemPhysics.h
+    \file   LevelComponentPhysics.h
     \author Sean McGeer
     \date   9/24/15
     \brief
         Defines the Physics system.
-    \see SystemPhysics.cpp
+    \see LevelComponentPhysics.cpp
 */
 
-#ifndef SYSTEM_PHYSICS_H
-#define SYSTEM_PHYSICS_H
+#ifndef LC_PHYSICS_H
+#define LC_PHYSICS_H
 
-#include "System.h"
+#include "LevelComponent.h"
 #include "ComponentPhysics.h"
 #include "ComponentTransform.h"
 #include "Vector.h"
@@ -18,22 +18,30 @@
 
 namespace ForLeaseEngine {
 
-    namespace Systems {
+    namespace LevelComponents {
 
-        class Physics : public System {
+        /*!
+            \class Physics
+
+            \brief
+                A LevelComponent that computes changes in position, velocity,
+                and acceleration.  Also applies gravity to each Entity with
+                a physics component.
+        */
+        class Physics : public LevelComponent {
             public:
                 Physics(Engine& owner, Vector gravity = Vector(0, -1));
                 void Update(std::vector<Entity *>& entities);
+                void ApplyGravity(Entity* entity);
                 void Compute(Entity* entity);
                 void Cleanup(Entity* entity);
-                void ApplyGravity(Entity* entity);
                 void SetGravity(Vector gravity);
                 Vector GetGravity();
             private:
-                Vector Gravity;
+                Vector Gravity; //! The level's gravity
         };
 
-    }
+    } // LevelComponents
 
 } // ForLeaseEngine
 

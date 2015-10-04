@@ -1,14 +1,14 @@
 /*!
-    \file   System.h
+    \file   LevelComponent.h
     \author Sean McGeer
     \date   9/24/15
     \brief
-        Defines the System class, which all systems should inherit from.
-    \see System.cpp
+        Defines the LevelComponent class, which all systems should inherit from.
+    \see LevelComponent.cpp
 */
 
-#ifndef SYSTEM_H
-#define SYSTEM_H
+#ifndef LEVEL_COMPONENT_H
+#define LEVEL_COMPONENT_H
 
 #include "Component.h"
 #include "Entity.h"
@@ -18,9 +18,9 @@ namespace ForLeaseEngine {
 
     class Engine;
 
-    class System {
+    class LevelComponent {
         public:
-            System(Engine& owner, ComponentType componentMask = ComponentType::None);
+            LevelComponent(Engine& owner, ComponentType componentMask = ComponentType::None);
             virtual void Update(std::vector<Entity *>& entities) = 0;
             bool CheckEntityCompatibility(Entity*  entity);
         private:

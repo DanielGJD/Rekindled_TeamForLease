@@ -1,21 +1,33 @@
 /*!
-    \file   SystemCollision.cpp
+    \file   LevelComponentCollision.cpp
     \author Sean McGeer
     \date   9/25/15
     \brief
         Implements the Collision system.
-    \see SystemCollision.h
+    \see LevelComponentCollision.h
 */
 
-#include "SystemCollision.h"
+#include "LevelComponentCollision.h"
 
 namespace ForLeaseEngine {
 
-    namespace Systems {
-
-        Collision::Collision(Engine& owner) : System(owner, ComponentType::Collision) {}
+    namespace LevelComponents {
 
         /*!
+            Constructor for a new Collision LevelComponent.
+
+            \param owner
+                The Engine instance that created this Collision LevelComponent.
+        */
+        Collision::Collision(Engine& owner) : LevelComponent(owner, ComponentType::Collision) {}
+
+        /*!
+            Update function.  Loops through all entities and checks collisions.
+
+            \param entities
+                A reference to a vector of Entity pointers that we want to check
+                for collisions on.
+
             \bug This is not well done.  Complexity O(n^2).  This will be reworked
             after Engine Proof, and I'll include mesh vertex collision checking
             then.
@@ -36,6 +48,21 @@ namespace ForLeaseEngine {
             }
         }
 
+        /*!
+            Checks collision between two entities.
+
+            \param Entity1
+                A pointer to the first Entity.
+
+            \param Entity2
+                A pointer to the second Entity.
+
+            \return
+                True if they are colliding, false if not.
+
+            \bug
+                Not well done.
+        */
         bool Collision::CheckCollision(Entity* entity1, Entity* entity2) {
             Point entity1Position = reinterpret_cast<Components::Transform *>(entity1->GetComponent(ComponentType::Transform))->Position;
             Point entity2Position = reinterpret_cast<Components::Transform *>(entity2->GetComponent(ComponentType::Transform))->Position;
@@ -55,6 +82,18 @@ namespace ForLeaseEngine {
             return false;
         }
 
+        /*!
+            Resolves collisions between two objects.
+
+            \param entity1
+                The first entity to resolve collisions for.
+
+            \param entity2
+                The second entity to resolve collisions for.
+
+            \bug
+                Not well done.
+        */
         void Collision::ResolveCollision(Entity* entity1, Entity* entity2) {
             Components::Collision* entity1Collision = reinterpret_cast<Components::Collision *>(entity1->GetComponent(ComponentType::Collision));
             Components::Collision* entity2Collision = reinterpret_cast<Components::Collision *>(entity2->GetComponent(ComponentType::Collision));
@@ -83,11 +122,20 @@ namespace ForLeaseEngine {
             if (entity1HasPhysics == false) return;
 
             // Both entities have physics.  We'll try to resolve the collision on both.
-            // We'll do it stupidlly for now
+            // We'll do it stupidly for now
             ResolveCollisionOneEntityOnly(entity1, entity2);
             ResolveCollisionOneEntityOnly(entity2, entity1);
         }
 
+        /*!
+            Resolves collisions on one entity.
+
+            \param toResolve
+                A pointer to the Entity to resolve collisions on.
+
+            \param other
+                A pointer that toResolve is colliding with.
+        */
         void Collision::ResolveCollisionOneEntityOnly(Entity* toResolve, Entity* other) {
             Components::Transform* toResolveTransform = reinterpret_cast<Components::Transform *>(toResolve->GetComponent(ComponentType::Transform));
             Components::Physics*   toResolvePhysics   = reinterpret_cast<Components::Physics   *>(toResolve->GetComponent(ComponentType::Physics));
@@ -99,6 +147,6 @@ namespace ForLeaseEngine {
             toResolvePhysics->Velocity[1] = 0;
         }
 
-    } // Systems
+    } // LevelComponents
 
 } // ForLeaseEngine
