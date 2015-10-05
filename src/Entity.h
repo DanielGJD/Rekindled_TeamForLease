@@ -29,7 +29,9 @@ namespace ForLeaseEngine {
             long unsigned GetID();
             void AddComponent(Component* component);
             ComponentType GetComponentMask();
-            Component* GetComponent(ComponentType type, bool throwOnFail = false);
+            
+            template <typename T = Component*>
+            T GetComponent(ComponentType type, bool throwOnFail = false);
         private:
             //! The ID of this Entity, to differentiate from other Entities.
             long unsigned ID;

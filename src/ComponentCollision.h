@@ -17,6 +17,12 @@ namespace ForLeaseEngine {
     
     namespace Components {
         
+        /*!
+            \class Collision
+
+            \brief
+                A collision component.  Handles collision detection and resolution.
+        */
         class Collision : public Component {
             public:
                 Collision(Entity& owner);
@@ -25,10 +31,12 @@ namespace ForLeaseEngine {
                 float Width;            //! Width of the collision box
                 bool CollidedLastFrame; //! Whether or not the entity collided on the last frame.  This should be handled by an event.
                 bool ResolveCollisions; //! Whether we want to resolve collisions by moving entities
+            private:
+                Collision() = delete;
         };
         
-    }
+    } // Components
     
-}
+} // ForLeaseEngine
 
 #endif

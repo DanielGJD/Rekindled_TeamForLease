@@ -28,15 +28,12 @@ namespace ForLeaseEngine {
         class Transform : public Component {
 
             public:
-                Transform(Entity& parent, float positionX = 0,
+                Transform(Entity& owner, float positionX = 0,
                     float positionY = 0, float scaleX = 1, float scaleY = 1,
                     float rotation = 0);
 
-                Transform(Entity& parent, Point position, float scaleX = 1,
+                Transform(Entity& owner, Point position, float scaleX = 1,
                     float scaleY = 1, float rotation = 0);
-
-                Transform(Entity& parent, Point position, Vector scale,
-                    float rotation = 0);
 
                 ~Transform() {};
                 void Update() {};

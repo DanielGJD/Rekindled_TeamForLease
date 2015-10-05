@@ -3,7 +3,7 @@
     \author Sean McGeer
     \date   9/24/15
     \brief
-        Defines the LevelComponent class, which all systems should inherit from.
+        Defines the LevelComponent class, which all level components should inherit from.
     \see LevelComponent.cpp
 */
 

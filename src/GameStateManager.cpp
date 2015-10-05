@@ -32,26 +32,30 @@ namespace ForLeaseEngine {
         */
         void GameStateManager::Run() {
             while (Action != StateAction::Quit) {
-                States[StateIndex]->Load();
+                States[StateIndex]->Load(); // Load the next state
 
                 do {
 
-                    States[StateIndex]->Initialize();
+                    States[StateIndex]->Initialize(); // Initialize the current state
 
-                    Action = StateAction::Continue;
+                    Action = StateAction::Continue; // Set the action so we won't get booted unless otherwise told
 
                     do {
-                        Parent.FrameRateController().Start();
-                        States[StateIndex]->Update();
-                        Parent.FrameRateController().End();
+
+                        Parent.FrameRateController().Start(); // Start the current frame
+                        States[StateIndex]->Update();         // Do all the game stuff
+                        Parent.FrameRateController().End();   // End the current frame
+
                     } while (Action == StateAction::Continue);
 
-                    States[StateIndex]->Deinitialize();
+                    States[StateIndex]->Deinitialize(); // Deinitialize the state
 
                 } while (Action == StateAction::Restart);
 
-                States[StateIndex]->Unload();
-                ++StateIndex;
+                States[StateIndex]->Unload(); // Free memory allocated by the state
+
+                if (Action == StateAction::Next) ++StateIndex; // If we're just going to the next level, increment the state index
+                if (Action == StateAction::Skip) StateIndex = NextStateIndex; // Go to the next requested level
             }
         }
 
@@ -61,6 +65,30 @@ namespace ForLeaseEngine {
                 A StateAction that we'll set the Action of the GameStateManger to.
         */
         void GameStateManager::SetAction(StateAction action) { Action = action; }
+
+        /*!
+            Sets the state of the GameStateManager.
+
+            \param stateName
+                The name of the state to skip to.
+        */
+        void GameStateManager::SetState(std::string stateName) {
+            for (unsigned i = 0; i < States.size(); ++i)
+                if (States[i]->GetName() == stateName) {
+                    NextStateIndex = i;
+                    break;
+                }
+        }
+
+        /*!
+            Sets the state of the GameStateManager.
+
+            \param stateIndex
+                An unsigned int that is the index of the state we want to skip to.
+        */
+        void GameStateManager::SetState(unsigned stateIndex) {
+            NextStateIndex = stateIndex;
+        }
 
     }
 

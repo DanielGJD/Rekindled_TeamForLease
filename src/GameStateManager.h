@@ -29,7 +29,8 @@ namespace ForLeaseEngine {
             Quit,
             Continue,
             Restart,
-            Next
+            Next,
+            Skip
         };
 
         /*!
@@ -45,12 +46,18 @@ namespace ForLeaseEngine {
                 GameStateManager(Engine& parent, std::vector<State *> states);
                 void Run();
                 void SetAction(StateAction action);
+                void SetState(std::string stateName);
+                void SetState(unsigned stateIndex);
             private:
                 //! A reference to the engine
                 Engine& Parent;
                 //! The vector of all possible states
                 std::vector<State *> States;
+                //! Index of the current state in States
                 unsigned StateIndex;
+                //! Index of the next state in States
+                unsigned NextStateIndex;
+                //! The current action of the GameStateManager
                 StateAction Action;
 
                 //! Made private and deactivated, since we NEED Parent

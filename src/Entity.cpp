@@ -25,9 +25,8 @@ namespace ForLeaseEngine {
         Destructor for an Entity.  Destroys all components attached to it.
     */
     Entity::~Entity() {
-        for (std::vector<Component *>::iterator it = Components.begin();
-                it != Components.end(); ++it)
-            delete *it;
+        for (Component* component : Components)
+            delete component;
     }
 
     /*!
@@ -79,14 +78,15 @@ namespace ForLeaseEngine {
             A boolean determining whether to throw an error on failure, rather
             than the default behavior, which is to return a null pointer.
     */
-    Component* Entity::GetComponent(ComponentType type, bool throwOnFail) {
-        if (!static_cast<bool>(type) && throwOnFail)
+    template <typename T>
+    T Entity::GetComponent(ComponentType type, bool throwOnFail) {
+        if (type == ComponentType::None && throwOnFail)
             throw EntityException(ID, "No component specified.");
 
-        for (std::vector<Component *>::iterator it = Components.begin();
-                it != Components.end(); ++it) {
-            if ((*it)->GetType() == type) return *it;
-        }
+        for (Component* component : Components)
+            if (component->GetType() == type)
+                return reinterpret_cast<T>(component);
+
         if (throwOnFail) throw EntityException(ID, "Error finding component.");
 
         return 0;
