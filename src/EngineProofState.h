@@ -8,8 +8,7 @@
 #include "Event.h"
 #include "Entity.h"
 #include "ComponentsInclude.h"
-#include "SystemPhysics.h"
-#include "SystemCollision.h"
+#include "LevelComponentsInclude.h"
 
 class TestObject : public ForLeaseEngine::Entity {
     public:
@@ -53,8 +52,8 @@ class EngineProofState : public ForLeaseEngine::State {
         TestFloor* Floor;
         TestCollision* Collide;
         ForLeaseEngine::Renderer render;
-        ForLeaseEngine::Systems::Physics Physics;
-        ForLeaseEngine::Systems::Collision Collision;
+        ForLeaseEngine::LevelComponents::Physics Physics;
+        ForLeaseEngine::LevelComponents::Collision Collision;
 };
 
 
