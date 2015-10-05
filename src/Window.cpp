@@ -1,5 +1,5 @@
 /*!
-    \file   Graphics.cpp
+    \file   Window.cpp
     \author Christopher Hudson
     \date   09/12/15
 
@@ -7,7 +7,7 @@
         Implementation of a class that handles the creation of a window and
         rendering context
 
-    \see Graphics.h
+    \see Window.h
 */
 #include <iostream>
 #include <fstream>
@@ -21,7 +21,7 @@ namespace ForLeaseEngine {
 
         /*!
             \brief
-                Creates a GraphicsProperties containing the default properties
+                Creates a WindowProperties containing the default properties
         */
         WindowProperties::WindowProperties() : windowTitle("For Lease Engine") {
             xResolution = 800;
@@ -95,7 +95,7 @@ namespace ForLeaseEngine {
 
         /*!
             \brief
-                Creates a default Graphics object
+                Creates a default Window object
 
             \return
                 The new graphics object
@@ -106,13 +106,13 @@ namespace ForLeaseEngine {
 
         /*!
             \brief
-                Creates a graphics object with the given properties
+                Creates a window object with the given properties
 
             \param properties
                 Properties of the window
 
             \return
-                The new graphics object
+                The new window object
         */
         Window* Window::CreateGameWindow(WindowProperties& properties) {
             return new Window(properties);
@@ -120,10 +120,10 @@ namespace ForLeaseEngine {
 
         /*!
             \brief
-                Destroys the given graphics object
+                Destroys the given window object
 
-            \param graphics
-                Graphics object to destroy
+            \param window
+                Window object to destroy
         */
         void Window::DestroyGameWindow(Window* window) {
             delete window;

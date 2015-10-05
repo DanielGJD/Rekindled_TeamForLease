@@ -14,5 +14,6 @@
 #include "ComponentPhysics.h"
 #include "ComponentCollision.h"
 #include "ComponentSprite.h"
+#include "ComponentModel.h"
 
 #endif

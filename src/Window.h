@@ -1,5 +1,5 @@
 /*!
-    \file   Graphics.h
+    \file   Window.h
     \author Christopher Hudson
     \date   09/12/15
 
@@ -7,7 +7,7 @@
         Defines a class that handles the creation of a window and rendering
         context and a class to hold window properties
 
-    \see Graphics.cpp
+    \see Window.cpp
 */
 
 #ifndef WINDOW_H
@@ -20,10 +20,10 @@
 namespace ForLeaseEngine {
     namespace Systems {
         /*!
-            \class GraphicsProperties
+            \class WindowProperties
 
             \brief
-                Contains data on the current graphics properties
+                Contains data on the current Window properties
         */
         class WindowProperties {
             public:
@@ -59,7 +59,7 @@ namespace ForLeaseEngine {
 
 
         /*!
-            \class Graphics
+            \class Window
 
             \brief
                 Creates and manages a window and rendering context
@@ -84,7 +84,7 @@ namespace ForLeaseEngine {
                 SDL_Window* window;
                 //! OpenGL context
                 SDL_GLContext context;
-                //! Current graphics properties
+                //! Current window properties
                 WindowProperties currentProperties;
 
                 Window();

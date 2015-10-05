@@ -49,12 +49,13 @@ namespace ForLeaseEngine {
         /*!
             Applies the Gravity vector to an entity.  Simply adds the Gravity
             vector to the Acceleration vector.
+        */
         void Physics::ApplyGravity(Entity* entity) {
             Components::Physics* physicsComponent = reinterpret_cast<Components::Physics *>(entity->GetComponent(ComponentType::Physics));
 
             physicsComponent->Acceleration += Gravity;
         }
-        
+
         /*!
             Computes the change in position, velocity, and acceleration for this
             frame.
@@ -65,11 +66,11 @@ namespace ForLeaseEngine {
         void Physics::Compute(Entity* entity) {
             Components::Physics* physicsComponent = reinterpret_cast<Components::Physics *>(entity->GetComponent(ComponentType::Physics));
             Components::Transform* transformComponent = reinterpret_cast<Components::Transform *>(entity->GetComponent(ComponentType::Transform));
-        
+
             physicsComponent->Velocity += physicsComponent->Acceleration * ForLease->FrameRateController().GetDt();
             transformComponent->Position += physicsComponent->Velocity * ForLease->FrameRateController().GetDt();
         }
-        
+
         /*!
             Cleans up the acceleration and forces for an entity.  We want
             instantaneous acceleration/velocity, so we zero those out.

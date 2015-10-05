@@ -120,9 +120,12 @@ namespace ForLeaseEngine {
 
         \param b
             Blue component
+
+        \param a
+            Alpha component
     */
-    void Renderer::SetDrawingColor(float r, float g, float b) {
-        glColor3f(r, g, b);
+    void Renderer::SetDrawingColor(float r, float g, float b, float a) {
+        glColor4f(r, g, b, a);
     }
 
     /*!

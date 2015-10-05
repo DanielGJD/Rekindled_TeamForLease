@@ -40,6 +40,7 @@ namespace ForLeaseEngine {
             }
             void Detach(void* receiver, std::string event);
             void Dispatch(const Event* e, void* sender) const;
+            void DispatchTo(const Event* e, void* receiver) const;
 
 
         private:

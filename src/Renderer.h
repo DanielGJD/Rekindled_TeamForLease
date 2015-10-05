@@ -36,7 +36,8 @@ namespace ForLeaseEngine {
             void SetModelView(Point position, float scaleX, float scaleY, float rotation);
             void SetModelView(Matrix modelViewMatrix);
 
-            void SetDrawingColor(float r, float g, float b);
+            void SetDrawingColor(float r, float g, float b, float a = 1.0f);
+            void SetDrawingColor(const Color& color);
 
             void Clear();
 

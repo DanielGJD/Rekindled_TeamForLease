@@ -50,6 +50,7 @@ namespace ForLeaseEngine {
     };
 
     enum BlendMode {
+        NONE,
         ALPHA,
         ADDITIVE,
         MULTIPLY
