@@ -93,6 +93,21 @@ namespace ForLeaseEngine {
     }
 
     /*!
+        Function that checks to see if the Entity has a Component or Components
+        registered with it.
+
+        \param type
+            A ComponentType that we want to check for.
+
+        \return
+            A boolean value--true if the Entity has the Component, false otherwise.
+    */
+    bool Entity::HasComponent(ComponentType type) {
+        if ((type & ComponentMask) == type) return true;
+        else return false;
+    }
+
+    /*!
         Helper function to aid in adding multiple Components to an Entity at the
         same time.
 
