@@ -71,4 +71,16 @@ namespace ForLeaseEngine {
             }
         }
     }
+
+    void EventDispatcher::DispatchTo(const Event* e, void* receiver) const {
+        if(EventListeners.find(e->EventName) != EventListeners.end()) {
+            std::deque<Listener> listeners = EventListeners.at(e->EventName);
+            for(std::deque<Listener>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
+                if((*i).Receiver == receiver) {
+                    (*i).Callback(e);
+                    break;
+                }
+            }
+        }
+    }
 }
