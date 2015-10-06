@@ -20,6 +20,8 @@
 #include "Edge.h"
 #include "Mesh.h"
 #include "SpriteText.h"
+#include "ComponentCamera.h"
+#include "ComponentTransform.h"
 
 namespace ForLeaseEngine {
     /*!
@@ -31,6 +33,8 @@ namespace ForLeaseEngine {
     class Renderer {
         public:
             Renderer();
+            void SetCamera(Entity* camera);
+            void Update();
             void SetProjection(Point position, float width, float height, float near, float far, float rotation);
             void SetProjection(Matrix projectionMatrix);
             void SetModelView(Point position, float scaleX, float scaleY, float rotation);
@@ -68,7 +72,12 @@ namespace ForLeaseEngine {
             //! The modelview matrix
             Matrix ModelView;
             //! The current drawing color
-            Hcoord color;
+            Color color;
+            //! Current camera
+            Entity* CurrentCamera;
+            //! Current blending mode
+            BlendMode BlendingMode;
+
 
             void ToScreenSpace(const Point& vertex, Point& transformed);
             void DrawTris(Point* vertices, int vertexCount);

@@ -15,5 +15,6 @@
 #include "ComponentCollision.h"
 #include "ComponentSprite.h"
 #include "ComponentModel.h"
+#include "ComponentCamera.h"
 
 #endif

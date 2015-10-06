@@ -73,7 +73,8 @@ namespace ForLeaseEngine {
                 //int SetProperties(GraphicsProperties &properties);
                 void RequestNewContext();
                 void UpdateGameWindow();
-
+                int GetXResolution();
+                int GetYResolution();
 
             private:
                 //! Major OpenGL version

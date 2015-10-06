@@ -161,6 +161,24 @@ namespace ForLeaseEngine {
 
         /*!
             \brief
+                Gets the X resolution of the window
+
+            \return
+                X resolution of the window
+        */
+        int Window::GetXResolution() { return currentProperties.xResolution; }
+
+        /*!
+            \brief
+                Gets the Y resolution of the window
+
+            \return
+                Y resolution of the window
+        */
+        int Window::GetYResolution() { return currentProperties.yResolution; }
+
+        /*!
+            \brief
                 Initializes SDL Video, creates a window, and creates an OpenGL context
 
             \param properties

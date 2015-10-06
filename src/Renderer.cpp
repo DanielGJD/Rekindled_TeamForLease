@@ -15,7 +15,10 @@
 #include "Vector.h"
 #include "Matrix.h"
 #include "Renderer.h"
+#include "Entity.h"
 #include "GraphicsException.h"
+#include "Engine.h"
+#include "ComponentsInclude.h"
 
 namespace ForLeaseEngine {
     /*!
@@ -28,6 +31,35 @@ namespace ForLeaseEngine {
         //glEnable( GL_BLEND );
         //glDisable( GL_DEPTH_TEST );
         //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    }
+
+    /*!
+        \brief
+            Sets the camera to use for rendering
+
+        \param camera
+            New camera to use
+    */
+    void Renderer::SetCamera(Entity* camera) {
+        ComponentType components = camera->GetComponentMask();
+        if(static_cast<bool>(components & ComponentType::Transform) && static_cast<bool>(components & ComponentType::Camera)) {
+            CurrentCamera = camera;
+        }
+        else {
+            CurrentCamera = NULL;
+        }
+    }
+
+    void Renderer::Update() {
+        if(CurrentCamera != NULL) {
+            float aspectRatio = ForLease->GameWindow->GetYResolution() / ForLease->GameWindow->GetXResolution();
+            Components::Transform* transform = static_cast<Components::Transform*>(CurrentCamera->GetComponent(ComponentType::Transform));
+            Components::Camera* camera = static_cast<Components::Camera*>(CurrentCamera->GetComponent(ComponentType::Camera));
+            SetProjection(transform->Position, camera->Size, camera->Size * aspectRatio, camera->Near, camera->Far, transform->Rotation);
+        }
+        else {
+            Projection = Matrix();
+        }
     }
 
     /*!
