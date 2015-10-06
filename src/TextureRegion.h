@@ -10,11 +10,12 @@ namespace ForLeaseEngine {
             TextureRegion();
             TextureRegion(Texture* texture, int left, int right, int top, int bottom);
             GLuint GetTextureID();
+            Texture* GetTexture();
             int GetWidth();
             int GetHeight();
             Point* GetUV();
         private:
-            //Texture* Source;
+            Texture* Source;
             GLuint TextureID;
             Point UV[4];
             int Width;

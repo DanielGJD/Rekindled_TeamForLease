@@ -28,9 +28,11 @@ namespace ForLeaseEngine {
     Renderer::Renderer() {
         SetDrawingColor(1.0f, 1.0f, 1.0f);
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        //glEnable( GL_BLEND );
-        //glDisable( GL_DEPTH_TEST );
-        //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        SetBlendMode(BlendMode::NONE);
+        CurrentTexture = 0;
+        TextureSwapCount = 0;
+        TriCount = 0;
+        BlendModeSwapCount = 0;
     }
 
     /*!
@@ -60,6 +62,22 @@ namespace ForLeaseEngine {
         else {
             Projection = Matrix();
         }
+
+        TextureSwapCount = 0;
+        TriCount = 0;
+        BlendModeSwapCount = 0;
+    }
+
+    unsigned int Renderer::GetTextureSwapCount() {
+        return TextureSwapCount;
+    }
+
+    unsigned int Renderer::GetTriCount() {
+        return TriCount;
+    }
+
+    unsigned int Renderer::GetBlendModeSwapCount() {
+        return BlendModeSwapCount;
     }
 
     /*!
@@ -157,7 +175,89 @@ namespace ForLeaseEngine {
             Alpha component
     */
     void Renderer::SetDrawingColor(float r, float g, float b, float a) {
+        DrawColor = Color(r, g, b, a);
         glColor4f(r, g, b, a);
+    }
+
+    /*!
+        \brief
+            Sets the drawing color
+
+        \param color
+            New drawing color
+    */
+    void Renderer::SetDrawingColor(Color color) {
+        DrawColor = color;
+        glColor4f(color.GetR(), color.GetG(), color.GetB(), color.GetA());
+    }
+
+    /*!
+        \brief
+            Sets the blend mode
+
+        \param blend
+            New blend mode
+    */
+    void Renderer::SetBlendMode(BlendMode blend) {
+        if(blend != BlendingMode) {
+            BlendingMode = blend;
+            switch(blend) {
+                case BlendMode::NONE:
+                    glBlendFunc(GL_ONE, GL_ZERO);
+                    break;
+                case BlendMode::ALPHA:
+                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    break;
+                case BlendMode::ADDITIVE:
+                    glBlendFunc(GL_ONE, GL_ONE);
+                    break;
+                case BlendMode::MULTIPLY:
+                    glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+                    break;
+            }
+            ++BlendModeSwapCount;
+        }
+    }
+
+    /*!
+        \brief
+            Sets the clear color
+
+        \param color
+            New drawing color
+    */
+    void Renderer::SetClearColor(float r, float g, float b, float a) {
+        ClearColor = Color(r, g, b, a);
+        glClearColor(r, g, b, a);
+    }
+
+    /*!
+        \brief
+            Sets the clear color
+
+        \param color
+            New clear color
+    */
+    void Renderer::SetClearColor(Color color) {
+        ClearColor = color;
+        glClearColor(color.GetR(), color.GetG(), color.GetB(), color.GetA());
+    }
+
+    void Renderer::SetTexture(Texture* texture) {
+        if(texture == NULL && CurrentTexture != 0) {
+            CurrentTexture = 0;
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glDisable(GL_TEXTURE_2D);
+            ++TextureSwapCount;
+        }
+        else if(texture && texture->GetID() != CurrentTexture) {
+            if(CurrentTexture == 0) {
+                glEnable(GL_TEXTURE_2D);
+            }
+            CurrentTexture = texture->GetID();
+            glBindTexture(GL_TEXTURE_2D, CurrentTexture);
+            ++TextureSwapCount;
+        }
     }
 
     /*!
@@ -307,16 +407,19 @@ namespace ForLeaseEngine {
         for(int i = 0; i < 4; ++i) {
             ToScreenSpace(vertices[i], vertices[i]);
         }
-        glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, texture->GetID());
+        //glEnable(GL_TEXTURE_2D);
+        //glBindTexture(GL_TEXTURE_2D, texture->GetID());
+        SetTexture(texture);
         glBegin(GL_QUADS);
             for(int i = 0; i < 4; ++i) {
                 glTexCoord2f(uv[i][0], uv[i][1]);
                 glVertex2f(vertices[i][0], vertices[i][1]);
             }
         glEnd();
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glDisable(GL_TEXTURE_2D);
+        //glBindTexture(GL_TEXTURE_2D, 0);
+        //glDisable(GL_TEXTURE_2D);
+        SetTexture(NULL);
+        TriCount += 2;
     }
 
     void Renderer::DrawTextureRegion(Point position, TextureRegion* region, float scaleX, float scaleY, float rotation) {
@@ -328,8 +431,9 @@ namespace ForLeaseEngine {
         for(int i = 0; i < 4; ++i) {
             ToScreenSpace(vertices[i], vertices[i]);
         }
-        glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, region->GetTextureID());
+        //glEnable(GL_TEXTURE_2D);
+        //glBindTexture(GL_TEXTURE_2D, region->GetTextureID());
+        SetTexture(region->GetTexture());
         glBegin(GL_QUADS);
             //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             for(int i = 0; i < 4; ++i) {
@@ -337,8 +441,10 @@ namespace ForLeaseEngine {
                 glVertex2f(vertices[i][0], vertices[i][1]);
             }
         glEnd();
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glDisable(GL_TEXTURE_2D);
+        //glBindTexture(GL_TEXTURE_2D, 0);
+        //glDisable(GL_TEXTURE_2D);
+        //SetTexture(NULL);
+        TriCount += 2;
     }
 
     /*!
@@ -386,6 +492,7 @@ namespace ForLeaseEngine {
                 for(int j = 0; j < 3; ++j) {
                     glVertex2f(transformed[face.Indices[j]][0], transformed[face.Indices[j]][1]);
                 }
+                ++TriCount;
             }
         glEnd();
     }
@@ -428,6 +535,7 @@ namespace ForLeaseEngine {
                 //DrawRectangle(Point(shiftedLoc[0] - currentGlyph.Offset[0] * 3, shiftedLoc[1] - currentGlyph.Offset[1] * 0.5f), currentGlyph.Region.GetWidth(), currentGlyph.Region.GetHeight());
                 currentDrawingLoc[0] += currentGlyph.XAdvance;
                 //shiftedLoc[0] += currentGlyph.XAdvance;
+                TriCount += 2;
             }
         }
     }
@@ -461,6 +569,7 @@ namespace ForLeaseEngine {
                 glVertex2f(transformed[i][0], transformed[i][1]);
             }
         glEnd();
+        TriCount += vertexCount % 3;
     }
 
     /*!
@@ -487,6 +596,7 @@ namespace ForLeaseEngine {
             glVertex2f(transformed[i][0], transformed[i][1]);
         }
         glEnd();
+        TriCount += vertexCount % 4 * 2;
     }
 
     /*!

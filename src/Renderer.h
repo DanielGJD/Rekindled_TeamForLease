@@ -35,13 +35,25 @@ namespace ForLeaseEngine {
             Renderer();
             void SetCamera(Entity* camera);
             void Update();
+            unsigned int GetTextureSwapCount();
+            unsigned int GetTriCount();
+            unsigned int GetBlendModeSwapCount();
+
             void SetProjection(Point position, float width, float height, float near, float far, float rotation);
             void SetProjection(Matrix projectionMatrix);
+
             void SetModelView(Point position, float scaleX, float scaleY, float rotation);
             void SetModelView(Matrix modelViewMatrix);
 
             void SetDrawingColor(float r, float g, float b, float a = 1.0f);
-            void SetDrawingColor(const Color& color);
+            void SetDrawingColor(Color color);
+
+            void SetBlendMode(BlendMode blend);
+
+            void SetClearColor(float r, float g, float b, float a = 1.0f);
+            void SetClearColor(Color color);
+
+            void SetTexture(Texture* texture);
 
             void Clear();
 
@@ -72,12 +84,19 @@ namespace ForLeaseEngine {
             //! The modelview matrix
             Matrix ModelView;
             //! The current drawing color
-            Color color;
+            Color DrawColor;
+            //! Clear color
+            Color ClearColor;
             //! Current camera
             Entity* CurrentCamera;
             //! Current blending mode
             BlendMode BlendingMode;
+            //! Current bound texture
+            GLuint CurrentTexture;
 
+            unsigned int TextureSwapCount;
+            unsigned int TriCount;
+            unsigned int BlendModeSwapCount;
 
             void ToScreenSpace(const Point& vertex, Point& transformed);
             void DrawTris(Point* vertices, int vertexCount);

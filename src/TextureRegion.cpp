@@ -6,7 +6,7 @@ namespace ForLeaseEngine {
     }
 
     TextureRegion::TextureRegion(Texture* texture, int left, int right, int top, int bottom) {
-        //Source = texture;
+        Source = texture;
         TextureID = texture->GetID();
         Width = right - left;
         Height = bottom - top;
@@ -23,6 +23,10 @@ namespace ForLeaseEngine {
 
     GLuint TextureRegion::GetTextureID() {
         return TextureID;
+    }
+
+    Texture* TextureRegion::GetTexture() {
+        return Source;
     }
 
     int TextureRegion::GetWidth() {

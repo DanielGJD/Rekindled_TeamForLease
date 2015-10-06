@@ -233,7 +233,6 @@ namespace ForLeaseEngine {
             }
 
             glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
             //std::cout << glGetString(GL_VERSION) << std::endl;
             //std::cout << glGetString(GL_EXTENSIONS) << std::endl;
