@@ -13,9 +13,15 @@ namespace ForLeaseEngine {
     
     namespace Components {
         
+        /*!
+            Constructor for the Collision class.
+
+            \param owner
+                The entity that uses this Collision component.
+        */
         Collision::Collision(Entity& owner)
             : Component(owner, ComponentType::Collision, ComponentType::Transform) {}
         
-    }
+    } // Components
     
-}
+} // ForLeaseEngine

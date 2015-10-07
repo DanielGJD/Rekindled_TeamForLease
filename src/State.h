@@ -27,7 +27,8 @@ namespace ForLeaseEngine {
     class State {
 
         public:
-            State();
+            State(std::string name = "Generic State Name");
+            ~State();
             virtual void Load() = 0;
             virtual void Initialize() = 0;
             virtual void Update() = 0;
@@ -36,8 +37,11 @@ namespace ForLeaseEngine {
 
             Entity* AddEntity();
             Entity* GetEntityByID(long unsigned id, bool throwOnFail = false);
+
+            std::string GetName();
         protected:
-            std::vector<Entity*> Entities;
+            std::string Name;               //! Name of the state
+            std::vector<Entity*> Entities;  //! The entities in the state
 
     };
 

@@ -14,8 +14,19 @@ namespace ForLeaseEngine {
 
     /*!
         Constructor for a State.  Initializes Entities.
+
+        \param name
+            A std::string name to give this state.
     */
-    State::State() : Entities() {}
+    State::State(std::string name) : Name(name), Entities() {}
+
+    /*!
+        Destructor for a State.  Deletes all entities.
+    */
+    State::~State() {
+        for (Entity* entity : Entities)
+            delete entity;
+    }
 
     /*!
         Adds an entity to the Entities vector in the state.
@@ -42,16 +53,23 @@ namespace ForLeaseEngine {
             A pointer to an entity with the given ID.
     */
     Entity* State::GetEntityByID(long unsigned id, bool throwOnFail) {
-        for (std::vector<Entity*>::iterator it = Entities.begin();
-             it != Entities.end(); ++it) {
+        for (Entity* entity : Entities) {
 
-            if ((*it)->GetID() == id)
-                return *it;
+            if (entity->GetID() == id)
+                return entity;
         }
 
         if (throwOnFail) throw EntityNotFoundException(id);
 
         else return 0;
     }
+
+    /*!
+        Getter for the name of a state.
+
+        \return
+            The std::string name.
+    */
+    std::string State::GetName() { return Name; }
 
 }

@@ -20,15 +20,24 @@ namespace ForLeaseEngine {
 
     namespace Components {
 
+        /*!
+            \class Physics
+
+            \brief
+                A basic Physics component that stores the Mass, Velocity, Acceleration,
+                and net Force on the owning entity.
+        */
         class Physics : public Component {
             public:
                 Physics(Entity& owner, float mass = 1, Vector velocity = Vector(0,0),
                     Vector acceleration = Vector(0,0), Vector force = Vector(0,0));
                 void Update() {}
-                float Mass;
-                Vector Velocity;
-                Vector Acceleration;
-                Vector Force;
+                float Mass;          //! The mass of the owning entity.
+                Vector Velocity;     //! Current velocity
+                Vector Acceleration; //! The current (instantaneous) acceleration.
+                Vector Force;        //! The net forces on the object.
+            private:
+                Physics() = delete;
         };
 
     } // Components
