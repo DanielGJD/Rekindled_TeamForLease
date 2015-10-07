@@ -69,30 +69,6 @@ namespace ForLeaseEngine {
     ComponentType Entity::GetComponentMask() { return ComponentMask; }
 
     /*!
-        Get a Component from this Entity.
-
-        \param type
-            The type of the given component.
-
-        \param throwOnFail
-            A boolean determining whether to throw an error on failure, rather
-            than the default behavior, which is to return a null pointer.
-    */
-    template <typename T>
-    T Entity::GetComponent(ComponentType type, bool throwOnFail) {
-        if (type == ComponentType::None && throwOnFail)
-            throw EntityException(ID, "No component specified.");
-
-        for (Component* component : Components)
-            if (component->GetType() == type)
-                return reinterpret_cast<T>(component);
-
-        if (throwOnFail) throw EntityException(ID, "Error finding component.");
-
-        return 0;
-    }
-
-    /*!
         Function that checks to see if the Entity has a Component or Components
         registered with it.
 

@@ -8,6 +8,8 @@
 */
 
 #include "LevelComponentCollision.h"
+#include "ComponentsInclude.h"
+#include "Component.h"
 
 namespace ForLeaseEngine {
 
