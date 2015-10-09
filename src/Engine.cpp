@@ -24,7 +24,7 @@ namespace ForLeaseEngine {
     /*!
         Constructor for Engine.  Creates a new instance of Engine using default values.
     */
-    Engine::Engine(std::vector<State *> states) : GSM(*this, states), FRC(*this) {
+    Engine::Engine(std::vector<State *> states) : GSM(*this, states), FRC(60) {
         // Default values
         ResolutionX = 1280;
         ResolutionY = 720;
@@ -48,7 +48,7 @@ namespace ForLeaseEngine {
     */
     Engine::Engine(std::vector<State *> states, int resolutionX, int resolutionY,
         int frameRate) : ResolutionX(resolutionX), ResolutionY(resolutionY),
-        FrameRate(frameRate), GSM(*this, states), FRC(*this) { ForLease = this; }
+        FrameRate(frameRate), GSM(*this, states), FRC(frameRate) { ForLease = this; }
 
     /*!
         Handles the main game loop.  Essentially calls FrameRateController and GameStateManager.

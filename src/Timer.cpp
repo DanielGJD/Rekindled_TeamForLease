@@ -11,13 +11,29 @@
 
 namespace ForLeaseEngine {
 
-    Timer::Timer(std::string name)
-        : Name(name), StartTime(std::chrono::high_resolution_clock::now()) {}
+    Timer::Timer(std::string name) : Name(name) {
+        Reset();
+    }
 
-    void Timer::Reset() { StartTime = std::chrono::high_resolution_clock::now(); }
+    // void Timer::Reset() { StartTime = std::chrono::high_resolution_clock::now(); }
+    
+    void Timer::Reset() { QueryPerformanceCounter(&StartTime); }
 
+    // double Timer::GetTime() {
+        // return seconds(std::chrono::high_resolution_clock::now() - StartTime).count();
+    // }
+    
     double Timer::GetTime() {
-        return seconds(std::chrono::high_resolution_clock::now() - StartTime).count();
+        LARGE_INTEGER current;
+        QueryPerformanceCounter(&current);
+        LARGE_INTEGER ticks;
+        ticks.QuadPart = current.QuadPart - StartTime.QuadPart;
+        double seconds = double(ticks.QuadPart);
+        LARGE_INTEGER frequency;
+        QueryPerformanceFrequency(&frequency);
+        seconds /= frequency.QuadPart;
+        
+        return seconds;
     }
 
     std::string Timer::GetName() {

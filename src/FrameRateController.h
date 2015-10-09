@@ -10,11 +10,12 @@
 #ifndef FRAMERATECONTROLLER_H
 #define FRAMERATECONTROLLER_H
 
-#include <chrono>
+// #include <chrono>
+#include <windows.h>
 
 namespace ForLeaseEngine {
 
-    class Engine;
+    // class Engine;
 
     namespace Modules {
 
@@ -26,9 +27,9 @@ namespace ForLeaseEngine {
         class FrameRateController {
 
             public:
-                typedef std::chrono::duration<double, std::chrono::seconds::period> seconds;
+                // typedef std::chrono::duration<double, std::chrono::seconds::period> seconds;
                 
-                FrameRateController(Engine& parent, int framesPerSecond = 60);
+                FrameRateController(int framesPerSecond = 60);
 
                 void Start();
                 void End();
@@ -38,20 +39,24 @@ namespace ForLeaseEngine {
                 double GetFrameTime();
             private:
                 //! A reference to the engine
-                Engine& Parent;
+                // Engine& Parent;
                 //! Frames per second
                 int FramesPerSecond;
                 //! The time allotted for each frame -- 1 / FramesPerSecond
-                std::chrono::microseconds FrameTime;
+                // std::chrono::microseconds FrameTime;
+                double FrameTime;
                 //! The start time of the current frame
-                std::chrono::high_resolution_clock::time_point StartTime;
+                // std::chrono::high_resolution_clock::time_point StartTime;
+                LARGE_INTEGER StartTime;
                 //! The end time of the current frame
-                std::chrono::high_resolution_clock::time_point EndTime;
-                //! The time of the last frame, in microseconds
-                std::chrono::microseconds LastFrameTime;
+                // std::chrono::high_resolution_clock::time_point EndTime;
+                LARGE_INTEGER EndTime;
+                //! The time of the last frame, in seconds
+                // std::chrono::microseconds LastFrameTime;
+                double LastFrameTime;
 
                 //! Made private and deactivated because we NEED Parent
-                FrameRateController() = delete;
+                // FrameRateController() = delete;
 
         };
 
