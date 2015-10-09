@@ -26,6 +26,8 @@ namespace ForLeaseEngine {
         class FrameRateController {
 
             public:
+                typedef std::chrono::duration<double, std::chrono::seconds::period> seconds;
+                
                 FrameRateController(Engine& parent, int framesPerSecond = 60);
 
                 void Start();

@@ -35,7 +35,7 @@ namespace ForLeaseEngine {
         */
         FrameRateController::FrameRateController(Engine& parent, int framesPerSecond)
             : Parent(parent), FramesPerSecond(framesPerSecond) {
-                FrameTime = std::chrono::microseconds(1000000/FramesPerSecond); // Set the frame time
+                FrameTime = std::chrono::duration_cast<std::chrono::microseconds>(seconds(1/double(FramesPerSecond))); // Set the frame time
                 LastFrameTime = std::chrono::microseconds(0);
             }
 
@@ -63,12 +63,12 @@ namespace ForLeaseEngine {
         /*!
             Get the time used for the last frame as a double representing seconds.
         */
-        double FrameRateController::GetDt() { return LastFrameTime.count() / double(1000000); }
+        double FrameRateController::GetDt() { return std::chrono::duration_cast<seconds>(LastFrameTime).count(); }
 
         /*!
             Get the time allotted for each frame.
         */
-        double FrameRateController::GetFrameTime() { return FrameTime.count() / double(1000000); }
+        double FrameRateController::GetFrameTime() { return std::chrono::duration_cast<seconds>(FrameTime).count(); }
     
     } // Modules
 
