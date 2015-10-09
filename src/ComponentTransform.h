@@ -1,5 +1,5 @@
 /*!
-    \file   Transform.h
+    \file   ComponentTransform.h
     \author Sean McGeer
     \date   9/19/15
     \brief
