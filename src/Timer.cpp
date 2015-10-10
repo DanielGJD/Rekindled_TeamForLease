@@ -16,7 +16,7 @@ namespace ForLeaseEngine {
     }
 
     void Timer::Reset() {
-        #ifdef WIN32
+        #ifdef FLE_WINDOWS
         QueryPerformanceCounter(&StartTime);
         #else
         StartTime = std::chrono::high_resolution_clock::now();
@@ -24,7 +24,7 @@ namespace ForLeaseEngine {
     }
     
     double Timer::GetTime() {
-        #ifdef WIN32
+        #ifdef FLE_WINDOWS
         LARGE_INTEGER current;
         QueryPerformanceCounter(&current);
         LARGE_INTEGER ticks;

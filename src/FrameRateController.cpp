@@ -9,7 +9,7 @@
 
 #include "FrameRateController.h"
 
-#ifdef WIN32
+#ifdef FLE_WINDOWS
 #include <windows.h>
 #else
 #include <chrono>
@@ -41,7 +41,7 @@ namespace ForLeaseEngine {
         */
         FrameRateController::FrameRateController(int framesPerSecond)
             : FramesPerSecond(framesPerSecond) {
-                #ifdef WIN32
+                #ifdef FLE_WINDOWS
                 FrameTime = 1.0/FramesPerSecond;
                 LastFrameTime = 0.0;
                 #else
@@ -54,7 +54,7 @@ namespace ForLeaseEngine {
             Start a new frame's timing.
         */
         void FrameRateController::Start() {
-            #ifdef WIN32
+            #ifdef FLE_WINDOWS
             QueryPerformanceCounter(&StartTime);
             LARGE_INTEGER frequency;
             QueryPerformanceFrequency(&frequency);
@@ -73,7 +73,7 @@ namespace ForLeaseEngine {
             End the current frame's timing, and sleep until the end of the frame's allotted time.
         */
         void FrameRateController::End() {
-            #ifdef WIN32
+            #ifdef FLE_WINDOWS
             LARGE_INTEGER currentTime;
             QueryPerformanceCounter(&currentTime);
             
@@ -95,7 +95,7 @@ namespace ForLeaseEngine {
             Get the time used for the last frame as a double representing seconds.
         */
         double FrameRateController::GetDt() {
-            #ifdef WIN32
+            #ifdef FLE_WINDOWS
             return LastFrameTime;
             #else
             return std::chrono::duration_cast<seconds>(LastFrameTime).count();
@@ -106,7 +106,7 @@ namespace ForLeaseEngine {
             Get the time allotted for each frame.
         */
         double FrameRateController::GetFrameTime() {
-            #ifdef WIN32
+            #ifdef FLE_WINDOWS
             return FrameTime;
             #else
             return std::chrono::duration_cast<seconds>(FrameTime).count();

@@ -10,7 +10,9 @@
 #ifndef FRAMERATECONTROLLER_H
 #define FRAMERATECONTROLLER_H
 
-#ifdef WIN32
+#include "Platforms.h"
+
+#ifdef FLE_WINDOWS
 #include <windows.h>
 #else
 #include <chrono>
@@ -31,7 +33,7 @@ namespace ForLeaseEngine {
         class FrameRateController {
 
             public:
-                #ifndef WIN32
+                #ifndef FLE_WINDOWS
                 typedef std::chrono::duration<double, std::chrono::seconds::period> seconds;
                 #endif
                 
@@ -51,28 +53,28 @@ namespace ForLeaseEngine {
                 int FramesPerSecond;
 
                 //! The time allotted for each frame -- 1 / FramesPerSecond
-                #ifdef WIN32
+                #ifdef FLE_WINDOWS
                 double FrameTime;
                 #else
                 std::chrono::microseconds FrameTime;
                 #endif
 
                 //! The start time of the current frame
-                #ifdef WIN32
+                #ifdef FLE_WINDOWS
                 LARGE_INTEGER StartTime;
                 #else
                 std::chrono::high_resolution_clock::time_point StartTime;
                 #endif
 
                 //! The end time of the current frame
-                #ifdef WIN32
+                #ifdef FLE_WINDOWS
                 LARGE_INTEGER EndTime;
                 #else
                 std::chrono::high_resolution_clock::time_point EndTime;
                 #endif
 
                 //! The time of the last frame, in seconds
-                #ifdef WIN32
+                #ifdef FLE_WINDOWS
                 double LastFrameTime;
                 #else
                 std::chrono::microseconds LastFrameTime;
