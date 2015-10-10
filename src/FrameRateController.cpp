@@ -8,9 +8,14 @@
 */
 
 #include "FrameRateController.h"
+
+#ifdef WIN32
 #include <windows.h>
+#else
+#include <chrono>
+#endif
+
 // #include "Engine.h"
-// #include <chrono>
 
 namespace ForLeaseEngine {
     
@@ -36,17 +41,20 @@ namespace ForLeaseEngine {
         */
         FrameRateController::FrameRateController(int framesPerSecond)
             : FramesPerSecond(framesPerSecond) {
-                // FrameTime = std::chrono::duration_cast<std::chrono::microseconds>(seconds(1/double(FramesPerSecond))); // Set the frame time
+                #ifdef WIN32
                 FrameTime = 1.0/FramesPerSecond;
-                // LastFrameTime = std::chrono::microseconds(0);
                 LastFrameTime = 0.0;
+                #else
+                FrameTime = std::chrono::duration_cast<std::chrono::microseconds>(seconds(1/double(FramesPerSecond))); // Set the frame time
+                LastFrameTime = std::chrono::microseconds(0);
+                #endif
             }
 
         /*!
             Start a new frame's timing.
         */
         void FrameRateController::Start() {
-            // StartTime = std::chrono::high_resolution_clock::now();
+            #ifdef WIN32
             QueryPerformanceCounter(&StartTime);
             LARGE_INTEGER frequency;
             QueryPerformanceFrequency(&frequency);
@@ -54,38 +62,56 @@ namespace ForLeaseEngine {
             frameTicks.QuadPart = frequency.QuadPart * FrameTime;
             
             EndTime.QuadPart = StartTime.QuadPart + frameTicks.QuadPart;
+            #else
+            StartTime = std::chrono::high_resolution_clock::now();
+            EndTime = StartTime + FrameTime;
+            #endif
+
         }
 
         /*!
             End the current frame's timing, and sleep until the end of the frame's allotted time.
         */
         void FrameRateController::End() {
-            // std::chrono::high_resolution_clock::time_point currentTime = std::chrono::high_resolution_clock::now();
-
+            #ifdef WIN32
             LARGE_INTEGER currentTime;
             QueryPerformanceCounter(&currentTime);
             
-            //! \bug Polling the time each second is _bad_
             while (currentTime.QuadPart < EndTime.QuadPart)
                 QueryPerformanceCounter(&currentTime);
 
-            // LastFrameTime = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - StartTime);
             LARGE_INTEGER frequency;
             QueryPerformanceFrequency(&frequency);
             LastFrameTime = double(currentTime.QuadPart - StartTime.QuadPart) / frequency.QuadPart;
+            #else
+            std::chrono::high_resolution_clock::time_point currentTime = std::chrono::high_resolution_clock::now();
+            while (currentTime < EndTime)
+                currentTime = std::chrono::high_resolution_clock::now();
+            LastFrameTime = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - StartTime);
+            #endif
         }
 
         /*!
             Get the time used for the last frame as a double representing seconds.
         */
-        // double FrameRateController::GetDt() { return std::chrono::duration_cast<seconds>(LastFrameTime).count(); }
-        double FrameRateController::GetDt() { return LastFrameTime; }
+        double FrameRateController::GetDt() {
+            #ifdef WIN32
+            return LastFrameTime;
+            #else
+            return std::chrono::duration_cast<seconds>(LastFrameTime).count();
+            #endif
+        }
         
         /*!
             Get the time allotted for each frame.
         */
-        // double FrameRateController::GetFrameTime() { return std::chrono::duration_cast<seconds>(FrameTime).count(); }
-        double FrameRateController::GetFrameTime() { return FrameTime; }
+        double FrameRateController::GetFrameTime() {
+            #ifdef WIN32
+            return FrameTime;
+            #else
+            return std::chrono::duration_cast<seconds>(FrameTime).count();
+            #endif
+        }
     
     } // Modules
 

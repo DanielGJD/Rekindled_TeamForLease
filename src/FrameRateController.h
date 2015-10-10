@@ -10,8 +10,12 @@
 #ifndef FRAMERATECONTROLLER_H
 #define FRAMERATECONTROLLER_H
 
-// #include <chrono>
+#ifdef WIN32
 #include <windows.h>
+#else
+#include <chrono>
+#endif
+
 
 namespace ForLeaseEngine {
 
@@ -27,7 +31,9 @@ namespace ForLeaseEngine {
         class FrameRateController {
 
             public:
-                // typedef std::chrono::duration<double, std::chrono::seconds::period> seconds;
+                #ifndef WIN32
+                typedef std::chrono::duration<double, std::chrono::seconds::period> seconds;
+                #endif
                 
                 FrameRateController(int framesPerSecond = 60);
 
@@ -40,20 +46,37 @@ namespace ForLeaseEngine {
             private:
                 //! A reference to the engine
                 // Engine& Parent;
+
                 //! Frames per second
                 int FramesPerSecond;
+
                 //! The time allotted for each frame -- 1 / FramesPerSecond
-                // std::chrono::microseconds FrameTime;
+                #ifdef WIN32
                 double FrameTime;
+                #else
+                std::chrono::microseconds FrameTime;
+                #endif
+
                 //! The start time of the current frame
-                // std::chrono::high_resolution_clock::time_point StartTime;
+                #ifdef WIN32
                 LARGE_INTEGER StartTime;
+                #else
+                std::chrono::high_resolution_clock::time_point StartTime;
+                #endif
+
                 //! The end time of the current frame
-                // std::chrono::high_resolution_clock::time_point EndTime;
+                #ifdef WIN32
                 LARGE_INTEGER EndTime;
+                #else
+                std::chrono::high_resolution_clock::time_point EndTime;
+                #endif
+
                 //! The time of the last frame, in seconds
-                // std::chrono::microseconds LastFrameTime;
+                #ifdef WIN32
                 double LastFrameTime;
+                #else
+                std::chrono::microseconds LastFrameTime;
+                #endif
 
                 //! Made private and deactivated because we NEED Parent
                 // FrameRateController() = delete;

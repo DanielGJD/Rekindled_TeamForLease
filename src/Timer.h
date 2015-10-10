@@ -10,8 +10,12 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-// #include <chrono>
+#ifdef WIN32
 #include <windows.h>
+#else
+#include <chrono>
+#endif
+
 #include <string>
 
 namespace ForLeaseEngine {
@@ -25,14 +29,21 @@ namespace ForLeaseEngine {
     */
     class Timer {
         public:
-            // typedef std::chrono::duration<double, std::chrono::seconds::period> seconds;
+            #ifndef WIN32
+            typedef std::chrono::duration<double, std::chrono::seconds::period> seconds;
+            #endif
+
             Timer(std::string name = "Timer");
             void Reset();
             double GetTime();
             std::string GetName();
         private:
-            // std::chrono::high_resolution_clock::time_point StartTime;
+            #ifdef WIN32
             LARGE_INTEGER StartTime;
+            #else
+            std::chrono::high_resolution_clock::time_point StartTime;
+            #endif
+            
             std::string Name;
     };
 

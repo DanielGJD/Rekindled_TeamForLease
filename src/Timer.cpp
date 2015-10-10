@@ -15,15 +15,16 @@ namespace ForLeaseEngine {
         Reset();
     }
 
-    // void Timer::Reset() { StartTime = std::chrono::high_resolution_clock::now(); }
-    
-    void Timer::Reset() { QueryPerformanceCounter(&StartTime); }
-
-    // double Timer::GetTime() {
-        // return seconds(std::chrono::high_resolution_clock::now() - StartTime).count();
-    // }
+    void Timer::Reset() {
+        #ifdef WIN32
+        QueryPerformanceCounter(&StartTime);
+        #else
+        StartTime = std::chrono::high_resolution_clock::now();
+        #endif
+    }
     
     double Timer::GetTime() {
+        #ifdef WIN32
         LARGE_INTEGER current;
         QueryPerformanceCounter(&current);
         LARGE_INTEGER ticks;
@@ -34,6 +35,9 @@ namespace ForLeaseEngine {
         seconds /= frequency.QuadPart;
         
         return seconds;
+        #else
+        return seconds(std::chrono::high_resolution_clock::now() - StartTime).count();
+        #endif
     }
 
     std::string Timer::GetName() {
