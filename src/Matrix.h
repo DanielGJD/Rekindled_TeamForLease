@@ -37,7 +37,7 @@ namespace ForLeaseEngine {
 
 		static Matrix RotationRad(float radians);
         static Matrix RotationDeg(float degrees);
-        static Matrix Translation(const Vector& v);
+        static Matrix Translation(const Hcoord& v);
         static Matrix Scale(float x, float y);
 	};
 }

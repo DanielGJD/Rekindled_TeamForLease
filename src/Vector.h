@@ -42,7 +42,7 @@ namespace ForLeaseEngine {
 	public:
 		Vector();
 		Vector(float x, float y);
-		Vector(Hcoord& v);
+		Vector(const Hcoord& v);
 		void Normalize();
 		static float DotProduct(Vector vec1, Vector vec2);
     static Vector Scale(Vector vec, float magnitude);
@@ -62,7 +62,7 @@ namespace ForLeaseEngine {
 	public:
 		Point();
 		Point(float x, float y);
-		Point(Hcoord& v);
+		Point(const Hcoord& v);
 		Vector operator-(const Point& rhs) const;
 		Point operator+(const Vector& rhs) const;
 		Point& operator+=(const Vector& rhs);

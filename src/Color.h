@@ -35,10 +35,10 @@ namespace ForLeaseEngine {
             Color();
             Color(float r, float g, float b);
             Color(float r, float g, float b, float a);
-            float GetR();
-            float GetG();
-            float GetB();
-            float GetA();
+            float GetR() const;
+            float GetG() const;
+            float GetB() const;
+            float GetA() const;
             void SetR(float r);
             void SetG(float g);
             void SetB(float b);

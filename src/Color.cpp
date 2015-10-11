@@ -60,7 +60,7 @@ namespace ForLeaseEngine {
         \return
             Red component
     */
-    float Color::GetR() { return ColorComponents[0]; }
+    float Color::GetR() const { return ColorComponents[0]; }
 
     /*!
         \brief
@@ -69,7 +69,7 @@ namespace ForLeaseEngine {
         \return
             Green component
     */
-    float Color::GetG() { return ColorComponents[1]; }
+    float Color::GetG() const { return ColorComponents[1]; }
 
     /*!
         \brief
@@ -78,7 +78,7 @@ namespace ForLeaseEngine {
         \return
             Blue component
     */
-    float Color::GetB() { return ColorComponents[2]; }
+    float Color::GetB() const { return ColorComponents[2]; }
 
     /*!
         \brief
@@ -87,7 +87,7 @@ namespace ForLeaseEngine {
         \return
             Alpha component
     */
-    float Color::GetA() { return ColorComponents[3]; }
+    float Color::GetA() const { return ColorComponents[3]; }
 
     /*!
         \brief

@@ -100,7 +100,7 @@ namespace ForLeaseEngine {
 	  \param v
 	    Hcoord being converted to a point
 	*/
-	Point::Point(Hcoord& v) : Hcoord(v) { w = 1; }
+	Point::Point(const Hcoord& v) : Hcoord(v) { w = 1; }
 
 	/*!
 	  \brief
@@ -127,7 +127,7 @@ namespace ForLeaseEngine {
 	  \param v
 	    Hcoord being converted to a vector
 	*/
-	Vector::Vector(Hcoord& v) : Hcoord(v) { w = 0; }
+	Vector::Vector(const Hcoord& v) : Hcoord(v) { w = 0; }
 
 	/*!
 	  \brief

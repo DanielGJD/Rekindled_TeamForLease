@@ -233,7 +233,15 @@ namespace ForLeaseEngine {
             }
 
             glEnable(GL_BLEND);
-
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            //glDisable(GL_BLEND);
+            //glDisable(GL_TEXTURE_2D);
+            //glDisable(GL_ALPHA_TEST);
+            //glDisable(GL_DITHER);
+            //glDisable(GL_DEPTH_TEST);
             //std::cout << glGetString(GL_VERSION) << std::endl;
             //std::cout << glGetString(GL_EXTENSIONS) << std::endl;
         }

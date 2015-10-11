@@ -10,7 +10,7 @@
 #include "ComponentTransform.h"
 
 namespace ForLeaseEngine {
-    
+
     namespace Components {
 
         /*!
@@ -40,10 +40,10 @@ namespace ForLeaseEngine {
                 Defaults to 0.
         */
         Transform::Transform(Entity& owner, float positionX, float positionY,
-            float scaleX, float scaleY, float rotation)
+            float scaleX, float scaleY, float rotation, int zOrder)
             : Component(owner, ComponentType::Transform),
               Position(positionX, positionY), ScaleX(scaleX), ScaleY(scaleY),
-              Rotation(rotation) {}
+              Rotation(rotation), ZOrder(zOrder) {}
 
         /*!
             Constructor for a new Transform component.
@@ -67,9 +67,9 @@ namespace ForLeaseEngine {
                 Defaults to 0.
         */
         Transform::Transform(Entity& owner, Point position, float scaleX,
-            float scaleY, float rotation)
+            float scaleY, float rotation, int zOrder)
             : Component(owner, ComponentType::Transform), Position(position),
-              ScaleX(scaleX), ScaleY(scaleY), Rotation(rotation) {}
+              ScaleX(scaleX), ScaleY(scaleY), Rotation(rotation), ZOrder(zOrder) {}
 
     } // Components
 

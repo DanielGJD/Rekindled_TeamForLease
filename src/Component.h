@@ -32,7 +32,9 @@ namespace ForLeaseEngine {
         Collision           = 1 << 3,   //! Collision
         Camera              = 1 << 4,   //! Camera
         Sprite              = 1 << 5,   //! Sprite
-        Model               = 1 << 6    //! Model
+        Model               = 1 << 6,   //! Model
+        SpriteText          = 1 << 7,   //! Sprite text
+        Renderer            = 1 << 8    //! Renderer
 
     };
 
