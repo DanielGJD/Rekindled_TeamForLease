@@ -30,10 +30,10 @@ namespace ForLeaseEngine {
             public:
                 Transform(Entity& owner, float positionX = 0,
                     float positionY = 0, float scaleX = 1, float scaleY = 1,
-                    float rotation = 0);
+                    float rotation = 0, int zOrder = 0);
 
                 Transform(Entity& owner, Point position, float scaleX = 1,
-                    float scaleY = 1, float rotation = 0);
+                    float scaleY = 1, float rotation = 0, int zOrder = 0);
 
                 ~Transform() {};
                 void Update() {};
@@ -42,6 +42,7 @@ namespace ForLeaseEngine {
                 float ScaleX;   //! Scale on the X axis
                 float ScaleY;   //! Scale on the Y axis
                 float Rotation; //! Rotation in radians
+                int   ZOrder;   //! Draw order, higher drawn first
             private:
                 Transform() = delete;
 

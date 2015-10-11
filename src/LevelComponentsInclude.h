@@ -12,5 +12,6 @@
 #include "LevelComponent.h"
 #include "LevelComponentCollision.h"
 #include "LevelComponentPhysics.h"
+#include "LevelComponentRenderer.h"
 
 #endif

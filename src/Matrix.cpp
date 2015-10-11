@@ -212,7 +212,7 @@ namespace ForLeaseEngine {
 	  \return
 	    Resulting matrix
 	*/
-	Matrix Matrix::Translation(const Vector& v)
+	Matrix Matrix::Translation(const Hcoord& v)
 	{
 		Matrix result;
 		result[0][2] = v[0];
