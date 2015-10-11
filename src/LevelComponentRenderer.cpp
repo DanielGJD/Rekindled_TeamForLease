@@ -23,6 +23,7 @@
 #include "SpriteText.h"
 #include "Color.h"
 #include "Component.h"
+#include "Timer.h"
 //#include "ComponentSpriteText.h"
 
 namespace ForLeaseEngine {
@@ -42,6 +43,7 @@ namespace ForLeaseEngine {
         }
 
         void Renderer::Update(std::vector<Entity*>& entities) {
+            Timer renderTimer = Timer();
             VertexCount = 0;
             TriCount = 0;
             LineCount = 0;
@@ -80,6 +82,7 @@ namespace ForLeaseEngine {
                     DrawMesh(model->ModelMesh);
                 }
             }
+            RenderTime = renderTimer.GetTime();
         }
 
         void Renderer::SetCamera(Entity** camera) {
