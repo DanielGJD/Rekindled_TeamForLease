@@ -1,5 +1,5 @@
-#ifndef RENDERER_H
-#define RENDERER_H
+#ifndef LEVEL_COMPONENT_RENDERER_H
+#define LEVEL_COMPONENT_RENDERER_H
 
 #include "LevelComponent.h"
 #include "Entity.h"
