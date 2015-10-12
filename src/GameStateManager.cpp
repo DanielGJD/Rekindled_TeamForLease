@@ -9,6 +9,7 @@
 
 #include "GameStateManager.h"
 #include "Engine.h"
+#include "State.h"
 
 namespace ForLeaseEngine {
 

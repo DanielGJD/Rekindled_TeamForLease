@@ -16,7 +16,6 @@
 #include "Vector.h"
 #include "Entity.h"
 #include "LevelComponent.h"
-#include "Engine.h"
 
 namespace ForLeaseEngine {
     
@@ -31,7 +30,7 @@ namespace ForLeaseEngine {
         */
         class Collision : public LevelComponent {
             public:
-                Collision(Engine& owner);
+                Collision(State& owner);
                 void Update(std::vector<Entity *>& entities);
                 bool CheckCollision(Entity* entity1, Entity* entity2);
                 void ResolveCollision(Entity* entity1, Entity* entity2);

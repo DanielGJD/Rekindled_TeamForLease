@@ -11,11 +11,12 @@
 #define GAMESTATEMANAGER_H
 
 #include <vector>
-#include "State.h"
+#include <string>
 
 namespace ForLeaseEngine {
 
     class Engine;
+    class State;
 
     namespace Modules {
 

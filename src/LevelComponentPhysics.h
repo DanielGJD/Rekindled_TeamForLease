@@ -14,7 +14,6 @@
 #include "ComponentPhysics.h"
 #include "ComponentTransform.h"
 #include "Vector.h"
-#include "Engine.h"
 
 namespace ForLeaseEngine {
 
@@ -30,7 +29,7 @@ namespace ForLeaseEngine {
         */
         class Physics : public LevelComponent {
             public:
-                Physics(Engine& owner, Vector gravity = Vector(0, -1));
+                Physics(State& owner, Vector gravity = Vector(0, -1));
                 void Update(std::vector<Entity *>& entities);
                 void ApplyGravity(Entity* entity);
                 void Compute(Entity* entity);

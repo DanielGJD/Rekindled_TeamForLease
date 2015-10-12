@@ -14,6 +14,8 @@
 #include <string>
 #include "Entity.h"
 #include "StateExceptions.h"
+#include "LevelComponentsInclude.h"
+#include "Component.h"
 
 namespace ForLeaseEngine {
 
@@ -35,15 +37,20 @@ namespace ForLeaseEngine {
             virtual void Deinitialize() = 0;
             virtual void Unload() = 0;
 
+            void UpdateEntities();
+            void AddLevelComponent(LevelComponent* levelComponent);
             Entity* AddEntity();
             Entity* GetEntityByID(long unsigned id, bool throwOnFail = false);
 
             std::string GetName();
         protected:
-            std::string Name;               //! Name of the state
-            std::vector<Entity*> Entities;  //! The entities in the state
+            std::string Name;                               //! Name of the state
+            std::vector<LevelComponent*> LevelComponents;   //! The level components in the state
+            std::vector<Entity*> Entities;                  //! The entities in the state
 
     };
+
+    void AddLevelComponentsToState(ComponentType mask, State* state);
 
 } // ForLeaseEngine
 

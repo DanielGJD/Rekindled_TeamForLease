@@ -18,12 +18,12 @@ namespace ForLeaseEngine {
             Constructor for the new Physics level component.
 
             \param owner
-                A reference to the Engine instance that created it.
+                A reference to the State that created it.
 
             \param gravity
                 A vector to use as the gravity to be applied each frame.
         */
-        Physics::Physics(Engine& owner, Vector gravity)
+        Physics::Physics(State& owner, Vector gravity)
             : LevelComponent(owner, ComponentType::Physics), Gravity(gravity) {}
 
         /*!

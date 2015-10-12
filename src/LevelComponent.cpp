@@ -8,11 +8,11 @@
 */
 
 #include "LevelComponent.h"
-#include "Engine.h"
+#include "State.h"
 
 namespace ForLeaseEngine {
 
-    LevelComponent::LevelComponent(Engine& owner, ComponentType componentMask)
+    LevelComponent::LevelComponent(State& owner, ComponentType componentMask)
         : Owner(owner), ComponentMask(componentMask) {}
 
     bool LevelComponent::CheckEntityCompatibility(Entity* entity) {

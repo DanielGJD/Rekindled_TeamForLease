@@ -17,7 +17,7 @@
 #include "LevelComponentRenderer.h"
 #include "Entity.h"
 #include "GraphicsException.h"
-#include "Engine.h"
+#include "State.h"
 #include "ComponentSprite.h"
 #include "ComponentModel.h"
 #include "SpriteText.h"
@@ -28,7 +28,7 @@
 
 namespace ForLeaseEngine {
     namespace LevelComponents {
-        Renderer::Renderer(Engine& owner) : LevelComponent(owner) {
+        Renderer::Renderer(State& owner) : LevelComponent(owner) {
             DrawColor = Color(1, 1, 1, 1);
             ClearColor = Color(0, 0, 0, 1);
             CurrentCamera = NULL;

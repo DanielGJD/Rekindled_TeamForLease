@@ -19,9 +19,9 @@ namespace ForLeaseEngine {
             Constructor for a new Collision LevelComponent.
 
             \param owner
-                The Engine instance that created this Collision LevelComponent.
+                The State instance that created this Collision LevelComponent.
         */
-        Collision::Collision(Engine& owner) : LevelComponent(owner, ComponentType::Collision) {}
+        Collision::Collision(State& owner) : LevelComponent(owner, ComponentType::Collision) {}
 
         /*!
             Update function.  Loops through all entities and checks collisions.

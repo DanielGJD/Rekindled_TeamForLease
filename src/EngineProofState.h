@@ -1,7 +1,7 @@
 #ifndef ENGINE_PROOF_STATE_H
 #define ENGINE_PROOF_STATE_H
 
-#include "Renderer.h"
+#include "LevelComponentRenderer.h"
 #include "Mesh.h"
 #include "Vector.h"
 #include "Engine.h"

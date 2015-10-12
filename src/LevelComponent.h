@@ -12,19 +12,20 @@
 
 #include "Component.h"
 #include "Entity.h"
+#include "Engine.h"
 #include <vector>
 
 namespace ForLeaseEngine {
 
-    class Engine;
+    class State;
 
     class LevelComponent {
         public:
-            LevelComponent(Engine& owner, ComponentType componentMask = ComponentType::None);
+            LevelComponent(State& owner, ComponentType componentMask = ComponentType::None);
             virtual void Update(std::vector<Entity *>& entities) = 0;
             bool CheckEntityCompatibility(Entity*  entity);
         private:
-            Engine& Owner;
+            State& Owner;
             ComponentType ComponentMask;
     };
 

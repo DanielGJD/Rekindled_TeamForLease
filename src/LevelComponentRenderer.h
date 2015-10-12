@@ -3,7 +3,7 @@
 
 #include "LevelComponent.h"
 #include "Entity.h"
-#include "Engine.h"
+#include "State.h"
 #include "SpriteText.h"
 #include "ComponentSprite.h"
 #include "ComponentModel.h"
@@ -16,7 +16,7 @@ namespace ForLeaseEngine {
     namespace LevelComponents {
         class Renderer : public LevelComponent {
             public:
-                Renderer(Engine& owner);
+                Renderer(State& owner);
                 void Update(std::vector<Entity*>& entities);
                 void SetCamera(Entity** camera);
                 void SetClearColor(float r, float g, float b, float a);

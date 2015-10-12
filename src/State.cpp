@@ -28,6 +28,15 @@ namespace ForLeaseEngine {
             delete entity;
     }
 
+    void State::UpdateEntities() {
+        for (LevelComponent* levelComponent : LevelComponents)
+            levelComponent->Update(Entities);
+    }
+
+    void State::AddLevelComponent(LevelComponent* levelComponent) {
+        LevelComponents.push_back(levelComponent);
+    }
+
     /*!
         Adds an entity to the Entities vector in the state.
 
@@ -71,5 +80,24 @@ namespace ForLeaseEngine {
             The std::string name.
     */
     std::string State::GetName() { return Name; }
+
+    /*!
+        Add a level component (or multiple level components) to a given state.
+
+        \param mask
+            The mask of ComponentTypes for the LevelComponents we want to add.
+
+        \param state
+            The state to add the level component to.
+    */
+    void AddLevelComponentsToState(ComponentType mask, State* state) {
+        if (mask == ComponentType::None)
+            return;
+
+        if ((mask & ComponentType::Physics) == ComponentType::Physics)
+            state->AddLevelComponent(new LevelComponents::Physics(*state));
+        if ((mask & ComponentType::Collision) == ComponentType::Collision)
+            state->AddLevelComponent(new LevelComponents::Collision(*state));
+    }
 
 }
