@@ -4,7 +4,7 @@
 #include "LevelComponent.h"
 #include "Entity.h"
 #include "Engine.h"
-#include "SpriteText.h"
+#include "ComponentSpriteText.h"
 #include "ComponentSprite.h"
 #include "ComponentModel.h"
 #include "Mesh.h"
@@ -26,7 +26,7 @@ namespace ForLeaseEngine {
 
                 // For debug purposes, may be removed at any time, do not use
                 void DrawSprite(Components::Sprite* sprite);
-                void DrawSpriteText(SpriteText* text);
+                void DrawSpriteText(Components::SpriteText* spriteText, const Point& position, float scaleX, float scaleY, float rotation);
                 void DrawModel(Components::Model* model);
                 void SetModelView(Components::Transform* transform);
                 //void DrawParticleSystem(ParticleSystem* system); For later

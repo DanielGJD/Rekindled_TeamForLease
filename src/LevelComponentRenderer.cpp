@@ -20,7 +20,7 @@
 #include "Engine.h"
 #include "ComponentSprite.h"
 #include "ComponentModel.h"
-#include "SpriteText.h"
+#include "ComponentSpriteText.h"
 #include "Color.h"
 #include "Component.h"
 #include "Timer.h"
@@ -81,6 +81,13 @@ namespace ForLeaseEngine {
                                 Matrix::Translation(o - model->ModelMesh->GetCenter());
                     DrawMesh(model->ModelMesh);
                 }
+                else if(entity->HasComponent(ComponentType::SpriteText)) {
+                    Components::Transform* transform = entity->GetComponent<Components::Transform*>(ComponentType::Transform);
+                    Components::SpriteText* spriteText = entity->GetComponent<Components::SpriteText*>(ComponentType::SpriteText);
+                    SetBlendMode(BlendMode::ALPHA);
+                    SetDrawingColor(spriteText->TextColor);
+                    DrawSpriteText(spriteText, transform->Position, 1, 1, 0);
+                }
             }
             RenderTime = renderTimer.GetTime();
         }
@@ -102,6 +109,11 @@ namespace ForLeaseEngine {
         void Renderer::SetDrawingColor(const Color& color) {
             DrawColor = color;
             glColor4f(color.GetR(), color.GetG(), color.GetB(), color.GetA());
+        }
+
+        void Renderer::SetDrawingColor(float r, float g, float b, float a) {
+            DrawColor.SetAll(r, g, b, a);
+            glColor4f(r, g, b, a);
         }
 
         void Renderer::SetBlendMode(BlendMode mode) {
@@ -132,7 +144,33 @@ namespace ForLeaseEngine {
             DrawTextureRegion(sprite->GetCurrentRegion());
         }
 
-        void Renderer::DrawSpriteText(SpriteText* text) {
+        // Currently a little weird, doesn't support scaling or rotation
+        void Renderer::DrawSpriteText(Components::SpriteText* spriteText, const Point& position, float scaleX, float scaleY, float rotation) {
+            //SetModelView(position, scaleX, scaleY, rotation);
+            std::string text = spriteText->Text;
+            Font* font = spriteText->GetFont();
+            float xMargin = position[0];
+            Point currentDrawingLoc(position[0], position[1] - font->Base);
+            for(unsigned int i = 0; i < text.length(); ++i) {
+                char currentLetter = text.at(i);
+                if(currentLetter == '\n') {
+                    currentDrawingLoc[0] = xMargin;
+                    currentDrawingLoc[1] -= font->LineHeight;
+                } else {
+                    Glyph currentGlyph = font->GetGlyph(currentLetter);
+                    Point glyphDrawingLoc;
+                    glyphDrawingLoc[0] = currentDrawingLoc[0] + currentGlyph.Offset[0] + currentGlyph.Width / 2;
+                    glyphDrawingLoc[1] = currentDrawingLoc[1] - currentGlyph.Offset[1] - currentGlyph.Height / 2;
+                    SetModelView(glyphDrawingLoc, scaleX, scaleY, rotation);
+                    DrawTextureRegion(&currentGlyph.Region);
+                    //DrawRectangle(glyphDrawingLoc, currentGlyph.Region.GetWidth(), currentGlyph.Region.GetHeight());
+                    //DrawTextureRegion(Point(shiftedLoc[0] - currentGlyph.Offset[0] * 3, shiftedLoc[1] - currentGlyph.Offset[1] * 0.5f), &currentGlyph.Region, scaleX, scaleY, rotation);
+                    //DrawRectangle(Point(shiftedLoc[0] - currentGlyph.Offset[0] * 3, shiftedLoc[1] - currentGlyph.Offset[1] * 0.5f), currentGlyph.Region.GetWidth(), currentGlyph.Region.GetHeight());
+                    currentDrawingLoc[0] += currentGlyph.XAdvance;
+                    //shiftedLoc[0] += currentGlyph.XAdvance;
+                    TriCount += 2;
+                }
+            }
         }
 
         void Renderer::DrawModel(Components::Model* model) {
@@ -267,11 +305,6 @@ namespace ForLeaseEngine {
                     ++TriCount;
                 }
             glEnd();
-        }
-
-        void Renderer::SetDrawingColor(float r, float g, float b, float a) {
-            DrawColor.SetAll(r, g, b, a);
-            glColor4f(r, g, b, a);
         }
 
         void Renderer::SetTexture(Texture* texture) {
