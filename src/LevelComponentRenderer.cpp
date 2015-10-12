@@ -71,7 +71,7 @@ namespace ForLeaseEngine {
                     SetModelView(transform);
                     DrawSprite(sprite);
                 }
-                else if(entity->HasComponent(ComponentType::Model)) {
+                if(entity->HasComponent(ComponentType::Model)) {
                     Components::Model* model = entity->GetComponent<Components::Model*>(ComponentType::Model);
                     Components::Transform* transform = entity->GetComponent<Components::Transform*>(ComponentType::Transform);
                     Point o;
@@ -81,7 +81,7 @@ namespace ForLeaseEngine {
                                 Matrix::Translation(o - model->ModelMesh->GetCenter());
                     DrawMesh(model->ModelMesh);
                 }
-                else if(entity->HasComponent(ComponentType::SpriteText)) {
+                if(entity->HasComponent(ComponentType::SpriteText)) {
                     Components::Transform* transform = entity->GetComponent<Components::Transform*>(ComponentType::Transform);
                     Components::SpriteText* spriteText = entity->GetComponent<Components::SpriteText*>(ComponentType::SpriteText);
                     SetBlendMode(BlendMode::ALPHA);
