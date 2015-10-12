@@ -20,7 +20,7 @@ namespace ForLeaseEngine {
                 The entity that uses this Collision component.
         */
         Collision::Collision(Entity& owner)
-            : Component(owner, ComponentType::Collision, ComponentType::Transform) {}
+            : Component(owner, ComponentType::Transform) {}
         
     } // Components
     

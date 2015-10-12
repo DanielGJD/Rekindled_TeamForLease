@@ -3,7 +3,7 @@
 
 namespace ForLeaseEngine {
     namespace Components {
-        Sprite::Sprite(Entity& parent) : Component(parent, ComponentType::Sprite, ComponentType::Transform) {
+        Sprite::Sprite(Entity& parent) : Component(parent, ComponentType::Transform) {
             Visible = true;
             SpriteColor = Color(1, 1, 1);
             BlendingMode = BlendMode::ALPHA;

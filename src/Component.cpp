@@ -69,8 +69,8 @@ namespace ForLeaseEngine {
             A ComponentType mask of all Components that must already be on the
             parent Entity to allow this Component to be added too.
     */
-    Component::Component(Entity& parent, ComponentType type, ComponentType required)
-        : Parent(parent), Type(type), Required(required) {}
+    Component::Component(Entity& parent, ComponentType required)
+        : Parent(parent), Required(required) {}
 
     /*!
         Returns the Type of this component, which lets the user know the type of
@@ -78,7 +78,7 @@ namespace ForLeaseEngine {
         \return
             A ComponentType that determines this Component's type.
     */
-    ComponentType Component::GetType() { return Type; }
+    // ComponentType Component::GetType() { return Type; }
 
     /*!
         Returns a mask of the Components that need to be on the Entity for this

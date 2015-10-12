@@ -38,7 +38,7 @@ namespace ForLeaseEngine {
             for (Entity* entity1 : entities) {
                 if (!CheckEntityCompatibility(entity1)) continue;
 
-                reinterpret_cast<Components::Collision *>(entity1->GetComponent(ComponentType::Collision))->CollidedLastFrame = false;
+                entity1->GetComponent<Components::Collision>()->CollidedLastFrame = false;
 
                 for (Entity* entity2 : entities) {
                     if (entity2 == entity1 || !CheckEntityCompatibility(entity2)) continue;
@@ -66,10 +66,10 @@ namespace ForLeaseEngine {
                 Not well done.
         */
         bool Collision::CheckCollision(Entity* entity1, Entity* entity2) {
-            Point entity1Position = reinterpret_cast<Components::Transform *>(entity1->GetComponent(ComponentType::Transform))->Position;
-            Point entity2Position = reinterpret_cast<Components::Transform *>(entity2->GetComponent(ComponentType::Transform))->Position;
-            Components::Collision* entity1Collision = reinterpret_cast<Components::Collision *>(entity1->GetComponent(ComponentType::Collision));
-            Components::Collision* entity2Collision = reinterpret_cast<Components::Collision *>(entity2->GetComponent(ComponentType::Collision));
+            Point entity1Position = entity1->GetComponent<Components::Transform>()->Position;
+            Point entity2Position = entity2->GetComponent<Components::Transform>()->Position;
+            Components::Collision* entity1Collision = entity1->GetComponent<Components::Collision>();
+            Components::Collision* entity2Collision = entity2->GetComponent<Components::Collision>();
 
             if (entity2Position[0] + entity2Collision->Width > entity1Position[0] &&
                 entity1Position[0] + entity1Collision->Width > entity2Position[0] &&
@@ -97,8 +97,8 @@ namespace ForLeaseEngine {
                 Not well done.
         */
         void Collision::ResolveCollision(Entity* entity1, Entity* entity2) {
-            Components::Collision* entity1Collision = reinterpret_cast<Components::Collision *>(entity1->GetComponent(ComponentType::Collision));
-            Components::Collision* entity2Collision = reinterpret_cast<Components::Collision *>(entity2->GetComponent(ComponentType::Collision));
+            Components::Collision* entity1Collision = entity1->GetComponent<Components::Collision>();
+            Components::Collision* entity2Collision = entity2->GetComponent<Components::Collision>();
 
             std::cout << entity1Collision->ResolveCollisions << " " << entity2Collision->ResolveCollisions << std::endl;
 
@@ -139,8 +139,8 @@ namespace ForLeaseEngine {
                 A pointer that toResolve is colliding with.
         */
         void Collision::ResolveCollisionOneEntityOnly(Entity* toResolve, Entity* other) {
-            Components::Transform* toResolveTransform = reinterpret_cast<Components::Transform *>(toResolve->GetComponent(ComponentType::Transform));
-            Components::Physics*   toResolvePhysics   = reinterpret_cast<Components::Physics   *>(toResolve->GetComponent(ComponentType::Physics));
+            Components::Transform* toResolveTransform = toResolve->GetComponent<Components::Transform>();
+            Components::Physics*   toResolvePhysics   = toResolve->GetComponent<Components::Physics>();
 
             //toResolveTransform->Position -= toResolvePhysics->Velocity * 2 * ForLease->FrameRateController().GetDt();
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

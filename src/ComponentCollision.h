@@ -25,6 +25,7 @@ namespace ForLeaseEngine {
         */
         class Collision : public Component {
             public:
+                static const ComponentType Type = ComponentType::Collision;
                 Collision(Entity& owner);
                 void Update() {}
                 float Height;           //! Height of the collision box

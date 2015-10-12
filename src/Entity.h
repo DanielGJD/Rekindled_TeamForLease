@@ -26,6 +26,7 @@ namespace ForLeaseEngine {
         public:
             Entity();
             ~Entity();
+            void Update();
             long unsigned GetID();
             void AddComponent(Component* component);
             ComponentType GetComponentMask();
@@ -40,14 +41,14 @@ namespace ForLeaseEngine {
                     A boolean determining whether to throw an error on failure, rather
                     than the default behavior, which is to return a null pointer.
             */
-            template <typename T = Component*>
-            T GetComponent(ComponentType type, bool throwOnFail = false) {
-                if (type == ComponentType::None && throwOnFail)
+            template <typename T = Component>
+            T* GetComponent(bool throwOnFail = false) {
+                if (T::Type == ComponentType::None && throwOnFail)
                     throw EntityException(ID, "No component specified.");
 
                 for (Component* component : Components)
-                    if (component->GetType() == type)
-                        return reinterpret_cast<T>(component);
+                    if (component->Type == T::Type)
+                        return reinterpret_cast<T*>(component);
 
                 if (throwOnFail) throw EntityException(ID, "Error finding component.");
 

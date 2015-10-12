@@ -53,16 +53,16 @@ namespace ForLeaseEngine {
     {
 
         public:
-            Component(Entity& parent, ComponentType type = ComponentType::None,
-                      ComponentType required = ComponentType::None);
+            static const ComponentType Type = ComponentType::None;
+            Component(Entity& parent, ComponentType required = ComponentType::None);
             virtual ~Component() {};
-            ComponentType GetType();
+            // ComponentType GetType();
             ComponentType GetRequired();
             virtual void Update() = 0;
         protected:
             const Entity& Parent;
         private:
-            const ComponentType Type;     //! The type of component.
+            // const ComponentType Type;     //! The type of component.
             const ComponentType Required; //! A mask of all components required for this component
 
     };

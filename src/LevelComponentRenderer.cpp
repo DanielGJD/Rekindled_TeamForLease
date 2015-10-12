@@ -53,8 +53,8 @@ namespace ForLeaseEngine {
 
             if(*CurrentCamera != NULL) {
                 float aspectRatio = ForLease->GameWindow->GetYResolution() / ForLease->GameWindow->GetXResolution();
-                Components::Transform* transform = (*CurrentCamera)->GetComponent<Components::Transform*>(ComponentType::Transform);
-                Components::Camera* camera = (*CurrentCamera)->GetComponent<Components::Camera*>(ComponentType::Camera);
+                Components::Transform* transform = (*CurrentCamera)->GetComponent<Components::Transform>();
+                Components::Camera* camera = (*CurrentCamera)->GetComponent<Components::Camera>();
                 SetProjection(transform->Position, camera->Size, camera->Size * aspectRatio, camera->Near, camera->Far, transform->Rotation);
                 //std::cout << "Set camera" << std::endl;
             }
@@ -66,14 +66,14 @@ namespace ForLeaseEngine {
             for(unsigned int i = 0; i < entities.size(); ++i) {
                 Entity* entity = entities[i];
                 if(entity->HasComponent(ComponentType::Sprite)) {
-                    Components::Sprite* sprite = entity->GetComponent<Components::Sprite*>(ComponentType::Sprite);
-                    Components::Transform* transform = entity->GetComponent<Components::Transform*>(ComponentType::Transform);
+                    Components::Sprite* sprite = entity->GetComponent<Components::Sprite>();
+                    Components::Transform* transform = entity->GetComponent<Components::Transform>();
                     SetModelView(transform);
                     DrawSprite(sprite);
                 }
                 if(entity->HasComponent(ComponentType::Model)) {
-                    Components::Model* model = entity->GetComponent<Components::Model*>(ComponentType::Model);
-                    Components::Transform* transform = entity->GetComponent<Components::Transform*>(ComponentType::Transform);
+                    Components::Model* model = entity->GetComponent<Components::Model>();
+                    Components::Transform* transform = entity->GetComponent<Components::Transform>();
                     Point o;
                     ModelView = Matrix::Translation(transform->Position) *
                                 Matrix::Translation(model->ModelMesh->GetCenter()) *
@@ -82,8 +82,8 @@ namespace ForLeaseEngine {
                     DrawMesh(model->ModelMesh);
                 }
                 if(entity->HasComponent(ComponentType::SpriteText)) {
-                    Components::Transform* transform = entity->GetComponent<Components::Transform*>(ComponentType::Transform);
-                    Components::SpriteText* spriteText = entity->GetComponent<Components::SpriteText*>(ComponentType::SpriteText);
+                    Components::Transform* transform = entity->GetComponent<Components::Transform>();
+                    Components::SpriteText* spriteText = entity->GetComponent<Components::SpriteText>();
                     SetBlendMode(BlendMode::ALPHA);
                     SetDrawingColor(spriteText->TextColor);
                     DrawSpriteText(spriteText, transform->Position, 1, 1, 0);

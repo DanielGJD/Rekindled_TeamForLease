@@ -33,7 +33,7 @@ namespace ForLeaseEngine {
                 Blend mode for model
         */
         Model::Model(Entity& parent, Mesh* mesh, Texture* texture, Color color, BlendMode blend)
-                    : Component(parent, ComponentType::Model, ComponentType::Transform),
+                    : Component(parent, ComponentType::Transform),
                       ModelMesh(mesh), ModelTexture(texture), ModelColor(color), BlendingMode(blend) {}
 
         /*!

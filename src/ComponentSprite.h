@@ -11,6 +11,7 @@ namespace ForLeaseEngine {
     namespace Components {
         class Sprite : public Component {
             public:
+                static const ComponentType Type = ComponentType::Sprite;
                 Sprite(Entity& parent);
                 ~Sprite();
 

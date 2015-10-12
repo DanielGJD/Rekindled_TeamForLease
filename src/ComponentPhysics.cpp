@@ -37,7 +37,7 @@ namespace ForLeaseEngine {
         */
         Physics::Physics(Entity& owner, float mass, Vector velocity,
             Vector acceleration, Vector force)
-            : Component(owner, ComponentType::Physics, ComponentType::Transform),
+            : Component(owner, ComponentType::Transform),
               Mass(mass), Velocity(velocity), Acceleration(acceleration),
               Force(force) {}
 

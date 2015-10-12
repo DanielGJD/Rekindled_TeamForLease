@@ -30,6 +30,14 @@ namespace ForLeaseEngine {
     }
 
     /*!
+        Update function for an Entity.  Updates all components attached to it.
+    */
+    void Entity::Update() {
+        for (Component* component : Components)
+            component->Update();
+    }
+
+    /*!
         Returns the ID of this Entity.
 
         \return
@@ -47,7 +55,7 @@ namespace ForLeaseEngine {
 
     */
     void Entity::AddComponent(Component* component) {
-        if (static_cast<bool>(ComponentMask & component->GetType())) {
+        if (static_cast<bool>(ComponentMask & component->Type)) {
             delete component;
             return;
         }
@@ -56,7 +64,7 @@ namespace ForLeaseEngine {
             return;
         }
 
-        ComponentMask |= component->GetType();
+        ComponentMask |= component->Type;
         Components.push_back(component);
     }
 

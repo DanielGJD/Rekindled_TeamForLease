@@ -26,6 +26,7 @@ namespace ForLeaseEngine {
         */
         class Model : public Component {
             public:
+                static const ComponentType Type = ComponentType::Model;
                 Model(Entity& parent, Mesh* mesh, Texture* texture, Color color = Color(1, 1, 1, 1), BlendMode blend = BlendMode::NONE);
                 ~Model();
 

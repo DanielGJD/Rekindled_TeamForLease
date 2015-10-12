@@ -8,6 +8,7 @@ namespace ForLeaseEngine {
     namespace Components {
         class Camera : public Component {
             public:
+                static const ComponentType Type = ComponentType::Camera;
                 float Near;
                 float Far;
                 float Size;

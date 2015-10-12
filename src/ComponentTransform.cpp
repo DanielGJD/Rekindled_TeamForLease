@@ -41,9 +41,8 @@ namespace ForLeaseEngine {
         */
         Transform::Transform(Entity& owner, float positionX, float positionY,
             float scaleX, float scaleY, float rotation, int zOrder)
-            : Component(owner, ComponentType::Transform),
-              Position(positionX, positionY), ScaleX(scaleX), ScaleY(scaleY),
-              Rotation(rotation), ZOrder(zOrder) {}
+            : Component(owner), Position(positionX, positionY), ScaleX(scaleX),
+              ScaleY(scaleY), Rotation(rotation), ZOrder(zOrder) {}
 
         /*!
             Constructor for a new Transform component.
@@ -68,8 +67,8 @@ namespace ForLeaseEngine {
         */
         Transform::Transform(Entity& owner, Point position, float scaleX,
             float scaleY, float rotation, int zOrder)
-            : Component(owner, ComponentType::Transform), Position(position),
-              ScaleX(scaleX), ScaleY(scaleY), Rotation(rotation), ZOrder(zOrder) {}
+            : Component(owner), Position(position), ScaleX(scaleX),
+              ScaleY(scaleY), Rotation(rotation), ZOrder(zOrder) {}
 
     } // Components
 

@@ -51,7 +51,7 @@ namespace ForLeaseEngine {
             vector to the Acceleration vector.
         */
         void Physics::ApplyGravity(Entity* entity) {
-            Components::Physics* physicsComponent = reinterpret_cast<Components::Physics *>(entity->GetComponent(ComponentType::Physics));
+            Components::Physics* physicsComponent = entity->GetComponent<Components::Physics>();
 
             physicsComponent->Acceleration += Gravity;
         }
@@ -64,8 +64,8 @@ namespace ForLeaseEngine {
                 A pointer to the entity to compute physics for.
         */
         void Physics::Compute(Entity* entity) {
-            Components::Physics* physicsComponent = reinterpret_cast<Components::Physics *>(entity->GetComponent(ComponentType::Physics));
-            Components::Transform* transformComponent = reinterpret_cast<Components::Transform *>(entity->GetComponent(ComponentType::Transform));
+            Components::Physics* physicsComponent = entity->GetComponent<Components::Physics>();
+            Components::Transform* transformComponent = entity->GetComponent<Components::Transform>();
 
             physicsComponent->Velocity += physicsComponent->Acceleration * ForLease->FrameRateController().GetDt();
             transformComponent->Position += physicsComponent->Velocity * ForLease->FrameRateController().GetDt();
@@ -79,7 +79,7 @@ namespace ForLeaseEngine {
                 A pointer to the entity to clean up.
         */
         void Physics::Cleanup(Entity* entity) {
-            Components::Physics* physicsComponent = reinterpret_cast<Components::Physics *>(entity->GetComponent(ComponentType::Physics));
+            Components::Physics* physicsComponent = entity->GetComponent<Components::Physics>();
             physicsComponent->Acceleration[0] = 0;
             physicsComponent->Acceleration[1] = 0;
             physicsComponent->Force[0] = 0;
