@@ -29,6 +29,8 @@ namespace ForLeaseEngine {
     }
 
     void State::UpdateEntities() {
+        for (Entity* entity : Entities)
+            entity->Update();
         for (LevelComponent* levelComponent : LevelComponents)
             levelComponent->Update(Entities);
     }
