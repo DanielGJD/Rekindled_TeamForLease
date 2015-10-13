@@ -89,6 +89,7 @@ namespace ForLeaseEngine {
                     DrawSpriteText(spriteText, transform->Position, 1, 1, 0);
                 }
             }
+            glFinish();
             RenderTime = renderTimer.GetTime();
         }
 
