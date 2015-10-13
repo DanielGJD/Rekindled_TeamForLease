@@ -1,7 +1,7 @@
 #ifndef SERIALIZER_H
 #define SERIALIZER_H
 
-#include "../libs/jsoncpp/json.h"
+#include "json.h"
 #include "Vector.h"
 #include <vector>
 
