@@ -9,7 +9,7 @@
 #include "Texture.h"
 #include "TextureRegion.h"
 #include "Mesh.h"
-#include "SpriteText.h"
+//#include "SpriteText.h"
 #include "BmFont.h"
 #include <iostream>
 #include <cmath>
