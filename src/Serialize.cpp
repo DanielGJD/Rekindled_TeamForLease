@@ -132,6 +132,121 @@ namespace ForLeaseEngine
 
     /*!
         \brief
+            Writes an array of ints to the node
+
+        \param path
+            String needed to access the array
+
+        \param a
+            Array to be stored. If using std::vector, pass &vec[0]
+
+        \param size
+            Size of the array
+    */
+    void Serializer::WriteIntArray(const std::string& path, const int* a, const int size)
+    {
+        Json::Value arrayNode(Json::arrayValue);
+
+        for (int i = 0; i < size; i++)
+            arrayNode.append(a[i]);
+
+        node[path] = arrayNode;
+    }
+
+    /*!
+        \brief
+            Writes an array of unsigned ints to the node
+
+        \param path
+            String needed to access the array
+
+        \param a
+            Array to be stored. If using std::vector, pass &vec[0]
+
+        \param size
+            Size of the array
+    */
+    void Serializer::WriteUintArray(const std::string& path, const unsigned* a, const int size)
+    {
+        Json::Value arrayNode(Json::arrayValue);
+
+        for (int i = 0; i < size; i++)
+            arrayNode.append(a[i]);
+
+        node[path] = arrayNode;
+    }
+
+    /*!
+        \brief
+            Writes an array of floats to the node
+
+        \param path
+            String needed to access the array
+
+        \param a
+            Array to be stored. If using std::vector, pass &vec[0]
+
+        \param size
+            Size of the array
+    */
+    void Serializer::WriteFloatArray(const std::string& path, const float* a, const int size)
+    {
+        Json::Value arrayNode(Json::arrayValue);
+
+        for (int i = 0; i < size; i++)
+            arrayNode.append(a[i]);
+
+        node[path] = arrayNode;
+    }
+
+    /*!
+        \brief
+            Writes an array of strings to the node
+
+        \param path
+            String needed to access the array
+
+        \param a
+            Array to be stored. If using std::vector, pass &vec[0]
+
+        \param size
+            Size of the array
+    */
+    void Serializer::WriteStringArray(const std::string& path, const std::string* a, const int size)
+    {
+        Json::Value arrayNode(Json::arrayValue);
+
+        for (int i = 0; i < size; i++)
+            arrayNode.append(a[i]);
+
+        node[path] = arrayNode;
+    }
+
+    /*!
+        \brief
+            Writes an array of bools to the node
+
+        \param path
+            String needed to access the array
+
+        \param a
+            Array to be stored
+
+        \param size
+            Size of the array
+    */
+    void Serializer::WriteBoolArray(const std::string& path, const bool* a, const int size)
+    {
+        Json::Value arrayNode(Json::arrayValue);
+
+        for (int i = 0; i < size; i++)
+            arrayNode.append(a[i]);
+
+        node[path] = arrayNode;
+    }
+
+    /*!
+        \brief
             Reads an integer from the node
 
         \param path
@@ -220,6 +335,93 @@ namespace ForLeaseEngine
         v[0] = node[path]["X"].asFloat();
         v[1] = node[path]["Y"].asFloat();
     }
+
+    /*!
+        \brief
+            Reads an array of ints from the node
+
+        \param path
+            String needed to access the array
+
+        \param a
+            Array being read into. If using std::vector, pass &vec[0]
+
+        \param size
+            Size of the array
+    */
+    void Serializer::ReadIntArray(const std::string& path, int* a) const
+    {
+        for (unsigned i = 0; i < node[path].size(); i++)
+            a[i] = node[path][i].asInt();
+    }
+
+    /*!
+        \brief
+            Reads an array of unsigned ints from the node
+
+        \param path
+            String needed to access the array
+
+        \param a
+            Array being read into. If using std::vector, pass &vec[0]
+
+        \param size
+            Size of the array
+    */
+    void Serializer::ReadUintArray(const std::string& path, unsigned* a) const
+    {
+        for (unsigned i = 0; i < node[path].size(); i++)
+            a[i] = node[path][i].asUInt();
+    }
+
+    /*!
+        \brief
+            Reads an array of floats from the node
+
+        \param path
+            String needed to access the array
+
+        \param a
+            Array being read into. If using std::vector, pass &vec[0]
+    */
+    void Serializer::ReadFloatArray(const std::string& path, float* a) const
+    {
+        for (unsigned i = 0; i < node[path].size(); i++)
+            a[i] = node[path][i].asFloat();
+    }
+
+    /*!
+        \brief
+            Reads an array of strings from the node
+
+        \param path
+            String needed to access the array
+
+        \param a
+            Array being read into. If using std::vector, pass &vec[0]
+    */
+    void Serializer::ReadStringArray(const std::string& path, std::string* a) const
+    {
+        for (unsigned i = 0; i < node[path].size(); i++)
+            a[i] = node[path][i].asString();
+    }
+
+    /*!
+        \brief
+            Reads an array of bools from the node
+
+        \param path
+            String needed to access the array
+
+        \param a
+            Array being read into
+    */
+    void Serializer::ReadBoolArray(const std::string& path, bool* a) const
+    {
+        for (unsigned i = 0; i < node[path].size(); i++)
+            a[i] = node[path][i].asBool();
+    }
+
 
     /*!
         \brief
