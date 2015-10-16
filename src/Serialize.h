@@ -12,22 +12,22 @@ namespace ForLeaseEngine
     private:
         Json::Value node;
     public:
-        void ReadFile(std::string& filename);
-        void WriteFile(std::string& filename);
-        void WriteInt(std::string& path, int i);
-        void WriteUint(std::string& path, unsigned u);
-        void WriteFloat(std::string& path, float f);
-        void WriteString(std::string& path, std::string& s);
-        void WriteBool(std::string& path, bool b);
-        void WriteVec(std::string& path, Hcoord& v);
-        void ReadInt(std::string& path, int& i);
-        void ReadUint(std::string& path, unsigned& u);
-        void ReadFloat(std::string& path, float& f);
-        void ReadString(std::string& path, std::string& s);
-        void ReadBool(std::string& path, bool& b);
+        void ReadFile(const std::string& filename);
+        void WriteFile(const std::string& filename);
+        void WriteInt(const std::string& path, int i);
+        void WriteUint(const std::string& path, unsigned u);
+        void WriteFloat(const std::string& path, float f);
+        void WriteString(const std::string& path, const std::string& s);
+        void WriteBool(const std::string& path, bool b);
+        void WriteVec(const std::string& path, Hcoord& v);
+        void ReadInt(const std::string& path, int& i);
+        void ReadUint(const std::string& path, unsigned& u);
+        void ReadFloat(const std::string& path, float& f);
+        void ReadString(const std::string& path, std::string& s);
+        void ReadBool(const std::string& path, bool& b);
         Serializer& operator=(const Serializer& rhs);
-        Serializer GetChild(std::string& path);
-        void Append(Serializer& child, std::string& path);
+        Serializer GetChild(const std::string& path);
+        void Append(Serializer& child, const std::string& path);
         std::vector<std::string> GetMemberNames();
     };
 }

@@ -14,6 +14,7 @@
 #include "Face.h"
 #include "Color.h"
 #include "Mesh.h"
+#include <sstream>
 
 namespace ForLeaseEngine {
     /*!
@@ -37,16 +38,144 @@ namespace ForLeaseEngine {
         FaceColors = new Color[numFaces];
     }
 
+    Mesh::Mesh() : Vertices(NULL), UVs(NULL), Edges(NULL), Faces(NULL), FaceColors(NULL), VertexCount(0), EdgeCount(0), FaceCount(0) {}
+
     /*!
         \brief
             Cleans up resources created by the mesh
     */
     Mesh::~Mesh() {
-        delete Vertices;
-        delete UVs;
-        delete Edges;
-        delete Faces;
-        delete FaceColors;
+        if(Vertices)
+            delete Vertices;
+        if(UVs)
+            delete UVs;
+        if(Edges)
+            delete Edges;
+        if(Faces)
+            delete Faces;
+        if(FaceColors)
+            delete FaceColors;
+    }
+
+    void Mesh::Serialize(Serializer& root) {
+        root.WriteInt("VertexCount", VertexCount);
+        root.WriteInt("EdgeCount", EdgeCount);
+        root.WriteInt("FaceCount", FaceCount);
+
+        // Write verts
+        for(int i = 0; i < VertexCount; ++i) {
+            std::stringstream ss;
+            ss << "Vertex" << i;
+            Serializer vert = root.GetChild(ss.str());
+            vert.WriteFloat("X", Vertices[i][0]);
+            vert.WriteFloat("Y", Vertices[i][1]);
+            root.Append(vert, ss.str());
+        }
+
+        // Write UVs
+        for(int i = 0; i < VertexCount; ++i) {
+            std::stringstream ss;
+            ss << "UV" << i;
+            Serializer uv = root.GetChild(ss.str());
+            uv.WriteFloat("U", UVs[i][0]);
+            uv.WriteFloat("V", UVs[i][1]);
+            root.Append(uv, ss.str());
+        }
+
+        // Write edges
+        for(int i = 0; i < EdgeCount; ++i) {
+            std::stringstream ss;
+            ss << "Edge" << i;
+            Serializer edge = root.GetChild(ss.str());
+            edge.WriteInt("I1", Edges[i].Indices[0]);
+            edge.WriteInt("I2", Edges[i].Indices[1]);
+            root.Append(edge, ss.str());
+        }
+
+        // Write faces
+        for(int i = 0; i < FaceCount; ++i) {
+            std::stringstream ss;
+            ss << "Face" << i;
+            Serializer face = root.GetChild(ss.str());
+            face.WriteInt("I1", Faces[i].Indices[0]);
+            face.WriteInt("I2", Faces[i].Indices[1]);
+            face.WriteInt("I3", Faces[i].Indices[2]);
+            root.Append(face, ss.str());
+        }
+
+        // Write face colors
+        for(int i = 0; i < FaceCount; ++i) {
+            std::stringstream ss;
+            ss << "FaceColor" << i;
+            Serializer faceColor = root.GetChild(ss.str());
+            faceColor.WriteFloat("R", FaceColors[i].GetR());
+            faceColor.WriteFloat("G", FaceColors[i].GetG());
+            faceColor.WriteFloat("B", FaceColors[i].GetB());
+            faceColor.WriteFloat("A", FaceColors[i].GetA());
+            root.Append(faceColor, ss.str());
+        }
+    }
+
+    void Mesh::Deserialize(Serializer& root) {
+        root.ReadInt("VertexCount", VertexCount);
+        root.ReadInt("EdgeCount", EdgeCount);
+        root.ReadInt("FaceCount", FaceCount);
+
+        Vertices = new Point[VertexCount];
+        UVs = new Point[VertexCount];
+        Edges = new IndexedEdge[EdgeCount];
+        Faces = new IndexedFace[FaceCount];
+        FaceColors = new Color[FaceCount];
+
+        // read verts
+        for(int i = 0; i < VertexCount; ++i) {
+            std::stringstream ss;
+            ss << "Vertex" << i;
+            Serializer vert = root.GetChild(ss.str());
+            vert.ReadFloat("X", Vertices[i][0]);
+            vert.ReadFloat("Y", Vertices[i][1]);
+        }
+
+        // read uvs
+        for(int i = 0; i < VertexCount; ++i) {
+            std::stringstream ss;
+            ss << "UV" << i;
+            Serializer uv = root.GetChild(ss.str());
+            uv.ReadFloat("U", UVs[i][0]);
+            uv.ReadFloat("V", UVs[i][1]);
+        }
+
+        // read edges
+        for(int i = 0; i < EdgeCount; ++i) {
+            std::stringstream ss;
+            ss << "Edge" << i;
+            Serializer edge = root.GetChild(ss.str());
+            edge.ReadInt("I1", Edges[i].Indices[0]);
+            edge.ReadInt("I2", Edges[i].Indices[1]);
+        }
+
+        // read faces
+        for(int i = 0; i < FaceCount; ++i) {
+            std::stringstream ss;
+            ss << "Face" << i;
+            Serializer face = root.GetChild(ss.str());
+            face.ReadInt("I1", Faces[i].Indices[0]);
+            face.ReadInt("I2", Faces[i].Indices[1]);
+            face.ReadInt("I3", Faces[i].Indices[2]);
+        }
+
+        // read face colors
+        for(int i = 0; i < FaceCount; ++i) {
+            std::stringstream ss;
+            ss << "FaceColor" << i;
+            Serializer faceColor = root.GetChild(ss.str());
+            float r, g, b, a;
+            faceColor.ReadFloat("R", r);
+            faceColor.ReadFloat("G", g);
+            faceColor.ReadFloat("B", b);
+            faceColor.ReadFloat("A", a);
+            FaceColors[i].SetAll(r, g, b, a);
+        }
     }
 
     /*!

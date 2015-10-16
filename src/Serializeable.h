@@ -1,6 +1,8 @@
 #ifndef SERIALIZEABLE_H
 #define SERIALIZEABLE_H
 
+#include "Serialize.h"
+
 namespace ForLeaseEngine {
     class Serializeable {
         public:
