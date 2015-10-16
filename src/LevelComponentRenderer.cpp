@@ -56,6 +56,7 @@ namespace ForLeaseEngine {
                 Components::Transform* transform = (*CurrentCamera)->GetComponent<Components::Transform*>(ComponentType::Transform);
                 Components::Camera* camera = (*CurrentCamera)->GetComponent<Components::Camera*>(ComponentType::Camera);
                 SetProjection(transform->Position, camera->Size, camera->Size * aspectRatio, camera->Near, camera->Far, transform->Rotation);
+
                 //std::cout << "Set camera" << std::endl;
             }
             else {
@@ -74,6 +75,7 @@ namespace ForLeaseEngine {
                 if(entity->HasComponent(ComponentType::Model)) {
                     Components::Model* model = entity->GetComponent<Components::Model*>(ComponentType::Model);
                     Components::Transform* transform = entity->GetComponent<Components::Transform*>(ComponentType::Transform);
+                    SetBlendMode(BlendMode::NONE);
                     Point o;
                     ModelView = Matrix::Translation(transform->Position) *
                                 Matrix::Translation(model->ModelMesh->GetCenter()) *
