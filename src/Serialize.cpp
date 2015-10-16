@@ -1,93 +1,281 @@
+/*!
+    \file   Serialize.cpp
+    \author Sam Montanari
+    \date   10/12/15
+
+    \brief
+        Implementation of serialization class
+
+    \see Serialize.h
+*/
 #include "Serialize.h"
 #include <fstream>
 
 namespace ForLeaseEngine
 {
+    /*!
+        \brief
+            Reads a JSON file into a node.
+
+        \param filename
+            Name of the file being read from.
+    */
     void Serializer::ReadFile(const std::string& filename)
     {
         std::ifstream file(filename);
         file >> node;
     }
 
-    void Serializer::WriteFile(const std::string& filename)
+    /*!
+        \brief
+            Writes a node to a file
+
+        \param filename
+            Name of the file being written to.
+    */
+    void Serializer::WriteFile(const std::string& filename) const
     {
         std::ofstream file(filename);
         file << node << std::endl;
     }
 
-    void Serializer::WriteInt(const std::string& path, int i)
+    /*!
+        \brief
+            Writes an integer to the node
+
+        \param path
+            String key paired with the stored value
+
+        \param i
+            Integer being stored
+    */
+    void Serializer::WriteInt(const std::string& path, const int i)
     {
         node[path] = i;
     }
 
-    void Serializer::WriteUint(const std::string& path, unsigned u)
+    /*!
+        \brief
+            Writes an unsigned integer to the node
+
+        \param path
+            String key paired with the stored value
+
+        \param u
+            Unsigned integer being stored
+    */
+    void Serializer::WriteUint(const std::string& path, const unsigned u)
     {
         node[path] = u;
     }
 
-    void Serializer::WriteFloat(const std::string& path, float f)
+    /*!
+        \brief
+            Writes a float to the node
+
+        \param path
+            String key paired with the stored value
+
+        \param f
+            Float being stored
+    */
+    void Serializer::WriteFloat(const std::string& path, const float f)
     {
         node[path] = f;
     }
 
+    /*!
+        \brief
+            Writes a string to the node
+
+        \param path
+            String key paired with the stored value
+
+        \param s
+            String being stored
+    */
     void Serializer::WriteString(const std::string& path, const std::string& s)
     {
         node[path] = s;
     }
-    void Serializer::WriteBool(const std::string& path, bool b)
+
+    /*!
+        \brief
+            Writes a bool to the node
+
+        \param path
+            String key paired with the stored value
+
+        \param b
+            Boolean being stored
+    */
+    void Serializer::WriteBool(const std::string& path, const bool b)
     {
         node[path] = b;
     }
 
-    void Serializer::WriteVec(const std::string& path, Hcoord& v)
+    /*!
+        \brief
+            Writes a Hcoord object to the node
+
+        \param path
+            String key paired with the stored value
+
+        \param v
+            Hcoord being stored
+    */
+    void Serializer::WriteVec(const std::string& path, const Hcoord& v)
     {
         node[path]["X"] = v[0];
         node[path]["Y"] = v[1];
     }
 
-    void Serializer::ReadInt(const std::string& path, int& i)
+    /*!
+        \brief
+            Reads an integer from the node
+
+        \param path
+            String needed to access the value
+
+        \param i
+            Integer being read into
+    */
+    void Serializer::ReadInt(const std::string& path, int& i) const
     {
         i = node[path].asInt();
     }
 
-    void Serializer::ReadUint(const std::string& path, unsigned& u)
+    /*!
+        \brief
+            Reads an unsigned integer from the node
+
+        \param path
+            String needed to access the value
+
+        \param u
+            Unsigned integer being read into
+    */
+    void Serializer::ReadUint(const std::string& path, unsigned& u) const
     {
         u = node[path].asUInt();
     }
 
-    void Serializer::ReadFloat(const std::string& path, float& f)
+    /*!
+        \brief
+            Reads a float from the node
+
+        \param path
+            String needed to access the value
+
+        \param f
+            Float being read into
+    */
+    void Serializer::ReadFloat(const std::string& path, float& f) const
     {
         f = node[path].asFloat();
     }
 
-    void Serializer::ReadString(const std::string& path, std::string& s)
+    /*!
+        \brief
+            Reads a string from the node
+
+        \param path
+            String needed to access the value
+
+        \param s
+            String being read into
+    */
+    void Serializer::ReadString(const std::string& path, std::string& s) const
     {
         s = node[path].asString();
     }
 
-    void Serializer::ReadBool(const std::string& path, bool& b)
+    /*!
+        \brief
+            Reads a bool from the node
+
+        \param path
+            String needed to access the value
+
+        \param b
+            Boolean being read into
+    */
+    void Serializer::ReadBool(const std::string& path, bool& b) const
     {
         b = node[path].asBool();
     }
 
+    /*!
+        \brief
+            Reads a Hcoord object from the node
+
+        \param path
+            String needed to access the value
+
+        \param v
+            Hcoord being read into
+    */
+    void Serializer::ReadVec(const std::string& path, Hcoord& v) const
+    {
+        v[0] = node[path]["X"].asFloat();
+        v[1] = node[path]["Y"].asFloat();
+    }
+
+    /*!
+        \brief
+            Assignment operator for Serializer class
+
+        \param rhs
+            Serializer object on the right hand side of the operation
+
+        \return
+            Reference to the object being assigned to
+    */
     Serializer& Serializer::operator=(const Serializer& rhs)
     {
         node = rhs.node;
         return *this;
     }
 
-    Serializer Serializer::GetChild(const std::string& path)
+    /*!
+        \brief
+            Gets a child node of the JSON string
+
+        \param path
+            String needed to access the child
+
+        \return
+            Serializer object containing the child node
+    */
+    Serializer Serializer::GetChild(const std::string& path) const
     {
         Serializer result;
         result.node = node[path];
         return result;
     }
 
-    std::vector<std::string> Serializer::GetMemberNames()
+    /*!
+        \brief
+            Gets all child names under the parent
+
+        \return
+            Vector of strings containing all the child names
+    */
+    std::vector<std::string> Serializer::GetMemberNames() const
     {
         return node.getMemberNames();
     }
 
+    /*!
+        \brief
+            Writes the child node to the parent node
+
+        \param child
+            Child node to write to the parent
+
+        \param path
+            Path used to access the child
+    */
     void Serializer::Append(Serializer& child, const std::string& path)
     {
         node[path] = child.node;
