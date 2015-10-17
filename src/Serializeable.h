@@ -8,6 +8,7 @@ namespace ForLeaseEngine {
         public:
             virtual void Serialize(Serializer& root) = 0;
             virtual void Deserialize(Serializer& root) = 0;
+            virtual ~Serializeable() {}
     };
 }
 
