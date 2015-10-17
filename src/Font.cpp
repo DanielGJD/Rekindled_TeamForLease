@@ -1,5 +1,6 @@
 #include "Font.h"
 #include "BmFont.h"
+#include "Engine.h"
 #include <iostream>
 
 namespace ForLeaseEngine {
@@ -7,7 +8,9 @@ namespace ForLeaseEngine {
         FontTextures = new Texture*[font.Common.Pages];
         for(int i = 0; i < font.Common.Pages; ++i)
         {
-            FontTextures[i] = Texture::CreateTexture(font.Pages.PageNames[i]);
+//            FontTextures[i] = Texture::CreateTexture(font.Pages.PageNames[i]);
+            ForLease->Resources.LoadTexture(font.Pages.PageNames[i]);
+            FontTextures[i] = ForLease->Resources.GetTexture(font.Pages.PageNames[i]);
         }
         int numChars = font.Chars.BlockSize / sizeof(BmFontCharInfo);
         for(int i = 0; i < numChars; ++i) {
@@ -31,7 +34,8 @@ namespace ForLeaseEngine {
 
     Font::~Font() {
         for(int i = 0; i < NumTextures; ++i) {
-            Texture::DeleteTexture(FontTextures[i]);
+            //Texture::DeleteTexture(FontTextures[i]);
+            ForLease->Resources.UnloadTexture(FontTextures[i]->GetName());
             delete[] FontTextures;
         }
     }

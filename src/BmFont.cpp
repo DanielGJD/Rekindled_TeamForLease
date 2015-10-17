@@ -108,10 +108,10 @@ namespace ForLeaseEngine {
             }
         }
 
-        for(int i = 0; i < numPages; ++i) {
-            std::cout << pages.PageNames[i] << ", ";
-        }
-        std::cout << std::endl;
+//        for(int i = 0; i < numPages; ++i) {
+//            std::cout << pages.PageNames[i] << ", ";
+//        }
+//        std::cout << std::endl;
         return is;
     }
     std::istream& operator>>(std::istream& is, BmFontChars& chars) {

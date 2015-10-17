@@ -1,4 +1,6 @@
 #include "ComponentCamera.h"
+#include "Serializeable.h"
+#include "Serialize.h"
 
 namespace ForLeaseEngine {
     namespace Components {
@@ -9,5 +11,17 @@ namespace ForLeaseEngine {
         Camera::~Camera() {}
 
         void Camera::Update() {}
+
+        void Camera::Serialize(Serializer& root) {
+            root.WriteFloat("Near", Near);
+            root.WriteFloat("Far", Far);
+            root.WriteFloat("Size", Size);
+        }
+
+        void Camera::Deserialize(Serializer& root) {
+            root.ReadFloat("Near", Near);
+            root.ReadFloat("Far", Far);
+            root.ReadFloat("Size", Size);
+        }
     }
 }

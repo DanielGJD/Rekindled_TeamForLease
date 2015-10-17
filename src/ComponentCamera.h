@@ -3,10 +3,12 @@
 
 #include "Component.h"
 #include "Matrix.h"
+#include "Serializeable.h"
+#include "Serialize.h"
 
 namespace ForLeaseEngine {
     namespace Components {
-        class Camera : public Component {
+        class Camera : public Component, public Serializeable {
             public:
                 float Near;
                 float Far;
@@ -15,6 +17,9 @@ namespace ForLeaseEngine {
                 Camera(Entity& parent, float near, float far, float size);
                 ~Camera();
                 void Update();
+
+                void Serialize(Serializer& root);
+                void Deserialize(Serializer& root);
             private:
         };
     }
