@@ -53,6 +53,28 @@ namespace ForLeaseEngine {
         SetAll(r, g, b, a);
     }
 
+    void Color::Serialize(Serializer& root) {
+        Serializer color = root.GetChild("Color");
+        color.WriteFloat("R", GetR());
+        color.WriteFloat("G", GetG());
+        color.WriteFloat("B", GetB());
+        color.WriteFloat("A", GetA());
+        root.Append(color, "Color");
+    }
+
+    void Color::Deserialize(Serializer& root) {
+        Serializer color = root.GetChild("Color");
+        float component;
+        color.ReadFloat("R", component);
+        SetR(component);
+        color.ReadFloat("G", component);
+        SetG(component);
+        color.ReadFloat("B", component);
+        SetB(component);
+        color.ReadFloat("A", component);
+        SetA(component);
+    }
+
     /*!
         \brief
             Gets the red component

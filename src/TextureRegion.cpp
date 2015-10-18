@@ -5,7 +5,9 @@
 
 namespace ForLeaseEngine {
     TextureRegion::TextureRegion() {
-
+        TextureID = 0;
+        Width = 0;
+        Height = 0;
     }
 
     TextureRegion::TextureRegion(Texture* texture, int left, int right, int top, int bottom) {

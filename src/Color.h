@@ -10,6 +10,9 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+#include "Serializable.h"
+#include "Serialize.h"
+
 namespace ForLeaseEngine {
     /*!
         \class Color
@@ -17,7 +20,7 @@ namespace ForLeaseEngine {
         \brief
             A class that holds color data in 0 - 1 format.
     */
-    class Color {
+    class Color : public Serializable{
         public:
 //            static Color Red;
 //            static Color Orange;
@@ -35,6 +38,10 @@ namespace ForLeaseEngine {
             Color();
             Color(float r, float g, float b);
             Color(float r, float g, float b, float a);
+
+            void Serialize(Serializer& root);
+            void Deserialize(Serializer& root);
+
             float GetR() const;
             float GetG() const;
             float GetB() const;

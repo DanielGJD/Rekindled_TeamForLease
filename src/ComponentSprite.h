@@ -5,19 +5,26 @@
 #include "TextureRegion.h"
 #include "Component.h"
 #include "Entity.h"
+#include "Serializable.h"
+#include "Serialize.h"
 #include <vector>
 
 namespace ForLeaseEngine {
     namespace Components {
-        class Sprite : public Component {
+        class Sprite : public Component, public Serializable {
             public:
                 Sprite(Entity& parent);
                 ~Sprite();
+
+                void Serialize(Serializer& root);
+                void Deserialize(Serializer& root);
 
                 void Update();
                 int GetCurrentFrame();
                 void SetCurrentFrame(unsigned int frame);
                 TextureRegion* GetCurrentRegion();
+
+                friend std::ostream& operator<<(std::ostream& os, Sprite& rhs);
 
                 bool Visible;
                 Color SpriteColor;
