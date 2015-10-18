@@ -1,5 +1,5 @@
 #include "ComponentCamera.h"
-#include "Serializeable.h"
+#include "Serializable.h"
 #include "Serialize.h"
 
 namespace ForLeaseEngine {

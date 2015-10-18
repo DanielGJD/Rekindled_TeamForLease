@@ -15,7 +15,7 @@
 #include "Face.h"
 #include "Edge.h"
 #include "Color.h"
-#include "Serializeable.h"
+#include "Serializable.h"
 
 namespace ForLeaseEngine {
     /*!
@@ -24,7 +24,7 @@ namespace ForLeaseEngine {
         \brief
             Class that contains mesh data
     */
-    class Mesh : public Serializeable {
+    class Mesh : public Serializable {
         public:
             Mesh(int numVerts, int numEdges, int numFaces);
             Mesh();

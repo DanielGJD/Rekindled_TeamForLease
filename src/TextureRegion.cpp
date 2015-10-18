@@ -1,5 +1,5 @@
 #include "TextureRegion.h"
-#include "Serializeable.h"
+#include "Serializable.h"
 #include "Serialize.h"
 #include <sstream>
 

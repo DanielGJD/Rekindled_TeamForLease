@@ -3,11 +3,11 @@
 
 #include "Texture.h"
 #include "Vector.h"
-#include "Serializeable.h"
+#include "Serializable.h"
 #include "Serialize.h"
 
 namespace ForLeaseEngine {
-    class TextureRegion  : public Serializeable {
+    class TextureRegion  : public Serializable {
         public:
             TextureRegion();
             TextureRegion(Texture* texture, int left, int right, int top, int bottom);

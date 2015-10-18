@@ -1,15 +1,15 @@
-#ifndef SERIALIZEABLE_H
-#define SERIALIZEABLE_H
+#ifndef Serializable_H
+#define Serializable_H
 
 #include "Serialize.h"
 
 namespace ForLeaseEngine {
-    class Serializeable {
+    class Serializable {
         public:
             virtual void Serialize(Serializer& root) = 0;
             virtual void Deserialize(Serializer& root) = 0;
-            virtual ~Serializeable() {}
+            virtual ~Serializable() {}
     };
 }
 
-#endif // SERIALIZEABLE_H
+#endif // Serializable_H
