@@ -52,6 +52,7 @@ namespace ForLeaseEngine {
             BlendingMode = static_cast<BlendMode>(blendMode);
             int numFrames;
             sprite.ReadInt("NumFrames", numFrames);
+            SpriteSource.clear();
             for(int i = 0; i < numFrames; ++i) {
                 std::stringstream ss;
                 ss << "TextureRegion" << i;
@@ -90,7 +91,19 @@ namespace ForLeaseEngine {
 
         TextureRegion* Sprite::GetCurrentRegion() { return &SpriteSource[CurrentFrame]; }
 
-        std::ostream& operator<<(std::ostream& os, Sprite& sprite) {
+        std::ostream& operator<<(std::ostream& os, Sprite& rhs) {
+            os << "Visible: " << rhs.Visible << std::endl
+               << "Color: No output yet" << std::endl
+               << "Blend Mode: " << rhs.BlendingMode << std::endl
+               << "Frames: " << rhs.SpriteSource.size() << std::endl
+               << "FlipX: " << rhs.FlipX << std::endl
+               << "FlipY: " << rhs.FlipY << std::endl
+               << "Animation Active: " << rhs.AnimationActive << std::endl
+               << "Frame Rate: " << rhs.FrameRate << std::endl
+               << "Animation Speed: " << rhs.AnimationSpeed << std::endl
+               << "Start Frame: " << rhs.StartFrame << std::endl
+               << "Current Frame: " << rhs.CurrentFrame << std::endl
+               << "Frame Time: " << rhs.FrameTime;
             return os;
         }
     }

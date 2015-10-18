@@ -32,15 +32,36 @@ namespace ForLeaseEngine {
             \param blend
                 Blend mode for model
         */
-        Model::Model(Entity& parent, Mesh* mesh, Texture* texture, Color color, BlendMode blend)
+        Model::Model(Entity& parent, bool visible, const std::string& mesh, const std::string& texture, Color color, BlendMode blend)
                     : Component(parent, ComponentType::Model, ComponentType::Transform),
-                      ModelMesh(mesh), ModelTexture(texture), ModelColor(color), BlendingMode(blend) {}
+                      Visible(visible), ModelMesh(mesh), ModelTexture(texture), ModelColor(color), BlendingMode(blend) {}
 
         /*!
             \brief
                 Destructor, no functionality
         */
         Model::~Model() {}
+
+        void Model::Serialize(Serializer& root) {
+            Serializer model = root.GetChild("Model");
+            model.WriteBool("Visible", Visible);
+            model.WriteString("Mesh", ModelMesh);
+            model.WriteString("Texture", ModelTexture);
+            ModelColor.Serialize(model);
+            model.WriteInt("BlendingMode", BlendingMode);
+            root.Append(model, "Model");
+        }
+
+        void Model::Deserialize(Serializer& root) {
+            Serializer model = root.GetChild("Model");
+            model.ReadBool("Visible", Visible);
+            model.ReadString("Mesh", ModelMesh);
+            model.ReadString("Texture", ModelTexture);
+            ModelColor.Deserialize(model);
+            int blend;
+            model.ReadInt("BlendingMode", blend);
+            BlendingMode = static_cast<BlendMode>(blend);
+        }
 
         /*!
             \brief
