@@ -23,12 +23,12 @@ namespace ForLeaseEngine {
                 Color SpriteColor;
                 BlendMode BlendingMode;
                 std::vector<TextureRegion> SpriteSource;
-                //bool FlipX;
-                //bool FlipY;
+                bool FlipX;
+                bool FlipY;
                 bool AnimationActive;
                 float FrameRate;
                 float AnimationSpeed;
-                //int StartFrame;
+                int StartFrame;
 
             private:
                 float FrameTime;

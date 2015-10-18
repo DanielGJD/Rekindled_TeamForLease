@@ -7,12 +7,12 @@ namespace ForLeaseEngine {
             Visible = true;
             SpriteColor = Color(1, 1, 1);
             BlendingMode = BlendMode::ALPHA;
-            //FlipX;
-            //FlipY;
+            FlipX = false;
+            FlipY = false;
             AnimationActive = true;
             FrameRate = 24;
             AnimationSpeed = 1;
-            //StartFrame;
+            StartFrame = 0;
             FrameTime = 0;
             CurrentFrame = 0;
         }

@@ -24,6 +24,7 @@
 #include "Color.h"
 #include "Component.h"
 #include "Timer.h"
+#include "Engine.h"
 //#include "ComponentSpriteText.h"
 
 namespace ForLeaseEngine {
@@ -276,6 +277,7 @@ namespace ForLeaseEngine {
 
         void Renderer::DrawTextureRegion(TextureRegion* region) {
             //std::cout << "Drawing texture region" << std::endl;
+            Texture* texture = ForLease->Resources.GetTexture(region->GetTexture());
             float halfWidth = region->GetWidth() / 2;
             float halfHeight = region->GetHeight() / 2;
             Point vertices[] = {Point(halfWidth, halfHeight), Point(-halfWidth, halfHeight),
@@ -283,7 +285,7 @@ namespace ForLeaseEngine {
             for(int i = 0; i < 4; ++i) {
                 ModelToScreen(vertices[i], vertices[i]);
             }
-            SetTexture(region->GetTexture());
+            SetTexture(texture);
             glBegin(GL_QUADS);
                 for(int i = 0; i < 4; ++i) {
                     glTexCoord2f(region->GetUV()[i][0], region->GetUV()[i][1]);
