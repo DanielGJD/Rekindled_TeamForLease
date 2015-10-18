@@ -153,7 +153,7 @@ namespace ForLeaseEngine {
         void Renderer::DrawSpriteText(Components::SpriteText* spriteText, const Point& position, float scaleX, float scaleY, float rotation) {
             //SetModelView(position, scaleX, scaleY, rotation);
             std::string text = spriteText->Text;
-            Font* font = spriteText->GetFont();
+            Font* font = ForLease->Resources.GetFont(spriteText->GetFont());
             float xMargin = position[0];
             Point currentDrawingLoc(position[0], position[1] - font->Base);
             for(unsigned int i = 0; i < text.length(); ++i) {
