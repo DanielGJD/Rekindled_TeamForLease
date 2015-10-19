@@ -31,21 +31,27 @@ namespace ForLeaseEngine {
             Number of faces
     */
     Mesh::Mesh(int numVerts, int numEdges, int numFaces) : VertexCount(numVerts), EdgeCount(numEdges), FaceCount(numFaces) {
-        Vertices = new Point[numVerts];
+        /*Vertices = new Point[numVerts];
         UVs = new Point[numVerts];
         Edges = new IndexedEdge[numEdges];
         Faces = new IndexedFace[numFaces];
-        FaceColors = new Color[numFaces];
+        FaceColors = new Color[numFaces];*/
+        Vertices.resize(numVerts);
+        UVs.resize(numVerts);
+        Edges.resize(numEdges);
+        Faces.resize(numFaces);
+        FaceColors.resize(numFaces);
+
     }
 
-    Mesh::Mesh() : Vertices(NULL), UVs(NULL), Edges(NULL), Faces(NULL), FaceColors(NULL), VertexCount(0), EdgeCount(0), FaceCount(0) {}
+    Mesh::Mesh() : VertexCount(0), EdgeCount(0), FaceCount(0) {}
 
     /*!
         \brief
             Cleans up resources created by the mesh
     */
     Mesh::~Mesh() {
-        if(Vertices)
+        /*if(Vertices)
             delete Vertices;
         if(UVs)
             delete UVs;
@@ -54,7 +60,47 @@ namespace ForLeaseEngine {
         if(Faces)
             delete Faces;
         if(FaceColors)
-            delete FaceColors;
+            delete FaceColors;*/
+    }
+
+    void Mesh::AddVertex(float x, float y, float u, float v) {
+        AddVertex(Point(x, y), Point(u, v));
+    }
+
+    void Mesh::AddVertex(const Point& vertex, const Point& uv) {
+        Vertices.push_back(vertex);
+        UVs.push_back(uv);
+        ++VertexCount;
+    }
+
+    void Mesh::AddEdge(int v1, int v2) {
+        AddEdge(IndexedEdge(v1, v2));
+    }
+
+    void Mesh::AddEdge(const IndexedEdge& edge) {
+        Edges.push_back(edge);
+        ++EdgeCount;
+    }
+
+    void Mesh::AddFace(int v1, int v2, int v3, float r, float g, float b, float a) {
+        AddFace(IndexedFace(v1, v2, v3), Color(r, g, b, a));
+    }
+
+    void Mesh::AddFace(const IndexedFace& face, const Color& color) {
+        Faces.push_back(face);
+        FaceColors.push_back(color);
+        ++FaceCount;
+    }
+
+    void Mesh::ClearData() {
+        Vertices.clear();
+        UVs.clear();
+        Edges.clear();
+        Faces.clear();
+        FaceColors.clear();
+        VertexCount = 0;
+        EdgeCount = 0;
+        FaceCount = 0;
     }
 
     void Mesh::Serialize(Serializer& root) {
@@ -121,11 +167,16 @@ namespace ForLeaseEngine {
         root.ReadInt("EdgeCount", EdgeCount);
         root.ReadInt("FaceCount", FaceCount);
 
-        Vertices = new Point[VertexCount];
+        /*Vertices = new Point[VertexCount];
         UVs = new Point[VertexCount];
         Edges = new IndexedEdge[EdgeCount];
         Faces = new IndexedFace[FaceCount];
-        FaceColors = new Color[FaceCount];
+        FaceColors = new Color[FaceCount];*/
+        Vertices.resize(VertexCount);
+        UVs.resize(VertexCount);
+        Edges.resize(EdgeCount);
+        Faces.resize(FaceCount);
+        FaceColors.resize(FaceCount);
 
         // read verts
         for(int i = 0; i < VertexCount; ++i) {
