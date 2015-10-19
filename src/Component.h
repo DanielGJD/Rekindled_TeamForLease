@@ -11,6 +11,8 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
+#include "Serializable.h"
+#include "Serialize.h"
 #include <iostream>
 
 namespace ForLeaseEngine {
@@ -49,13 +51,15 @@ namespace ForLeaseEngine {
             A class that defines a Component.  All other components should
             inherit from this.
     */
-    class Component
+    class Component : public Serializable
     {
 
         public:
             Component(Entity& parent, ComponentType type = ComponentType::None,
                       ComponentType required = ComponentType::None);
             virtual ~Component() {};
+            virtual void Serialize(Serializer& root);
+            virtual void Deserialize(Serializer& root);
             ComponentType GetType();
             ComponentType GetRequired();
             virtual void Update() = 0;

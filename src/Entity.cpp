@@ -29,6 +29,19 @@ namespace ForLeaseEngine {
             delete component;
     }
 
+    void Entity::Serialize(Serializer& root) {
+        Serializer entity = root.GetChild("Entity");
+        entity.WriteInt("ID", static_cast<int>(ID));
+        for(unsigned int i = 0; i < Components.size(); ++i) {
+            Components[i]->Serialize(entity);
+        }
+        root.Append(entity, "Entity");
+    }
+
+    void Entity::Deserialize(Serializer& root) {
+
+    }
+
     /*!
         Returns the ID of this Entity.
 

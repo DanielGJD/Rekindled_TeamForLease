@@ -25,7 +25,7 @@ namespace ForLeaseEngine {
             \brief
                 Contains data on a model
         */
-        class Model : public Component, public Serializable {
+        class Model : public Component {
             public:
                 Model(Entity& parent, bool visible, const std::string& mesh, const std::string& texture, Color color = Color(1, 1, 1, 1), BlendMode blend = BlendMode::NONE);
                 ~Model();

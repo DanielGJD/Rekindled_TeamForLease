@@ -8,7 +8,7 @@
 
 namespace ForLeaseEngine {
     namespace Components {
-        class Camera : public Component, public Serializable {
+        class Camera : public Component {
             public:
                 float Near;
                 float Far;

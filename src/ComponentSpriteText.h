@@ -10,7 +10,7 @@
 
 namespace ForLeaseEngine {
     namespace Components {
-        class SpriteText : public Component, public Serializable {
+        class SpriteText : public Component {
             public:
                 SpriteText(Entity& owner, const std::string& font);
                 SpriteText(Entity& owner, const std::string& font, const std::string& text, const Color& textColor);

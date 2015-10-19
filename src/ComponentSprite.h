@@ -11,7 +11,7 @@
 
 namespace ForLeaseEngine {
     namespace Components {
-        class Sprite : public Component, public Serializable {
+        class Sprite : public Component {
             public:
                 Sprite(Entity& parent);
                 ~Sprite();
