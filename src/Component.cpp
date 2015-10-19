@@ -72,6 +72,10 @@ namespace ForLeaseEngine {
     Component::Component(Entity& parent, ComponentType required)
         : Parent(parent), Required(required) {}
 
+    void Component::Serialize(Serializer& root) {}
+
+    void Component::Deserialize(Serializer& root) {}
+
     /*!
         Returns the Type of this component, which lets the user know the type of
         Component that this is.

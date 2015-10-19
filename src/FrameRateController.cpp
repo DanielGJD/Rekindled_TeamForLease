@@ -14,11 +14,12 @@
 #else
 #include <chrono>
 #endif
-
+#include "Timer.h"
+#include <iostream>
 // #include "Engine.h"
 
 namespace ForLeaseEngine {
-    
+
     /*!
     \namespace Modules
     \brief
@@ -33,7 +34,7 @@ namespace ForLeaseEngine {
 
         /*!
             Constructor for FrameRateController.  Creates a new instance of FrameRateController, using either a default value or a user-provided one.
-            
+
             \param parent
                 A reference to the parent engine.  Saved in Parent.
             \param framesPerSecond
@@ -60,7 +61,7 @@ namespace ForLeaseEngine {
             QueryPerformanceFrequency(&frequency);
             LARGE_INTEGER frameTicks;
             frameTicks.QuadPart = frequency.QuadPart * FrameTime;
-            
+
             EndTime.QuadPart = StartTime.QuadPart + frameTicks.QuadPart;
             #else
             StartTime = std::chrono::high_resolution_clock::now();
@@ -73,10 +74,11 @@ namespace ForLeaseEngine {
             End the current frame's timing, and sleep until the end of the frame's allotted time.
         */
         void FrameRateController::End() {
+            Timer muhTimer;
             #ifdef FLE_WINDOWS
             LARGE_INTEGER currentTime;
             QueryPerformanceCounter(&currentTime);
-            
+
             while (currentTime.QuadPart < EndTime.QuadPart)
                 QueryPerformanceCounter(&currentTime);
 
@@ -89,6 +91,7 @@ namespace ForLeaseEngine {
                 currentTime = std::chrono::high_resolution_clock::now();
             LastFrameTime = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - StartTime);
             #endif
+            //std::cout << muhTimer.GetTime() << std::endl;
         }
 
         /*!
@@ -101,7 +104,7 @@ namespace ForLeaseEngine {
             return std::chrono::duration_cast<seconds>(LastFrameTime).count();
             #endif
         }
-        
+
         /*!
             Get the time allotted for each frame.
         */
@@ -112,7 +115,7 @@ namespace ForLeaseEngine {
             return std::chrono::duration_cast<seconds>(FrameTime).count();
             #endif
         }
-    
+
     } // Modules
 
 } // ForLeaseEngine

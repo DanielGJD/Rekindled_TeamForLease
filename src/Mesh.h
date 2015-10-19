@@ -15,6 +15,7 @@
 #include "Face.h"
 #include "Edge.h"
 #include "Color.h"
+#include "Serializable.h"
 
 namespace ForLeaseEngine {
     /*!
@@ -23,10 +24,14 @@ namespace ForLeaseEngine {
         \brief
             Class that contains mesh data
     */
-    class Mesh {
+    class Mesh : public Serializable {
         public:
             Mesh(int numVerts, int numEdges, int numFaces);
+            Mesh();
             ~Mesh();
+
+            void Serialize(Serializer& root);
+            void Deserialize(Serializer& root);
 
             void SetCenter(const Point& newCenter);
             const Point& GetCenter() const;
@@ -65,6 +70,9 @@ namespace ForLeaseEngine {
             int EdgeCount;
             //! Number of faces
             int FaceCount;
+
+            Mesh(Mesh& original) = delete;
+            Mesh& operator=(Mesh& rhs) = delete;
     };
 }
 

@@ -208,8 +208,9 @@ namespace ForLeaseEngine {
                                 FLE_GL_MAJOR_VERSION);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,
                                 FLE_GL_MINOR_VERSION);
-            SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-            SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+            //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+            //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+            SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
             window = SDL_CreateWindow(properties.windowTitle.c_str(),
                                       SDL_WINDOWPOS_UNDEFINED,
@@ -239,9 +240,11 @@ namespace ForLeaseEngine {
             glLoadIdentity();
             //glDisable(GL_BLEND);
             //glDisable(GL_TEXTURE_2D);
-            //glDisable(GL_ALPHA_TEST);
-            //glDisable(GL_DITHER);
-            //glDisable(GL_DEPTH_TEST);
+            glDisable(GL_ALPHA_TEST);
+            glDisable(GL_DITHER);
+            glDisable(GL_DEPTH_TEST);
+            glDisable(GL_LIGHTING);
+            glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
             //std::cout << glGetString(GL_VERSION) << std::endl;
             //std::cout << glGetString(GL_EXTENSIONS) << std::endl;
         }

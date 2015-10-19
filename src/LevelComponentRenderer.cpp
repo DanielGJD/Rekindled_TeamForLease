@@ -24,6 +24,7 @@
 #include "Color.h"
 #include "Component.h"
 #include "Timer.h"
+#include "Engine.h"
 //#include "ComponentSpriteText.h"
 
 namespace ForLeaseEngine {
@@ -56,6 +57,7 @@ namespace ForLeaseEngine {
                 Components::Transform* transform = (*CurrentCamera)->GetComponent<Components::Transform>();
                 Components::Camera* camera = (*CurrentCamera)->GetComponent<Components::Camera>();
                 SetProjection(transform->Position, camera->Size, camera->Size * aspectRatio, camera->Near, camera->Far, transform->Rotation);
+
                 //std::cout << "Set camera" << std::endl;
             }
             else {
@@ -74,12 +76,14 @@ namespace ForLeaseEngine {
                 if(entity->HasComponent(ComponentType::Model)) {
                     Components::Model* model = entity->GetComponent<Components::Model>();
                     Components::Transform* transform = entity->GetComponent<Components::Transform>();
+                    Mesh* mesh = ForLease->Resources.GetMesh(model->ModelMesh);
+                    SetBlendMode(model->BlendingMode);
                     Point o;
                     ModelView = Matrix::Translation(transform->Position) *
-                                Matrix::Translation(model->ModelMesh->GetCenter()) *
+                                Matrix::Translation(mesh->GetCenter()) *
                                 Matrix::RotationRad(transform->Rotation) * Matrix::Scale(transform->ScaleX, transform->ScaleY) *
-                                Matrix::Translation(o - model->ModelMesh->GetCenter());
-                    DrawMesh(model->ModelMesh);
+                                Matrix::Translation(o - mesh->GetCenter());
+                    DrawMesh(mesh);
                 }
                 if(entity->HasComponent(ComponentType::SpriteText)) {
                     Components::Transform* transform = entity->GetComponent<Components::Transform>();
@@ -89,6 +93,7 @@ namespace ForLeaseEngine {
                     DrawSpriteText(spriteText, transform->Position, 1, 1, 0);
                 }
             }
+            glFinish();
             RenderTime = renderTimer.GetTime();
         }
 
@@ -148,7 +153,7 @@ namespace ForLeaseEngine {
         void Renderer::DrawSpriteText(Components::SpriteText* spriteText, const Point& position, float scaleX, float scaleY, float rotation) {
             //SetModelView(position, scaleX, scaleY, rotation);
             std::string text = spriteText->Text;
-            Font* font = spriteText->GetFont();
+            Font* font = ForLease->Resources.GetFont(spriteText->GetFont());
             float xMargin = position[0];
             Point currentDrawingLoc(position[0], position[1] - font->Base);
             for(unsigned int i = 0; i < text.length(); ++i) {
@@ -175,8 +180,8 @@ namespace ForLeaseEngine {
 
         void Renderer::DrawModel(Components::Model* model) {
             SetBlendMode(model->BlendingMode);
-            SetTexture(model->ModelTexture);
-            DrawMesh(model->ModelMesh);
+            SetTexture(ForLease->Resources.GetTexture(model->ModelTexture));
+            DrawMesh(ForLease->Resources.GetMesh(model->ModelMesh));
         }
 
         void Renderer::SetModelView(Components::Transform* transform) {
@@ -273,6 +278,7 @@ namespace ForLeaseEngine {
 
         void Renderer::DrawTextureRegion(TextureRegion* region) {
             //std::cout << "Drawing texture region" << std::endl;
+            Texture* texture = ForLease->Resources.GetTexture(region->GetTexture());
             float halfWidth = region->GetWidth() / 2;
             float halfHeight = region->GetHeight() / 2;
             Point vertices[] = {Point(halfWidth, halfHeight), Point(-halfWidth, halfHeight),
@@ -280,7 +286,7 @@ namespace ForLeaseEngine {
             for(int i = 0; i < 4; ++i) {
                 ModelToScreen(vertices[i], vertices[i]);
             }
-            SetTexture(region->GetTexture());
+            SetTexture(texture);
             glBegin(GL_QUADS);
                 for(int i = 0; i < 4; ++i) {
                     glTexCoord2f(region->GetUV()[i][0], region->GetUV()[i][1]);

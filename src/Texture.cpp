@@ -23,8 +23,8 @@ namespace ForLeaseEngine {
         Texture* texture = new Texture(id, filename, surface->w, surface->h);
         SDL_FreeSurface(surface);
 
-        std::cout << "Created texture:" << std::endl << "ID: " << static_cast<unsigned int>(texture->GetID()) << std::endl
-                  << "Filename: " << texture->GetName() << std::endl << "Dimensions: " << texture->GetWidth() << "x" << texture->GetHeight() << std::endl;
+        /*std::cout << "Created texture:" << std::endl << "ID: " << static_cast<unsigned int>(texture->GetID()) << std::endl
+                  << "Filename: " << texture->GetName() << std::endl << "Dimensions: " << texture->GetWidth() << "x" << texture->GetHeight() << std::endl;*/
         return texture;
     }
 

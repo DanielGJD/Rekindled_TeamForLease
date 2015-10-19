@@ -13,6 +13,8 @@
 #include <vector>
 #include "ComponentsInclude.h"
 #include "EntityExceptions.h"
+#include "Serializable.h"
+#include "Serialize.h"
 
 namespace ForLeaseEngine {
 
@@ -21,12 +23,14 @@ namespace ForLeaseEngine {
         \brief
             The base class for all game objects.
     */
-    class Entity {
+    class Entity : public Serializable{
 
         public:
             Entity();
             ~Entity();
             void Update();
+            void Serialize(Serializer& root);
+            void Deserialize(Serializer& root);
             long unsigned GetID();
             void AddComponent(Component* component);
             ComponentType GetComponentMask();

@@ -5,21 +5,28 @@
 #include "Font.h"
 #include "Component.h"
 #include "Color.h"
+#include "Serializable.h"
+#include "Serialize.h"
 
 namespace ForLeaseEngine {
     namespace Components {
         class SpriteText : public Component {
             public:
                 static const ComponentType Type = ComponentType::SpriteText;
-                SpriteText(Entity& owner, Font* font);
-                SpriteText(Entity& owner, Font* font, std::string text, const Color& textColor);
+
+                SpriteText(Entity& owner, const std::string& font);
+                SpriteText(Entity& owner, const std::string& font, const std::string& text, const Color& textColor);
+
+                void Serialize(Serializer& root);
+                void Deserialize(Serializer& root);
+
                 void Update();
 
-                Font* GetFont();
+                std::string GetFont();
                 std::string Text;
                 Color TextColor;
             private:
-                Font* TextFont;
+                std::string TextFont;
         };
     }
 }

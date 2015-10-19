@@ -15,6 +15,7 @@
 #include "Texture.h"
 #include "Component.h"
 #include "Entity.h"
+#include "Serializable.h"
 
 namespace ForLeaseEngine {
     namespace Components {
@@ -27,17 +28,20 @@ namespace ForLeaseEngine {
         class Model : public Component {
             public:
                 static const ComponentType Type = ComponentType::Model;
-                Model(Entity& parent, Mesh* mesh, Texture* texture, Color color = Color(1, 1, 1, 1), BlendMode blend = BlendMode::NONE);
+                Model(Entity& parent, bool visible, const std::string& mesh, const std::string& texture, Color color = Color(1, 1, 1, 1), BlendMode blend = BlendMode::NONE);
                 ~Model();
+
+                void Serialize(Serializer& root);
+                void Deserialize(Serializer& root);
 
                 void Update();
 
                 //! If the model is visible
                 bool Visible;
                 //! Mesh to use for the model
-                Mesh* ModelMesh;
+                std::string ModelMesh;
                 //! Texture to apply to the mesh
-                Texture* ModelTexture;
+                std::string ModelTexture;
                 //! Color to apply to the model
                 Color ModelColor;
                 //! Blending mode to use for the model

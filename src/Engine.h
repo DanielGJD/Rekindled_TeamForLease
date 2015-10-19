@@ -15,6 +15,7 @@
 #include "Window.h"
 #include "Input.h"
 #include "EventDispatcher.h"
+#include "ResourceManager.h"
 #include <vector>
 
 namespace ForLeaseEngine {
@@ -33,6 +34,7 @@ namespace ForLeaseEngine {
             Modules::GameStateManager& GameStateManager();
             Modules::FrameRateController& FrameRateController();
             Systems::Window* GameWindow;
+            Modules::ResourceManager Resources;
             ForLeaseEngine::EventDispatcher Dispatcher;
             ForLeaseEngine::Input OSInput;
         private:

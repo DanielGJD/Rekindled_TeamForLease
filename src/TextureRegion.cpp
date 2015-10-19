@@ -1,12 +1,17 @@
 #include "TextureRegion.h"
+#include "Serializable.h"
+#include "Serialize.h"
+#include <sstream>
 
 namespace ForLeaseEngine {
     TextureRegion::TextureRegion() {
-
+        TextureID = 0;
+        Width = 0;
+        Height = 0;
     }
 
     TextureRegion::TextureRegion(Texture* texture, int left, int right, int top, int bottom) {
-        Source = texture;
+        Source = texture->GetName();
         TextureID = texture->GetID();
         Width = right - left;
         Height = bottom - top;
@@ -21,11 +26,41 @@ namespace ForLeaseEngine {
         UV[3][1] = static_cast<float>(bottom) / texture->GetHeight();
     }
 
+    void TextureRegion::Serialize(Serializer& root) {
+        Serializer textureRegion = root.GetChild("TextureRegion");
+        textureRegion.WriteString("Source", Source);
+        textureRegion.WriteInt("Width", Width);
+        textureRegion.WriteInt("Height", Height);
+        for(int i = 0; i < 4; ++i) {
+            std::stringstream ss;
+            ss << "UV" << i;
+            Serializer uv = textureRegion.GetChild(ss.str());
+            uv.WriteFloat("X", UV[i][0]);
+            uv.WriteFloat("Y", UV[i][1]);
+            textureRegion.Append(uv, ss.str());
+        }
+        root.Append(textureRegion, "TextureRegion");
+    }
+
+    void TextureRegion::Deserialize(Serializer& root) {
+        Serializer textureRegion = root.GetChild("TextureRegion");
+        textureRegion.ReadString("Source", Source);
+        textureRegion.ReadInt("Width", Width);
+        textureRegion.ReadInt("Height", Height);
+        for(int i = 0; i < 4; ++i) {
+            std::stringstream ss;
+            ss << "UV" << i;
+            Serializer uv = textureRegion.GetChild(ss.str());
+            uv.ReadFloat("X", UV[i][0]);
+            uv.ReadFloat("Y", UV[i][1]);
+        }
+    }
+
     GLuint TextureRegion::GetTextureID() {
         return TextureID;
     }
 
-    Texture* TextureRegion::GetTexture() {
+    std::string& TextureRegion::GetTexture() {
         return Source;
     }
 
