@@ -41,7 +41,13 @@ namespace ForLeaseEngine {
             void AddFace(int v1, int v2, int v3, float r, float g, float b, float a);
             void AddFace(const IndexedFace& face, const Color& color);
 
+            void DeleteVertex(int index);
+            void DeleteEdge(int index);
+            void DeleteFace(int index);
+
             void ClearData();
+
+            int GetVertexIndexNear(const Point& selection, float distance = 0.1);
 
             void SetCenter(const Point& newCenter);
             const Point& GetCenter() const;

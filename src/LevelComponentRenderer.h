@@ -66,7 +66,7 @@ namespace ForLeaseEngine {
                 // Resource drawing functions
                 void DrawTexture(Texture* texture);
                 void DrawTextureRegion(TextureRegion* region);
-                void DrawMesh(Mesh* mesh);
+                void DrawMesh(Mesh* mesh, bool drawEdges = false, bool drawVertices = false);
 
                 // Property functions
                 void SetBlendMode(BlendMode mode);

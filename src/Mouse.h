@@ -5,16 +5,18 @@
 
 namespace ForLeaseEngine {
     class MouseButtonState {
-        static const int Pressed = SDL_PRESSED;
-        static const int Released = SDL_RELEASED;
+        public:
+            static const int Pressed = SDL_PRESSED;
+            static const int Released = SDL_RELEASED;
     };
 
     class MouseButton {
-        static const int Left = SDL_BUTTON_LEFT;
-        static const int Middle = SDL_BUTTON_MIDDLE;
-        static const int Right = SDL_BUTTON_RIGHT;
-        static const int ButtonFour = SDL_BUTTON_X1;
-        static const int ButtonFive = SDL_BUTTON_X2;
+        public:
+            static const int Left = SDL_BUTTON_LEFT;
+            static const int Middle = SDL_BUTTON_MIDDLE;
+            static const int Right = SDL_BUTTON_RIGHT;
+            static const int ButtonFour = SDL_BUTTON_X1;
+            static const int ButtonFive = SDL_BUTTON_X2;
     };
 }
 

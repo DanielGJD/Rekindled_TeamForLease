@@ -32,9 +32,9 @@ namespace ForLeaseEngine {
             \param blend
                 Blend mode for model
         */
-        Model::Model(Entity& parent, bool visible, const std::string& mesh, const std::string& texture, Color color, BlendMode blend)
+        Model::Model(Entity& parent, bool visible, const std::string& mesh, const std::string& texture, Color color, BlendMode blend, bool drawEdges, bool drawVertices)
                     : Component(parent, ComponentType::Model, ComponentType::Transform),
-                      Visible(visible), ModelMesh(mesh), ModelTexture(texture), ModelColor(color), BlendingMode(blend) {}
+                      Visible(visible), ModelMesh(mesh), ModelTexture(texture), ModelColor(color), BlendingMode(blend), DrawEdges(drawEdges), DrawVertices(drawVertices) {}
 
         /*!
             \brief
