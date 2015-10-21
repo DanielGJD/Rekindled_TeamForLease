@@ -11,6 +11,8 @@
 #include <SDL.h>
 #include "Keys.h"
 #include "KeyboardEvent.h"
+#include "MouseButtonEvent.h"
+#include "Mouse.h"
 #include "Input.h"
 
 namespace ForLeaseEngine {
@@ -45,12 +47,36 @@ namespace ForLeaseEngine {
                     dispatcher->Dispatch(&e, this);
                 }
                 break;
+
             case SDL_KEYUP:
                 if(!SDL_e.key.repeat) {
                     KeyboardEvent e = KeyboardEvent("KeyUp", SDL_e.key.keysym.sym, SDL_e.key.state);
                     dispatcher->Dispatch(&e, this);
                 }
                 break;
+
+            case SDL_MOUSEBUTTONDOWN:
+                if(SDL_e.button.which != SDL_TOUCH_MOUSEID) {
+                    MouseButtonEvent e = MouseButtonEvent("MouseButtonDown",
+                                                          SDL_e.button.button,
+                                                          SDL_e.button.state,
+                                                          SDL_e.button.clicks,
+                                                          Point(SDL_e.button.x, SDL_e.button.y));
+                    dispatcher->Dispatch(&e, this);
+                }
+                break;
+
+            case SDL_MOUSEBUTTONUP:
+                if(SDL_e.button.which != SDL_TOUCH_MOUSEID) {
+                    MouseButtonEvent e = MouseButtonEvent("MouseButtonUp",
+                                                          SDL_e.button.button,
+                                                          SDL_e.button.state,
+                                                          SDL_e.button.clicks,
+                                                          Point(SDL_e.button.x, SDL_e.button.y));
+                    dispatcher->Dispatch(&e, this);
+                }
+                break;
+
             }
         }
     }

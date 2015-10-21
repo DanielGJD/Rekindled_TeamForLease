@@ -16,6 +16,7 @@
 #include "Edge.h"
 #include "Color.h"
 #include "Serializable.h"
+#include <vector>
 
 namespace ForLeaseEngine {
     /*!
@@ -32,6 +33,15 @@ namespace ForLeaseEngine {
 
             void Serialize(Serializer& root);
             void Deserialize(Serializer& root);
+
+            void AddVertex(float x, float y, float u, float v);
+            void AddVertex(const Point& vertex, const Point& uv);
+            void AddEdge(int v1, int v2);
+            void AddEdge(const IndexedEdge& edge);
+            void AddFace(int v1, int v2, int v3, float r, float g, float b, float a);
+            void AddFace(const IndexedFace& face, const Color& color);
+
+            void ClearData();
 
             void SetCenter(const Point& newCenter);
             const Point& GetCenter() const;
@@ -55,15 +65,15 @@ namespace ForLeaseEngine {
             //! Center used for transformations
             Point Center;
             //! Vertex array
-            Point* Vertices;
+            std::vector<Point> Vertices;
             //! UV coordinate array
-            Point* UVs;
+            std::vector<Point> UVs;
             //! Edge list using indexed edges
-            IndexedEdge* Edges;
+            std::vector<IndexedEdge> Edges;
             //! Face list using indexed faces
-            IndexedFace* Faces;
+            std::vector<IndexedFace> Faces;
             //! List of colors for each face
-            Color* FaceColors;
+            std::vector<Color> FaceColors;
             //! Number of vertices
             int VertexCount;
             //! Number of edges
