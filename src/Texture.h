@@ -1,7 +1,7 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include <GL\GL.h>
+#include <GL/gl.h>
 #include <string>
 
 namespace ForLeaseEngine{

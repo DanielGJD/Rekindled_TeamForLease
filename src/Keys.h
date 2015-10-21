@@ -10,7 +10,7 @@
 #ifndef KEYS_H
 #define KEYS_H
 
-#include <SDL.H>
+#include <SDL.h>
 
 namespace ForLeaseEngine {
     /*!

@@ -1,7 +1,7 @@
 #ifndef MOUSE_H
 #define MOUSE_H
 
-#include <SDL.H>
+#include <SDL.h>
 
 namespace ForLeaseEngine {
     class MouseButtonState {
