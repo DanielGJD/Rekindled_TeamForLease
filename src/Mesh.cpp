@@ -150,7 +150,6 @@ namespace ForLeaseEngine {
     }
 
     void Mesh::DeleteFace(int index) {
-        std::cout << "Deleting face " << index << " from mesh with " << Faces.size() << " faces" << std::endl;
         if(index < Faces.size()) {
             Faces.erase(Faces.begin() + index);
             FaceColors.erase(FaceColors.begin() + index);

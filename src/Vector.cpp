@@ -135,10 +135,19 @@ namespace ForLeaseEngine {
 	*/
 	void Vector::Normalize()
 	{
-		float mag = DotProduct(*this, *this);
-		mag = sqrt(mag);
+		float mag = Magnitude();
 		x /= mag;
 		y /= mag;
+	}
+
+	float Vector::Magnitude()
+	{
+        return sqrt(MagnitudeSquared());
+	}
+
+	float Vector::MagnitudeSquared()
+	{
+	    return x * x + y * y;
 	}
 
 	/*!
@@ -154,7 +163,7 @@ namespace ForLeaseEngine {
 	  \return
 	    Result of the dot product
 	*/
-	float Vector::DotProduct(Vector vec1, Vector vec2)
+	float Vector::DotProduct(const Vector& vec1, const Vector& vec2)
 	{
 		return vec1[0] * vec2[0] + vec1[1] * vec2[1];
 	}
@@ -251,5 +260,13 @@ namespace ForLeaseEngine {
 		y -= rhs[1];
 
 		return *this;
+	}
+
+	float Point::Distance(const Point& p1, const Point& p2) {
+        return sqrt(DistanceSquared(p1, p2));
+	}
+
+	float Point::DistanceSquared(const Point& p1, const Point& p2) {
+        return (p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y);
 	}
 }
