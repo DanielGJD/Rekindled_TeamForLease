@@ -71,6 +71,25 @@ namespace ForLeaseEngine {
             : Component(owner, ComponentType::Transform), Position(position),
               ScaleX(scaleX), ScaleY(scaleY), Rotation(rotation), ZOrder(zOrder) {}
 
+        void Transform::Serialize(Serializer& root) {
+            Serializer transform = root.GetChild("Transform");
+            transform.WriteVec("Position", Position);
+            transform.WriteFloat("ScaleX", ScaleX);
+            transform.WriteFloat("ScaleY", ScaleY);
+            transform.WriteFloat("Rotation", Rotation);
+            transform.WriteInt("ZOrder", ZOrder);
+            root.Append(transform, "Transform");
+        }
+
+        void Transform::Deserialize(Serializer& root) {
+            Serializer transform = root.GetChild("Transform");
+            transform.ReadVec("Position", Position);
+            transform.ReadFloat("ScaleX", ScaleX);
+            transform.ReadFloat("ScaleY", ScaleY);
+            transform.ReadFloat("Rotation", Rotation);
+            transform.ReadInt("ZOrder", ZOrder);
+        }
+
     } // Components
 
 } // ForLeaseEngine
