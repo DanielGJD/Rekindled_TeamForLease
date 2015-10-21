@@ -8,7 +8,7 @@
 */
 
 #include "ComponentPhysics.h"
-#include "Entity.h"
+// #include "Entity.h"
 
 namespace ForLeaseEngine {
 
@@ -41,6 +41,22 @@ namespace ForLeaseEngine {
               Mass(mass), Velocity(velocity), Acceleration(acceleration),
               Force(force) {}
 
+        void Physics::Serialize(Serializer& root) {
+            Serializer physics = root.GetChild("Physics");
+            physics.WriteFloat("Mass", Mass);
+            physics.WriteVec("Velocity", Velocity);
+            physics.WriteVec("Acceleration", Acceleration);
+            physics.WriteVec("Force", Force);
+            root.Append(physics, "Physics");
+        }
+
+        void Physics::Deserialize(Serializer& root) {
+            Serializer physics = root.GetChild("Physics");
+            physics.ReadFloat("Mass", Mass);
+            physics.ReadVec("Velocity", Velocity);
+            physics.ReadVec("Acceleration", Acceleration);
+            physics.ReadVec("Force", Force);
+        }
     } // Components
 
 } // ForLeaseEngine

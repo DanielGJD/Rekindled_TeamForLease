@@ -22,6 +22,21 @@ namespace ForLeaseEngine {
         Collision::Collision(Entity& owner)
             : Component(owner, ComponentType::Collision, ComponentType::Transform) {}
         
+        void Collision::Serialize(Serializer& root) {
+            Serializer collision = root.GetChild("Collision");
+            collision.WriteFloat("Height", Height);
+            collision.WriteFloat("Width", Width);
+            collision.WriteBool("ResolveCollisions", ResolveCollisions);
+            root.Append(collision, "Collision");
+        }
+
+        void Collision::Deserialize(Serializer& root) {
+            Serializer collision = root.GetChild("Collision");
+            collision.ReadFloat("Height", Height);
+            collision.ReadFloat("Width", Width);
+            collision.ReadBool("ResolveCollisions", ResolveCollisions);
+            CollidedLastFrame = false;
+        }
     } // Components
     
 } // ForLeaseEngine

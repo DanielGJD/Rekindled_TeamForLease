@@ -37,6 +37,8 @@ namespace ForLeaseEngine {
 
                 ~Transform() {};
                 void Update() {};
+                void Serialize(Serializer& root);
+                void Deserialize(Serializer& root);
 
                 Point Position; //! The position of the object
                 float ScaleX;   //! Scale on the X axis

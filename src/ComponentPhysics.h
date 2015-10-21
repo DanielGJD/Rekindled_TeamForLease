@@ -32,6 +32,8 @@ namespace ForLeaseEngine {
                 Physics(Entity& owner, float mass = 1, Vector velocity = Vector(0,0),
                     Vector acceleration = Vector(0,0), Vector force = Vector(0,0));
                 void Update() {}
+                void Serialize(Serializer& root);
+                void Deserialize(Serializer& root);
                 float Mass;          //! The mass of the owning entity.
                 Vector Velocity;     //! Current velocity
                 Vector Acceleration; //! The current (instantaneous) acceleration.
