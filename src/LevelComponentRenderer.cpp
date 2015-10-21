@@ -53,10 +53,10 @@ namespace ForLeaseEngine {
             RenderTime = 0;
 
             if(*CurrentCamera != NULL) {
-                float aspectRatio = ForLease->GameWindow->GetYResolution() / ForLease->GameWindow->GetXResolution();
+                float aspectRatio = static_cast<float>(ForLease->GameWindow->GetXResolution()) / ForLease->GameWindow->GetYResolution();
                 Components::Transform* transform = (*CurrentCamera)->GetComponent<Components::Transform*>(ComponentType::Transform);
                 Components::Camera* camera = (*CurrentCamera)->GetComponent<Components::Camera*>(ComponentType::Camera);
-                SetProjection(transform->Position, camera->Size, camera->Size * aspectRatio, camera->Near, camera->Far, transform->Rotation);
+                SetProjection(transform->Position, camera->Size * aspectRatio, camera->Size, camera->Near, camera->Far, transform->Rotation);
 
                 //std::cout << "Set camera" << std::endl;
             }

@@ -101,6 +101,7 @@ namespace ForLeaseEngine {
                 if(edge.Indices[0] == index ||
                    edge.Indices[1] == index) {
                     ei = Edges.erase(ei);
+                    --EdgeCount;
                 }
                 else {
                     if(edge.Indices[0] > index)
@@ -120,6 +121,7 @@ namespace ForLeaseEngine {
                    face.Indices[2] == index) {
                     fi = Faces.erase(fi);
                     FaceColors.erase(FaceColors.begin() + i);
+                    --FaceCount;
                 }
                 else {
                     if(face.Indices[0] > index)
@@ -135,6 +137,8 @@ namespace ForLeaseEngine {
             }
 
             Vertices.erase(Vertices.begin() + index);
+            UVs.erase(UVs.begin() + index);
+            --VertexCount;
         }
     }
 
