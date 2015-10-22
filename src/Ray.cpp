@@ -8,7 +8,7 @@ namespace ForLeaseEngine {
 
     bool Ray::IsColliding(Entity* entity) {
         Point endPoint = Start + Direction;
-        Components::Transform* transform = entity->GetComponent<Components::Transform*>(ComponentType::Transform);
+        Components::Transform* transform = entity->GetComponent<Components::Transform>();
         if (!transform) return false;
 
         // Super simple bounding box collision detection
