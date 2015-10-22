@@ -27,8 +27,7 @@ namespace ForLeaseEngine {
         */
         class Model : public Component {
             public:
-                static const ComponentType Type = ComponentType::Model;
-                Model(Entity& parent, bool visible, const std::string& mesh, const std::string& texture, Color color = Color(1, 1, 1, 1), BlendMode blend = BlendMode::NONE);
+                Model(Entity& parent, bool visible, const std::string& mesh, const std::string& texture, Color color = Color(1, 1, 1, 1), BlendMode blend = BlendMode::NONE, bool drawEdges = false, bool drawVertices = false);
                 ~Model();
 
                 void Serialize(Serializer& root);
@@ -46,6 +45,8 @@ namespace ForLeaseEngine {
                 Color ModelColor;
                 //! Blending mode to use for the model
                 BlendMode BlendingMode;
+                bool DrawEdges;
+                bool DrawVertices;
             private:
         };
     }

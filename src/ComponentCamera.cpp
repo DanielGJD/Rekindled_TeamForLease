@@ -13,15 +13,18 @@ namespace ForLeaseEngine {
         void Camera::Update() {}
 
         void Camera::Serialize(Serializer& root) {
-            root.WriteFloat("Near", Near);
-            root.WriteFloat("Far", Far);
-            root.WriteFloat("Size", Size);
+            Serializer camera = root.GetChild("Camera");
+            camera.WriteFloat("Near", Near);
+            camera.WriteFloat("Far", Far);
+            camera.WriteFloat("Size", Size);
+            root.Append(camera, "Camera");
         }
 
         void Camera::Deserialize(Serializer& root) {
-            root.ReadFloat("Near", Near);
-            root.ReadFloat("Far", Far);
-            root.ReadFloat("Size", Size);
+            Serializer camera = root.GetChild("Camera");
+            camera.ReadFloat("Near", Near);
+            camera.ReadFloat("Far", Far);
+            camera.ReadFloat("Size", Size);
         }
     }
 }

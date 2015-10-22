@@ -482,4 +482,39 @@ namespace ForLeaseEngine
     {
         node[path] = child.node;
     }
+
+    Json::Value& Serializer::GetNode()
+    {
+        return node;
+    }
+
+    ArraySerializer::ArraySerializer(Serializer root) : Serializer()
+    {
+        node = Json::Value(Json::arrayValue);
+        node = root.GetNode();
+    }
+
+    void ArraySerializer::Append(Serializer& child)
+    {
+        node.append(child.GetNode());
+    }
+
+    Serializer ArraySerializer::operator[](unsigned i)
+    {
+        Serializer result;
+        result.GetNode() = node[i];
+        return result;
+    }
+
+    Serializer ArraySerializer::operator[](unsigned i) const
+    {
+        Serializer result;
+        result.GetNode() = node[i];
+        return result;
+    }
+
+    unsigned ArraySerializer::Size() const
+    {
+        return node.size();
+    }
 }

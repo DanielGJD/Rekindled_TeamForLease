@@ -53,10 +53,10 @@ namespace ForLeaseEngine {
             RenderTime = 0;
 
             if(*CurrentCamera != NULL) {
-                float aspectRatio = ForLease->GameWindow->GetYResolution() / ForLease->GameWindow->GetXResolution();
-                Components::Transform* transform = (*CurrentCamera)->GetComponent<Components::Transform>();
-                Components::Camera* camera = (*CurrentCamera)->GetComponent<Components::Camera>();
-                SetProjection(transform->Position, camera->Size, camera->Size * aspectRatio, camera->Near, camera->Far, transform->Rotation);
+                float aspectRatio = static_cast<float>(ForLease->GameWindow->GetXResolution()) / ForLease->GameWindow->GetYResolution();
+                Components::Transform* transform = (*CurrentCamera)->GetComponent<Components::Transform*>(ComponentType::Transform);
+                Components::Camera* camera = (*CurrentCamera)->GetComponent<Components::Camera*>(ComponentType::Camera);
+                SetProjection(transform->Position, camera->Size * aspectRatio, camera->Size, camera->Near, camera->Far, transform->Rotation);
 
                 //std::cout << "Set camera" << std::endl;
             }
@@ -83,7 +83,7 @@ namespace ForLeaseEngine {
                                 Matrix::Translation(mesh->GetCenter()) *
                                 Matrix::RotationRad(transform->Rotation) * Matrix::Scale(transform->ScaleX, transform->ScaleY) *
                                 Matrix::Translation(o - mesh->GetCenter());
-                    DrawMesh(mesh);
+                    DrawMesh(mesh, model->DrawEdges, model->DrawVertices);
                 }
                 if(entity->HasComponent(ComponentType::SpriteText)) {
                     Components::Transform* transform = entity->GetComponent<Components::Transform>();
@@ -296,7 +296,7 @@ namespace ForLeaseEngine {
             TriCount += 2;
         }
 
-        void Renderer::DrawMesh(Mesh* mesh) {
+        void Renderer::DrawMesh(Mesh* mesh, bool drawEdges, bool drawVertices) {
             Point transformed[mesh->GetVertexCount()];
             for(int i = 0; i < mesh->GetVertexCount(); ++i) {
                 ModelToScreen(mesh->GetVertex(i), transformed[i]);
@@ -311,6 +311,29 @@ namespace ForLeaseEngine {
                     ++TriCount;
                 }
             glEnd();
+
+            if(drawEdges) {
+                glColor3f(0, 0, 0);
+                glLineWidth(10);
+                glBegin(GL_LINES);
+                    for(int i = 0; i < mesh->GetEdgeCount(); ++i) {
+                        IndexedEdge edge = mesh->GetIndexedEdge(i);
+                        glVertex2f(transformed[edge.Indices[0]][0], transformed[edge.Indices[0]][1]);
+                        glVertex2f(transformed[edge.Indices[1]][0], transformed[edge.Indices[1]][1]);
+                    }
+                    ++LineCount;
+                glEnd();
+            }
+
+            if(drawVertices) {
+                glColor3f(1, 1, 1);
+                glPointSize(5);
+                glBegin(GL_POINTS);
+                    for(int i = 0; i < mesh->GetVertexCount(); ++i) {
+                        glVertex2f(transformed[i][0], transformed[i][1]);
+                    }
+                glEnd();
+            }
         }
 
         void Renderer::SetTexture(Texture* texture) {

@@ -44,11 +44,13 @@ namespace ForLeaseEngine {
 		Vector(float x, float y);
 		Vector(const Hcoord& v);
 		void Normalize();
-		static float DotProduct(Vector vec1, Vector vec2);
-    static Vector Scale(Vector vec, float magnitude);
-    static Vector Rotate(Vector vec, float angle);
-    Vector& operator+=(const Vector& rhs);
-    Vector operator*(float rhs);
+		float Magnitude();
+        float MagnitudeSquared();
+		static float DotProduct(const Vector& vec1, const Vector& vec2);
+        static Vector Scale(Vector vec, float magnitude);
+        static Vector Rotate(Vector vec, float angle);
+        Vector& operator+=(const Vector& rhs);
+        Vector operator*(float rhs);
 	};
 
 	/*!
@@ -67,6 +69,8 @@ namespace ForLeaseEngine {
 		Point operator+(const Vector& rhs) const;
 		Point& operator+=(const Vector& rhs);
 		Point& operator-=(const Vector& rhs);
+		static float Distance(const Point& p1, const Point& p2);
+		static float DistanceSquared(const Point& p1, const Point& p2);
 	};
 }
 

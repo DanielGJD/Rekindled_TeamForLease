@@ -15,6 +15,7 @@
 #include "Color.h"
 #include "Mesh.h"
 #include <sstream>
+#include <iostream>
 
 namespace ForLeaseEngine {
     /*!
@@ -90,6 +91,70 @@ namespace ForLeaseEngine {
         Faces.push_back(face);
         FaceColors.push_back(color);
         ++FaceCount;
+    }
+
+    void Mesh::DeleteVertex(int index) {
+        if(index < Vertices.size()) {
+            std::vector<IndexedEdge>::iterator ei = Edges.begin();
+            while(ei != Edges.end()) {
+                IndexedEdge& edge = *ei;
+                if(edge.Indices[0] == index ||
+                   edge.Indices[1] == index) {
+                    ei = Edges.erase(ei);
+                    --EdgeCount;
+                }
+                else {
+                    if(edge.Indices[0] > index)
+                        --edge.Indices[0];
+                    if(edge.Indices[1] > index)
+                        --edge.Indices[1];
+                    ++ei;
+                }
+            }
+
+            int i = 0;
+            auto fi = Faces.begin();
+            while(fi != Faces.end()) {
+                IndexedFace& face = *fi;
+                if(face.Indices[0] == index ||
+                   face.Indices[1] == index ||
+                   face.Indices[2] == index) {
+                    fi = Faces.erase(fi);
+                    FaceColors.erase(FaceColors.begin() + i);
+                    --FaceCount;
+                }
+                else {
+                    if(face.Indices[0] > index)
+                        --face.Indices[0];
+                    if(face.Indices[1] > index)
+                        --face.Indices[1];
+                    if(face.Indices[2] > index)
+                        --face.Indices[2];
+
+                    ++fi;
+                    ++i;
+                }
+            }
+
+            Vertices.erase(Vertices.begin() + index);
+            UVs.erase(UVs.begin() + index);
+            --VertexCount;
+        }
+    }
+
+    void Mesh::DeleteEdge(int index) {
+        if(index < Edges.size()) {
+            Edges.erase(Edges.begin() + index);
+            --EdgeCount;
+        }
+    }
+
+    void Mesh::DeleteFace(int index) {
+        if(index < Faces.size()) {
+            Faces.erase(Faces.begin() + index);
+            FaceColors.erase(FaceColors.begin() + index);
+            --FaceCount;
+        }
     }
 
     void Mesh::ClearData() {

@@ -26,7 +26,7 @@ namespace ForLeaseEngine
     */
     class Serializer
     {
-    private:
+    protected:
         //! Container with the formatted JSON string
         Json::Value node;
     public:
@@ -59,10 +59,21 @@ namespace ForLeaseEngine
         void ReadStringArray(const std::string& path, std::string* a) const;
         void ReadBoolArray(const std::string& path, bool* a) const;
 
-        Serializer& operator=(const Serializer& rhs);
+        virtual Serializer& operator=(const Serializer& rhs);
         Serializer GetChild(const std::string& path) const;
         void Append(Serializer& child, const std::string& path);
         std::vector<std::string> GetMemberNames() const;
+        Json::Value& GetNode();
+    };
+
+    class ArraySerializer : public Serializer
+    {
+    public:
+        ArraySerializer(Serializer root);
+        void Append(Serializer& child);
+        Serializer operator[](unsigned i);
+        Serializer operator[](unsigned i) const;
+        unsigned Size() const;
     };
 }
 
