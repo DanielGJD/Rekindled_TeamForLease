@@ -29,6 +29,7 @@ namespace ForLeaseEngine {
 
             public:
                 static const ComponentType Type = ComponentType::Transform;
+                virtual ComponentType GetType() { return Type; }
                 Transform(Entity& owner, float positionX = 0,
                     float positionY = 0, float scaleX = 1, float scaleY = 1,
                     float rotation = 0, int zOrder = 0);

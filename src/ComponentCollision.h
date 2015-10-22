@@ -26,6 +26,7 @@ namespace ForLeaseEngine {
         class Collision : public Component {
             public:
                 static const ComponentType Type = ComponentType::Collision;
+                virtual ComponentType GetType() { return Type; }
                 Collision(Entity& owner);
                 void Update() {}
                 void Serialize(Serializer& root);

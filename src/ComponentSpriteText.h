@@ -13,7 +13,7 @@ namespace ForLeaseEngine {
         class SpriteText : public Component {
             public:
                 static const ComponentType Type = ComponentType::SpriteText;
-
+                virtual ComponentType GetType() { return Type; }
                 SpriteText(Entity& owner, const std::string& font);
                 SpriteText(Entity& owner, const std::string& font, const std::string& text, const Color& textColor);
 

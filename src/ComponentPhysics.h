@@ -30,6 +30,7 @@ namespace ForLeaseEngine {
         class Physics : public Component {
             public:
                 static const ComponentType Type = ComponentType::Physics;
+                virtual ComponentType GetType() { return Type; }
                 Physics(Entity& owner, float mass = 1, Vector velocity = Vector(0,0),
                     Vector acceleration = Vector(0,0), Vector force = Vector(0,0));
                 void Update() {}

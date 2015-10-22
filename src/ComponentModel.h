@@ -27,6 +27,8 @@ namespace ForLeaseEngine {
         */
         class Model : public Component {
             public:
+                static const ComponentType Type = ComponentType::Model;
+                virtual ComponentType GetType() { return Type; }
                 Model(Entity& parent, bool visible, const std::string& mesh, const std::string& texture, Color color = Color(1, 1, 1, 1), BlendMode blend = BlendMode::NONE, bool drawEdges = false, bool drawVertices = false);
                 ~Model();
 

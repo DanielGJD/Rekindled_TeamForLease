@@ -11,6 +11,7 @@ namespace ForLeaseEngine {
         class Camera : public Component {
             public:
                 static const ComponentType Type = ComponentType::Camera;
+                virtual ComponentType GetType() { return Type; }
                 float Near;
                 float Far;
                 float Size;

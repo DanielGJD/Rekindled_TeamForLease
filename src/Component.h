@@ -56,6 +56,7 @@ namespace ForLeaseEngine {
 
         public:
             static const ComponentType Type = ComponentType::None;
+            virtual ComponentType GetType() { return Type; }
             Component(Entity& parent, ComponentType required = ComponentType::None);
             virtual ~Component() {};
             // ComponentType GetType();

@@ -75,7 +75,7 @@ namespace ForLeaseEngine {
 
     */
     void Entity::AddComponent(Component* component) {
-        if (static_cast<bool>(ComponentMask & component->Type)) {
+        if (static_cast<bool>(ComponentMask & component->GetType())) {
             delete component;
             return;
         }
@@ -84,7 +84,7 @@ namespace ForLeaseEngine {
             return;
         }
 
-        ComponentMask |= component->Type;
+        ComponentMask |= component->GetType();
         Components.push_back(component);
     }
 
