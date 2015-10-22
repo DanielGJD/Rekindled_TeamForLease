@@ -2,7 +2,7 @@
 #define FONT_H
 
 #include <string>
-#include <GL\gl.h>
+#include <GL/gl.h>
 #include "Glyph.h"
 #include "BmFont.h"
 #include "TextureRegion.h"

@@ -11,7 +11,7 @@
 #include <iostream>
 //#include <SDL_opengl.h>
 //#include <GL\GLU.h>
-#include <GL\GL.h>
+#include <GL/gl.h>
 #include "Vector.h"
 #include "Matrix.h"
 #include "LevelComponentRenderer.h"
