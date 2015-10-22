@@ -31,7 +31,7 @@ namespace ForLeaseEngine {
 
     void Entity::Serialize(Serializer& root) {
         Serializer entity = root.GetChild("Entity");
-        entity.WriteInt("ID", static_cast<int>(ID));
+        entity.WriteUint("ID", static_cast<unsigned>(ID));
         for(unsigned int i = 0; i < Components.size(); ++i) {
             Components[i]->Serialize(entity);
         }
@@ -39,7 +39,14 @@ namespace ForLeaseEngine {
     }
 
     void Entity::Deserialize(Serializer& root) {
-
+        Serializer entity = root.GetChild("Entity");
+        unsigned id;
+        entity.ReadUint("ID", id);
+        ID = id;
+        // for (std::string componentName : entity.GetMemberNames()) {
+        //     Serializer componentSerializer = entity.GetChild(componentName);
+        //     Component* component;
+        // }
     }
 
     /*!
