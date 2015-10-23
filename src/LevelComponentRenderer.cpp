@@ -25,6 +25,7 @@
 #include "Component.h"
 #include "Timer.h"
 #include "Engine.h"
+#include "Exception.h"
 //#include "ComponentSpriteText.h"
 
 namespace ForLeaseEngine {
@@ -54,9 +55,16 @@ namespace ForLeaseEngine {
 
             if(*CurrentCamera != NULL) {
                 float aspectRatio = static_cast<float>(ForLease->GameWindow->GetXResolution()) / ForLease->GameWindow->GetYResolution();
-                Components::Transform* transform = (*CurrentCamera)->GetComponent<Components::Transform>();
-                Components::Camera* camera = (*CurrentCamera)->GetComponent<Components::Camera>();
+                try{
+                Components::Transform* transform = (*CurrentCamera)->GetComponent<Components::Transform>(true);
+                Components::Camera* camera = (*CurrentCamera)->GetComponent<Components::Camera>(true);
                 SetProjection(transform->Position, camera->Size * aspectRatio, camera->Size, camera->Near, camera->Far, transform->Rotation);
+                }
+                catch(Exception* e) {
+                    std::cout << e->GetInfo();
+                    char c;
+                    std::cin >> c;
+                }
 
                 //std::cout << "Set camera" << std::endl;
             }

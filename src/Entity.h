@@ -51,7 +51,7 @@ namespace ForLeaseEngine {
                     throw EntityException(ID, "No component specified.");
 
                 for (Component* component : Components)
-                    if (component->Type == T::Type)
+                    if (component->GetType() == T::Type)
                         return reinterpret_cast<T*>(component);
 
                 if (throwOnFail) throw EntityException(ID, "Error finding component.");
