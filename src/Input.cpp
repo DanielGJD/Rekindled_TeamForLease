@@ -12,6 +12,7 @@
 #include "Keys.h"
 #include "KeyboardEvent.h"
 #include "MouseButtonEvent.h"
+#include "MouseMotionEvent.h"
 #include "Mouse.h"
 #include "Input.h"
 
@@ -41,41 +42,52 @@ namespace ForLeaseEngine {
 
         while(SDL_PollEvent(&SDL_e)) {
             switch(SDL_e.type) {
-            case SDL_KEYDOWN:
-                if(!SDL_e.key.repeat) {
-                    KeyboardEvent e = KeyboardEvent("KeyDown", SDL_e.key.keysym.sym, SDL_e.key.state);
-                    dispatcher->Dispatch(&e, this);
-                }
-                break;
+                // Keyboard Events
+                case SDL_KEYDOWN:
+                    if(!SDL_e.key.repeat) {
+                        KeyboardEvent e = KeyboardEvent("KeyDown", SDL_e.key.keysym.sym, SDL_e.key.state);
+                        dispatcher->Dispatch(&e, this);
+                    }
+                    break;
 
-            case SDL_KEYUP:
-                if(!SDL_e.key.repeat) {
-                    KeyboardEvent e = KeyboardEvent("KeyUp", SDL_e.key.keysym.sym, SDL_e.key.state);
-                    dispatcher->Dispatch(&e, this);
-                }
-                break;
+                case SDL_KEYUP:
+                    if(!SDL_e.key.repeat) {
+                        KeyboardEvent e = KeyboardEvent("KeyUp", SDL_e.key.keysym.sym, SDL_e.key.state);
+                        dispatcher->Dispatch(&e, this);
+                    }
+                    break;
 
-            case SDL_MOUSEBUTTONDOWN:
-                if(SDL_e.button.which != SDL_TOUCH_MOUSEID) {
-                    MouseButtonEvent e = MouseButtonEvent("MouseButtonDown",
-                                                          SDL_e.button.button,
-                                                          SDL_e.button.state,
-                                                          SDL_e.button.clicks,
-                                                          Point(SDL_e.button.x, SDL_e.button.y));
-                    dispatcher->Dispatch(&e, this);
-                }
-                break;
+                // Mouse Events
+                case SDL_MOUSEBUTTONDOWN:
+                    if(SDL_e.button.which != SDL_TOUCH_MOUSEID) {
+                        MouseButtonEvent e = MouseButtonEvent("MouseButtonDown",
+                                                              SDL_e.button.button,
+                                                              SDL_e.button.state,
+                                                              SDL_e.button.clicks,
+                                                              Point(SDL_e.button.x, GameWindow->GetYResolution() - SDL_e.button.y));
+                        dispatcher->Dispatch(&e, this);
+                    }
+                    break;
 
-            case SDL_MOUSEBUTTONUP:
-                if(SDL_e.button.which != SDL_TOUCH_MOUSEID) {
-                    MouseButtonEvent e = MouseButtonEvent("MouseButtonUp",
-                                                          SDL_e.button.button,
-                                                          SDL_e.button.state,
-                                                          SDL_e.button.clicks,
-                                                          Point(SDL_e.button.x, SDL_e.button.y));
+                case SDL_MOUSEBUTTONUP:
+                    if(SDL_e.button.which != SDL_TOUCH_MOUSEID) {
+                        MouseButtonEvent e = MouseButtonEvent("MouseButtonUp",
+                                                              SDL_e.button.button,
+                                                              SDL_e.button.state,
+                                                              SDL_e.button.clicks,
+                                                              Point(SDL_e.button.x, GameWindow->GetYResolution() - SDL_e.button.y));
+                        dispatcher->Dispatch(&e, this);
+                    }
+                    break;
+
+                case SDL_MOUSEMOTION:
+                    MouseMotionEvent e = MouseMotionEvent("MouseMotion",
+                                                          SDL_e.motion.x,
+                                                          GameWindow->GetYResolution() - SDL_e.motion.y,
+                                                          SDL_e.motion.xrel,
+                                                          -SDL_e.motion.yrel);
                     dispatcher->Dispatch(&e, this);
-                }
-                break;
+                    break;
 
             }
         }

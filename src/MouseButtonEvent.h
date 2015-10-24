@@ -1,5 +1,5 @@
-#ifndef MOUSE_BUTTON_EVENT
-#define MOUSE_BUTTON_EVENT
+#ifndef MOUSE_BUTTON_EVENT_H
+#define MOUSE_BUTTON_EVENT_H
 
 #include "Vector.h"
 #include "Event.h"

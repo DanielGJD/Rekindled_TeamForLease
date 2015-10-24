@@ -12,6 +12,7 @@
 #define INPUT_H
 
 #include "EventDispatcher.h"
+#include "Window.h"
 
 namespace ForLeaseEngine
 {
@@ -32,6 +33,7 @@ namespace ForLeaseEngine
 
             //! For testing only, do not use
             EventDispatcher* dispatcher;
+            Systems::Window* GameWindow;
         private:
     };
 }

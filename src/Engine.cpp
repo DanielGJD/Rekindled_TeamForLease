@@ -61,6 +61,7 @@ namespace ForLeaseEngine {
         properties.fullscreen = false;
         GameWindow = Systems::Window::CreateGameWindow(properties);
         OSInput.dispatcher = &Dispatcher;
+        OSInput.GameWindow = GameWindow;
         GSM.Run();
         Systems::Window::DestroyGameWindow(GameWindow);
         SDL_Quit();

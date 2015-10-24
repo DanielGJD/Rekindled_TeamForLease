@@ -27,6 +27,8 @@ namespace ForLeaseEngine {
             int Key;
             //! The state of the key
             int State;
+            //! Modifier key pressed
+            int Modifier;
 
             KeyboardEvent(std::string eventName);
             KeyboardEvent(std::string eventName, int key, int state);
