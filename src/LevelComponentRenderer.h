@@ -46,6 +46,10 @@ namespace ForLeaseEngine {
                 unsigned int GetTextureSwapCount();
                 unsigned int GetBlendModeSwapCount();
                 float GetRenderTime();
+
+                // Screen to world transforms
+                Point ScreenToWorld(const Point& point);
+                Point WorldToScreen(const Point& point);
             private:
                 Matrix Projection;
                 Matrix ModelView;

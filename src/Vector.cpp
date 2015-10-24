@@ -262,6 +262,10 @@ namespace ForLeaseEngine {
 		return *this;
 	}
 
+	Point Point::operator-() {
+        return Point(-x, -y);
+	}
+
 	float Point::Distance(const Point& p1, const Point& p2) {
         return sqrt(DistanceSquared(p1, p2));
 	}

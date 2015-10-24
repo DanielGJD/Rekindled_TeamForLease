@@ -71,6 +71,7 @@ namespace ForLeaseEngine {
 		Point& operator-=(const Vector& rhs);
 		static float Distance(const Point& p1, const Point& p2);
 		static float DistanceSquared(const Point& p1, const Point& p2);
+		Point operator-();
 	};
 }
 

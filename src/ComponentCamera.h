@@ -22,6 +22,9 @@ namespace ForLeaseEngine {
 
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
+
+                Point WorldToScreen(const Point& point);
+                Point ScreenToWorld(const Point& point);
             private:
         };
     }

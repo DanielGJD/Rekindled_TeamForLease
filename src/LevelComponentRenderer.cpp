@@ -276,11 +276,19 @@ namespace ForLeaseEngine {
 
         float Renderer::GetRenderTime() { return RenderTime; }
 
+        Point Renderer::ScreenToWorld(const Point& point) {
+            return (*CurrentCamera)->GetComponent<Components::Camera>()->ScreenToWorld(point);
+        }
+
+        Point Renderer::WorldToScreen(const Point& point) {
+            return (*CurrentCamera)->GetComponent<Components::Camera>()->WorldToScreen(point);
+        }
+
 
         ////////////////////Private Functions////////////////////
 
         // This should never get called
-        void Renderer::DrawTexture(Texture* texture) {
+        void Renderer::DrawTexture(Texture*) {
             throw(new GraphicsException("Why the hell are you calling this?"));
         }
 

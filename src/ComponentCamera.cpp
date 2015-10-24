@@ -1,6 +1,12 @@
 #include "ComponentCamera.h"
 #include "Serializable.h"
 #include "Serialize.h"
+#include "ComponentTransform.h"
+#include "Entity.h"
+#include "Matrix.h"
+#include "Engine.h"
+#include "Window.h"
+
 
 namespace ForLeaseEngine {
     namespace Components {
@@ -25,6 +31,22 @@ namespace ForLeaseEngine {
             camera.ReadFloat("Near", Near);
             camera.ReadFloat("Far", Far);
             camera.ReadFloat("Size", Size);
+        }
+
+        Point Camera::WorldToScreen(const Point& point) {
+            Transform* trans = Parent.GetComponent<Transform>();
+            int xres = ForLease->GameWindow->GetXResolution();
+            int yres = ForLease->GameWindow->GetYResolution();
+            Matrix m = Matrix::Translation(Point(xres / 2.0f, yres / 2.0f)) * Matrix::Scale(yres / Size, yres / Size) * Matrix::RotationRad(-trans->Rotation) * Matrix::Translation(-trans->Position);
+            return m * point;
+        }
+
+        Point Camera::ScreenToWorld(const Point& point) {
+            Transform* trans = Parent.GetComponent<Transform>();
+            int xres = ForLease->GameWindow->GetXResolution();
+            int yres = ForLease->GameWindow->GetYResolution();
+            Matrix m = Matrix::Translation(trans->Position) * Matrix::RotationRad(trans->Rotation) * Matrix::Scale(Size / yres, Size / yres) * Matrix::Translation(Point(-xres / 2.0f, -yres / 2.0f));
+            return m * point;
         }
     }
 }

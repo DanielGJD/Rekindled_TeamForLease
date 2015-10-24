@@ -65,7 +65,7 @@ namespace ForLeaseEngine {
             ComponentType GetRequired();
             virtual void Update() = 0;
         protected:
-            const Entity& Parent;
+            Entity& Parent;
         private:
             // const ComponentType Type;     //! The type of component.
             const ComponentType Required; //! A mask of all components required for this component
