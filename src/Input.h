@@ -13,6 +13,7 @@
 
 #include "EventDispatcher.h"
 #include "Window.h"
+#include <SDL.h>
 
 namespace ForLeaseEngine
 {
@@ -30,11 +31,13 @@ namespace ForLeaseEngine
 
             void ProcessAllInput();
             //void ProcessInput(int events);
+            void ProcessAllInputWithImgui();
 
             //! For testing only, do not use
             EventDispatcher* dispatcher;
             Systems::Window* GameWindow;
         private:
+            void ProcessEvent(SDL_Event& SDL_e);
     };
 }
 

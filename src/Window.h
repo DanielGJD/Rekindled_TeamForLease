@@ -76,6 +76,8 @@ namespace ForLeaseEngine {
                 int GetXResolution();
                 int GetYResolution();
 
+                SDL_Window* DangerousGetRawWindow();
+
             private:
                 //! Major OpenGL version
                 static const int FLE_GL_MAJOR_VERSION = 2;

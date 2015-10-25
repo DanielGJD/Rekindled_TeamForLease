@@ -261,5 +261,13 @@ namespace ForLeaseEngine {
             window = NULL;
             SDL_QuitSubSystem(SDL_INIT_VIDEO);
         }
+
+        /*!
+            \brief
+                Gets the raw SDL window, DON'T USE UNLESS YOU KNOW WHAT YOU'RE DOING!
+        */
+        SDL_Window* Window::DangerousGetRawWindow() {
+            return window;
+        }
     }
 }
