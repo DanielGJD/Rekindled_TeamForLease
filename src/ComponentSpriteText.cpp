@@ -14,6 +14,7 @@ namespace ForLeaseEngine {
             spriteText.WriteString("Font", TextFont);
             spriteText.WriteString("Text", Text);
             TextColor.Serialize(spriteText);
+            spriteText.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(spriteText, "SpriteText");
         }
 

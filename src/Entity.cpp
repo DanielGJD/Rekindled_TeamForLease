@@ -43,10 +43,9 @@ namespace ForLeaseEngine {
         unsigned id;
         entity.ReadUint("ID", id);
         ID = id;
-        // for (std::string componentName : entity.GetMemberNames()) {
-        //     Serializer componentSerializer = entity.GetChild(componentName);
-        //     Component* component;
-        // }
+        for (std::string componentName : entity.GetMemberNames()) {
+            AddComponent(DeserializeComponent(entity, componentName, *this));
+        }
     }
 
     /*!
@@ -89,7 +88,7 @@ namespace ForLeaseEngine {
     }
 
     /*!
-        Get the component amsk from this Entity.
+        Get the component mask from this Entity.
 
         \return
             A ComponentType that is this Entity's ComponentMask
@@ -133,6 +132,44 @@ namespace ForLeaseEngine {
             entity->AddComponent(new Components::Collision(*entity));
         else
             throw AddComponentException(mask, entity->GetID(), "Unimplemented component.");
+    }
+
+    Component* DeserializeComponent(Serializer& root, std::string& name, Entity& entity) {
+        Serializer componentSerializer = root.GetChild(name);
+        unsigned type;
+        componentSerializer.ReadUint("Type", type);
+
+        Component* component = 0;
+
+        switch (static_cast<ComponentType>(type)) {
+            case ComponentType::Camera:
+                component = new Components::Camera(entity, 0, 0, 0);
+                break;
+            case ComponentType::Collision:
+                component = new Components::Collision(entity);
+                break;
+            case ComponentType::Model:
+                component = new Components::Model(entity, true, "", "");
+                break;
+            case ComponentType::Physics:
+                component = new Components::Physics(entity);
+                break;
+            case ComponentType::Sprite:
+                component = new Components::Sprite(entity);
+                break;
+            case ComponentType::SpriteText:
+                component = new Components::SpriteText(entity, "");
+                break;
+            case ComponentType::Transform:
+                component = new Components::Transform(entity);
+                break;
+            default:
+                return 0;
+        }
+
+        component->Deserialize(root);
+
+        return component;
     }
 
 } // ForLeaseEngine

@@ -40,6 +40,7 @@ namespace ForLeaseEngine {
             sprite.WriteFloat("FrameRate", FrameRate);
             sprite.WriteFloat("AnimationSpeed", AnimationSpeed);
             sprite.WriteInt("StartFrame", StartFrame);
+            sprite.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(sprite, "Sprite");
         }
 

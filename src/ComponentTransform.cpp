@@ -77,6 +77,7 @@ namespace ForLeaseEngine {
             transform.WriteFloat("ScaleY", ScaleY);
             transform.WriteFloat("Rotation", Rotation);
             transform.WriteInt("ZOrder", ZOrder);
+            transform.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(transform, "Transform");
         }
 

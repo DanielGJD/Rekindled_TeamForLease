@@ -10,9 +10,9 @@
 #include "ComponentCollision.h"
 
 namespace ForLeaseEngine {
-    
+
     namespace Components {
-        
+
         /*!
             Constructor for the Collision class.
 
@@ -21,12 +21,13 @@ namespace ForLeaseEngine {
         */
         Collision::Collision(Entity& owner)
             : Component(owner, ComponentType::Transform) {}
-        
+
         void Collision::Serialize(Serializer& root) {
             Serializer collision = root.GetChild("Collision");
             collision.WriteFloat("Height", Height);
             collision.WriteFloat("Width", Width);
             collision.WriteBool("ResolveCollisions", ResolveCollisions);
+            collision.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(collision, "Collision");
         }
 
@@ -38,5 +39,5 @@ namespace ForLeaseEngine {
             CollidedLastFrame = false;
         }
     } // Components
-    
+
 } // ForLeaseEngine

@@ -23,6 +23,7 @@ namespace ForLeaseEngine {
             camera.WriteFloat("Near", Near);
             camera.WriteFloat("Far", Far);
             camera.WriteFloat("Size", Size);
+            camera.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(camera, "Camera");
         }
 

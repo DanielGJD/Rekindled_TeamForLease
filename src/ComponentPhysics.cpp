@@ -47,6 +47,7 @@ namespace ForLeaseEngine {
             physics.WriteVec("Velocity", Velocity);
             physics.WriteVec("Acceleration", Acceleration);
             physics.WriteVec("Force", Force);
+            physics.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(physics, "Physics");
         }
 

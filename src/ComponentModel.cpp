@@ -49,6 +49,7 @@ namespace ForLeaseEngine {
             model.WriteString("Texture", ModelTexture);
             ModelColor.Serialize(model);
             model.WriteInt("BlendingMode", BlendingMode);
+            model.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(model, "Model");
         }
 

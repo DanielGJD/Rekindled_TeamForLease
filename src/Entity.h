@@ -46,7 +46,7 @@ namespace ForLeaseEngine {
                     than the default behavior, which is to return a null pointer.
             */
             template <typename T = Component>
-            T* GetComponent(bool throwOnFail = false) {
+            T* GetComponent(bool throwOnFail = false) const {
                 if (T::Type == ComponentType::None && throwOnFail)
                     throw EntityException(ID, "No component specified.");
 
@@ -71,6 +71,7 @@ namespace ForLeaseEngine {
     };
 
     void AddComponentsToEntity(ComponentType mask, Entity* entity);
+    Component* DeserializeComponent(Serializer& root, std::string& name, Entity& entity);
 
 } // ForLeaseEngine
 
