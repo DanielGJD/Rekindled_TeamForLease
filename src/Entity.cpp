@@ -44,6 +44,7 @@ namespace ForLeaseEngine {
         entity.ReadUint("ID", id);
         ID = id;
         for (std::string componentName : entity.GetMemberNames()) {
+            if (componentName == "ID") continue;
             AddComponent(DeserializeComponent(entity, componentName, *this));
         }
     }

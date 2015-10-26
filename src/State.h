@@ -26,7 +26,7 @@ namespace ForLeaseEngine {
         \brief
             A small class that defines a state to be loaded by the GameStateManager.
     */
-    class State {
+    class State : public Serializable {
 
         public:
             State(std::string name = "Generic State Name");
@@ -43,6 +43,10 @@ namespace ForLeaseEngine {
             Entity* GetEntityByID(long unsigned id, bool throwOnFail = false);
 
             std::string GetName();
+
+            virtual void Serialize(Serializer& root);
+            virtual void Deserialize(Serializer& root);
+
         protected:
             std::string Name;                               //! Name of the state
             std::vector<LevelComponent*> LevelComponents;   //! The level components in the state

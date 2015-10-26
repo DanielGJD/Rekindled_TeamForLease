@@ -83,6 +83,26 @@ namespace ForLeaseEngine {
     */
     std::string State::GetName() { return Name; }
 
+    void State::Serialize(Serializer& root) {
+        Serializer state = root.GetChild("State");
+        state.WriteString("Name", Name);
+        for (Entity* entity : Entities) {
+            entity->Serialize(state);
+        }
+        root.Append(state, "State");
+    }
+
+    void State::Deserialize(Serializer& root) {
+        Serializer state = root.GetChild("State");
+        state.ReadString("Name", Name);
+        for (std::string member : state.GetMemberNames()) {
+            if (member == "Name") continue;
+            Entity* entity = new Entity();
+            entity->Deserialize(state);
+            Entities.push_back(entity);
+        }
+    }
+
     /*!
         Add a level component (or multiple level components) to a given state.
 
