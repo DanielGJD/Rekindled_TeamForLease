@@ -13,19 +13,24 @@
 #include "Component.h"
 #include "Entity.h"
 #include "Engine.h"
+#include "Serializable.h"
+#include "Serialize.h"
 #include <vector>
 
 namespace ForLeaseEngine {
 
     class State;
 
-    class LevelComponent {
+    class LevelComponent : public Serializable {
         public:
             LevelComponent(State& owner, ComponentType componentMask = ComponentType::None);
             virtual void Update(std::vector<Entity *>& entities) = 0;
             bool CheckEntityCompatibility(Entity*  entity);
-        private:
+            virtual void Serialize(Serializer&) {}
+            virtual void Deserialize(Serializer&) {}
+        protected:
             State& Owner;
+        private:
             ComponentType ComponentMask;
     };
 

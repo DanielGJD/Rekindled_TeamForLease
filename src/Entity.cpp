@@ -63,7 +63,7 @@ namespace ForLeaseEngine {
         \return
             A long unsigned integer that is this Entity's ID.
     */
-    long unsigned Entity::GetID() {
+    long unsigned Entity::GetID() const {
         return ID;
     }
 

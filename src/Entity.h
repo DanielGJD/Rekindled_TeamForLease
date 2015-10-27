@@ -31,7 +31,7 @@ namespace ForLeaseEngine {
             void Update();
             void Serialize(Serializer& root);
             void Deserialize(Serializer& root);
-            long unsigned GetID();
+            long unsigned GetID() const;
             void AddComponent(Component* component);
             ComponentType GetComponentMask();
             bool HasComponent(ComponentType type);

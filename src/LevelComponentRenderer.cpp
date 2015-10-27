@@ -26,6 +26,8 @@
 #include "Timer.h"
 #include "Engine.h"
 #include "Exception.h"
+#include "Serializable.h"
+#include "Serialize.h"
 //#include "ComponentSpriteText.h"
 
 namespace ForLeaseEngine {
@@ -33,7 +35,7 @@ namespace ForLeaseEngine {
         Renderer::Renderer(State& owner) : LevelComponent(owner) {
             DrawColor = Color(1, 1, 1, 1);
             ClearColor = Color(0, 0, 0, 1);
-            CurrentCamera = NULL;
+            CurrentCamera = 0;
             BlendingMode = BlendMode::NONE;
             CurrentTexture = 0;
             VertexCount = 0;
@@ -42,6 +44,31 @@ namespace ForLeaseEngine {
             TextureSwapCount = 0;
             BlendModeSwapCount = 0;
             RenderTime = 0;
+        }
+
+        void Renderer::Serialize(Serializer& root) {
+            Serializer renderer = root.GetChild("Renderer");
+            Serializer clearColor = renderer.GetChild("ClearColor");
+            ClearColor.Serialize(clearColor);
+            renderer.Append(clearColor, "ClearColor");
+            renderer.WriteInt("CurrentCamera", static_cast<int>(CurrentCamera));
+            root.Append(renderer, "Renderer");
+        }
+
+        void Renderer::Deserialize(Serializer& root) {
+            Serializer renderer = root.GetChild("Renderer");
+            Serializer clearColor = renderer.GetChild("ClearColor").GetChild("Color");
+            float r,g,b,a;
+            clearColor.ReadFloat("R", r);
+            clearColor.ReadFloat("G", g);
+            clearColor.ReadFloat("B", b);
+            clearColor.ReadFloat("A", a);
+            std::cout << r << " " << g << " " << b << " " << a << std::endl;
+            SetClearColor(r, g, b, a);
+            int cameraID;
+            renderer.ReadInt("CurrentCamera", cameraID);
+            CurrentCamera = cameraID;
+            std::cout << CurrentCamera << std::endl;
         }
 
         void Renderer::Update(std::vector<Entity*>& entities) {
@@ -53,12 +80,13 @@ namespace ForLeaseEngine {
             BlendModeSwapCount = 0;
             RenderTime = 0;
 
-            if(*CurrentCamera != NULL) {
+            if(CurrentCamera != 0) {
                 float aspectRatio = static_cast<float>(ForLease->GameWindow->GetXResolution()) / ForLease->GameWindow->GetYResolution();
                 try{
-                Components::Transform* transform = (*CurrentCamera)->GetComponent<Components::Transform>(true);
-                Components::Camera* camera = (*CurrentCamera)->GetComponent<Components::Camera>(true);
-                SetProjection(transform->Position, camera->Size * aspectRatio, camera->Size, camera->Near, camera->Far, transform->Rotation);
+                    Entity* cameraEntity = Owner.GetEntityByID(CurrentCamera, true);
+                    Components::Transform* transform = cameraEntity->GetComponent<Components::Transform>(true);
+                    Components::Camera* camera = cameraEntity->GetComponent<Components::Camera>(true);
+                    SetProjection(transform->Position, camera->Size * aspectRatio, camera->Size, camera->Near, camera->Far, transform->Rotation);
                 }
                 catch(Exception* e) {
                     std::cout << e->GetInfo();
@@ -105,7 +133,11 @@ namespace ForLeaseEngine {
             RenderTime = renderTimer.GetTime();
         }
 
-        void Renderer::SetCamera(Entity** camera) {
+        void Renderer::SetCamera(const Entity& camera) {
+            CurrentCamera = camera.GetID();
+        }
+
+        void Renderer::SetCamera(long camera) {
             CurrentCamera = camera;
         }
 
@@ -277,11 +309,13 @@ namespace ForLeaseEngine {
         float Renderer::GetRenderTime() { return RenderTime; }
 
         Point Renderer::ScreenToWorld(const Point& point) {
-            return (*CurrentCamera)->GetComponent<Components::Camera>()->ScreenToWorld(point);
+            Entity* cameraEntity = Owner.GetEntityByID(CurrentCamera);
+            return cameraEntity->GetComponent<Components::Camera>()->ScreenToWorld(point);
         }
 
         Point Renderer::WorldToScreen(const Point& point) {
-            return (*CurrentCamera)->GetComponent<Components::Camera>()->WorldToScreen(point);
+            Entity* cameraEntity = Owner.GetEntityByID(CurrentCamera);
+            return cameraEntity->GetComponent<Components::Camera>()->WorldToScreen(point);
         }
 
 

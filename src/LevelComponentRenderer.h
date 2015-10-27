@@ -11,14 +11,21 @@
 #include "Texture.h"
 #include "TextureRegion.h"
 #include "Color.h"
+#include "Serializable.h"
+#include "Serialize.h"
 
 namespace ForLeaseEngine {
     namespace LevelComponents {
         class Renderer : public LevelComponent {
             public:
                 Renderer(State& owner);
+
+                void Serialize(Serializer& root);
+                void Deserialize(Serializer& root);
+
                 void Update(std::vector<Entity*>& entities);
-                void SetCamera(Entity** camera);
+                void SetCamera(const Entity& camera);
+                void SetCamera(long camera);
                 void SetClearColor(float r, float g, float b, float a);
                 void SetClearColor(const Color& color);
                 void SetDrawingColor(float r, float g, float b, float a = 1);
@@ -55,7 +62,7 @@ namespace ForLeaseEngine {
                 Matrix ModelView;
                 Color DrawColor;
                 Color ClearColor;
-                Entity** CurrentCamera;
+                unsigned long CurrentCamera;
                 BlendMode BlendingMode;
                 GLuint CurrentTexture;
 

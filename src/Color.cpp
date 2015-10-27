@@ -8,6 +8,7 @@
 */
 
 #include "Color.h"
+#include <iostream>
 
 namespace ForLeaseEngine {
     /*!
