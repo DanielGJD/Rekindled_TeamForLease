@@ -3,11 +3,13 @@
 
 namespace ForLeaseEngine {
 
-    Ray::Ray(Point start, Vector direction)
-    : Start(start), Direction(direction) {}
+    Ray::Ray(Point start, Vector direction, float scale, int collisions)
+    : Start(start), Direction(direction), Scale(scale), Collisions(collisions) {
+        Direction.Normalize();
+    }
 
     bool Ray::IsColliding(Entity* entity) {
-        Point endPoint = Start + Direction;
+        Point endPoint = Start + Direction * Scale;
         Components::Transform* transform = entity->GetComponent<Components::Transform>();
         if (!transform) return false;
 
