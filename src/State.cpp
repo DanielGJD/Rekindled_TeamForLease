@@ -53,6 +53,42 @@ namespace ForLeaseEngine {
         return entity;
     }
 
+    bool State::DeleteEntity(long unsigned id) {
+        for (unsigned i = 0; i < Entities.size(); ++i) {
+            if (Entities[i]->GetID() == id) {
+                delete Entities[i];
+                Entities.erase(Entities.begin() + i);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    bool State::DeleteEntity(std::string name) {
+        for (unsigned i = 0; i < Entities.size(); ++i) {
+            if (Entities[i]->GetName() == name) {
+                delete Entities[i];
+                Entities.erase(Entities.begin() + i);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    bool State::DeleteEntity(Entity* entity) {
+        for (unsigned i = 0; i < Entities.size(); ++i) {
+            if (Entities[i] == entity) {
+                delete entity;
+                Entities.erase(Entities.begin() + i);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /*!
         Get a pointer to an entity with the given ID.
 
