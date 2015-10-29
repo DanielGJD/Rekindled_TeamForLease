@@ -90,6 +90,16 @@ namespace ForLeaseEngine {
         void GameStateManager::SetState(unsigned stateIndex) {
             NextStateIndex = stateIndex;
         }
+        
+        /*!
+            Get the currently loaded state.
+            
+            \return
+                A reference to the current state.
+        */
+        State& GameStateManager::CurrentState() {
+            return States[StateIndex];
+        }
 
     }
 

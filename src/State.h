@@ -41,6 +41,7 @@ namespace ForLeaseEngine {
             void AddLevelComponent(LevelComponent* levelComponent);
             Entity* AddEntity(std::string name = "");
             Entity* GetEntityByID(long unsigned id, bool throwOnFail = false);
+            Entity* GetEntityByName(std::string name, bool throwOnFail = false);
 
             std::string GetName();
 

@@ -9,6 +9,7 @@
 
 #include "State.h"
 #include "Engine.h"
+#include <sstream>
 
 namespace ForLeaseEngine {
 
@@ -73,6 +74,35 @@ namespace ForLeaseEngine {
         if (throwOnFail) throw EntityNotFoundException(id);
 
         else return 0;
+    }
+    
+    /*!
+        Get a pointer to an entity with the given name.
+        
+        \param name
+            A std::string name of the Entity we want to find.
+        
+        \param throwOnFail
+            Whether to throw an error on fail, or return a null pointer.
+            Defaults to false.
+        
+        \return
+            A pointer to an entity with the given name.
+    */
+    Entity* State::GetEntityByName(std::string name, bool throwOnFail) {
+        for (Entity* entity : Entities) {
+            if (entity->GetName() == name)
+                return entity;
+        }
+        
+        std::stringstream ss;
+        ss << "Entity " << name << " not found.";
+        
+        
+        if (throwOnFail) throw EntityNotFoundException(0, ss.str());
+        
+        else return 0;
+        
     }
 
     /*!

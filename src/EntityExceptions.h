@@ -27,7 +27,7 @@ namespace ForLeaseEngine {
         public:
             EntityException();
             EntityException(const long unsigned id);
-            EntityException(const std::string& message);
+            EntityException(std::string& message);
             EntityException(const long unsigned id, const std::string& message);
             long unsigned GetEntityID();
         private:
