@@ -1,0 +1,50 @@
+      98 text files.
+classified 98 files      98 unique files.                              
+      54 files ignored.
+
+language,filename,blank,comment,code,"http://cloc.sourceforge.net v 1.64  T=0.38 s (119.3 files/s, 13934.5 lines/s)"
+C++,src\LevelComponentRenderer.cpp,50,25,357
+C++,src\Mesh.cpp,102,192,316
+C++,src\Serialize.cpp,107,240,173
+C++,src\Window.cpp,36,89,148
+C++,src\BmFont.cpp,15,8,117
+C++,src\ResourceManager.cpp,14,0,112
+C++,src\Matrix.cpp,43,105,112
+C++,src\ComponentSprite.cpp,9,0,102
+C++,src\Entity.cpp,29,51,96
+C++,src\Vector.cpp,56,130,90
+C++,src\Input.cpp,13,22,75
+C++,src\Color.cpp,39,93,69
+C++,src\TextureRegion.cpp,10,0,68
+C++,src\FrameRateController.cpp,17,38,66
+C++,src\LevelComponentCollision.cpp,36,56,62
+C++,src\State.cpp,24,43,58
+C++,src\Font.cpp,5,2,47
+C++,src\ComponentCamera.cpp,8,0,45
+C++,src\EventDispatcher.cpp,10,31,45
+C++,src\Texture.cpp,9,2,42
+C++,src\GameStateManager.cpp,23,32,41
+C++,src\LevelComponentPhysics.cpp,23,48,36
+C++,src\Engine.cpp,11,43,31
+C++,src\ComponentTransform.cpp,20,44,31
+C++,src\Timer.cpp,8,8,31
+C++,src\ComponentModel.cpp,13,30,30
+C++,src\ComponentSpriteText.cpp,7,0,29
+C++,src\ComponentPhysics.cpp,12,25,26
+C++,src\Component.cpp,12,59,25
+C++,src\Ray.cpp,9,2,24
+C++,src\ComponentCollision.cpp,8,13,22
+C++,src\Debug.cpp,3,0,21
+C++,src\EntityExceptions.cpp,26,67,21
+C++,src\MouseMotionEvent.cpp,4,0,14
+C++,src\Glyph.cpp,2,0,12
+C++,src\Exception.cpp,9,30,11
+C++,src\Listener.cpp,7,18,11
+C++,src\LevelComponent.cpp,5,8,9
+C++,src\StateExceptions.cpp,9,28,9
+C++,src\Face.cpp,12,37,8
+C++,src\Edge.cpp,11,33,8
+C++,src\GraphicsException.cpp,7,18,7
+C++,src\MouseButtonEvent.cpp,2,0,7
+C++,src\KeyboardEvent.cpp,9,24,7
+C++,src\UpdateEvent.cpp,1,0,4

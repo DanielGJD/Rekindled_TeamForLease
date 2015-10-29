@@ -114,6 +114,30 @@ namespace ForLeaseEngine {
             }
         }
 
+        std::vector<std::string> ResourceManager::GetLoadedTextureNames() {
+            std::vector<std::string> textureNames;
+            for(std::unordered_map<std::string, Texture*>::iterator i = Textures.begin(); i != Textures.end(); ++i) {
+                textureNames.push_back(std::get<0>(*i));
+            }
+            return textureNames;
+        }
+
+        std::vector<std::string> ResourceManager::GetLoadedFontNames() {
+            std::vector<std::string> fontNames;
+            for(std::unordered_map<std::string, Font*>::iterator i = Fonts.begin(); i != Fonts.end(); ++i) {
+                fontNames.push_back(std::get<0>(*i));
+            }
+            return fontNames;
+        }
+
+        std::vector<std::string> ResourceManager::GetLoadedMeshNames() {
+            std::vector<std::string> meshNames;
+            for(std::unordered_map<std::string, Mesh*>::iterator i = Meshes.begin(); i != Meshes.end(); ++i) {
+                meshNames.push_back(std::get<0>(*i));
+            }
+            return meshNames;
+        }
+
         std::ostream& operator<<(std::ostream& os, const ResourceManager& rhs) {
             os << "Textures: " << rhs.LoadedTextures << std::endl
                << "Meshes: " << rhs.LoadedMeshes << std::endl

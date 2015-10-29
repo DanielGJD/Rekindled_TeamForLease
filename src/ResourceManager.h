@@ -29,6 +29,10 @@ namespace ForLeaseEngine {
                 unsigned int GetTextureRamUsed();
                 unsigned int GetRamUsed();
 
+                std::vector<std::string> GetLoadedTextureNames();
+                std::vector<std::string> GetLoadedFontNames();
+                std::vector<std::string> GetLoadedMeshNames();
+
                 friend std::ostream& operator<<(std::ostream& os, const ResourceManager& resources);
 
             private:
