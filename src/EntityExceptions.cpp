@@ -33,7 +33,7 @@ namespace ForLeaseEngine {
         Constructor for an EntityException.  Sets the message to a user-provided
         message, and sets the ID of the Entity that caused this error to 0 (no Entity).
     */
-    EntityException::EntityException(std::string& message)
+    EntityException::EntityException(const std::string& message)
         : Exception(message), ID(0) {}
 
     /*!

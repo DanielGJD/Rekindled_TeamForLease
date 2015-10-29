@@ -98,7 +98,7 @@ namespace ForLeaseEngine {
                 A reference to the current state.
         */
         State& GameStateManager::CurrentState() {
-            return States[StateIndex];
+            return *States[StateIndex];
         }
 
     }
