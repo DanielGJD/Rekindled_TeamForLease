@@ -10,6 +10,7 @@ namespace ForLeaseEngine {
                               : Component(owner, ComponentType::Transform), Text(text), TextColor(textColor), TextFont(font) {}
 
         void SpriteText::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer spriteText = root.GetChild("SpriteText");
             spriteText.WriteString("Font", TextFont);
             spriteText.WriteString("Text", Text);

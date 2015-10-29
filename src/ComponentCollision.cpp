@@ -19,10 +19,12 @@ namespace ForLeaseEngine {
             \param owner
                 The entity that uses this Collision component.
         */
-        Collision::Collision(Entity& owner)
-            : Component(owner, ComponentType::Transform) {}
+        Collision::Collision(Entity& owner, float height, float width, bool resolve)
+            : Component(owner, ComponentType::Transform), Height(height), Width(width),
+            ResolveCollisions(resolve) {}
 
         void Collision::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer collision = root.GetChild("Collision");
             collision.WriteFloat("Height", Height);
             collision.WriteFloat("Width", Width);

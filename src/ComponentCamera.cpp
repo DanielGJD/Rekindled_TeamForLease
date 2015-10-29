@@ -19,6 +19,7 @@ namespace ForLeaseEngine {
         void Camera::Update() {}
 
         void Camera::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer camera = root.GetChild("Camera");
             camera.WriteFloat("Near", Near);
             camera.WriteFloat("Far", Far);

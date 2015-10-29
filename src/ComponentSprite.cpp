@@ -22,6 +22,7 @@ namespace ForLeaseEngine {
         Sprite::~Sprite() {}
 
         void Sprite::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer sprite = root.GetChild("Sprite");
             sprite.WriteBool("Visible", Visible);
             SpriteColor.Serialize(sprite);

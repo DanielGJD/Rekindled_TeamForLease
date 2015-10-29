@@ -43,6 +43,7 @@ namespace ForLeaseEngine {
         Model::~Model() {}
 
         void Model::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer model = root.GetChild("Model");
             model.WriteBool("Visible", Visible);
             model.WriteString("Mesh", ModelMesh);

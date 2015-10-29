@@ -39,7 +39,7 @@ namespace ForLeaseEngine {
 
             void UpdateEntities();
             void AddLevelComponent(LevelComponent* levelComponent);
-            Entity* AddEntity();
+            Entity* AddEntity(std::string name = "");
             Entity* GetEntityByID(long unsigned id, bool throwOnFail = false);
 
             std::string GetName();

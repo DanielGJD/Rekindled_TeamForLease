@@ -14,6 +14,8 @@ class SeanState : public ForLeaseEngine::State {
         void Update();
         void Deinitialize();
         void Unload();
+    private:
+        int Health;
 };
 
 #endif // SEAN_STATE_H

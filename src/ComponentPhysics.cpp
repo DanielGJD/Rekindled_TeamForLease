@@ -42,6 +42,7 @@ namespace ForLeaseEngine {
               Force(force) {}
 
         void Physics::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer physics = root.GetChild("Physics");
             physics.WriteFloat("Mass", Mass);
             physics.WriteVec("Velocity", Velocity);

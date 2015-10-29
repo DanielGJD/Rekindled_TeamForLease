@@ -8,6 +8,7 @@
 */
 
 #include "Entity.h"
+#include <sstream>
 
 namespace ForLeaseEngine {
 
@@ -19,7 +20,16 @@ namespace ForLeaseEngine {
         it plus one.  It also initializes the bitfield mask of components added
         to this entity to None.
     */
-    Entity::Entity() : ID(++TotalEntities), ComponentMask(ComponentType::None) {}
+    Entity::Entity(std::string name)
+    : ID(++TotalEntities), ComponentMask(ComponentType::None) {
+        if (name != "")
+            Name = name;
+        else {
+            std::stringstream ss;
+            ss << "[Entity " << ID << "]";
+            Name = ss.str();
+        }
+    }
 
     /*!
         Destructor for an Entity.  Destroys all components attached to it.
@@ -32,9 +42,15 @@ namespace ForLeaseEngine {
     void Entity::Serialize(Serializer& root) {
         Serializer entity = root.GetChild("Entity");
         entity.WriteUint("ID", static_cast<unsigned>(ID));
-        for(unsigned int i = 0; i < Components.size(); ++i) {
-            Components[i]->Serialize(entity);
+        entity.WriteString("Name", Name);
+        ArraySerializer jsonComponents(entity);
+        jsonComponents = entity.GetChild("Components");
+        for(Component* component : Components) {
+            Serializer componentSerializer;
+            component->Serialize(componentSerializer);
+            jsonComponents.Append(componentSerializer);
         }
+        entity.Append(jsonComponents, "Components");
         root.Append(entity, "Entity");
     }
 
@@ -42,10 +58,13 @@ namespace ForLeaseEngine {
         Serializer entity = root.GetChild("Entity");
         unsigned id;
         entity.ReadUint("ID", id);
+        entity.ReadString("Name", Name);
         ID = id;
-        for (std::string componentName : entity.GetMemberNames()) {
-            if (componentName == "ID") continue;
-            AddComponent(DeserializeComponent(entity, componentName, *this));
+        ArraySerializer jsonComponents(entity);
+        jsonComponents = entity.GetChild("Components");
+        for (unsigned i = 0; i < jsonComponents.Size(); ++i) {
+            Serializer component = jsonComponents[i];
+            AddComponent(DeserializeComponent(component, *this));
         }
     }
 
@@ -65,6 +84,16 @@ namespace ForLeaseEngine {
     */
     long unsigned Entity::GetID() const {
         return ID;
+    }
+
+    /*!
+        Returns the name of this Entity.
+
+        \return
+            A string that is this Entity's name.
+    */
+    std::string Entity::GetName() const {
+        return Name;
     }
 
     /*!
@@ -135,10 +164,9 @@ namespace ForLeaseEngine {
             throw AddComponentException(mask, entity->GetID(), "Unimplemented component.");
     }
 
-    Component* DeserializeComponent(Serializer& root, std::string& name, Entity& entity) {
-        Serializer componentSerializer = root.GetChild(name);
+    Component* DeserializeComponent(Serializer& root, Entity& entity) {
         unsigned type;
-        componentSerializer.ReadUint("Type", type);
+        root.ReadUint("Type", type);
 
         Component* component = 0;
 

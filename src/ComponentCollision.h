@@ -14,9 +14,9 @@
 #include "ComponentTransform.h"
 
 namespace ForLeaseEngine {
-    
+
     namespace Components {
-        
+
         /*!
             \class Collision
 
@@ -27,7 +27,7 @@ namespace ForLeaseEngine {
             public:
                 static const ComponentType Type = ComponentType::Collision;
                 virtual ComponentType GetType() { return Type; }
-                Collision(Entity& owner);
+                Collision(Entity& owner, float height = 100, float width = 100, bool resolve = true);
                 void Update() {}
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
@@ -38,9 +38,9 @@ namespace ForLeaseEngine {
             private:
                 Collision() = delete;
         };
-        
+
     } // Components
-    
+
 } // ForLeaseEngine
 
 #endif

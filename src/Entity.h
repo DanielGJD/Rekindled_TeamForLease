@@ -11,6 +11,7 @@
 #define ENTITY_H
 
 #include <vector>
+#include <string>
 #include "ComponentsInclude.h"
 #include "EntityExceptions.h"
 #include "Serializable.h"
@@ -26,20 +27,18 @@ namespace ForLeaseEngine {
     class Entity : public Serializable{
 
         public:
-            Entity();
+            Entity(std::string name = "");
             ~Entity();
             void Update();
             void Serialize(Serializer& root);
             void Deserialize(Serializer& root);
             long unsigned GetID() const;
+            std::string GetName() const;
             void AddComponent(Component* component);
             ComponentType GetComponentMask();
             bool HasComponent(ComponentType type);
             /*!
                 Get a Component from this Entity.
-
-                \param type
-                    The type of the given component.
 
                 \param throwOnFail
                     A boolean determining whether to throw an error on failure, rather
@@ -61,6 +60,8 @@ namespace ForLeaseEngine {
         private:
             //! The ID of this Entity, to differentiate from other Entities.
             long unsigned ID;
+            //! The name of this Entity, to differentiate from other Entities.
+            std::string Name;
             //! The mask of all components ORd together that this Entity has.
             ComponentType ComponentMask;
             //! The std::vector of pointers to all Components on this Entity.
@@ -71,7 +72,7 @@ namespace ForLeaseEngine {
     };
 
     void AddComponentsToEntity(ComponentType mask, Entity* entity);
-    Component* DeserializeComponent(Serializer& root, std::string& name, Entity& entity);
+    Component* DeserializeComponent(Serializer& root, Entity& entity);
 
 } // ForLeaseEngine
 

@@ -71,6 +71,7 @@ namespace ForLeaseEngine {
               ScaleY(scaleY), Rotation(rotation), ZOrder(zOrder) {}
 
         void Transform::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer transform = root.GetChild("Transform");
             transform.WriteVec("Position", Position);
             transform.WriteFloat("ScaleX", ScaleX);

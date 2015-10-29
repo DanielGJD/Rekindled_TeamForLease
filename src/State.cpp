@@ -45,8 +45,8 @@ namespace ForLeaseEngine {
         \return
             A pointer to the newly-created entity.
     */
-    Entity* State::AddEntity() {
-        Entity* entity = new Entity();
+    Entity* State::AddEntity(std::string name) {
+        Entity* entity = new Entity(name);
         Entities.push_back(entity);
 
         return entity;
@@ -86,19 +86,32 @@ namespace ForLeaseEngine {
     void State::Serialize(Serializer& root) {
         Serializer state = root.GetChild("State");
         state.WriteString("Name", Name);
+
+        ArraySerializer jsonEntities(state);
+        jsonEntities = state.GetChild("Entities");
+
         for (Entity* entity : Entities) {
-            entity->Serialize(state);
+            Serializer entitySerializer;
+            entity->Serialize(entitySerializer);
+            jsonEntities.Append(entitySerializer);
         }
+
+        state.Append(jsonEntities, "Entities");
         root.Append(state, "State");
     }
 
     void State::Deserialize(Serializer& root) {
         Serializer state = root.GetChild("State");
+
         state.ReadString("Name", Name);
-        for (std::string member : state.GetMemberNames()) {
-            if (member == "Name") continue;
+        ArraySerializer jsonEntities(state);
+        jsonEntities = state.GetChild("Entities");
+
+        for (unsigned i = 0; i < jsonEntities.Size(); ++i) {
+            Serializer entitySerializer = jsonEntities[i];
+
             Entity* entity = new Entity();
-            entity->Deserialize(state);
+            entity->Deserialize(entitySerializer);
             Entities.push_back(entity);
         }
     }
