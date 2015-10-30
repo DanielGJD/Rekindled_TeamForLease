@@ -22,7 +22,7 @@ void SeanState::Load() {
     renderer->SetCamera(*camera);
     AddLevelComponent(renderer);
     AddLevelComponent(new LevelComponents::Physics(*this, Vector(0,-10)));
-//    AddLevelComponent(new LevelComponents::Collision(*this));
+    AddLevelComponent(new LevelComponents::Collision(*this));
 
     FLE::Mesh* box = new FLE::Mesh(4, 4, 2);
     box->SetVertex(Point(-1,-1), 0);
