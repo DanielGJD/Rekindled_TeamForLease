@@ -27,12 +27,12 @@ namespace ForLeaseEngine {
             public:
                 static const ComponentType Type = ComponentType::Collision;
                 virtual ComponentType GetType() { return Type; }
-                Collision(Entity& owner, float height = 100, float width = 100, bool resolve = true);
+                Collision(Entity& owner, float width = 100, float height = 100, bool resolve = true);
                 void Update() {}
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
-                float Height;           //! Height of the collision box
                 float Width;            //! Width of the collision box
+                float Height;           //! Height of the collision box
                 bool CollidedLastFrame; //! Whether or not the entity collided on the last frame.  This should be handled by an event.
                 bool ResolveCollisions; //! Whether we want to resolve collisions by moving entities
             private:

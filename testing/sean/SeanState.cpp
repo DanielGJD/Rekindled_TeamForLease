@@ -47,15 +47,15 @@ void SeanState::Load() {
 
 
     FLE::Entity* entityBox = AddEntity("Box");
-    entityBox->AddComponent(new Components::Transform(*entityBox, 0, 100, 100, 100, 0));
+    entityBox->AddComponent(new Components::Transform(*entityBox, 0, 0, 25, 25, 0));
     entityBox->AddComponent(new Components::Model(*entityBox, true, "BoxMesh.json", "", Color(1,1,1,1)));
-    entityBox->AddComponent(new Components::Collision(*entityBox, 100, 100));
+    entityBox->AddComponent(new Components::Collision(*entityBox, 50, 50));
     entityBox->AddComponent(new Components::Physics(*entityBox));
 
     Entity* entityFloor = AddEntity("Floor");
-    entityFloor->AddComponent(new Components::Transform(*entityFloor, 0, -300, 500, 20, 0));
+    entityFloor->AddComponent(new Components::Transform(*entityFloor, 0, -250, 250, 10, 0));
     entityFloor->AddComponent(new Components::Model(*entityFloor, true, "BoxMesh.json", "", Color(0,1,1,1)));
-    entityFloor->AddComponent(new Components::Collision(*entityFloor, 500, 100));
+    entityFloor->AddComponent(new Components::Collision(*entityFloor, 500, 20));
 
     Serializer serial2;
     Serialize(serial2);
@@ -98,7 +98,7 @@ void SeanState::Update() {
     ForLease->GameWindow->UpdateGameWindow();
 
     --Health;
-    if (Health <= 0) ForLease->GameStateManager().SetAction(Modules::StateAction::Restart);
+//    if (Health <= 0) ForLease->GameStateManager().SetAction(Modules::StateAction::Restart);
 }
 
 void SeanState::Deinitialize() {
