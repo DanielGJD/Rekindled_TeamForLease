@@ -57,12 +57,15 @@ void SeanState::Load() {
     entityFloor->AddComponent(new Components::Model(*entityFloor, true, "BoxMesh.json", "", Color(0,1,1,1)));
     entityFloor->AddComponent(new Components::Collision(*entityFloor, 500, 100));
 
-    serial;
-    Serialize(serial);
-    serial.WriteFile("StateTest.json");
+    Serializer serial2;
+    Serialize(serial2);
+    serial2.WriteFile("StateTest.json");
 
 
     ForLease->Resources.LoadMesh("BoxMesh.json");
+
+    DeleteAllEntities();
+    DeleteAllLevelComponents();
 
 
 
@@ -100,6 +103,7 @@ void SeanState::Update() {
 
 void SeanState::Deinitialize() {
     DeleteAllEntities();
+    DeleteAllLevelComponents();
 }
 
 void SeanState::Unload() {}

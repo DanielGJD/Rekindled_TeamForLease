@@ -47,6 +47,8 @@ namespace ForLeaseEngine {
             Entity* GetEntityByID(long unsigned id, bool throwOnFail = false);
             Entity* GetEntityByName(std::string name, bool throwOnFail = false);
 
+            void DeleteAllLevelComponents();
+
             std::string GetName();
 
             virtual void Serialize(Serializer& root);

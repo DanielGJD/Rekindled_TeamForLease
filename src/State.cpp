@@ -94,9 +94,7 @@ namespace ForLeaseEngine {
             delete entity;
         }
 
-        while (Entities.size() > 0) {
-            Entities.pop_back();
-        }
+        Entities.clear();
     }
 
     /*!
@@ -149,6 +147,14 @@ namespace ForLeaseEngine {
 
         else return 0;
 
+    }
+
+    void State::DeleteAllLevelComponents() {
+        for (LevelComponent* lc : LevelComponents) {
+            delete lc;
+        }
+
+        LevelComponents.clear();
     }
 
     /*!
