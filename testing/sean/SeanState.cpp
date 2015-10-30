@@ -58,6 +58,10 @@ void SeanState::Load() {
     entityFloor->AddComponent(new Components::Model(*entityFloor, true, "BoxMesh.json", "", Color(0,1,1,1)));
     entityFloor->AddComponent(new Components::Collision(*entityFloor, 500, 20));
 
+    Entity* entityLight = AddEntity("Light");
+    entityLight->AddComponent(new Components::Transform(*entityLight, 0, 200, 0, 0, 0));
+    entityLight->AddComponent(new Components::Light(*entityLight, Vector(-1,-1), Vector(1,-1), 1000, 700));
+
     Serializer serial2;
     Serialize(serial2);
     serial2.WriteFile("StateTest.json");
@@ -102,7 +106,7 @@ void SeanState::Update() {
 
     ray.IsColliding(GetEntityByName("Box"));
 
-    renderer->DrawLine(ray.GetStart(), ray.GetScaledVector());
+//    renderer->DrawLine(ray.GetStart(), ray.GetScaledVector());
 
     ForLease->GameWindow->UpdateGameWindow();
 

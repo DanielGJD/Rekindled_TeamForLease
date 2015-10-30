@@ -149,6 +149,10 @@ namespace ForLeaseEngine {
 
     }
 
+    std::vector<Entity *>& State::GetAllEntities() {
+        return Entities;
+    }
+
     void State::DeleteAllLevelComponents() {
         for (LevelComponent* lc : LevelComponents) {
             delete lc;

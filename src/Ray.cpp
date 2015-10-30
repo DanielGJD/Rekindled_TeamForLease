@@ -28,11 +28,11 @@ namespace ForLeaseEngine {
         Vector leftVec = botLeft - topLeft;
         Vector botVec = botLeft - botRight;
 
-        LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
-        renderer->DrawArrow(topLeft, topVec);
-        renderer->DrawArrow(topLeft, leftVec);
-        renderer->DrawArrow(botRight, rightVec);
-        renderer->DrawArrow(botRight, botVec);
+//        LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
+//        renderer->DrawArrow(topLeft, topVec);
+//        renderer->DrawArrow(topLeft, leftVec);
+//        renderer->DrawArrow(botRight, rightVec);
+//        renderer->DrawArrow(botRight, botVec);
 
 
         float minDist = Unlimited;
@@ -63,7 +63,7 @@ namespace ForLeaseEngine {
 
         if (minDist < 0 || dist < minDist) minDist = dist;
 
-        if (minDist < Length && minDist != -1) {
+        if (minDist * Length < Length && minDist != Unlimited) {
             Length = Length * minDist;
             return true;
         }

@@ -195,6 +195,9 @@ namespace ForLeaseEngine {
             case ComponentType::PlayerController:
                 component = Components::CharacterController::Create(entity);
                 break;
+            case ComponentType::Light:
+                component = new Components::Light(entity);
+                break;
             default:
                 return 0;
         }
