@@ -71,6 +71,12 @@ namespace ForLeaseEngine {
         building->AddComponent(new Components::Model(*building, true, "Building1Mesh.json", "", Color(1, 1, 1, 1), BlendMode::NONE, true));
 
 
+        //////////ADDED BY SEAN, SORRY CHRIS, WANTED TO GIVE YOU A LIGHTING DEMO//////////
+        Entity* light = AddEntity("Light");
+        light->AddComponent(new Components::Transform(*light, Point(-5, 10), 0, 0, 0));
+        light->AddComponent(new Components::Light(*light, Vector(-1,-1), Vector(1,-1), 1000, 700));
+
+
 
         Serializer levelWriter;
         Serialize(levelWriter);
@@ -93,6 +99,11 @@ namespace ForLeaseEngine {
 
     void SegmentPrototypeState::Update() {
         ForLease->OSInput.ProcessAllInput();
+
+        //////////ADDED BY SEAN, SORRY CHRIS, WANTED TO GIVE YOU A LIGHTING DEMO//////////
+        for (Entity* entity : Entities) entity->Update();
+
+
         for(unsigned int i = 0; i < LevelComponents.size(); ++i) {
             LevelComponents[i]->Update(Entities);
         }
