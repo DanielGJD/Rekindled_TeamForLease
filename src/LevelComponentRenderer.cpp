@@ -364,7 +364,7 @@ namespace ForLeaseEngine {
 
             if(drawEdges) {
                 glColor3f(0, 0, 0);
-                glLineWidth(10);
+                glLineWidth(2);
                 glBegin(GL_LINES);
                     for(int i = 0; i < mesh->GetEdgeCount(); ++i) {
                         IndexedEdge edge = mesh->GetIndexedEdge(i);
@@ -377,7 +377,7 @@ namespace ForLeaseEngine {
 
             if(drawVertices) {
                 glColor3f(1, 1, 1);
-                glPointSize(5);
+                glPointSize(2);
                 glBegin(GL_POINTS);
                     for(int i = 0; i < mesh->GetVertexCount(); ++i) {
                         glVertex2f(transformed[i][0], transformed[i][1]);

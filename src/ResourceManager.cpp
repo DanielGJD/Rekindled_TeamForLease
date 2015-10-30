@@ -27,6 +27,12 @@ namespace ForLeaseEngine {
                 return std::get<1>(*i);
             }
 
+            LoadTexture(fileName);
+            i = Textures.find(fileName);
+            if(i != Textures.end()) {
+                return std::get<1>(*i);
+            }
+
             return NULL;
         }
 
@@ -60,6 +66,14 @@ namespace ForLeaseEngine {
                 return std::get<1>(*i);
             }
 
+            //////////////////////////////
+            LoadFont(fileName);
+            i = Fonts.find(fileName);
+            if(i != Fonts.end()) {
+                return std::get<1>(*i);
+            }
+            //////////////////////////////
+
             return NULL;
         }
 
@@ -92,6 +106,12 @@ namespace ForLeaseEngine {
 
         Mesh* ResourceManager::GetMesh(std::string fileName) {
             std::unordered_map<std::string, Mesh*>::iterator i = Meshes.find(fileName);
+            if(i != Meshes.end()) {
+                return std::get<1>(*i);
+            }
+
+            LoadMesh(fileName);
+            i = Meshes.find(fileName);
             if(i != Meshes.end()) {
                 return std::get<1>(*i);
             }
