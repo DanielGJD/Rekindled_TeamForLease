@@ -36,7 +36,8 @@ namespace ForLeaseEngine {
         Sprite              = 1 << 5,   //! Sprite
         Model               = 1 << 6,   //! Model
         SpriteText          = 1 << 7,   //! Sprite text
-        Renderer            = 1 << 8    //! Renderer
+        Renderer            = 1 << 8,   //! Renderer
+        Light               = 1 << 9    //! Light
 
     };
 

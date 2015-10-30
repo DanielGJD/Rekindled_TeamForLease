@@ -46,6 +46,7 @@ namespace ForLeaseEngine {
             void DeleteAllEntities();
             Entity* GetEntityByID(long unsigned id, bool throwOnFail = false);
             Entity* GetEntityByName(std::string name, bool throwOnFail = false);
+            std::vector<Entity *>& GetAllEntities();
 
             void DeleteAllLevelComponents();
 

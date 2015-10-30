@@ -18,5 +18,6 @@
 #include "ComponentCamera.h"
 #include "ComponentSpriteText.h"
 #include "ComponentCharacterController.h"
+#include "ComponentLight.h"
 
 #endif
