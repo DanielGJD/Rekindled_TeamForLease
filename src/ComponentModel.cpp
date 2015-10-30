@@ -51,6 +51,8 @@ namespace ForLeaseEngine {
             ModelColor.Serialize(model);
             model.WriteInt("BlendingMode", BlendingMode);
             model.WriteUint("Type", static_cast<unsigned>(Type));
+            model.WriteBool("DrawEdges", DrawEdges);
+            model.WriteBool("DrawVertices", DrawVertices);
             root.Append(model, "Model");
         }
 
@@ -63,6 +65,8 @@ namespace ForLeaseEngine {
             int blend;
             model.ReadInt("BlendingMode", blend);
             BlendingMode = static_cast<BlendMode>(blend);
+            model.ReadBool("DrawEdges", DrawEdges);
+            model.ReadBool("DrawVertices", DrawVertices);
         }
 
         /*!

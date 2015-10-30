@@ -272,7 +272,8 @@ namespace ForLeaseEngine {
 
         void Renderer::DrawArrow(const Point& start, const Point& end) {
             //ModelView = Matrix();
-            float headLength = 10.0f;
+            Components::Camera* camera = Owner.GetEntityByID(CurrentCamera)->GetComponent<Components::Camera>();
+            float headLength = camera->Size / 40;
             float headAngle = 3.1415927 / 6;
             Vector direction = start - end;
             direction.Normalize();
