@@ -29,6 +29,8 @@ namespace ForLeaseEngine {
         */
         class Physics : public LevelComponent {
             public:
+                static const ComponentType Type = ComponentType::Physics;
+                virtual ComponentType GetType() { return Type; }
                 Physics(State& owner, Vector gravity = Vector(0, -1));
                 void Update(std::vector<Entity *>& entities);
                 void ApplyGravity(Entity* entity);

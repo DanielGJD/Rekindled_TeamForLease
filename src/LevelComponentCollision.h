@@ -30,6 +30,8 @@ namespace ForLeaseEngine {
         */
         class Collision : public LevelComponent {
             public:
+                static const ComponentType Type = ComponentType::Collision;
+                virtual ComponentType GetType() { return Type; }
                 Collision(State& owner);
                 void Update(std::vector<Entity *>& entities);
                 bool CheckCollision(Entity* entity1, Entity* entity2);
