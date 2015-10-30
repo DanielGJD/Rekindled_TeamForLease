@@ -6,6 +6,7 @@
 #include "Edge.h"
 #include "Mesh.h"
 #include "GameStateManager.h"
+#include "Ray.h"
 
 #include <iostream>
 
@@ -94,6 +95,14 @@ void SeanState::Update() {
     for (FLE::LevelComponent* levelComponent : LevelComponents) {
         levelComponent->Update(Entities);
     }
+
+    LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
+
+    Ray ray(Point(0, 100), Vector(0,-1), 700);
+
+    ray.IsColliding(GetEntityByName("Box"));
+
+    renderer->DrawLine(ray.GetStart(), ray.GetScaledVector());
 
     ForLease->GameWindow->UpdateGameWindow();
 

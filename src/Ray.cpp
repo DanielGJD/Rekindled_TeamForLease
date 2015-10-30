@@ -1,5 +1,7 @@
 #include "Ray.h"
 #include "Entity.h"
+#include "Engine.h"
+#include "LevelComponentsInclude.h"
 
 namespace ForLeaseEngine {
 
@@ -21,10 +23,17 @@ namespace ForLeaseEngine {
         Point botRight(position[0] + collision->Width / 2, position[1] - collision->Height / 2);
         Point botLeft(position[0] - collision->Width / 2, position[1] - collision->Height / 2);
 
-        Vector topVec = topLeft - topRight;
-        Vector rightVec = botRight - topRight;
-        Vector leftVec = topLeft - botLeft;
-        Vector botVec = botRight - botLeft;
+        Vector topVec = topRight - topLeft;
+        Vector rightVec = topRight - botRight;
+        Vector leftVec = botLeft - topLeft;
+        Vector botVec = botLeft - botRight;
+
+        LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
+        renderer->DrawArrow(topLeft, topVec);
+        renderer->DrawArrow(topLeft, leftVec);
+        renderer->DrawArrow(botRight, rightVec);
+        renderer->DrawArrow(botRight, botVec);
+
 
         float minDist = Unlimited;
 
@@ -54,8 +63,8 @@ namespace ForLeaseEngine {
 
         if (minDist < 0 || dist < minDist) minDist = dist;
 
-        if (minDist < Length) {
-            Length = minDist;
+        if (minDist < Length && minDist != -1) {
+            Length = Length * minDist;
             return true;
         }
 
@@ -64,6 +73,17 @@ namespace ForLeaseEngine {
 
     void Ray::ResetLength() {
         Length = Scale;
+    }
+
+    Point Ray::GetStart() {
+        return Start;
+    }
+
+    Vector Ray::GetScaledVector() {
+        if (Length == Unlimited)
+            return Direction * 9999;
+        else
+            return Direction * Length;
     }
 
     std::vector<Entity *> CheckCollisions(Ray& ray, std::vector<Entity *> entities) {
@@ -88,7 +108,10 @@ namespace ForLeaseEngine {
         float t1 = Cross((p2 - p1), Vector(v2[0]/cross, v2[1]/cross));
         float t2 = Cross((p2 - p1), Vector(v1[0]/cross, v1[1]/cross));
 
-        if (t1 >= 0 && t1 <= 1 && t2 >= 0 && t2 <= 1) return t1;
+        if (t1 >= 0 && t1 <= 1 && t2 >= 0 && t2 <= 1) {
+//            std::cout <<
+            return t1;
+        }
 
         return -1;
     }

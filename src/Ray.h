@@ -15,6 +15,8 @@ namespace ForLeaseEngine {
             bool IsColliding(Entity* entity);
             std::vector<Point> GetCollisionPoints();
             void ResetLength();
+            Point GetStart();
+            Vector GetScaledVector();
         private:
             Point Start;
             Vector Direction;
