@@ -192,6 +192,9 @@ namespace ForLeaseEngine {
             case ComponentType::Transform:
                 component = new Components::Transform(entity);
                 break;
+            case ComponentType::PlayerController:
+                component = Components::CharacterController::Create(entity);
+                break;
             default:
                 return 0;
         }

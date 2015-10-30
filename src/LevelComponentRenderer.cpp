@@ -272,7 +272,8 @@ namespace ForLeaseEngine {
 
         void Renderer::DrawArrow(const Point& start, const Point& end) {
             //ModelView = Matrix();
-            float headLength = 10.0f;
+            Components::Camera* camera = Owner.GetEntityByID(CurrentCamera)->GetComponent<Components::Camera>();
+            float headLength = camera->Size / 40;
             float headAngle = 3.1415927 / 6;
             Vector direction = start - end;
             direction.Normalize();
@@ -366,7 +367,7 @@ namespace ForLeaseEngine {
 
             if(drawEdges) {
                 glColor3f(0, 0, 0);
-                glLineWidth(10);
+                glLineWidth(2);
                 glBegin(GL_LINES);
                     for(int i = 0; i < mesh->GetEdgeCount(); ++i) {
                         IndexedEdge edge = mesh->GetIndexedEdge(i);
@@ -379,7 +380,7 @@ namespace ForLeaseEngine {
 
             if(drawVertices) {
                 glColor3f(1, 1, 1);
-                glPointSize(5);
+                glPointSize(2);
                 glBegin(GL_POINTS);
                     for(int i = 0; i < mesh->GetVertexCount(); ++i) {
                         glVertex2f(transformed[i][0], transformed[i][1]);

@@ -47,6 +47,7 @@ namespace ForLeaseEngine {
                 void DrawLine(const Point& start, const Vector& displacement);
                 void DrawArrow(const Point& start, const Point& end);
                 void DrawArrow(const Point& start, const Vector& displacement);
+                void DrawMesh(Mesh* mesh, bool drawEdges = false, bool drawVertices = false);
 
                 // Debug stats
                 unsigned int GetVertexCount();
@@ -79,7 +80,6 @@ namespace ForLeaseEngine {
                 // Resource drawing functions
                 void DrawTexture(Texture* texture);
                 void DrawTextureRegion(TextureRegion* region);
-                void DrawMesh(Mesh* mesh, bool drawEdges = false, bool drawVertices = false);
 
                 // Property functions
                 void SetBlendMode(BlendMode mode);

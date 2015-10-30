@@ -17,5 +17,6 @@
 #include "ComponentModel.h"
 #include "ComponentCamera.h"
 #include "ComponentSpriteText.h"
+#include "ComponentCharacterController.h"
 
 #endif
