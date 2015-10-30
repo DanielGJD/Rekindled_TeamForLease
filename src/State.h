@@ -40,7 +40,14 @@ namespace ForLeaseEngine {
             void UpdateEntities();
             void AddLevelComponent(LevelComponent* levelComponent);
             Entity* AddEntity(std::string name = "");
+            bool DeleteEntity(long unsigned id);
+            bool DeleteEntity(std::string name);
+            bool DeleteEntity(Entity* entity);
+            void DeleteAllEntities();
             Entity* GetEntityByID(long unsigned id, bool throwOnFail = false);
+            Entity* GetEntityByName(std::string name, bool throwOnFail = false);
+
+            void DeleteAllLevelComponents();
 
             std::string GetName();
 
@@ -54,6 +61,7 @@ namespace ForLeaseEngine {
 
     };
 
+    LevelComponent* DeserializeLevelComponent(Serializer& root, State& state);
     void AddLevelComponentsToState(ComponentType mask, State* state);
 
 } // ForLeaseEngine

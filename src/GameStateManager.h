@@ -49,6 +49,7 @@ namespace ForLeaseEngine {
                 void SetAction(StateAction action);
                 void SetState(std::string stateName);
                 void SetState(unsigned stateIndex);
+                State& CurrentState();
             private:
                 //! A reference to the engine
                 Engine& Parent;

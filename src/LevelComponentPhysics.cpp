@@ -102,6 +102,19 @@ namespace ForLeaseEngine {
         */
         Vector Physics::GetGravity() { return Gravity; }
 
+        void Physics::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned>(ComponentType::Physics));
+            Serializer physics = root.GetChild("Physics");
+            physics.WriteVec("Gravity", Gravity);
+            physics.WriteUint("Type", static_cast<unsigned>(ComponentType::Physics));
+            root.Append(physics, "Physics");
+        }
+
+        void Physics::Deserialize(Serializer& root) {
+            Serializer physics = root.GetChild("Physics");
+            physics.ReadVec("Gravity", Gravity);
+        }
+
     } // LevelComponents
 
 } // ForLeaseEngine

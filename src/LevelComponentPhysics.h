@@ -36,6 +36,9 @@ namespace ForLeaseEngine {
                 void Cleanup(Entity* entity);
                 void SetGravity(Vector gravity);
                 Vector GetGravity();
+
+                virtual void Serialize(Serializer& root);
+                virtual void Deserialize(Serializer& root);
             private:
                 Vector Gravity; //! The level's gravity
         };

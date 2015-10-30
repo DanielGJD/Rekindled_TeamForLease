@@ -9,6 +9,7 @@
 
 #include "State.h"
 #include "Engine.h"
+#include <sstream>
 
 namespace ForLeaseEngine {
 
@@ -52,6 +53,50 @@ namespace ForLeaseEngine {
         return entity;
     }
 
+    bool State::DeleteEntity(long unsigned id) {
+        for (unsigned i = 0; i < Entities.size(); ++i) {
+            if (Entities[i]->GetID() == id) {
+                delete Entities[i];
+                Entities.erase(Entities.begin() + i);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    bool State::DeleteEntity(std::string name) {
+        for (unsigned i = 0; i < Entities.size(); ++i) {
+            if (Entities[i]->GetName() == name) {
+                delete Entities[i];
+                Entities.erase(Entities.begin() + i);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    bool State::DeleteEntity(Entity* entity) {
+        for (unsigned i = 0; i < Entities.size(); ++i) {
+            if (Entities[i] == entity) {
+                delete entity;
+                Entities.erase(Entities.begin() + i);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    void State::DeleteAllEntities() {
+        for (Entity* entity : Entities) {
+            delete entity;
+        }
+
+        Entities.clear();
+    }
+
     /*!
         Get a pointer to an entity with the given ID.
 
@@ -76,6 +121,43 @@ namespace ForLeaseEngine {
     }
 
     /*!
+        Get a pointer to an entity with the given name.
+
+        \param name
+            A std::string name of the Entity we want to find.
+
+        \param throwOnFail
+            Whether to throw an error on fail, or return a null pointer.
+            Defaults to false.
+
+        \return
+            A pointer to an entity with the given name.
+    */
+    Entity* State::GetEntityByName(std::string name, bool throwOnFail) {
+        for (Entity* entity : Entities) {
+            if (entity->GetName() == name)
+                return entity;
+        }
+
+        std::stringstream ss;
+        ss << "Entity " << name << " not found.";
+
+
+        if (throwOnFail) throw EntityNotFoundException(0, ss.str());
+
+        else return 0;
+
+    }
+
+    void State::DeleteAllLevelComponents() {
+        for (LevelComponent* lc : LevelComponents) {
+            delete lc;
+        }
+
+        LevelComponents.clear();
+    }
+
+    /*!
         Getter for the name of a state.
 
         \return
@@ -96,6 +178,16 @@ namespace ForLeaseEngine {
             jsonEntities.Append(entitySerializer);
         }
 
+        ArraySerializer jsonLevelComponents(state);
+        jsonLevelComponents = state.GetChild("LevelComponents");
+
+        for (LevelComponent* lc : LevelComponents) {
+            Serializer lcSerializer;
+            lc->Serialize(lcSerializer);
+            jsonLevelComponents.Append(lcSerializer);
+        }
+
+        state.Append(jsonLevelComponents, "LevelComponents");
         state.Append(jsonEntities, "Entities");
         root.Append(state, "State");
     }
@@ -114,6 +206,39 @@ namespace ForLeaseEngine {
             entity->Deserialize(entitySerializer);
             Entities.push_back(entity);
         }
+
+        ArraySerializer jsonLevelComponents(state);
+        jsonLevelComponents = state.GetChild("LevelComponents");
+
+        for (unsigned i = 0; i < jsonLevelComponents.Size(); ++i) {
+            Serializer lcSerializer = jsonLevelComponents[i];
+            AddLevelComponent(DeserializeLevelComponent(lcSerializer, *this));
+        }
+    }
+
+    LevelComponent* DeserializeLevelComponent(Serializer& root, State& state) {
+        unsigned type;
+        root.ReadUint("Type", type);
+
+        LevelComponent* lc = 0;
+
+        switch (static_cast<ComponentType>(type)) {
+            case ComponentType::Collision:
+                lc = new LevelComponents::Collision(state);
+                break;
+            case ComponentType::Physics:
+                lc = new LevelComponents::Physics(state);
+                break;
+            case ComponentType::Renderer:
+                lc = new LevelComponents::Renderer(state);
+                break;
+            default:
+                return 0;
+        }
+
+        lc->Deserialize(root);
+
+        return lc;
     }
 
     /*!
