@@ -149,6 +149,17 @@ namespace ForLeaseEngine {
             toResolvePhysics->Velocity[1] = 0;
         }
 
+        void Collision::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned>(ComponentType::Collision));
+            Serializer collision = root.GetChild("Collision");
+            collision.WriteUint("Type", static_cast<unsigned>(ComponentType::Collision));
+            root.Append(collision, "Collision");
+        }
+
+        void Collision::Deserialize(Serializer& root) {
+            Serializer collision = root.GetChild("Collision");
+        }
+
     } // LevelComponents
 
 } // ForLeaseEngine

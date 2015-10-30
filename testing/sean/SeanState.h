@@ -9,6 +9,7 @@
 
 class SeanState : public ForLeaseEngine::State {
     public:
+        SeanState();
         void Load();
         void Initialize();
         void Update();

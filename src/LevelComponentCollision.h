@@ -18,9 +18,9 @@
 #include "LevelComponent.h"
 
 namespace ForLeaseEngine {
-    
+
     namespace LevelComponents {
-        
+
         /*!
             \class Collision
 
@@ -35,10 +35,13 @@ namespace ForLeaseEngine {
                 bool CheckCollision(Entity* entity1, Entity* entity2);
                 void ResolveCollision(Entity* entity1, Entity* entity2);
                 void ResolveCollisionOneEntityOnly(Entity* toResolve, Entity* other);
+
+                virtual void Serialize(Serializer& root);
+                virtual void Deserialize(Serializer& root);
         };
-        
+
     } // LevelComponents
-    
+
 } // ForLeaseEngine
 
 #endif

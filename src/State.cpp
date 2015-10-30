@@ -89,6 +89,16 @@ namespace ForLeaseEngine {
         return false;
     }
 
+    void State::DeleteAllEntities() {
+        for (Entity* entity : Entities) {
+            delete entity;
+        }
+
+        while (Entities.size() > 0) {
+            Entities.pop_back();
+        }
+    }
+
     /*!
         Get a pointer to an entity with the given ID.
 
@@ -111,17 +121,17 @@ namespace ForLeaseEngine {
 
         else return 0;
     }
-    
+
     /*!
         Get a pointer to an entity with the given name.
-        
+
         \param name
             A std::string name of the Entity we want to find.
-        
+
         \param throwOnFail
             Whether to throw an error on fail, or return a null pointer.
             Defaults to false.
-        
+
         \return
             A pointer to an entity with the given name.
     */
@@ -130,15 +140,15 @@ namespace ForLeaseEngine {
             if (entity->GetName() == name)
                 return entity;
         }
-        
+
         std::stringstream ss;
         ss << "Entity " << name << " not found.";
-        
-        
+
+
         if (throwOnFail) throw EntityNotFoundException(0, ss.str());
-        
+
         else return 0;
-        
+
     }
 
     /*!
@@ -162,6 +172,16 @@ namespace ForLeaseEngine {
             jsonEntities.Append(entitySerializer);
         }
 
+        ArraySerializer jsonLevelComponents(state);
+        jsonLevelComponents = state.GetChild("LevelComponents");
+
+        for (LevelComponent* lc : LevelComponents) {
+            Serializer lcSerializer;
+            lc->Serialize(lcSerializer);
+            jsonLevelComponents.Append(lcSerializer);
+        }
+
+        state.Append(jsonLevelComponents, "LevelComponents");
         state.Append(jsonEntities, "Entities");
         root.Append(state, "State");
     }
@@ -180,6 +200,39 @@ namespace ForLeaseEngine {
             entity->Deserialize(entitySerializer);
             Entities.push_back(entity);
         }
+
+        ArraySerializer jsonLevelComponents(state);
+        jsonLevelComponents = state.GetChild("LevelComponents");
+
+        for (unsigned i = 0; i < jsonLevelComponents.Size(); ++i) {
+            Serializer lcSerializer = jsonLevelComponents[i];
+            AddLevelComponent(DeserializeLevelComponent(lcSerializer, *this));
+        }
+    }
+
+    LevelComponent* DeserializeLevelComponent(Serializer& root, State& state) {
+        unsigned type;
+        root.ReadUint("Type", type);
+
+        LevelComponent* lc = 0;
+
+        switch (static_cast<ComponentType>(type)) {
+            case ComponentType::Collision:
+                lc = new LevelComponents::Collision(state);
+                break;
+            case ComponentType::Physics:
+                lc = new LevelComponents::Physics(state);
+                break;
+            case ComponentType::Renderer:
+                lc = new LevelComponents::Renderer(state);
+                break;
+            default:
+                return 0;
+        }
+
+        lc->Deserialize(root);
+
+        return lc;
     }
 
     /*!

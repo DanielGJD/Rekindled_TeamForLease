@@ -47,11 +47,13 @@ namespace ForLeaseEngine {
         }
 
         void Renderer::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned>(ComponentType::Renderer));
             Serializer renderer = root.GetChild("Renderer");
             Serializer clearColor = renderer.GetChild("ClearColor");
             ClearColor.Serialize(clearColor);
             renderer.Append(clearColor, "ClearColor");
             renderer.WriteInt("CurrentCamera", static_cast<int>(CurrentCamera));
+            renderer.WriteUint("Type", static_cast<unsigned>(ComponentType::Renderer));
             root.Append(renderer, "Renderer");
         }
 
