@@ -2,13 +2,13 @@
 #include "Vector.h"
 #include "ComponentsInclude.h"
 
-#define DEBUG_DRAW
+//#define DEBUG_DRAW
 
 namespace ForLeaseEngine {
     static LevelComponents::Renderer* render;
 
     void SegmentPrototypeState::Load() {
-        Components::Collision* collider;
+        /*Components::Collision* collider;
         Name = "Segment Prototype";
 
         render = new LevelComponents::Renderer(*this);
@@ -26,12 +26,12 @@ namespace ForLeaseEngine {
         render->SetCamera(*camera);
 
         ///////////////Behind Player////////////
-        Entity* building = AddEntity("Building");
-        building->AddComponent(new Components::Transform(*building, Point(10, 3), 4, 4, 0));
-        building->AddComponent(new Components::Model(*building, true, "Building1Mesh.json", "", Color(1, 1, 1, 1), BlendMode::NONE, true));
-        building->AddComponent(new Components::Collision(*building, 5, 8));
 
-        building = AddEntity("Building");
+        Entity* ground = AddEntity("Ground");
+        ground->AddComponent(new Components::Transform(*ground, Point(0, 0), 30, 5, 0));
+        ground->AddComponent(new Components::Model(*ground, true, "GroundMesh.json", "", Color(1, 1, 1, 1), BlendMode::NONE, false, false));
+
+        Entity* building = AddEntity("Building");
         building->AddComponent(new Components::Transform(*building, Point(0, 3), 3, 3, 0));
         building->AddComponent(new Components::Model(*building, true, "Building1Mesh.json", "", Color(1, 1, 1, 1), BlendMode::NONE, true));
 
@@ -40,7 +40,7 @@ namespace ForLeaseEngine {
         player->AddComponent(new Components::Transform(*player, Point(-15, 10), 2, 2, 0));
         player->AddComponent(new Components::Model(*player, true, "MainCharMesh.json", "", Color(1, 1, 1, 1), BlendMode::NONE, true));
         collider = new Components::Collision(*player);
-        collider->Width = 2;
+        collider->Width = 1.4;
         collider->Height = 2;
         player->AddComponent(collider);
         player->AddComponent(new Components::Physics(*player));
@@ -65,7 +65,44 @@ namespace ForLeaseEngine {
         collider->Height = 1.1;
         block->AddComponent(collider);
 
+        block = AddEntity("Block");
+        block->AddComponent(new Components::Transform(*block, Point(2.25, -1.5), 4, 4, 0));
+        block->AddComponent(new Components::Model(*block, true, "Platform1Mesh.json", "", Color(1, 1, 1, 1), BlendMode::NONE, true));
+        collider = new Components::Collision(*block);
+        collider->Width = 8;
+        collider->Height = 1.1;
+        block->AddComponent(collider);
+
+        block = AddEntity("Block");
+        block->AddComponent(new Components::Transform(*block, Point(10.25, -1.5), 4, 4, 0));
+        block->AddComponent(new Components::Model(*block, true, "Platform1Mesh.json", "", Color(1, 1, 1, 1), BlendMode::NONE, true));
+        collider = new Components::Collision(*block);
+        collider->Width = 8;
+        collider->Height = 1.1;
+        block->AddComponent(collider);
+
+        block = AddEntity("Block");
+        block->AddComponent(new Components::Transform(*block, Point(6.25, 1.5), 2, 2, 0));
+        block->AddComponent(new Components::Model(*block, true, "Platform2Mesh.json", "", Color(1, 1, 1, 1), BlendMode::NONE, true));
+        collider = new Components::Collision(*block);
+        collider->Width = 4;
+        collider->Height = 1.1;
+        block->AddComponent(collider);
+
+        block = AddEntity("Block");
+        block->AddComponent(new Components::Transform(*block, Point(8.25, 3.5), 2, 2, 0));
+        block->AddComponent(new Components::Model(*block, true, "Platform2Mesh.json", "", Color(1, 1, 1, 1), BlendMode::NONE, true));
+        collider = new Components::Collision(*block);
+        collider->Width = 4;
+        collider->Height = 1.1;
+        block->AddComponent(collider);
+
         ////////////In front of player//////////////
+        building = AddEntity("Building");
+        building->AddComponent(new Components::Transform(*building, Point(10, 3), 4, 4, 0));
+        building->AddComponent(new Components::Model(*building, true, "Building1Mesh.json", "", Color(1, 1, 1, 1), BlendMode::NONE, true));
+        building->AddComponent(new Components::Collision(*building, 4.8, 8));
+
         building = AddEntity("Building");
         building->AddComponent(new Components::Transform(*building, Point(-8, 2), 5, 5, 0));
         building->AddComponent(new Components::Model(*building, true, "Building1Mesh.json", "", Color(1, 1, 1, 1), BlendMode::NONE, true));
@@ -74,17 +111,17 @@ namespace ForLeaseEngine {
 
         Serializer levelWriter;
         Serialize(levelWriter);
-        levelWriter.WriteFile("SegmentPrototype.json");
+        levelWriter.WriteFile("SegmentPrototype.json");*/
 
         /////////////////READ IT IN!!!!!/////////////
-//        Serializer levelReader;
-//        levelReader.ReadFile("SegmentPrototype.json");
-//        Deserialize(levelReader);
-//        for(unsigned int i = 0; i < LevelComponents.size(); ++i) {
-//            render = dynamic_cast<LevelComponents::Renderer*>(LevelComponents[i]);
-//            if(render)
-//                break;
-//        }
+        Serializer levelReader;
+        levelReader.ReadFile("SegmentPrototype.json");
+        Deserialize(levelReader);
+        for(unsigned int i = 0; i < LevelComponents.size(); ++i) {
+            render = dynamic_cast<LevelComponents::Renderer*>(LevelComponents[i]);
+            if(render)
+                break;
+        }
     }
 
     void SegmentPrototypeState::Initialize() {

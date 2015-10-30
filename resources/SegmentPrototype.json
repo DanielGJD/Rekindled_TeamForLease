@@ -1,0 +1,706 @@
+{
+	"State" : 
+	{
+		"Entities" : 
+		[
+			{
+				"Entity" : 
+				{
+					"Components" : 
+					[
+						{
+							"Transform" : 
+							{
+								"Position" : 
+								{
+									"X" : 0,
+									"Y" : 6
+								},
+								"Rotation" : 0,
+								"ScaleX" : 1,
+								"ScaleY" : 1,
+								"Type" : 1,
+								"ZOrder" : 0
+							},
+							"Type" : 1
+						},
+						{
+							"Camera" : 
+							{
+								"Far" : 0,
+								"Near" : 0,
+								"Size" : 20,
+								"Type" : 16
+							},
+							"Type" : 16
+						}
+					],
+					"ID" : 1,
+					"Name" : "Camera"
+				}
+			},
+			{
+				"Entity" : 
+				{
+					"Components" : 
+					[
+						{
+							"Transform" : 
+							{
+								"Position" : 
+								{
+									"X" : 0,
+									"Y" : 0
+								},
+								"Rotation" : 0,
+								"ScaleX" : 30,
+								"ScaleY" : 5,
+								"Type" : 1,
+								"ZOrder" : 0
+							},
+							"Type" : 1
+						},
+						{
+							"Model" : 
+							{
+								"BlendingMode" : 0,
+								"Color" : 
+								{
+									"A" : 1,
+									"B" : 1,
+									"G" : 1,
+									"R" : 1
+								},
+								"DrawEdges" : false,
+								"DrawVertices" : false,
+								"Mesh" : "GroundMesh.json",
+								"Texture" : "",
+								"Type" : 64,
+								"Visible" : true
+							},
+							"Type" : 64
+						}
+					],
+					"ID" : 2,
+					"Name" : "Ground"
+				}
+			},
+			{
+				"Entity" : 
+				{
+					"Components" : 
+					[
+						{
+							"Transform" : 
+							{
+								"Position" : 
+								{
+									"X" : 0,
+									"Y" : 3
+								},
+								"Rotation" : 0,
+								"ScaleX" : 3,
+								"ScaleY" : 3,
+								"Type" : 1,
+								"ZOrder" : 0
+							},
+							"Type" : 1
+						},
+						{
+							"Model" : 
+							{
+								"BlendingMode" : 0,
+								"Color" : 
+								{
+									"A" : 1,
+									"B" : 1,
+									"G" : 1,
+									"R" : 1
+								},
+								"DrawEdges" : true,
+								"DrawVertices" : false,
+								"Mesh" : "Building1Mesh.json",
+								"Texture" : "",
+								"Type" : 64,
+								"Visible" : true
+							},
+							"Type" : 64
+						}
+					],
+					"ID" : 3,
+					"Name" : "Building"
+				}
+			},
+			{
+				"Entity" : 
+				{
+					"Components" : 
+					[
+						{
+							"Transform" : 
+							{
+								"Position" : 
+								{
+									"X" : -15,
+									"Y" : 10
+								},
+								"Rotation" : 0,
+								"ScaleX" : 2,
+								"ScaleY" : 2,
+								"Type" : 1,
+								"ZOrder" : 0
+							},
+							"Type" : 1
+						},
+						{
+							"Model" : 
+							{
+								"BlendingMode" : 0,
+								"Color" : 
+								{
+									"A" : 1,
+									"B" : 1,
+									"G" : 1,
+									"R" : 1
+								},
+								"DrawEdges" : true,
+								"DrawVertices" : false,
+								"Mesh" : "MainCharMesh.json",
+								"Texture" : "",
+								"Type" : 64,
+								"Visible" : true
+							},
+							"Type" : 64
+						},
+						{
+							"Collision" : 
+							{
+								"Height" : 2.1,
+								"ResolveCollisions" : true,
+								"Type" : 8,
+								"Width" : 1.3999999761581421
+							},
+							"Type" : 8
+						},
+						{
+							"Physics" : 
+							{
+								"Acceleration" : 
+								{
+									"X" : 0,
+									"Y" : 0
+								},
+								"Force" : 
+								{
+									"X" : 0,
+									"Y" : 0
+								},
+								"Mass" : 1,
+								"Type" : 4,
+								"Velocity" : 
+								{
+									"X" : 0,
+									"Y" : 0
+								}
+							},
+							"Type" : 4
+						},
+						{
+							"CharacterController" : 
+							{
+								"JumpKey" : 32,
+								"JumpSpeed" : 10,
+								"LeftKey" : 1073741904,
+								"MoveSpeed" : 7,
+								"RightKey" : 1073741903,
+								"Type" : 2
+							},
+							"Type" : 2
+						}
+					],
+					"ID" : 4,
+					"Name" : "Player"
+				}
+			},
+			{
+				"Entity" : 
+				{
+					"Components" : 
+					[
+						{
+							"Transform" : 
+							{
+								"Position" : 
+								{
+									"X" : -13.75,
+									"Y" : -1.5
+								},
+								"Rotation" : 0,
+								"ScaleX" : 4,
+								"ScaleY" : 4,
+								"Type" : 1,
+								"ZOrder" : 0
+							},
+							"Type" : 1
+						},
+						{
+							"Model" : 
+							{
+								"BlendingMode" : 0,
+								"Color" : 
+								{
+									"A" : 1,
+									"B" : 1,
+									"G" : 1,
+									"R" : 1
+								},
+								"DrawEdges" : true,
+								"DrawVertices" : false,
+								"Mesh" : "Platform1Mesh.json",
+								"Texture" : "",
+								"Type" : 64,
+								"Visible" : true
+							},
+							"Type" : 64
+						},
+						{
+							"Collision" : 
+							{
+								"Height" : 1.1000000238418579,
+								"ResolveCollisions" : true,
+								"Type" : 8,
+								"Width" : 8
+							},
+							"Type" : 8
+						}
+					],
+					"ID" : 5,
+					"Name" : "Block"
+				}
+			},
+			{
+				"Entity" : 
+				{
+					"Components" : 
+					[
+						{
+							"Transform" : 
+							{
+								"Position" : 
+								{
+									"X" : -5.75,
+									"Y" : -1.5
+								},
+								"Rotation" : 0,
+								"ScaleX" : 4,
+								"ScaleY" : 4,
+								"Type" : 1,
+								"ZOrder" : 0
+							},
+							"Type" : 1
+						},
+						{
+							"Model" : 
+							{
+								"BlendingMode" : 0,
+								"Color" : 
+								{
+									"A" : 1,
+									"B" : 1,
+									"G" : 1,
+									"R" : 1
+								},
+								"DrawEdges" : true,
+								"DrawVertices" : false,
+								"Mesh" : "Platform1Mesh.json",
+								"Texture" : "",
+								"Type" : 64,
+								"Visible" : true
+							},
+							"Type" : 64
+						},
+						{
+							"Collision" : 
+							{
+								"Height" : 1.1000000238418579,
+								"ResolveCollisions" : true,
+								"Type" : 8,
+								"Width" : 8
+							},
+							"Type" : 8
+						}
+					],
+					"ID" : 6,
+					"Name" : "Block"
+				}
+			},
+			{
+				"Entity" : 
+				{
+					"Components" : 
+					[
+						{
+							"Transform" : 
+							{
+								"Position" : 
+								{
+									"X" : 2.25,
+									"Y" : -1.5
+								},
+								"Rotation" : 0,
+								"ScaleX" : 4,
+								"ScaleY" : 4,
+								"Type" : 1,
+								"ZOrder" : 0
+							},
+							"Type" : 1
+						},
+						{
+							"Model" : 
+							{
+								"BlendingMode" : 0,
+								"Color" : 
+								{
+									"A" : 1,
+									"B" : 1,
+									"G" : 1,
+									"R" : 1
+								},
+								"DrawEdges" : true,
+								"DrawVertices" : false,
+								"Mesh" : "Platform1Mesh.json",
+								"Texture" : "",
+								"Type" : 64,
+								"Visible" : true
+							},
+							"Type" : 64
+						},
+						{
+							"Collision" : 
+							{
+								"Height" : 1.1000000238418579,
+								"ResolveCollisions" : true,
+								"Type" : 8,
+								"Width" : 8
+							},
+							"Type" : 8
+						}
+					],
+					"ID" : 7,
+					"Name" : "Block"
+				}
+			},
+			{
+				"Entity" : 
+				{
+					"Components" : 
+					[
+						{
+							"Transform" : 
+							{
+								"Position" : 
+								{
+									"X" : 10.25,
+									"Y" : -1.5
+								},
+								"Rotation" : 0,
+								"ScaleX" : 4,
+								"ScaleY" : 4,
+								"Type" : 1,
+								"ZOrder" : 0
+							},
+							"Type" : 1
+						},
+						{
+							"Model" : 
+							{
+								"BlendingMode" : 0,
+								"Color" : 
+								{
+									"A" : 1,
+									"B" : 1,
+									"G" : 1,
+									"R" : 1
+								},
+								"DrawEdges" : true,
+								"DrawVertices" : false,
+								"Mesh" : "Platform1Mesh.json",
+								"Texture" : "",
+								"Type" : 64,
+								"Visible" : true
+							},
+							"Type" : 64
+						},
+						{
+							"Collision" : 
+							{
+								"Height" : 1.1000000238418579,
+								"ResolveCollisions" : true,
+								"Type" : 8,
+								"Width" : 8
+							},
+							"Type" : 8
+						}
+					],
+					"ID" : 8,
+					"Name" : "Block"
+				}
+			},
+			{
+				"Entity" : 
+				{
+					"Components" : 
+					[
+						{
+							"Transform" : 
+							{
+								"Position" : 
+								{
+									"X" : 6.25,
+									"Y" : 1.5
+								},
+								"Rotation" : 0,
+								"ScaleX" : 2,
+								"ScaleY" : 2,
+								"Type" : 1,
+								"ZOrder" : 0
+							},
+							"Type" : 1
+						},
+						{
+							"Model" : 
+							{
+								"BlendingMode" : 0,
+								"Color" : 
+								{
+									"A" : 1,
+									"B" : 1,
+									"G" : 1,
+									"R" : 1
+								},
+								"DrawEdges" : true,
+								"DrawVertices" : false,
+								"Mesh" : "Platform2Mesh.json",
+								"Texture" : "",
+								"Type" : 64,
+								"Visible" : true
+							},
+							"Type" : 64
+						},
+						{
+							"Collision" : 
+							{
+								"Height" : 1.1000000238418579,
+								"ResolveCollisions" : true,
+								"Type" : 8,
+								"Width" : 4
+							},
+							"Type" : 8
+						}
+					],
+					"ID" : 9,
+					"Name" : "Block"
+				}
+			},
+			{
+				"Entity" : 
+				{
+					"Components" : 
+					[
+						{
+							"Transform" : 
+							{
+								"Position" : 
+								{
+									"X" : 8.25,
+									"Y" : 3.5
+								},
+								"Rotation" : 0,
+								"ScaleX" : 2,
+								"ScaleY" : 2,
+								"Type" : 1,
+								"ZOrder" : 0
+							},
+							"Type" : 1
+						},
+						{
+							"Model" : 
+							{
+								"BlendingMode" : 0,
+								"Color" : 
+								{
+									"A" : 1,
+									"B" : 1,
+									"G" : 1,
+									"R" : 1
+								},
+								"DrawEdges" : true,
+								"DrawVertices" : false,
+								"Mesh" : "Platform2Mesh.json",
+								"Texture" : "",
+								"Type" : 64,
+								"Visible" : true
+							},
+							"Type" : 64
+						},
+						{
+							"Collision" : 
+							{
+								"Height" : 1.1000000238418579,
+								"ResolveCollisions" : true,
+								"Type" : 8,
+								"Width" : 4
+							},
+							"Type" : 8
+						}
+					],
+					"ID" : 10,
+					"Name" : "Block"
+				}
+			},
+			{
+				"Entity" : 
+				{
+					"Components" : 
+					[
+						{
+							"Transform" : 
+							{
+								"Position" : 
+								{
+									"X" : 10,
+									"Y" : 3
+								},
+								"Rotation" : 0,
+								"ScaleX" : 4,
+								"ScaleY" : 4,
+								"Type" : 1,
+								"ZOrder" : 0
+							},
+							"Type" : 1
+						},
+						{
+							"Model" : 
+							{
+								"BlendingMode" : 0,
+								"Color" : 
+								{
+									"A" : 1,
+									"B" : 1,
+									"G" : 1,
+									"R" : 1
+								},
+								"DrawEdges" : true,
+								"DrawVertices" : false,
+								"Mesh" : "Building1Mesh.json",
+								"Texture" : "",
+								"Type" : 64,
+								"Visible" : true
+							},
+							"Type" : 64
+						},
+						{
+							"Collision" : 
+							{
+								"Height" : 8,
+								"ResolveCollisions" : true,
+								"Type" : 8,
+								"Width" : 4.8000001907348633
+							},
+							"Type" : 8
+						}
+					],
+					"ID" : 11,
+					"Name" : "Building"
+				}
+			},
+			{
+				"Entity" : 
+				{
+					"Components" : 
+					[
+						{
+							"Transform" : 
+							{
+								"Position" : 
+								{
+									"X" : -8,
+									"Y" : 2
+								},
+								"Rotation" : 0,
+								"ScaleX" : 5,
+								"ScaleY" : 5,
+								"Type" : 1,
+								"ZOrder" : 0
+							},
+							"Type" : 1
+						},
+						{
+							"Model" : 
+							{
+								"BlendingMode" : 0,
+								"Color" : 
+								{
+									"A" : 1,
+									"B" : 1,
+									"G" : 1,
+									"R" : 1
+								},
+								"DrawEdges" : true,
+								"DrawVertices" : false,
+								"Mesh" : "Building1Mesh.json",
+								"Texture" : "",
+								"Type" : 64,
+								"Visible" : true
+							},
+							"Type" : 64
+						}
+					],
+					"ID" : 12,
+					"Name" : "Building"
+				}
+			}
+		],
+		"LevelComponents" : 
+		[
+			{
+				"Renderer" : 
+				{
+					"ClearColor" : 
+					{
+						"Color" : 
+						{
+							"A" : 1,
+							"B" : 0.80000001192092896,
+							"G" : 0.40000000298023224,
+							"R" : 0.40000000298023224
+						}
+					},
+					"CurrentCamera" : 1,
+					"Type" : 256
+				},
+				"Type" : 256
+			},
+			{
+				"Physics" : 
+				{
+					"Gravity" : 
+					{
+						"X" : 0,
+						"Y" : -9.8000001907348633
+					},
+					"Type" : 4
+				},
+				"Type" : 4
+			},
+			{
+				"Collision" : 
+				{
+					"Type" : 8
+				},
+				"Type" : 8
+			}
+		],
+		"Name" : "Segment Prototype"
+	}
+}

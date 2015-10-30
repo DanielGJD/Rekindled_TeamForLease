@@ -1,6 +1,7 @@
 #include "ComponentCharacterController.h"
 #include "ComponentPhysics.h"
 #include "Entity.h"
+#include "Engine.h"
 
 namespace ForLeaseEngine {
     namespace Components {
@@ -35,6 +36,9 @@ namespace ForLeaseEngine {
             else if(key_e->Key == JumpKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
                 rbody->Velocity += Vector(0, JumpSpeed);
+            }
+            else if(key_e->Key == Keys::Q) {
+                ForLease->GameStateManager().SetAction(Modules::StateAction::Quit);
             }
         }
 
