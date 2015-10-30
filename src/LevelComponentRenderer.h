@@ -18,6 +18,8 @@ namespace ForLeaseEngine {
     namespace LevelComponents {
         class Renderer : public LevelComponent {
             public:
+                static const ComponentType Type = ComponentType::Renderer;
+                virtual ComponentType GetType() { return Type; }
                 Renderer(State& owner);
 
                 void Serialize(Serializer& root);

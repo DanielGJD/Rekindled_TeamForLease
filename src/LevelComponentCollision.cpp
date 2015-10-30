@@ -10,6 +10,7 @@
 #include "LevelComponentCollision.h"
 #include "ComponentsInclude.h"
 #include "Component.h"
+#include <cmath>
 
 namespace ForLeaseEngine {
 
@@ -71,17 +72,31 @@ namespace ForLeaseEngine {
             Components::Collision* entity1Collision = entity1->GetComponent<Components::Collision>();
             Components::Collision* entity2Collision = entity2->GetComponent<Components::Collision>();
 
-            if (entity2Position[0] + entity2Collision->Width > entity1Position[0] &&
-                entity1Position[0] + entity1Collision->Width > entity2Position[0] &&
-                entity2Position[1] + entity2Collision->Height > entity1Position[1] &&
-                entity1Position[1] + entity1Collision->Height > entity2Position[1]) {
-                    entity1Collision->CollidedLastFrame = true;
-                    entity2Collision->CollidedLastFrame = true;
-                    std::cout << "Collision detected." << std::endl;
-                    return true;
-                }
+//            if (entity2Position[0] + entity2Collision->Width/2 > entity1Position[0] &&
+//                entity1Position[0] + entity1Collision->Width/2 > entity2Position[0] &&
+//                entity2Position[1] + entity2Collision->Height/2 > entity1Position[1] &&
+//                entity1Position[1] + entity1Collision->Height/2 > entity2Position[1]) {
+//                    entity1Collision->CollidedLastFrame = true;
+//                    entity2Collision->CollidedLastFrame = true;
+//                    std::cout << "Collision detected." << std::endl;
+//                    return true;
+//                }
+//
+//            return false;
 
-            return false;
+//            return !(entity2Position[0] > (entity1Position[0] + entity1Collision->Width / 2) ||
+//                    (entity2Position[0] + entity2Collision->Width / 2) < entity1Position[0] ||
+//                     entity2Position[1] > (entity1Position[0] + entity1Collision->Height / 2) ||
+//                    (entity2Position[1] + entity2Collision->Height / 2) < entity1Position[1]);
+
+//            return (std::abs(entity1Position[0] - entity2Position[0]) * 2 < (entity1Collision->Width + entity2Collision->Width)) &&
+//                   (std::abs(entity1Position[1] - entity2Position[1]) * 2 < (entity1Collision->Height + entity2Collision->Height));
+
+            return !(entity2Position[0] - entity2Collision->Width / 2 > entity1Position[0] + entity1Collision->Width / 2 ||
+                     entity2Position[0] + entity2Collision->Width / 2 < entity1Position[0] - entity1Collision->Width / 2 ||
+                     entity2Position[1] + entity2Collision->Height / 2 < entity1Position[1] - entity1Collision->Height / 2 ||
+                     entity2Position[1] - entity2Collision->Height / 2 > entity1Position[1] + entity1Collision->Height / 2);
+
         }
 
         /*!
@@ -100,11 +115,11 @@ namespace ForLeaseEngine {
             Components::Collision* entity1Collision = entity1->GetComponent<Components::Collision>();
             Components::Collision* entity2Collision = entity2->GetComponent<Components::Collision>();
 
-            std::cout << entity1Collision->ResolveCollisions << " " << entity2Collision->ResolveCollisions << std::endl;
+//            std::cout << entity1Collision->ResolveCollisions << " " << entity2Collision->ResolveCollisions << std::endl;
 
             if (!(entity1Collision->ResolveCollisions) || !(entity2Collision->ResolveCollisions)) return;
 
-            std::cout << "Resolving collision." << std::endl;
+//            std::cout << "Resolving collision." << std::endl;
 
             bool entity1HasPhysics = static_cast<bool>(entity1->GetComponentMask() & ComponentType::Physics);
             bool entity2HasPhysics = static_cast<bool>(entity2->GetComponentMask() & ComponentType::Physics);

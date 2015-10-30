@@ -49,6 +49,26 @@ namespace ForLeaseEngine {
 
             void DeleteAllLevelComponents();
 
+
+            /*!
+                Get a LevelComponent from this State.
+
+                \param throwOnFail
+                    A boolean determining whether to throw an error on failure, rather
+                    than the default behavior, which is to return a null pointer.
+            */
+            template <typename T = LevelComponent>
+            T* GetLevelComponent(bool throwOnFail = false) const {
+                if (T::Type == ComponentType::None && throwOnFail)
+                    return 0;
+
+                for (LevelComponent* lc : LevelComponents)
+                    if (lc->GetType() == T::Type)
+                        return reinterpret_cast<T*>(lc);
+
+                return 0;
+            }
+
             std::string GetName();
 
             virtual void Serialize(Serializer& root);

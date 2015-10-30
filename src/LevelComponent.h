@@ -23,6 +23,8 @@ namespace ForLeaseEngine {
 
     class LevelComponent : public Serializable {
         public:
+            static const ComponentType Type = ComponentType::None;
+            virtual ComponentType GetType() { return Type; }
             LevelComponent(State& owner, ComponentType componentMask = ComponentType::None);
             virtual void Update(std::vector<Entity *>& entities) = 0;
             bool CheckEntityCompatibility(Entity*  entity);
