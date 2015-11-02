@@ -3,7 +3,10 @@ For Lease Engine
 
 The engine that [Team For Lease](http://teamforlease.com) is going to use in their GAM200 game.
 
-
+### File Types
+* Mesh - `.mesh`
+* State - `.state`
+* Archetype - `.arch`
 
 
 ### CLOC report for all files in src/ as of commit 9af2c24
