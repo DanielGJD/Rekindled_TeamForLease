@@ -37,6 +37,9 @@ namespace ForLeaseEngine {
 
             LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
 
+
+            renderer->SetDrawingColor(1, 1, 153.0f/255, 1);
+
             for (unsigned i = 0; i <= Additional; ++i) {
                 Ray ray(Parent.GetComponent<Components::Transform>()->Position, rayVec, Length);
                 std::vector<Entity *> entities = ForLease->GameStateManager().CurrentState().GetAllEntities();

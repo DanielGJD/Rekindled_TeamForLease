@@ -17,6 +17,7 @@
 #include "Input.h"
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
+#include "Engine.h"
 
 namespace ForLeaseEngine {
     /*!
@@ -58,6 +59,10 @@ namespace ForLeaseEngine {
 
     void Input::ProcessEvent(SDL_Event& SDL_e) {
         switch(SDL_e.type) {
+            case SDL_QUIT:
+                ForLease->GameStateManager().SetAction(Modules::StateAction::Quit);
+                break;
+
             // Keyboard Events
             case SDL_KEYDOWN:
                 if(!SDL_e.key.repeat) {
