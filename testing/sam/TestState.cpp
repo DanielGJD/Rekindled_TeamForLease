@@ -30,66 +30,20 @@
 using namespace ForLeaseEngine;
 
 Point mousePos;
-bool addObject = false;
 bool clickAdd = false;
-class MouseListener {
-    public:
-    void OnMouseDown(const ForLeaseEngine::Event* e) {
-        const ForLeaseEngine::MouseButtonEvent* mouse_e = reinterpret_cast<const ForLeaseEngine::MouseButtonEvent*>(e);
-        std::cout << mouse_e->EventName << ":" << std::endl
-                  << mouse_e->Button << std::endl
-                  << mouse_e->Clicks << std::endl
-                  << "[" << mouse_e->ScreenLocation[0] << "," << mouse_e->ScreenLocation[1] << "]" << std::endl << std::endl;
-        mousePos[0] = mouse_e->ScreenLocation[0] - 720 / 2;
-        mousePos[1] = (mouse_e->ScreenLocation[1] - 720 / 2);
+bool newSelect = false;
+bool moveMode = false;
 
-        if (mouse_e->Button == 3 && clickAdd)
-            addObject = true;
-
-    }
-
-    void OnMouseUp(const ForLeaseEngine::Event* e) {
-        const ForLeaseEngine::MouseButtonEvent* mouse_e = reinterpret_cast<const ForLeaseEngine::MouseButtonEvent*>(e);
-        std::cout << mouse_e->EventName << ":" << std::endl
-                  << mouse_e->Button << std::endl
-                  << mouse_e->Clicks << std::endl
-                  << "[" << mouse_e->ScreenLocation[0] << "," << mouse_e->ScreenLocation[1] << "]" << std::endl << std::endl;
-        addObject = false;
-    }
-};
-
-class KeyboardListener
-{
-public:
-    void OnKeyDown(const Event* e)
-    {
-        const KeyboardEvent * key_e = reinterpret_cast<const KeyboardEvent*>(e);
-        std::cout << key_e->EventName << std::endl;
-        std::cout << key_e->Key << std::endl;
-        std::cout << key_e->State << std::endl;
-        std::cout << key_e->Modifier << std::endl;
-        if (key_e->Key == Keys::Escape && key_e->State == KeyState::Pressed)
-        {
-            ForLease->GameStateManager().SetAction(Modules::StateAction::Quit);
-        }
-    }
-};
 
 LevelComponents::Renderer* render;
 Mesh* testMesh;
 Entity* camera;
-Entity* ent;
-MouseListener mouse;
-KeyboardListener keyboard;
 SDL_Window* window;
 Entity *selection;
 std::vector<std::string> meshNames;
 void TestState::Load()
 {
     render = new LevelComponents::Renderer(*this);
-    ForLease->Dispatcher.Attach(NULL, &mouse, "MouseButtonDown", &MouseListener::OnMouseDown);
-    ForLease->Dispatcher.Attach(NULL, &mouse, "MouseButtonUp", &MouseListener::OnMouseUp);
-    ForLease->Dispatcher.Attach(NULL, &keyboard, "KeyDown", &KeyboardListener::OnKeyDown);
 
     camera = AddEntity();
     camera->AddComponent(new Components::Transform(*camera, 0, 0, 1, 1, 0));
@@ -107,70 +61,122 @@ void TestState::Initialize()
     ImGui_ImplSdl_Init(window);
 }
 
-bool editMode = false;
+
+
+void ImGuiToEngine(const ImVec2& v1, Point& v2)
+{
+    int dx = ForLease->GameWindow->GetXResolution() / 2;
+    int dy = ForLease->GameWindow->GetYResolution() / 2;
+    v2[0] = v1.x - dx;
+    v2[1] = v1.y * -1 + dy;
+}
+
 bool none = true;
 bool showWindow = false;
-char meshBuffer[500] = {0};
+bool selMade = false;
+Components::Transform* selTran;
+Components::Model* selModel;
 void TestState::Update()
 {
-    if (editMode)
-        ForLease->OSInput.ProcessAllInputWithImgui();
-
-    else
-        ForLease->OSInput.ProcessAllInput();
+    ForLease->OSInput.ProcessAllInputWithImgui();
 
     ImGui_ImplSdl_NewFrame(window);
     ImGui::Checkbox("Place Objects", &clickAdd);
-    ImGui::Checkbox("Edit Mode", &editMode);
+    ImGui::Checkbox("Translate Tool", &moveMode);
 
-    if(addObject && none)
+    if(clickAdd && ImGui::IsMouseClicked(1))
     {
+        ImGuiToEngine(ImGui::GetMousePos(), mousePos);
+        render->ScreenToWorld(mousePos);
         Entity* entity = AddEntity();
         entity->AddComponent(new Components::Transform(*entity, mousePos[0], mousePos[1], 100, 100, 0));
         Components::Model* model = new Components::Model(*entity, true, "MeshTest.json", "");
         entity->AddComponent(model);
-        selection = entity;
-        addObject = false;
-        none = false;
     }
+
+    if (ImGui::IsKeyPressed(Keys::Q))
+        ForLease->GameStateManager().SetAction(Modules::StateAction::Quit);
+
+    if (ImGui::IsKeyPressed(Keys::Escape))
+        selection = NULL;
 
     if (selection)
     {
         showWindow = true;
         ImGui::Begin("ObjectEditor", &showWindow);
-        Components::Transform* tran = selection->GetComponent<Components::Transform>();
-        if (tran && ImGui::CollapsingHeader("Transform"))
+        if (selTran && ImGui::CollapsingHeader("Transform"))
         {
             ImGui::PushItemWidth(100);
-            ImGui::InputFloat("x      ", &(tran->Position[0]), 0.5, 1);
+            ImGui::InputFloat("x      ", &(selTran->Position[0]), 0.5, 1);
             ImGui::SameLine();
-            ImGui::InputFloat("y      ", &(tran->Position[1]), 0.5, 1);
+            ImGui::InputFloat("y      ", &(selTran->Position[1]), 0.5, 1);
             ImGui::PopItemWidth();
-            ImGui::DragFloat("rotation", &(tran->Rotation), 0.1, 0, 360);
+            ImGui::DragFloat("rotation", &(selTran->Rotation), 0.1, 0, 360);
             ImGui::PushItemWidth(100);
-            ImGui::InputFloat("x scale", &(tran->ScaleX), 0.5, 1);
+            ImGui::InputFloat("x scale", &(selTran->ScaleX), 0.5, 1);
             ImGui::SameLine();
-            ImGui::InputFloat("y scale", &(tran->ScaleY), 0.5, 1);
-            ImGui::InputInt("Z Order", &(tran->ZOrder));
+            ImGui::InputFloat("y scale", &(selTran->ScaleY), 0.5, 1);
+            ImGui::InputInt("Z Order", &(selTran->ZOrder));
         }
-
-        Components::Model* selModel = selection->GetComponent<Components::Model>();
 
         if (selModel && ImGui::CollapsingHeader("Model"))
         {
             static ImGuiTextFilter filter;
-            ImGui::InputText("Mesh", filter.InputBuf, 500);
-            std::string temp = meshBuffer;
-            Mesh* check = ForLease->Resources.GetMesh(temp);
+            filter.Draw("Mesh", 250.0f);
+            ImGui::Text("Available Meshes");
+            ImGui::Separator();
+            ImGui::BeginChild("Meshes", ImVec2(0, 200), false, ImGuiWindowFlags_HorizontalScrollbar);
+            for(unsigned i = 0; i < meshNames.size(); i++)
+            {
+                if(filter.PassFilter((meshNames[i]).c_str()))
+                {
+                    if (ImGui::MenuItem((meshNames[i]).c_str()))
+                    {
+                        selModel->ModelMesh = meshNames[i];
+                    }
+                }
+            }
+            ImGui::EndChild();
 
-            if (check)
-                selModel->ModelMesh = temp;
         }
         ImGui::End();
     }
 
     else
         showWindow = false;
+
+
+    if (moveMode && ImGui::IsMouseClicked(0))
+    {
+
+        Point delta;
+        ImGuiToEngine(ImGui::GetMousePos(), mousePos);
+        render->ScreenToWorld(mousePos);
+        for (unsigned i = 0; i < Entities.size(); i++)
+        {
+            Components::Transform* tran = Entities[i]->GetComponent<Components::Transform>();
+            if (!selMade && tran && Point::Distance(mousePos, tran->Position) <= 20)
+            {
+                selection = Entities[i];
+                selTran = tran;
+                selModel = selection->GetComponent<Components::Model>();
+                selMade = true;
+                break;
+            }
+
+        }
+    }
+
+    if (ImGui::IsMouseDown(0) && ImGui::IsMouseDragging(0) && selMade)
+    {
+        ImGuiToEngine(ImGui::GetMousePos(), mousePos);
+        render->ScreenToWorld(mousePos);
+        selTran->Position[0] = mousePos[0];
+        selTran->Position[1] = mousePos[1];
+    }
+
+    if ((moveMode && ImGui::IsMouseReleased(0)) || !moveMode)
+        selMade = false;
 
     render->Update(Entities);
     ImGui::Render();
