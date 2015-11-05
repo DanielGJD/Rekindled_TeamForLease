@@ -95,6 +95,16 @@ namespace ForLeaseEngine {
     std::string Entity::GetName() const {
         return Name;
     }
+    
+    /*!
+        Sets the name of this Entity.
+        
+        \param name
+            A string that is this Entity's new name.
+    */
+    void SetName(std::string name) {
+        Name = name;
+    }
 
     /*!
         Add a Component to this Entity.

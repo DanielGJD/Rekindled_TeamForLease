@@ -34,6 +34,7 @@ namespace ForLeaseEngine {
             void Deserialize(Serializer& root);
             long unsigned GetID() const;
             std::string GetName() const;
+            void SetName(std::string name);
             void AddComponent(Component* component);
             ComponentType GetComponentMask();
             bool HasComponent(ComponentType type);
