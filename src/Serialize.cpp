@@ -9,6 +9,7 @@
     \see Serialize.h
 */
 #include "Serialize.h"
+#include <iostream>
 #include <fstream>
 
 namespace ForLeaseEngine
@@ -22,8 +23,16 @@ namespace ForLeaseEngine
     */
     void Serializer::ReadFile(const std::string& filename)
     {
-        std::ifstream file(filename);
-        file >> node;
+        try
+        {
+            std::ifstream file(filename);
+            file >> node;
+        }
+
+        catch (std::exception& e)
+        {
+            std::cout << e.what() << std::endl;
+        }
     }
 
     /*!
