@@ -117,6 +117,8 @@ void SeanState::Update() {
     ForLease->GameWindow->UpdateGameWindow();
 
     --Health;
+    if (Health == 150) ForLease->FrameRateController().TimeScaling(.25);
+    if (Health == -150) ForLease->FrameRateController().TimeScaling(1);
 //    if (Health <= 0) ForLease->GameStateManager().SetAction(Modules::StateAction::Restart);
 }
 

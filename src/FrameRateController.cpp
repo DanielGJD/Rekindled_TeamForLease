@@ -35,13 +35,14 @@ namespace ForLeaseEngine {
         /*!
             Constructor for FrameRateController.  Creates a new instance of FrameRateController, using either a default value or a user-provided one.
 
-            \param parent
-                A reference to the parent engine.  Saved in Parent.
             \param framesPerSecond
                 The number of frames to draw per second.  Default is 60.
+
+            \param timeScale
+                The current time scale.  Default is 1.
         */
-        FrameRateController::FrameRateController(int framesPerSecond)
-            : FramesPerSecond(framesPerSecond) {
+        FrameRateController::FrameRateController(int framesPerSecond, double timeScale)
+            : FramesPerSecond(framesPerSecond), TimeScale(timeScale) {
                 #ifdef FLE_WINDOWS
                 FrameTime = 1.0/FramesPerSecond;
                 LastFrameTime = 0.0;
@@ -96,8 +97,13 @@ namespace ForLeaseEngine {
 
         /*!
             Get the time used for the last frame as a double representing seconds.
+            This is scaled according to the current TimeScale.
         */
         double FrameRateController::GetDt() {
+            return GetUnscaledDt() * TimeScale;
+        }
+
+        double FrameRateController::GetUnscaledDt() {
             #ifdef FLE_WINDOWS
             return LastFrameTime;
             #else
@@ -114,6 +120,26 @@ namespace ForLeaseEngine {
             #else
             return std::chrono::duration_cast<seconds>(FrameTime).count();
             #endif
+        }
+
+        /*!
+            Set the time scale.
+
+            \param timeScale
+                The timescale to set.
+        */
+        void FrameRateController::TimeScaling(double timeScale) {
+            TimeScale = timeScale;
+        }
+
+        /*!
+            Get the current time scale.
+
+            \return
+                TimeScale, as a double.
+        */
+        double FrameRateController::TimeScaling() {
+            return TimeScale;
         }
 
     } // Modules
