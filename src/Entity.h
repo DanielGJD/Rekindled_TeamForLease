@@ -32,6 +32,7 @@ namespace ForLeaseEngine {
             void Update();
             void Serialize(Serializer& root);
             void Deserialize(Serializer& root);
+            void CreateArchetype(std::string filename);
             long unsigned GetID() const;
             std::string GetName() const;
             void SetName(std::string name);
