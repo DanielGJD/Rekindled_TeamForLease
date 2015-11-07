@@ -350,7 +350,7 @@ namespace ForLeaseEngine {
         }
 
         void Renderer::DrawMesh(Mesh* mesh, bool drawEdges, bool drawVertices) {
-            Point transformed[mesh->GetVertexCount()];
+            Point* transformed = new Point[mesh->GetVertexCount()];
             for(int i = 0; i < mesh->GetVertexCount(); ++i) {
                 ModelToScreen(mesh->GetVertex(i), transformed[i]);
             }
@@ -387,6 +387,8 @@ namespace ForLeaseEngine {
                     }
                 glEnd();
             }
+
+			delete[] transformed;
         }
 
         void Renderer::SetTexture(Texture* texture) {

@@ -17,7 +17,11 @@ namespace ForLeaseEngine {
         \brief
             Creates a face with all zero vertices
     */
-    Face::Face() : Vertices({Point(), Point(), Point()}) {}
+    Face::Face() {
+		Vertices[0] = Point();
+		Vertices[1] = Point();
+		Vertices[2] = Point();
+	}
 
     /*!
         \brief
@@ -32,7 +36,11 @@ namespace ForLeaseEngine {
         \param vert3
             Third vertex
     */
-    Face::Face(const Point& vert1, const Point& vert2, const Point& vert3) : Vertices({vert1, vert2, vert3}) {}
+    Face::Face(const Point& vert1, const Point& vert2, const Point& vert3) {
+		Vertices[0] = vert1;
+		Vertices[1] = vert2;
+		Vertices[2] = vert3;
+	}
 
     /*!
         \brief

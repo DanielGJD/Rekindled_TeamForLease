@@ -18,7 +18,10 @@ namespace ForLeaseEngine {
         \brief
             Creates an edge with all zero vertices
     */
-    Edge::Edge() : Vertices({Point(), Point()}) {}
+    Edge::Edge() {
+		Vertices[0] = Point();
+		Vertices[1] = Point();
+	}
 
     /*!
         \brief
@@ -30,13 +33,19 @@ namespace ForLeaseEngine {
         \param vert2
             Second vertex
     */
-    Edge::Edge(Point vert1, Point vert2) : Vertices({vert1, vert2}) {}
+    Edge::Edge(Point vert1, Point vert2) {
+		Vertices[0] = vert1;
+		Vertices[1] = vert2;
+	}
 
     /*!
         \brief
             Creates an indexed edge with all zero indices
     */
-    IndexedEdge::IndexedEdge() : Indices{0, 0} {}
+    IndexedEdge::IndexedEdge() {
+		Indices[0] = 0;
+		Indices[1] = 1;
+	}
 
     /*!
         \brief

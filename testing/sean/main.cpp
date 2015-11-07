@@ -4,6 +4,8 @@
 #include "SeanState.h"
 #include "SegmentPrototypeState.h"
 
+#undef main
+
 int main(int argc, char** argv){
     std::vector<ForLeaseEngine::State *> states;
     ForLeaseEngine::SegmentPrototypeState* state = new ForLeaseEngine::SegmentPrototypeState();
