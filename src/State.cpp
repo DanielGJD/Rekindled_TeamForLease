@@ -53,6 +53,38 @@ namespace ForLeaseEngine {
         return entity;
     }
 
+    /*!
+        Spawns an archetype.
+
+        \param filename
+            A std::string filename of the archetype in question.
+
+        \param position
+            The point we want to spawn the archetype at.
+
+        \param name
+            The name we want to give to the newly created entity.
+    */
+    Entity* State::SpawnArchetype(std::string filename, Point position, std::string name) {
+        Serializer archetype;
+        archetype.ReadFile(filename);
+        Entity* entity = new Entity();
+        std::string name_backup = entity->GetName();
+        entity->Deserialize(archetype);
+
+        if (entity->HasComponent(ComponentType::Transform)) {
+            Components::Transform* transform = entity->GetComponent<Components::Transform>();
+            transform->Position = position;
+        }
+
+        if (name != "") entity->SetName(name);
+        else entity->SetName(name_backup);
+
+        Entities.push_back(entity);
+
+        return entity;
+    }
+
     bool State::DeleteEntity(long unsigned id) {
         for (unsigned i = 0; i < Entities.size(); ++i) {
             if (Entities[i]->GetID() == id) {
