@@ -17,7 +17,7 @@ namespace ForLeaseEngine {
                 void Update();
 
                 Sound* CreateSound(std::string const& filename);
-                FMOD_CHANNEL* PlaySoundA(Sound* sound, bool looping = false, int loopCount = -1);
+                FMOD_CHANNEL* PlayAudio(Sound* sound, bool looping = false, int loopCount = -1);
             private:
                 FMOD_SYSTEM* AudioSystem;
         };

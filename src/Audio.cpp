@@ -39,7 +39,7 @@ namespace ForLeaseEngine {
             return new Sound(filename, sound);
         }
 
-        FMOD_CHANNEL* Audio::PlaySoundA(Sound* sound, bool looping, int loopCount) {
+        FMOD_CHANNEL* Audio::PlayAudio(Sound* sound, bool looping, int loopCount) {
             FMOD_CHANNEL* channel;
             FMOD_RESULT errorCode;
 

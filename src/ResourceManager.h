@@ -4,6 +4,7 @@
 #include "Texture.h"
 #include "Mesh.h"
 #include "Font.h"
+#include "Sound.h"
 #include <unordered_map>
 #include <string>
 
@@ -15,23 +16,28 @@ namespace ForLeaseEngine {
                 void LoadTexture(std::string fileName);
                 void LoadMesh(std::string fileName);
                 void LoadFont(std::string fileName);
+                void LoadSound(std::string fileName);
                 void UnloadTexture(std::string fileName);
                 void UnloadMesh(std::string fileName);
                 void UnloadFont(std::string fileName);
+                void UnloadSound(std::string FileName);
                 void UnloadAllResources();
                 Texture* GetTexture(std::string fileName);
                 Mesh* GetMesh(std::string fileName);
                 Font* GetFont(std::string fileName);
+                Sound* GetSound(std::string fileName);
 
                 unsigned int GetNumTextures();
                 unsigned int GetNumMeshes();
                 unsigned int GetNumFonts();
+                unsigned int GetNumSounds();
                 unsigned int GetTextureRamUsed();
                 unsigned int GetRamUsed();
 
                 std::vector<std::string> GetLoadedTextureNames();
                 std::vector<std::string> GetLoadedFontNames();
                 std::vector<std::string> GetLoadedMeshNames();
+                std::vector<std::string> GetLodedSoundNames();
 
                 friend std::ostream& operator<<(std::ostream& os, const ResourceManager& resources);
 
