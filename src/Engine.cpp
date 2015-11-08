@@ -62,8 +62,10 @@ namespace ForLeaseEngine {
         GameWindow = Systems::Window::CreateGameWindow(properties);
         OSInput.dispatcher = &Dispatcher;
         OSInput.GameWindow = GameWindow;
+        AudioSystem = new Systems::Audio();
         GSM.Run();
         Systems::Window::DestroyGameWindow(GameWindow);
+        delete AudioSystem;
         SDL_Quit();
     }
 
