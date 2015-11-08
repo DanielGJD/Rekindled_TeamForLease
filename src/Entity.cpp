@@ -69,6 +69,18 @@ namespace ForLeaseEngine {
     }
 
     /*!
+        Serializes an Entity into an Archetype.
+
+        \param filename
+            A std::string filename that we want to write the Entity to.
+    */
+    void Entity::CreateArchetype(std::string filename) {
+        Serializer archetype;
+        Serialize(archetype);
+        archetype.WriteFile(filename);
+    }
+
+    /*!
         Update function for an Entity.  Updates all components attached to it.
     */
     void Entity::Update() {
@@ -94,6 +106,16 @@ namespace ForLeaseEngine {
     */
     std::string Entity::GetName() const {
         return Name;
+    }
+
+    /*!
+        Sets the name of this Entity.
+
+        \param name
+            A string that is this Entity's new name.
+    */
+    void Entity::SetName(std::string name) {
+        Name = name;
     }
 
     /*!

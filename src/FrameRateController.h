@@ -37,20 +37,25 @@ namespace ForLeaseEngine {
                 typedef std::chrono::duration<double, std::chrono::seconds::period> seconds;
                 #endif
                 
-                FrameRateController(int framesPerSecond = 60);
+                FrameRateController(int framesPerSecond = 60, double timeScale = 1);
 
                 void Start();
                 void End();
 
                 double GetDt();
+                double GetUnscaledDt();
 
                 double GetFrameTime();
+
+                void TimeScaling(double timeScale);
+                double TimeScaling();
             private:
                 //! A reference to the engine
                 // Engine& Parent;
 
                 //! Frames per second
                 int FramesPerSecond;
+                double TimeScale;
 
                 //! The time allotted for each frame -- 1 / FramesPerSecond
                 #ifdef FLE_WINDOWS

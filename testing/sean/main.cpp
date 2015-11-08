@@ -6,8 +6,8 @@
 
 int main(int argc, char** argv){
     std::vector<ForLeaseEngine::State *> states;
-    ForLeaseEngine::SegmentPrototypeState* state = new ForLeaseEngine::SegmentPrototypeState();
-//    SeanState* state = new SeanState();
+    //ForLeaseEngine::SegmentPrototypeState* state = new ForLeaseEngine::SegmentPrototypeState();
+    SeanState* state = new SeanState();
     states.push_back(state);
 
     ForLeaseEngine::Engine engine(states, 1024, 768, 60);
