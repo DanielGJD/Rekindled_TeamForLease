@@ -16,6 +16,7 @@
 #include "Input.h"
 #include "EventDispatcher.h"
 #include "ResourceManager.h"
+#include "Audio.h"
 #include <vector>
 
 namespace ForLeaseEngine {
@@ -37,6 +38,7 @@ namespace ForLeaseEngine {
             Modules::ResourceManager Resources;
             ForLeaseEngine::EventDispatcher Dispatcher;
             ForLeaseEngine::Input OSInput;
+            Systems::Audio* AudioSystem;
         private:
             //! Width of the screen
             int ResolutionX;

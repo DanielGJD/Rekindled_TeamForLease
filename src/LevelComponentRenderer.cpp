@@ -28,6 +28,7 @@
 #include "Exception.h"
 #include "Serializable.h"
 #include "Serialize.h"
+#include "json-forwards.h"
 //#include "ComponentSpriteText.h"
 
 namespace ForLeaseEngine {
@@ -114,21 +115,23 @@ namespace ForLeaseEngine {
                 if(entity->HasComponent(ComponentType::Model)) {
                     Components::Model* model = entity->GetComponent<Components::Model>();
                     Components::Transform* transform = entity->GetComponent<Components::Transform>();
-                    Mesh* mesh = ForLease->Resources.GetMesh(model->ModelMesh);
-                    SetBlendMode(model->BlendingMode);
-                    Point o;
-                    ModelView = Matrix::Translation(transform->Position) *
-                                Matrix::Translation(mesh->GetCenter()) *
-                                Matrix::RotationRad(transform->Rotation) * Matrix::Scale(transform->ScaleX, transform->ScaleY) *
-                                Matrix::Translation(o - mesh->GetCenter());
-                    DrawMesh(mesh, model->DrawEdges, model->DrawVertices);
+                    if(model->ModelMesh.compare("")) {
+                        Mesh* mesh = ForLease->Resources.GetMesh(model->ModelMesh);
+                        SetBlendMode(model->BlendingMode);
+                        Point o;
+                        ModelView = Matrix::Translation(transform->Position) *
+                                    Matrix::Translation(mesh->GetCenter()) *
+                                    Matrix::RotationRad(transform->Rotation) * Matrix::Scale(transform->ScaleX, transform->ScaleY) *
+                                    Matrix::Translation(o - mesh->GetCenter());
+                        DrawMesh(mesh, model->DrawEdges, model->DrawVertices);
+                    }
                 }
                 if(entity->HasComponent(ComponentType::SpriteText)) {
                     Components::Transform* transform = entity->GetComponent<Components::Transform>();
                     Components::SpriteText* spriteText = entity->GetComponent<Components::SpriteText>();
                     SetBlendMode(BlendMode::ALPHA);
                     SetDrawingColor(spriteText->TextColor);
-                    DrawSpriteText(spriteText, transform->Position, 1, 1, 0);
+                    DrawSpriteText(spriteText, transform->Position, transform->ScaleX, transform->ScaleY, 0);
                 }
             }
             glFinish();
@@ -194,6 +197,7 @@ namespace ForLeaseEngine {
         // Currently a little weird, doesn't support scaling or rotation
         void Renderer::DrawSpriteText(Components::SpriteText* spriteText, const Point& position, float scaleX, float scaleY, float rotation) {
             //SetModelView(position, scaleX, scaleY, rotation);
+            SetBlendMode(BlendMode::ALPHA);
             std::string text = spriteText->Text;
             Font* font = ForLease->Resources.GetFont(spriteText->GetFont());
             float xMargin = position[0];
@@ -202,18 +206,18 @@ namespace ForLeaseEngine {
                 char currentLetter = text.at(i);
                 if(currentLetter == '\n') {
                     currentDrawingLoc[0] = xMargin;
-                    currentDrawingLoc[1] -= font->LineHeight;
+                    currentDrawingLoc[1] -= font->LineHeight * scaleY;
                 } else {
                     Glyph currentGlyph = font->GetGlyph(currentLetter);
                     Point glyphDrawingLoc;
-                    glyphDrawingLoc[0] = currentDrawingLoc[0] + currentGlyph.Offset[0] + currentGlyph.Width / 2;
-                    glyphDrawingLoc[1] = currentDrawingLoc[1] - currentGlyph.Offset[1] - currentGlyph.Height / 2;
+                    glyphDrawingLoc[0] = currentDrawingLoc[0] + currentGlyph.Offset[0] + currentGlyph.Width / 2 * scaleX;
+                    glyphDrawingLoc[1] = currentDrawingLoc[1] - currentGlyph.Offset[1] - currentGlyph.Height / 2 * scaleY;
                     SetModelView(glyphDrawingLoc, scaleX, scaleY, rotation);
                     DrawTextureRegion(&currentGlyph.Region);
                     //DrawRectangle(glyphDrawingLoc, currentGlyph.Region.GetWidth(), currentGlyph.Region.GetHeight());
                     //DrawTextureRegion(Point(shiftedLoc[0] - currentGlyph.Offset[0] * 3, shiftedLoc[1] - currentGlyph.Offset[1] * 0.5f), &currentGlyph.Region, scaleX, scaleY, rotation);
                     //DrawRectangle(Point(shiftedLoc[0] - currentGlyph.Offset[0] * 3, shiftedLoc[1] - currentGlyph.Offset[1] * 0.5f), currentGlyph.Region.GetWidth(), currentGlyph.Region.GetHeight());
-                    currentDrawingLoc[0] += currentGlyph.XAdvance;
+                    currentDrawingLoc[0] += currentGlyph.XAdvance * scaleX;
                     //shiftedLoc[0] += currentGlyph.XAdvance;
                     TriCount += 2;
                 }
@@ -223,7 +227,9 @@ namespace ForLeaseEngine {
         void Renderer::DrawModel(Components::Model* model) {
             SetBlendMode(model->BlendingMode);
             SetTexture(ForLease->Resources.GetTexture(model->ModelTexture));
-            DrawMesh(ForLease->Resources.GetMesh(model->ModelMesh));
+            Mesh* mesh = ForLease->Resources.GetMesh(model->ModelMesh);
+            if(mesh)
+                DrawMesh(mesh);
         }
 
         void Renderer::SetModelView(Components::Transform* transform) {
