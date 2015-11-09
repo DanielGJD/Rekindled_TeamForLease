@@ -220,6 +220,9 @@ namespace ForLeaseEngine {
             case ComponentType::Light:
                 component = new Components::Light(entity);
                 break;
+            case ComponentType::SoundEmitter:
+                component = new Components::SoundEmitter(entity);
+                break;
             default:
                 return 0;
         }
