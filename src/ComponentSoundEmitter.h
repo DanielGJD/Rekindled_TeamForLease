@@ -1,3 +1,6 @@
+// Note:
+//   Due to the way fmod works, using any of the control functions on a sound that is
+//   longer playing will cause unintended effects!  Will rework at a later time.
 #ifndef SOUND_EMITTER_H
 #define SOUND_EMITTER_H
 
@@ -14,6 +17,10 @@ namespace ForLeaseEngine {
         class SoundEmitter : public Component, public Serializable {
             public:
                 static const ComponentType Type = ComponentType::SoundEmitter;
+                float Pitch;
+                float Volume;
+                bool Looping;
+                int LoopCount;
 
                 SoundEmitter(Entity& owner);
 
@@ -34,15 +41,15 @@ namespace ForLeaseEngine {
                 //void FadeTo(std::string const& filename, float time);
 
                 // Attribute controls
-                //void SetVolume(float volume);
-                //void SetPitch(float pitch);
+                void SetVolume(float volume);
+                void SetPitch(float pitch);
+                void SetLooping(bool looping);
+                void SetLoopCount(int loopCount);
                 //void ShiftVolume(float volume, float time);
                 //void ShiftPitch(float pitch, float time);
             private:
                 FMOD_CHANNEL* Channel;
                 std::string CurrentSound;
-                float Pitch;
-                float Volume;
 
                 //Something to affect interpolation type
                     // Linear

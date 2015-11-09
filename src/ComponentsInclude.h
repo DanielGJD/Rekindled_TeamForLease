@@ -19,5 +19,6 @@
 #include "ComponentSpriteText.h"
 #include "ComponentCharacterController.h"
 #include "ComponentLight.h"
+#include "ComponentSoundEmitter.h"
 
 #endif
