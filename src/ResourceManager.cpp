@@ -2,6 +2,7 @@
 #include "Exception.h"
 #include "GL/gl.h"
 #include "Serialize.h"
+#include "Engine.h"
 #include <iostream>
 #include <fstream>
 
@@ -131,6 +132,43 @@ namespace ForLeaseEngine {
                            sizeof(IndexedFace) * mesh->GetFaceCount() +
                            sizeof(Color) * mesh->GetFaceCount();
                 delete mesh;
+            }
+        }
+
+        void ResourceManager::LoadSound(std::string fileName) {
+            UnloadSound(fileName);
+            Sound* sound = ForLease->AudioSystem->CreateSound(fileName);
+
+            if(!sound) {
+                throw(new Exception(std::string("Failed to load sound: ").append(fileName)));
+            }
+
+            Sounds.insert(std::make_pair(fileName.c_str(), sound));
+            ++LoadedSounds;
+        }
+
+        Sound* ResourceManager::GetSound(std::string fileName) {
+            std::unordered_map<std::string, Sound*>::iterator i = Sounds.find(fileName);
+            if(i != Sounds.end()) {
+                return std::get<1>(*i);
+            }
+
+            LoadSound(fileName);
+            i = Sounds.find(fileName);
+            if(i != Sounds.end()) {
+                return std::get<1>(*i);
+            }
+
+            return NULL;
+        }
+
+        void ResourceManager::UnloadSound(std::string fileName) {
+            std::unordered_map<std::string, Sound*>::iterator i = Sounds.find(fileName);
+            if(i != Sounds.end()) {
+                Sound* sound = std::get<1>(*i);
+                Sounds.erase(i);
+                --LoadedSounds;
+                delete sound;
             }
         }
 

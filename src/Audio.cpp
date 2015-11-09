@@ -1,5 +1,6 @@
 #include "Audio.h"
 #include "Exception.h"
+#include "Engine.h"
 #include <iostream>
 
 namespace ForLeaseEngine {
@@ -56,7 +57,32 @@ namespace ForLeaseEngine {
                 return NULL;
             }
 
-            else return channel;
+            return channel;
+        }
+
+        FMOD_CHANNEL* Audio::PlayAudio(std::string const& filename, bool looping, int loopCount) {
+            Sound* sound = ForLease->Resources.GetSound(filename);
+            if(!sound) {
+                return NULL;
+            }
+
+            FMOD_CHANNEL* channel;
+            FMOD_RESULT errorCode;
+
+            if(looping) {
+                FMOD_Sound_SetMode(*sound->GetSoundSource(), FMOD_LOOP_NORMAL | FMOD_2D);
+                FMOD_Sound_SetLoopCount(*sound->GetSoundSource(), loopCount);
+            }
+            else {
+                FMOD_Sound_SetMode(*sound->GetSoundSource(), FMOD_LOOP_OFF | FMOD_2D);
+            }
+
+            errorCode = FMOD_System_PlaySound(AudioSystem, *sound->GetSoundSource(), 0, false, &channel);
+            if(errorCode != FMOD_OK) {
+                return NULL;
+            }
+
+            return channel;
         }
     }
 }

@@ -45,10 +45,12 @@ namespace ForLeaseEngine {
                 std::unordered_map<std::string, Texture*> Textures;
                 std::unordered_map<std::string, Mesh*> Meshes;
                 std::unordered_map<std::string, Font*> Fonts;
+                std::unordered_map<std::string, Sound*> Sounds;
 
                 unsigned int LoadedTextures;
                 unsigned int LoadedMeshes;
                 unsigned int LoadedFonts;
+                unsigned int LoadedSounds;
                 unsigned int TextureRamUsed;
                 unsigned int RamUsed;
         };
