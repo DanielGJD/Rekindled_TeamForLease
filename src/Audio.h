@@ -17,10 +17,12 @@ namespace ForLeaseEngine {
                 void Update();
 
                 Sound* CreateSound(std::string const& filename);
-                FMOD_CHANNEL* PlayAudio(Sound* sound, bool looping = false, int loopCount = -1);
-                FMOD_CHANNEL* PlayAudio(std::string const& filename, bool looping = false, int loopCount = -1);
+                FMOD_CHANNEL* PlayAudio(Sound* sound, bool looping = false, int loopCount = -1, float volume = 1, float pitch = 1);
+                FMOD_CHANNEL* PlayAudio(std::string const& filename, bool looping = false, int loopCount = -1, float volume = 1, float pitch = 1);
             private:
                 FMOD_SYSTEM* AudioSystem;
+                float GlobalVolume;
+                float GlobalPitch;
         };
     }
 }

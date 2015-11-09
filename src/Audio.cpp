@@ -14,6 +14,8 @@ namespace ForLeaseEngine {
             }
 
             errorCode = FMOD_System_Init(AudioSystem, maxChannels, FMOD_INIT_NORMAL, 0);
+            GlobalVolume = 1;
+            GlobalPitch = 1;
         }
 
         Audio::~Audio(){
@@ -40,7 +42,7 @@ namespace ForLeaseEngine {
             return new Sound(filename, sound);
         }
 
-        FMOD_CHANNEL* Audio::PlayAudio(Sound* sound, bool looping, int loopCount) {
+        FMOD_CHANNEL* Audio::PlayAudio(Sound* sound, bool looping, int loopCount, float volume, float pitch) {
             FMOD_CHANNEL* channel;
             FMOD_RESULT errorCode;
 
@@ -57,32 +59,19 @@ namespace ForLeaseEngine {
                 return NULL;
             }
 
+            FMOD_Channel_SetPitch(channel, pitch * GlobalPitch);
+            FMOD_Channel_SetVolume(channel, volume * GlobalVolume);
+
             return channel;
         }
 
-        FMOD_CHANNEL* Audio::PlayAudio(std::string const& filename, bool looping, int loopCount) {
+        FMOD_CHANNEL* Audio::PlayAudio(std::string const& filename, bool looping, int loopCount, float volume, float pitch) {
             Sound* sound = ForLease->Resources.GetSound(filename);
             if(!sound) {
                 return NULL;
             }
 
-            FMOD_CHANNEL* channel;
-            FMOD_RESULT errorCode;
-
-            if(looping) {
-                FMOD_Sound_SetMode(*sound->GetSoundSource(), FMOD_LOOP_NORMAL | FMOD_2D);
-                FMOD_Sound_SetLoopCount(*sound->GetSoundSource(), loopCount);
-            }
-            else {
-                FMOD_Sound_SetMode(*sound->GetSoundSource(), FMOD_LOOP_OFF | FMOD_2D);
-            }
-
-            errorCode = FMOD_System_PlaySound(AudioSystem, *sound->GetSoundSource(), 0, false, &channel);
-            if(errorCode != FMOD_OK) {
-                return NULL;
-            }
-
-            return channel;
+            return PlayAudio(sound, looping, loopCount, volume, pitch);
         }
     }
 }
