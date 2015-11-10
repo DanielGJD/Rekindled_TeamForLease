@@ -45,18 +45,22 @@ namespace ForLeaseEngine {
         renderer->SetDrawingColor(Color(0, 0.5, 1));
         renderer->DrawRectangleFilled(top.GetAnchor(), 10, 10, 0);
         renderer->DrawArrow(top.GetAnchor(), top.GetNormal() * 30);
+        renderer->DrawLine(top.GetAnchor() - Vector::Rotate(top.GetNormal(), 1.5708) * 2000, Vector::Rotate(top.GetNormal(), 1.5708) * 4000);
 
         renderer->SetDrawingColor(Color(0, 1, 0.5));
         renderer->DrawRectangleFilled(right.GetAnchor(), 10, 10, 0);
         renderer->DrawArrow(right.GetAnchor(), right.GetNormal() * 30);
+        renderer->DrawLine(right.GetAnchor() - Vector::Rotate(right.GetNormal(), 1.5708) * 2000, Vector::Rotate(right.GetNormal(), 1.5708) * 4000);
 
         renderer->SetDrawingColor(Color(0, 1, 1));
         renderer->DrawRectangleFilled(left.GetAnchor(), 10, 10, 0);
         renderer->DrawArrow(left.GetAnchor(), left.GetNormal() * 30);
+        renderer->DrawLine(left.GetAnchor() - Vector::Rotate(left.GetNormal(), 1.5708) * 2000, Vector::Rotate(left.GetNormal(), 1.5708) * 4000);
 
         renderer->SetDrawingColor(Color(0, 0.5, 0.5));
         renderer->DrawRectangleFilled(bot.GetAnchor(), 10, 10, 0);
         renderer->DrawArrow(bot.GetAnchor(), bot.GetNormal() * 30);
+        renderer->DrawLine(bot.GetAnchor() - Vector::Rotate(bot.GetNormal(), 1.5708) * 2000, Vector::Rotate(bot.GetNormal(), 1.5708) * 4000);
         ////////// DEBUG DRAWING //////////
 
 
@@ -66,23 +70,29 @@ namespace ForLeaseEngine {
 
         HalfPlane::CollisionInterval interval = GetHalfPlaneInterval(top);
 
-        if (interval() && (minDist == Unlimited || interval.End < minDist))
-            minDist = interval.End;
+        if (interval() && top.Dot(Start) < 0 && (minDist == Unlimited || interval.End < minDist))
+            if ((Start + Direction * Scale * interval.End).InBetween(topLeft, topRight))
+                minDist = interval.End;
 
         interval = GetHalfPlaneInterval(left);
 
-        if (interval() && (minDist == Unlimited || interval.End < minDist))
-            minDist = interval.End;
+        if (interval() && left.Dot(Start) < 0 && (minDist == Unlimited || interval.End < minDist))
+            if ((Start + Direction * Scale * interval.End).InBetween(topLeft, botLeft)) {
+                std::cout << "Here" << std::endl;
+                minDist = interval.End;
+            }
 
         interval = GetHalfPlaneInterval(right);
 
-        if (interval() && (minDist == Unlimited || interval.End < minDist))
-            minDist = interval.End;
+        if (interval() && right.Dot(Start) < 0 && (minDist == Unlimited || interval.End < minDist))
+            if ((Start + Direction * Scale * interval.End).InBetween(topRight, botRight));
+                minDist = interval.End;
 
         interval = GetHalfPlaneInterval(bot);
 
-        if (interval() && (minDist == Unlimited || interval.End < minDist))
-            minDist = interval.End;
+        if (interval() && bot.Dot(Start) < 0 && (minDist == Unlimited || interval.End < minDist))
+            if ((Start + Direction * Scale * interval.End).InBetween(botLeft, botRight))
+                minDist = interval.End;
 
         if (minDist * Length < Scale && minDist != Unlimited) {
             //std::cout << "         " << minDist << std::endl;

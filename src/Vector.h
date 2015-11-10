@@ -72,6 +72,8 @@ namespace ForLeaseEngine {
 		static float Distance(const Point& p1, const Point& p2);
 		static float DistanceSquared(const Point& p1, const Point& p2);
 		Point operator-();
+        static bool InBetween(const Point& p1, const Point& p2, const Point& q);
+        bool InBetween(const Point& p1, const Point& p2) const;
 	};
 }
 

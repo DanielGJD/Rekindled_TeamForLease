@@ -273,4 +273,14 @@ namespace ForLeaseEngine {
 	float Point::DistanceSquared(const Point& p1, const Point& p2) {
         return (p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y);
 	}
+
+    #define EPSILON 0.003
+
+    bool Point::InBetween(const Point& p1, const Point& p2, const Point& q) {
+        return -EPSILON < Point::Distance(p1, q) + Point::Distance(q, p2) - Point::Distance(p1, p2) < EPSILON;
+    }
+
+    bool Point::InBetween(const Point& p1, const Point& p2) const {
+        return Point::InBetween(p1, p2, *this);
+    }
 }

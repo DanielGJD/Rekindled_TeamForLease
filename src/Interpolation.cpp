@@ -13,7 +13,7 @@ namespace ForLeaseEngine {
     }
 
     float Interpolation::Logarithmic(float v1, float v2, float t) {
-        v1 + (v2 - v1) * log(t + 1) / log(2);
+        return v1 + (v2 - v1) * log(t + 1) / log(2);
     }
 
     float Interpolation::Trigonomentric(float v1, float v2, float t) {
