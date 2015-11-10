@@ -1,7 +1,17 @@
+/*!
+    \file   Ray.cpp
+    \author Sean McGeer
+    \date   10/21/15
+    \brief
+        Implements a ray, as well as some helper functions involved in raycasting.
+    \see Ray.h
+*/
+
 #include "Ray.h"
 #include "Entity.h"
 #include "Engine.h"
 #include "LevelComponentsInclude.h"
+#include "HalfPlane.h"
 
 namespace ForLeaseEngine {
 
@@ -11,6 +21,7 @@ namespace ForLeaseEngine {
     }
 
     bool Ray::IsColliding(Entity* entity) {
+        if (!entity->HasComponent(ComponentType::Collision)) return false;
         Point endPoint = Start + Direction * Scale;
         Components::Transform* transform = entity->GetComponent<Components::Transform>();
         if (!transform) return false;
@@ -28,22 +39,24 @@ namespace ForLeaseEngine {
         Vector leftVec = botLeft - topLeft;
         Vector botVec = botLeft - botRight;
 
-//        LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
-//        renderer->DrawArrow(topLeft, topVec);
-//        renderer->DrawArrow(topLeft, leftVec);
-//        renderer->DrawArrow(botRight, rightVec);
-//        renderer->DrawArrow(botRight, botVec);
+        LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
+
+        renderer->SetDrawingColor(Color(0, 1, 0));
+        renderer->DrawRectangleFilled(topLeft, 10, 10, 0);
+        renderer->DrawArrow(topLeft, topVec);
+        renderer->DrawArrow(topLeft, leftVec);
+
+        renderer->SetDrawingColor(Color(0, 0, 1));
+        renderer->DrawRectangleFilled(botRight, 10, 10, 0);
+        renderer->DrawArrow(botRight, rightVec);
+        renderer->DrawArrow(botRight, botVec);
+
+        
+        renderer->SetDrawingColor(Color(1, 1, 1));
+        renderer->DrawArrow(Start, Direction * Length);
 
 
         float minDist = Unlimited;
-
-        // Super simple bounding box collision detection
-        // Testing only--will be replaced with a line-detecting algorithm
-//        if (endPoint[0] > transform->Position[0] - transform->ScaleX/2 &&
-//            endPoint[0] < transform->Position[0] + transform->ScaleX/2 &&
-//            endPoint[1] > transform->Position[1] - transform->ScaleY/2 &&
-//            endPoint[1] < transform->Position[1] + transform->ScaleY/2)
-//                return true;
 
         Vector searchVec = Vector::Scale(Direction, Length);
 
@@ -113,7 +126,7 @@ namespace ForLeaseEngine {
             return t1;
         }
 
-        return -1;
+        return Ray::Unlimited;
     }
 
 } // ForLeaseEngine

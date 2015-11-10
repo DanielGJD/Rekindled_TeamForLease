@@ -57,16 +57,15 @@ void SeanState::Load() {
 
     SpawnArchetype("Box.arch", Point(-100, 0), "Box1");
     SpawnArchetype("Box.arch", Point(100, 100), "Box2");
-    SpawnArchetype("Box.arch");
 
     Entity* entityFloor = AddEntity("Floor");
     entityFloor->AddComponent(new Components::Transform(*entityFloor, 0, -250, 250, 10, 0));
     entityFloor->AddComponent(new Components::Model(*entityFloor, true, "BoxMesh.json", "", Color(0,1,1,1)));
     entityFloor->AddComponent(new Components::Collision(*entityFloor, 500, 20));
 
-    Entity* entityLight = AddEntity("Light");
-    entityLight->AddComponent(new Components::Transform(*entityLight, 0, 200, 0, 0, 0));
-    entityLight->AddComponent(new Components::Light(*entityLight, Vector(-1,-1), Vector(1,-1), 1000, 700));
+    //Entity* entityLight = AddEntity("Light");
+    //entityLight->AddComponent(new Components::Transform(*entityLight, Point(-10,10), 1, 1, -1, 0));
+    //entityLight->AddComponent(new Components::Light(*entityLight));
 
     Serializer serial2;
     Serialize(serial2);
@@ -108,9 +107,10 @@ void SeanState::Update() {
 
     LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
 
-    Ray ray(Point(0, 100), Vector(0,-1), 700);
+    Ray ray(Point(0, 0), Vector(-0.5,-1), 700);
 
-    ray.IsColliding(GetEntityByName("Box"));
+    for (Entity* entity : Entities)
+        ray.IsColliding(entity);
 
 //    renderer->DrawLine(ray.GetStart(), ray.GetScaledVector());
 

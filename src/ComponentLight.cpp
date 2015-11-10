@@ -18,30 +18,27 @@ namespace ForLeaseEngine {
 
     namespace Components {
 
-        Light::Light(Entity& owner, Vector start, Vector end,
-            unsigned additional, float length)
-            : Component(owner, ComponentType::Transform), Start(start), End(end),
-              Length(length), Additional(additional) {}
+        Light::Light(Entity& owner, float sweep, unsigned rays)
+            : Component(owner, ComponentType::Transform), Rays(rays) {}
 
         void Light::Update() {
             // Raycasting stuff
 
-            float cosTheta = Vector::DotProduct(Start, End);
-            cosTheta /= Start.Magnitude() * End.Magnitude();
+            float rotation = Parent.GetComponent<Components::Transform>()->Rotation;
+            Vector mid = Vector::Rotate(Vector(1,0), rotation);
+            Vector start = Vector::Rotate(mid, -Sweep / 2);
 
-            float theta = acos(cosTheta);
+            float rotStep = Sweep / Rays;
 
-            float rotStep = theta/Additional;
-
-            Vector rayVec = Start;
+            Vector rayVec = start;
 
             LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
 
 
             renderer->SetDrawingColor(1, 1, 153.0f/255, 1);
 
-            for (unsigned i = 0; i <= Additional; ++i) {
-                Ray ray(Parent.GetComponent<Components::Transform>()->Position, rayVec, Length);
+            for (unsigned i = 0; i <= Rays; ++i) {
+                Ray ray(Parent.GetComponent<Components::Transform>()->Position, rayVec, Ray::Unlimited);
                 std::vector<Entity *> entities = ForLease->GameStateManager().CurrentState().GetAllEntities();
                 for (Entity* entity : entities) {
                     if (!entity->HasComponent(ComponentType::Collision)) continue;
@@ -60,20 +57,18 @@ namespace ForLeaseEngine {
         void Light::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer light = root.GetChild("Light");
-            light.WriteVec("Start", Start);
-            light.WriteVec("End", End);
-            light.WriteFloat("Length", Length);
-            light.WriteUint("Additional", Additional);
+            light.WriteVec("Direction", Direction);
+            light.WriteFloat("Sweep", Sweep);
+            light.WriteUint("Rays", Rays);
             light.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(light, "Light");
         }
 
         void Light::Deserialize(Serializer& root) {
             Serializer light = root.GetChild("Light");
-            light.ReadVec("Start", Start);
-            light.ReadVec("End", End);
-            light.ReadFloat("Length", Length);
-            light.ReadUint("Additional", Additional);
+            light.ReadVec("Direction", Direction);
+            light.ReadFloat("Sweep", Sweep);
+            light.ReadUint("Rays", Rays);
         }
 
     } // Components

@@ -1,3 +1,12 @@
+/*!
+    \file   Ray.h
+    \author Sean McGeer
+    \date   10/21/15
+    \brief
+        Defines a ray, as well as some helper functions involved in raycasting.
+    \see Ray.cpp
+*/
+
 #include "Vector.h"
 #include <vector>
 
