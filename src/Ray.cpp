@@ -33,10 +33,10 @@ namespace ForLeaseEngine {
         Point botRight(position[0] + collision->Width / 2, position[1] - collision->Height / 2);
         Point botLeft(position[0] - collision->Width / 2, position[1] - collision->Height / 2);
 
-        HalfPlane top(topLeft, topRight, position);
-        HalfPlane right(topRight, botRight, position);
-        HalfPlane left(topLeft, botLeft, position);
-        HalfPlane bot(botLeft, botRight, position);
+        HalfPlane top(topLeft, topRight, Point(position[0], position[1] + collision->Height));
+        HalfPlane right(topRight, botRight, Point(position[0] + collision->Width, position[1]));
+        HalfPlane left(topLeft, botLeft, Point(position[0] - collision->Width, position[1]));
+        HalfPlane bot(botLeft, botRight, Point(position[0], position[1] - collision->Height));
 
 
         ////////// DEBUG DRAWING //////////
