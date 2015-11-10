@@ -107,12 +107,17 @@ void SeanState::Update() {
 
     LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
 
-    Ray ray(Point(0, 0), Vector(-0.5,-1), 700);
+    Ray ray(Point(0, 100), Vector(0,-1), 300);
 
-    for (Entity* entity : Entities)
-        ray.IsColliding(entity);
+    for (Entity* entity : Entities) {
+        if (ray.IsColliding(entity))
+            std::cout << "Colliding with " << entity->GetName() << std::endl;
+    }
 
-//    renderer->DrawLine(ray.GetStart(), ray.GetScaledVector());
+
+    renderer->SetDrawingColor(Color(1, 1, 1));
+    //std::cout << ray.GetScaledVector().Magnitude() << std::endl;
+    renderer->DrawArrow(ray.GetStart(), ray.GetScaledVector());
 
     ForLease->GameWindow->UpdateGameWindow();
 

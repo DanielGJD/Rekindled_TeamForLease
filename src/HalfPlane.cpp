@@ -11,18 +11,28 @@
 
 namespace ForLeaseEngine {
 
+    HalfPlane::CollisionInterval::CollisionInterval(float a, float b) : Start(a), End(b) {};
+    bool HalfPlane::CollisionInterval::operator() () const {
+        return End >= Start;
+    }
+
     HalfPlane::HalfPlane(Point anchor, Vector normal) : Anchor(anchor), Normal(normal) {
         Normal.Normalize();
     }
 
-    HalfPlane::HalfPlane(Point A, Point B, Point Interior) : Anchor(A) {
+    HalfPlane::HalfPlane(Point A, Point B, Point Interior) {
         Vector AB = B - A;
-        Normal = Vector(AB[1], -AB[0]).Normalize;
+        Anchor = A + Vector::Scale(AB, 0.5);
+        Normal = Vector(AB[1], -AB[0]);
+        Normal.Normalize();
 
-        if (!(Dot(GetHcoord(), Interior) < 0)) Normal = Vector(-AB[1], AB[0]);
+        if (!(Dot(GetHcoord(), Interior) < 0)) {
+            Normal = Vector(-AB[1], AB[0]);
+            Normal.Normalize();
+        }
     }
 
-    Hcoord HalfPlane::GetHcoord() {
+    Hcoord HalfPlane::GetHcoord() const {
         Hcoord halfPlane;
         halfPlane[0] = Normal[0];
         halfPlane[1] = Normal[1];
@@ -31,7 +41,19 @@ namespace ForLeaseEngine {
         return halfPlane;
     }
 
-    float HalfPlane::Dot(const Hcoord& h, const Point& Q) {
+    Point HalfPlane::GetAnchor() const {
+        return Anchor;
+    }
+
+    Vector HalfPlane::GetNormal() const {
+        return Normal;
+    }
+
+    float HalfPlane::Dot(Point& Q) const {
+        return Dot(GetHcoord(), Q);
+    }
+
+    float HalfPlane::Dot(const Hcoord& h, const Point& Q) const {
         return (h[0] * Q[0] + h[1] * Q[1] + h[2] * Q[2]);
     }
 

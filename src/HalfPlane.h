@@ -16,11 +16,19 @@ namespace ForLeaseEngine {
 
     class HalfPlane {
         public:
+            struct CollisionInterval {
+                float Start, End;
+                CollisionInterval(float a = 0, float b = 1);
+                bool operator() () const;
+            };
             HalfPlane(Point anchor, Vector normal);
             HalfPlane(Point A, Point B, Point Interior);
-            Hcoord GetHcoord();
+            Hcoord GetHcoord() const;
+            Point GetAnchor() const;
+            Vector GetNormal() const;
+            float Dot(Point& Q) const;
         private:
-            float Dot(const Hcoord& h, const Point& Q);
+            float Dot(const Hcoord& h, const Point& Q) const;
 
             Point Anchor;
             Vector Normal;

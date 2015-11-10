@@ -8,6 +8,7 @@
 */
 
 #include "Vector.h"
+#include "HalfPlane.h"
 #include <vector>
 
 #ifndef RAY_H
@@ -26,6 +27,7 @@ namespace ForLeaseEngine {
             void ResetLength();
             Point GetStart();
             Vector GetScaledVector();
+            HalfPlane::CollisionInterval GetHalfPlaneInterval(const HalfPlane& halfPlane);
         private:
             Point Start;
             Vector Direction;
@@ -35,7 +37,7 @@ namespace ForLeaseEngine {
     };
 
     std::vector<Entity *> CheckCollisions(const Ray& ray, std::vector<Entity *> entities);
-    float LineSegmentsIntersect(Point p1, Vector v1, Point p2, Vector v2);
+    //float LineSegmentsIntersect(Point p1, Vector v1, Point p2, Vector v2);
 
 } // ForLeaseEngine
 
