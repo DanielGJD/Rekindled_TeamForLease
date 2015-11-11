@@ -37,7 +37,7 @@ namespace ForLeaseEngine {
     };
 
     std::vector<Entity *> CheckCollisions(const Ray& ray, std::vector<Entity *> entities);
-    //float LineSegmentsIntersect(Point p1, Vector v1, Point p2, Vector v2);
+    bool LineSegmentsIntersect(Point p1, Vector v1, Point p2, Vector v2);
 
 } // ForLeaseEngine
 

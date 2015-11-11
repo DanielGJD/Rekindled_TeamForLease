@@ -12,6 +12,7 @@
 namespace ForLeaseEngine {
 
     HalfPlane::CollisionInterval::CollisionInterval(float a, float b) : Start(a), End(b) {};
+
     bool HalfPlane::CollisionInterval::operator() () const {
         return End >= Start;
     }

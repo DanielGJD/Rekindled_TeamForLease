@@ -12,6 +12,8 @@
 #include "Engine.h"
 #include "LevelComponentsInclude.h"
 
+int i = 0;
+
 namespace ForLeaseEngine {
 
     Ray::Ray(Point start, Vector direction, float scale, int collisions)
@@ -33,35 +35,39 @@ namespace ForLeaseEngine {
         Point botRight(position[0] + collision->Width / 2, position[1] - collision->Height / 2);
         Point botLeft(position[0] - collision->Width / 2, position[1] - collision->Height / 2);
 
-        HalfPlane top(topLeft, topRight, Point(position[0], position[1] + collision->Height));
-        HalfPlane right(topRight, botRight, Point(position[0] + collision->Width, position[1]));
-        HalfPlane left(topLeft, botLeft, Point(position[0] - collision->Width, position[1]));
-        HalfPlane bot(botLeft, botRight, Point(position[0], position[1] - collision->Height));
+        HalfPlane top(topLeft, topRight, position);
+        HalfPlane right(topRight, botRight, position);
+        HalfPlane left(topLeft, botLeft, position);
+        HalfPlane bot(botLeft, botRight, position);
 
 
-        ////////// DEBUG DRAWING //////////
-        LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
+        //////////// DEBUG DRAWING //////////
+        //LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
 
-        renderer->SetDrawingColor(Color(0, 0.5, 1));
-        renderer->DrawRectangleFilled(top.GetAnchor(), 10, 10, 0);
-        renderer->DrawArrow(top.GetAnchor(), top.GetNormal() * 30);
-        renderer->DrawLine(top.GetAnchor() - Vector::Rotate(top.GetNormal(), 1.5708) * 2000, Vector::Rotate(top.GetNormal(), 1.5708) * 4000);
+        //renderer->SetDrawingColor(Color(0, 0.5, 1));
+        //renderer->DrawRectangleFilled(top.GetAnchor(), 10, 10, 0);
+        //renderer->DrawArrow(top.GetAnchor(), top.GetNormal() * 30);
+        ////renderer->DrawLine(top.GetAnchor() - Vector::Rotate(top.GetNormal(), 1.5708) * 2000, Vector::Rotate(top.GetNormal(), 1.5708) * 4000);
+        //renderer->DrawLine(topLeft, topRight);
 
-        renderer->SetDrawingColor(Color(0, 1, 0.5));
-        renderer->DrawRectangleFilled(right.GetAnchor(), 10, 10, 0);
-        renderer->DrawArrow(right.GetAnchor(), right.GetNormal() * 30);
-        renderer->DrawLine(right.GetAnchor() - Vector::Rotate(right.GetNormal(), 1.5708) * 2000, Vector::Rotate(right.GetNormal(), 1.5708) * 4000);
+        //renderer->SetDrawingColor(Color(0, 1, 0.5));
+        //renderer->DrawRectangleFilled(right.GetAnchor(), 10, 10, 0);
+        //renderer->DrawArrow(right.GetAnchor(), right.GetNormal() * 30);
+        ////renderer->DrawLine(right.GetAnchor() - Vector::Rotate(right.GetNormal(), 1.5708) * 2000, Vector::Rotate(right.GetNormal(), 1.5708) * 4000);
+        //renderer->DrawLine(topRight, botRight);
 
-        renderer->SetDrawingColor(Color(0, 1, 1));
-        renderer->DrawRectangleFilled(left.GetAnchor(), 10, 10, 0);
-        renderer->DrawArrow(left.GetAnchor(), left.GetNormal() * 30);
-        renderer->DrawLine(left.GetAnchor() - Vector::Rotate(left.GetNormal(), 1.5708) * 2000, Vector::Rotate(left.GetNormal(), 1.5708) * 4000);
+        //renderer->SetDrawingColor(Color(0, 1, 1));
+        //renderer->DrawRectangleFilled(left.GetAnchor(), 10, 10, 0);
+        //renderer->DrawArrow(left.GetAnchor(), left.GetNormal() * 30);
+        ////renderer->DrawLine(left.GetAnchor() - Vector::Rotate(left.GetNormal(), 1.5708) * 2000, Vector::Rotate(left.GetNormal(), 1.5708) * 4000);
+        //renderer->DrawLine(topLeft, botLeft);
 
-        renderer->SetDrawingColor(Color(0, 0.5, 0.5));
-        renderer->DrawRectangleFilled(bot.GetAnchor(), 10, 10, 0);
-        renderer->DrawArrow(bot.GetAnchor(), bot.GetNormal() * 30);
-        renderer->DrawLine(bot.GetAnchor() - Vector::Rotate(bot.GetNormal(), 1.5708) * 2000, Vector::Rotate(bot.GetNormal(), 1.5708) * 4000);
-        ////////// DEBUG DRAWING //////////
+        //renderer->SetDrawingColor(Color(0, 0.5, 0.5));
+        //renderer->DrawRectangleFilled(bot.GetAnchor(), 10, 10, 0);
+        //renderer->DrawArrow(bot.GetAnchor(), bot.GetNormal() * 30);
+        ////renderer->DrawLine(bot.GetAnchor() - Vector::Rotate(bot.GetNormal(), 1.5708) * 2000, Vector::Rotate(bot.GetNormal(), 1.5708) * 4000);
+        //renderer->DrawLine(botLeft, botRight);
+        //////////// DEBUG DRAWING //////////
 
 
         float minDist = Unlimited;
@@ -70,38 +76,39 @@ namespace ForLeaseEngine {
 
         HalfPlane::CollisionInterval interval = GetHalfPlaneInterval(top);
 
-        if (interval() && top.Dot(Start) < 0 && (minDist == Unlimited || interval.End < minDist))
-            if ((Start + Direction * Scale * interval.End).InBetween(topLeft, topRight))
-                minDist = interval.End;
+        if (interval() && top.Dot(Start) > 0 && (minDist == Unlimited || interval.Start < minDist))
+            if (Point::InBetween(topLeft, topRight, Start + Direction * Scale * interval.Start))
+                minDist = interval.Start;
 
         interval = GetHalfPlaneInterval(left);
 
-        if (interval() && left.Dot(Start) < 0 && (minDist == Unlimited || interval.End < minDist))
-            if ((Start + Direction * Scale * interval.End).InBetween(topLeft, botLeft)) {
-                std::cout << "Here" << std::endl;
-                minDist = interval.End;
-            }
+        if (interval() && left.Dot(Start) > 0 && (minDist == Unlimited || interval.Start < minDist))
+            if (Point::InBetween(topLeft, botLeft, Start + Direction * Scale * interval.Start))
+                minDist = interval.Start;
 
         interval = GetHalfPlaneInterval(right);
 
-        if (interval() && right.Dot(Start) < 0 && (minDist == Unlimited || interval.End < minDist))
-            if ((Start + Direction * Scale * interval.End).InBetween(topRight, botRight));
-                minDist = interval.End;
+        if (interval() && right.Dot(Start) > 0 && (minDist == Unlimited || interval.Start < minDist))
+            if (Point::InBetween(topRight, botRight, Start + Direction * Scale * interval.Start))
+                minDist = interval.Start;
 
         interval = GetHalfPlaneInterval(bot);
 
-        if (interval() && bot.Dot(Start) < 0 && (minDist == Unlimited || interval.End < minDist))
-            if ((Start + Direction * Scale * interval.End).InBetween(botLeft, botRight))
-                minDist = interval.End;
+        if (interval() && bot.Dot(Start) > 0 && (minDist == Unlimited || interval.Start < minDist))
+            if (Point::InBetween(botLeft, botRight, Start + Direction * Scale * interval.Start))
+                minDist = interval.Start;
 
-        if (minDist * Length < Scale && minDist != Unlimited) {
-            //std::cout << "         " << minDist << std::endl;
+        if (right.Dot(Start) < 0 && bot.Dot(Start) < 0 && left.Dot(Start) < 0 && top.Dot(Start) < 0) {
+            Length = 0;
+            return true;
+        } else if (minDist > 0) {
             Length = Scale * minDist;
-            std::cout << Length << std::endl;
             return true;
         }
-
-        return false;
+        else {
+            Length = Unlimited;
+            return false;
+        }
     }
 
     void Ray::ResetLength() {
@@ -113,8 +120,11 @@ namespace ForLeaseEngine {
     }
 
     Vector Ray::GetScaledVector() {
-        if (Length == Unlimited)
-            return Direction * 9999;
+        if (Length < 0)
+            if (Scale < 0)
+                return Direction * 99999;
+            else
+                return Direction * Scale;
         else
             return Direction * Length;
     }
@@ -146,20 +156,20 @@ namespace ForLeaseEngine {
         return v1[0]*v2[1] - v1[1]*v2[0];
     }
 
-//    float LineSegmentsIntersect(Point p1, Vector v1, Point p2, Vector v2) {
-//        float cross = Cross(v1, v2);
-//
-//        if (cross == 0) return -1;
-//
-//        float t1 = Cross((p2 - p1), Vector(v2[0]/cross, v2[1]/cross));
-//        float t2 = Cross((p2 - p1), Vector(v1[0]/cross, v1[1]/cross));
-//
-//        if (t1 >= 0 && t1 <= 1 && t2 >= 0 && t2 <= 1) {
-////            std::cout <<
-//            return t1;
-//        }
-//
-//        return Ray::Unlimited;
-//    }
+    bool LineSegmentsIntersect(Point p1, Vector v1, Point p2, Vector v2) {
+        /*float cross = Cross(v1, v2);
+
+        if (-v1.Epsilon < cross < v1.Epsilon) return false;
+        
+        float t1 = Cross((p2 - p1), Vector(v2[0] / cross, v2[1] / cross));
+        float t2 = Cross((p2 - p1), Vector(v1[0] / cross, v1[1] / cross));
+
+        if (t1 >= 0 && t1 <= 1 && t2 >= 0 && t2 <= 1)
+            return true;
+
+        return false;*/
+
+        return true;
+    }
 
 } // ForLeaseEngine

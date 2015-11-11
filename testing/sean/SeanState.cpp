@@ -112,16 +112,13 @@ void SeanState::Update() {
     rays.push_back(Ray(Point(0, -200), Vector(0, 1), 300));
     rays.push_back(Ray(Point(0, 0), Vector(-1, -1), 300));
     rays.push_back(Ray(Point(-100, -100), Vector(1, 0.5), 300));
-    rays.push_back(Ray(Point(0, 100), Vector(0, -1), 300));
+    rays.push_back(Ray(Point(100, -100), Vector(-1, -0.5), Ray::Unlimited));
 
     for (Ray ray : rays) {
         for (Entity* entity : Entities) {
-            if (ray.IsColliding(entity)) {
-                std::cout << "Colliding with " << entity->GetName() << std::endl;
-            }
+            ray.IsColliding(entity);
         }
         renderer->SetDrawingColor(Color(1, 1, 1));
-        //std::cout << ray.GetScaledVector().Magnitude() << std::endl;
         renderer->DrawArrow(ray.GetStart(), ray.GetScaledVector());
     }
 
