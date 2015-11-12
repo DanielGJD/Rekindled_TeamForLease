@@ -41,6 +41,8 @@ namespace ForLeaseEngine {
     //input functions
     Point GetMousePosition();
     void VertexModeTasks();
+    void EdgeModeTasks();
+    void FaceModeTasks();
     void ClearAllSelections();
 
     enum Mode {
@@ -126,7 +128,7 @@ namespace ForLeaseEngine {
         case Mode::Edge:
             break;
         case Mode::Face:
-            VertexModeTasks();
+            FaceModeTasks();
             break;
         }
 
@@ -296,8 +298,8 @@ namespace ForLeaseEngine {
         ImGui::Text("Selected Faces: %d", SelectedFaces.size());
 
         // Some bs testing code
-        if(mesh->GetFaceCount() > 0) {
-            int faceIndex = 0;
+        if(SelectedFaces.size() > 0) {
+            int faceIndex = *SelectedFaces.begin();
             //Face face = mesh->GetFace(0);
             Color faceColor = mesh->GetFaceColor(faceIndex);
             float color[] = {faceColor.GetR(), faceColor.GetG(), faceColor.GetB(), faceColor.GetA()};
@@ -309,7 +311,9 @@ namespace ForLeaseEngine {
                 ImGui::SameLine(); ImGui::Button("MoveForward");
             }
             ImGui::ColorEdit4("Face Color", color);
-            mesh->SetFaceColor(color[0], color[1], color[2], color[3], faceIndex);
+            for(std::unordered_set<int>::iterator i = SelectedFaces.begin(); i != SelectedFaces.end(); ++i) {
+                mesh->SetFaceColor(color[0], color[1], color[2], color[3], *i);
+            }
         }
     }
 
@@ -356,7 +360,7 @@ namespace ForLeaseEngine {
 
     void VertexModeTasks() {
         // Mouse input
-        if(ImGui::IsMouseClicked(0) && !ImGui::IsMouseHoveringAnyWindow()) {
+        if(ImGui::IsMouseClicked(0) && !ImGui::IsMouseHoveringAnyWindow() && !Moving && !Rotating && !Scaling) {
             int index = mesh->GetVertexIndexNear(GetMousePosition());
             if(ImGui::GetIO().KeyShift) {
                 if(index >= 0) {
@@ -429,6 +433,28 @@ namespace ForLeaseEngine {
                 int v2 = *(i++);
                 int v3 = *i;
                 mesh->AddFace(v1, v2, v3, 0.5f, 0.5f, 0.5f, 1);
+            }
+        }
+    }
+
+    void FaceModeTasks() {
+        if(ImGui::IsMouseClicked(0) && !ImGui::IsMouseHoveringAnyWindow() && !Moving && !Rotating && !Scaling) {
+            int index = mesh->GetFaceIndexAt(GetMousePosition());
+            if(ImGui::GetIO().KeyShift) {
+                if(index >= 0) {
+                    std::unordered_set<int>::iterator i = SelectedFaces.find(index);
+                    if(i == SelectedFaces.end()) {
+                        SelectedFaces.insert(index);
+                    }
+                    else {
+                        SelectedFaces.erase(i);
+                    }
+                }
+            }
+            else {
+                SelectedFaces.clear();
+                if(index >= 0)
+                    SelectedFaces.insert(index);
             }
         }
     }

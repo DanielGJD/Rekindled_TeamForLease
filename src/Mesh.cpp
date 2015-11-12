@@ -14,6 +14,7 @@
 #include "Face.h"
 #include "Color.h"
 #include "Mesh.h"
+#include "HalfPlane.h"
 #include <sstream>
 #include <iostream>
 
@@ -668,5 +669,21 @@ namespace ForLeaseEngine {
             Index of the last top most face or -1 if not point not in the mesh
     */
     int Mesh::GetFaceIndexAt(const Point& location) {
+        int faceIndex = -1;
+        for(int i = 0; i < Faces.size(); ++i) {
+            Face face = GetFace(i);
+            HalfPlane hp1 = HalfPlane(face.Vertices[0], face.Vertices[1], face.Vertices[2]);
+            if(hp1.Dot(location) < 0) {
+                HalfPlane hp2 = HalfPlane(face.Vertices[1], face.Vertices[2], face.Vertices[0]);
+                if(hp2.Dot(location) < 0) {
+                    HalfPlane hp3 = HalfPlane(face.Vertices[2], face.Vertices[0], face.Vertices[1]);
+                    if(hp3.Dot(location) < 0) {
+                        faceIndex = i;
+                    }
+                }
+            }
+        }
+
+        return faceIndex;
     }
 }
