@@ -14,7 +14,7 @@
 
 namespace ForLeaseEngine {
     namespace Components {
-        class SoundEmitter : public Component, public Serializable {
+        class SoundEmitter : public Component {
             public:
                 static const ComponentType Type = ComponentType::SoundEmitter;
                 float Pitch;

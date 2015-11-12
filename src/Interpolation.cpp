@@ -13,7 +13,7 @@ namespace ForLeaseEngine {
     }
 
     float Interpolation::Logarithmic(float v1, float v2, float t) {
-        v1 + (v2 - v1) * log(t + 1) / log(2);
+        return v1 + (v2 - v1) * log(t + 1) / log(2);
     }
 
     float Interpolation::Trigonomentric(float v1, float v2, float t) {
@@ -23,7 +23,7 @@ namespace ForLeaseEngine {
     }
 
     float Interpolation::PowerIn(int power, float v1, float v2, float t) {
-        return v1 + (v2 - v1) * abs(pow(t - 1, power));
+        return v1 + (v2 - v1) * std::abs(pow(t - 1, power));
     }
 
     float Interpolation::PowerOut(int power, float v1, float v2, float t) {
