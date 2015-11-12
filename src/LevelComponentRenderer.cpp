@@ -319,6 +319,7 @@ namespace ForLeaseEngine {
 
         void Renderer::DrawPoint(const Point& point) {
             Point transformed = Projection * point;
+            //SetBlendMode(BlendMode::ALPHA);
             glPointSize(DebugPointSize);
             glBegin(GL_POINTS);
                 glVertex2f(transformed[0], transformed[1]);
