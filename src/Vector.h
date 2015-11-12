@@ -7,10 +7,16 @@
   \see Vector.cpp
 */
 
+#include <iostream>
+
 #ifndef VECTOR_H
 #define VECTOR_H
 
 namespace ForLeaseEngine {
+
+    const float Epsilon = 0.001f;
+    bool Near(float f1, float f2);
+
 	/*!
 	  \class Hcoord
 
@@ -29,6 +35,8 @@ namespace ForLeaseEngine {
 		void Print() const;
 		float& operator[](int i);
 		float operator[](int i) const;
+        Hcoord& operator=(const Hcoord& rhs);
+        friend std::ostream& operator<<(std::ostream& os, const Hcoord& hcoord);
 	};
 
 	/*!
@@ -51,6 +59,7 @@ namespace ForLeaseEngine {
         static Vector Rotate(Vector vec, float angle);
         Vector& operator+=(const Vector& rhs);
         Vector operator*(float rhs);
+        friend std::ostream& operator<<(std::ostream& os, const Vector& vector);
 	};
 
 	/*!
@@ -72,6 +81,9 @@ namespace ForLeaseEngine {
 		static float Distance(const Point& p1, const Point& p2);
 		static float DistanceSquared(const Point& p1, const Point& p2);
 		Point operator-();
+        static bool InBetween(const Point& p1, const Point& p2, const Point& q);
+        bool InBetween(const Point& p1, const Point& p2) const;
+        friend std::ostream& operator<<(std::ostream& os, const Point& point);
 	};
 }
 

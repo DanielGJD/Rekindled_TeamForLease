@@ -53,20 +53,19 @@ void SeanState::Load() {
     entityBox->AddComponent(new Components::Collision(*entityBox, 50, 50));
     entityBox->AddComponent(new Components::Physics(*entityBox));
 
-    entityBox->CreateArchetype("Box.arch");
+    //entityBox->CreateArchetype("Box.arch");
 
-    SpawnArchetype("Box.arch", Point(-100, 0), "Box1");
-    SpawnArchetype("Box.arch", Point(100, 100), "Box2");
-    SpawnArchetype("Box.arch");
+    //SpawnArchetype("Box.arch", Point(-100, 0), "Box1");
+    //SpawnArchetype("Box.arch", Point(100, 100), "Box2");
 
-    Entity* entityFloor = AddEntity("Floor");
-    entityFloor->AddComponent(new Components::Transform(*entityFloor, 0, -250, 250, 10, 0));
-    entityFloor->AddComponent(new Components::Model(*entityFloor, true, "BoxMesh.json", "", Color(0,1,1,1)));
-    entityFloor->AddComponent(new Components::Collision(*entityFloor, 500, 20));
+    //Entity* entityFloor = AddEntity("Floor");
+    //entityFloor->AddComponent(new Components::Transform(*entityFloor, 0, -250, 250, 10, 0));
+    //entityFloor->AddComponent(new Components::Model(*entityFloor, true, "BoxMesh.json", "", Color(0,1,1,1)));
+    //entityFloor->AddComponent(new Components::Collision(*entityFloor, 500, 20));
 
-    Entity* entityLight = AddEntity("Light");
-    entityLight->AddComponent(new Components::Transform(*entityLight, 0, 200, 0, 0, 0));
-    entityLight->AddComponent(new Components::Light(*entityLight, Vector(-1,-1), Vector(1,-1), 1000, 700));
+    //Entity* entityLight = AddEntity("Light");
+    //entityLight->AddComponent(new Components::Transform(*entityLight, Point(-10,10), 1, 1, -1, 0));
+    //entityLight->AddComponent(new Components::Light(*entityLight));
 
     Serializer serial2;
     Serialize(serial2);
@@ -107,12 +106,24 @@ void SeanState::Update() {
     }
 
     LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
+    
+    std::vector<Ray> rays;
+    rays.push_back(Ray(Point(0, 100), Vector(0,-1), 300));
+    rays.push_back(Ray(Point(0, -200), Vector(0, 1), 300));
+    rays.push_back(Ray(Point(0, 0), Vector(-1, -1), 300));
+    rays.push_back(Ray(Point(-100, -100), Vector(1, 0.5), 300));
+    rays.push_back(Ray(Point(100, -100), Vector(-1, -0.5), Ray::Unlimited));
 
-    Ray ray(Point(0, 100), Vector(0,-1), 700);
+    for (Ray ray : rays) {
+        for (Entity* entity : Entities) {
+            ray.IsColliding(entity);
+        }
+        renderer->SetDrawingColor(Color(1, 1, 1));
+        renderer->DrawArrow(ray.GetStart(), ray.GetScaledVector());
+    }
 
-    ray.IsColliding(GetEntityByName("Box"));
 
-//    renderer->DrawLine(ray.GetStart(), ray.GetScaledVector());
+    
 
     ForLease->GameWindow->UpdateGameWindow();
 

@@ -11,5 +11,7 @@ namespace ForLeaseEngine {
         os << rhs.EventName << ":" << std::endl
            << "Horizontal: " << rhs.Horizontal << std::endl
            << "Vertical: " << rhs.Vertical;
+
+        return os;
     }
 }

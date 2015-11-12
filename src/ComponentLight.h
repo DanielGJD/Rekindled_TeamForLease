@@ -32,16 +32,13 @@ namespace ForLeaseEngine {
             public:
                 static const ComponentType Type = ComponentType::Light;
                 virtual ComponentType GetType() { return Type; }
-                Light(Entity& owner, Vector start = Vector(-1,1),
-                    Vector end = Vector(1,1), unsigned additional = 100,
-                    float length = 500);
+                Light(Entity& owner, float sweep = 1, unsigned rays = 100);
                 void Update();
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
-                Vector Start;
-                Vector End;
-                float Length;
-                unsigned Additional;
+                Vector Direction;
+                float Sweep;
+                unsigned Rays;
             private:
                 Light() = delete;
         };

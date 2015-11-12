@@ -12,6 +12,10 @@
 #include <cmath>
 namespace ForLeaseEngine {
 
+    bool Near(float f1, float f2) {
+        return (-Epsilon <= f1 - f2) && (f1 - f2 <= Epsilon);
+    }
+
 	/*!
 	  \brief
 	    Default constructor for Hcoord
@@ -73,6 +77,18 @@ namespace ForLeaseEngine {
 	{
 		return *(&x + i);
 	}
+
+    Hcoord& Hcoord::operator=(const Hcoord& rhs) {
+        x = rhs.x;
+        y = rhs.y;
+        w = rhs.w;
+        return *this;
+    }
+
+    std::ostream& operator<<(std::ostream& os, const Hcoord& hcoord) {
+        os << "[" << hcoord.x << " " << hcoord.y << " " << hcoord.w << "]";
+        return os;
+    }
 
 	/*!
 	  \brief
@@ -239,6 +255,11 @@ namespace ForLeaseEngine {
 		return result;
 	}
 
+    std::ostream& operator<<(std::ostream& os, const Vector& vector) {
+        os << "<" << vector.x << "," << vector.y << ">";
+        return os;
+    }
+
     /*!
 	  \brief
 	    Displaces a point by a vector
@@ -273,4 +294,21 @@ namespace ForLeaseEngine {
 	float Point::DistanceSquared(const Point& p1, const Point& p2) {
         return (p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y);
 	}
+
+    bool Point::InBetween(const Point& p1, const Point& p2, const Point& q) {
+        float distOfTri = Point::Distance(p1, q) + Point::Distance(q, p2);
+        float distOfLine = Point::Distance(p1, p2);
+        float distDiff = distOfTri - distOfLine;
+
+        return -Epsilon < distDiff && distDiff < Epsilon;
+    }
+
+    bool Point::InBetween(const Point& p1, const Point& p2) const {
+        return Point::InBetween(p1, p2, *this);
+    }
+
+    std::ostream& operator<<(std::ostream& os, const Point& point) {
+        os << "(" << point.x << "," << point.y << ")";
+        return os;
+    }
 }
