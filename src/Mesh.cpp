@@ -607,4 +607,66 @@ namespace ForLeaseEngine {
 
         return FaceColors[index];
     }
+
+    /*!
+        \brief
+            Finds the index of the closest vertex in the mesh near a point within a given distance
+
+        \param location
+            Point to search near
+
+        \param distance
+            Max distance from location to accept
+
+        \return
+            Index of the closest vertex or -1 if no vertex near location
+
+    */
+    int Mesh::GetVertexIndexNear(const Point& location, float distance) {
+        if(Vertices.size() > 0) {
+            int closestIndex = -1;
+            float closestDistance = distance * distance;
+            for(int i = 0; i < Vertices.size(); ++i) {
+                float currentDistance = Point::DistanceSquared(location, Vertices[i]);
+                if(currentDistance < closestDistance) {
+                    closestDistance = currentDistance;
+                    closestIndex = i;
+                }
+            }
+
+            return closestIndex;
+        }
+
+        return -1;
+    }
+
+    /*!
+        \brief
+            Finds the index of the closest edge int the mesh near a point within a given distance
+
+        \param location
+            Point to search near
+
+        \param distance
+            Max distance from location to accept
+
+        \return
+            Index of the closest edge or -1 if no edge near location
+    */
+    int Mesh::GetEdgeIndexNear(const Point& location, float distance) {
+        return 0;
+    }
+
+    /*!
+        \brief
+            Finds the index of the top most face containing a location
+
+        \param location
+            Point to search at
+
+        \return
+            Index of the last top most face or -1 if not point not in the mesh
+    */
+    int Mesh::GetFaceIndexAt(const Point& location) {
+    }
 }

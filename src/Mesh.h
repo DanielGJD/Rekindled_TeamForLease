@@ -66,8 +66,8 @@ namespace ForLeaseEngine {
             void SetFaceColor(float r, float g, float b, float a, int index);
             Color GetFaceColor(int index) const;
 
-            int GetVertexIndexNear(const Point& location, float distance = 0.1);
-            int GetEdgeIndexNear(const Point& location, float distance = 0.1);
+            int GetVertexIndexNear(const Point& location, float distance = 0.03);
+            int GetEdgeIndexNear(const Point& location, float distance = 0.03);
             int GetFaceIndexAt(const Point& location);
         private:
             //! Center used for transformations

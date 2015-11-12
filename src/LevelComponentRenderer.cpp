@@ -45,6 +45,8 @@ namespace ForLeaseEngine {
             TextureSwapCount = 0;
             BlendModeSwapCount = 0;
             RenderTime = 0;
+            DebugPointSize = 1;
+            DebugLineWidth = 1;
         }
 
         void Renderer::Serialize(Serializer& root) {
@@ -166,6 +168,14 @@ namespace ForLeaseEngine {
             glColor4f(r, g, b, a);
         }
 
+        void Renderer::SetDebugPointSize(float size) {
+            DebugPointSize = size;
+        }
+
+        void Renderer::SetDebugLineWidth(float width) {
+            DebugLineWidth = width;
+        }
+
         void Renderer::SetBlendMode(BlendMode mode) {
             if(mode != BlendingMode) {
                 BlendingMode = mode;
@@ -266,6 +276,7 @@ namespace ForLeaseEngine {
             //ModelView = Matrix();
             SetBlendMode(BlendMode::NONE);
             Point vertices[] = {Projection * start, Projection * end};
+            glLineWidth(DebugLineWidth);
             glBegin(GL_LINES);
                 glVertex2f(vertices[0][0], vertices[0][1]);
                 glVertex2f(vertices[1][0], vertices[1][1]);
@@ -294,6 +305,7 @@ namespace ForLeaseEngine {
                 vertices[i] = Projection * vertices[i];
             }
 
+            glLineWidth(2);
             glBegin(GL_LINE_STRIP);
                 for(int i = 0; i < 5; ++i) {
                     glVertex2f(vertices[i][0], vertices[i][1]);
@@ -303,6 +315,14 @@ namespace ForLeaseEngine {
 
         void Renderer::DrawArrow(const Point& start, const Vector& end) {
             DrawArrow(start, start + end);
+        }
+
+        void Renderer::DrawPoint(const Point& point) {
+            Point transformed = Projection * point;
+            glPointSize(DebugPointSize);
+            glBegin(GL_POINTS);
+                glVertex2f(transformed[0], transformed[1]);
+            glEnd();
         }
 
         unsigned int Renderer::GetVertexCount() { return VertexCount; }

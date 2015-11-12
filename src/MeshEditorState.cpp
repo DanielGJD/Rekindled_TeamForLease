@@ -24,6 +24,7 @@
 namespace ForLeaseEngine {
     void LoadMesh();
 
+    // ImGui Stuff
     void DrawMainMenu();
     void DrawFileMenu();
     void NewMeshPopup();
@@ -33,7 +34,16 @@ namespace ForLeaseEngine {
     void EdgeModeWindow();
     void FaceModeWindow();
 
+    // Selection Rendering
+    void RenderSelections();
+
+    //input functions
+    Point GetMousePosition();
+    void VertexModeTasks();
+    void ClearAllSelections();
+
     enum Mode {
+        None,
         Vertex,
         Edge,
         Face
@@ -51,11 +61,21 @@ namespace ForLeaseEngine {
     static bool ShowNewPopup = false;
     static bool ShowOpenPopup = false;
     static bool MeshLoaded = false;
-    static Mode CurrentMode = Mode::Vertex;
+    static Mode CurrentMode = Mode::None;
 
     static std::unordered_set<int> SelectedVertices;
     static std::unordered_set<int> SelectedEdges;
     static std::unordered_set<int> SelectedFaces;
+
+    static std::unordered_map<int, Point> ShadowVertices;
+
+    static Point LastMousePos;
+    static Point CurrentMousePos;
+
+    static Point TranformOrigin;
+    static bool Moving;
+    static bool Rotating;
+    static bool Scaling;
 
     void MeshEditorState::Load() {
         if(!ImGui_ImplSdl_Init(ForLease->GameWindow->DangerousGetRawWindow())){
@@ -92,7 +112,23 @@ namespace ForLeaseEngine {
     }
 
     void MeshEditorState::Update() {
+        // Handle input
         ForLease->OSInput.ProcessAllInputWithImgui();
+
+        // Do Mode Tasks
+        switch(CurrentMode) {
+        case Mode::None:
+            break;
+        case Mode::Vertex:
+            VertexModeTasks();
+            break;
+        case Mode::Edge:
+            break;
+        case Mode::Face:
+            VertexModeTasks();
+            break;
+        }
+
         ImGui_ImplSdl_NewFrame(ForLease->GameWindow->DangerousGetRawWindow());
         DrawMainMenu();
         if(ShowNewPopup)
@@ -104,6 +140,7 @@ namespace ForLeaseEngine {
 
         timer += ForLease->FrameRateController().GetDt();
         render->Update(Entities);
+        RenderSelections();
         render->SetDrawingColor(1, 0, 0, 1);
         render->DrawRectangle(Point(0, 0), 2, 2, 0);
         ImGui::Render();
@@ -196,15 +233,24 @@ namespace ForLeaseEngine {
                                                           mesh->GetFaceCount());
         switch(mode) {
         case 0:
-            CurrentMode = Mode::Vertex;
+            if(CurrentMode != Mode::Vertex) {
+                CurrentMode = Mode::Vertex;
+                ClearAllSelections();
+            }
             VertexModeWindow();
             break;
         case 1:
-            CurrentMode = Mode::Edge;
+            if(CurrentMode != Mode::Edge) {
+                CurrentMode = Mode::Edge;
+                ClearAllSelections();
+            }
             EdgeModeWindow();
             break;
         case 2:
-            CurrentMode = Mode::Face;
+            if(CurrentMode != Mode::Face) {
+                CurrentMode = Mode::Face;
+                ClearAllSelections();
+            }
             FaceModeWindow();
             break;
         }
@@ -227,15 +273,99 @@ namespace ForLeaseEngine {
 
         // Some bs testing code
         if(mesh->GetFaceCount() > 0) {
-            int faceIndex = 0;
+            int faceIndex = 1;
             //Face face = mesh->GetFace(0);
-            //Color faceColor = mesh->GetFaceColor(0);
-            if(faceIndex > 1) {
-                ImGui::Button("MoveBack");
+            Color faceColor = mesh->GetFaceColor(faceIndex);
+            float color[] = {faceColor.GetR(), faceColor.GetG(), faceColor.GetB(), faceColor.GetA()};
+            ImGui::Spacing();
+            if(faceIndex > 0) {
+                ImGui::SameLine(); ImGui::Button("MoveBack");
             }
             if(faceIndex < mesh->GetFaceCount() - 1) {
-                ImGui::Button("MoveForward");
+                ImGui::SameLine(); ImGui::Button("MoveForward");
+            }
+            ImGui::ColorEdit4("Face Color", color);
+            mesh->SetFaceColor(color[0], color[1], color[2], color[3], faceIndex);
+        }
+    }
+
+    // Render selections
+    void RenderSelections() {
+        render->SetDrawingColor(Color(0, 0, 0, 1));
+        render->SetDebugLineWidth(4);
+        for(std::unordered_set<int>::iterator i = SelectedEdges.begin(); i != SelectedEdges.end(); ++i) {
+            IndexedEdge edge = mesh->GetIndexedEdge(*i);
+            render->DrawLine(mesh->GetVertex(edge.Indices[0]), mesh->GetVertex(edge.Indices[1]));
+        }
+
+        render->SetDrawingColor(Color(1, 1, 1, 1));
+        render->SetDebugPointSize(4);
+        for(std::unordered_set<int>::iterator i = SelectedVertices.begin(); i != SelectedVertices.end(); ++i) {
+            render->DrawPoint(mesh->GetVertex(*i));
+        }
+    }
+
+    void RenderShadowSelections() {
+        render->SetDrawingColor(Color(0, 0, 0, 0.5));
+        render->SetDebugLineWidth(4);
+        /*for(std::unordered_set<int>::iterator i = SelectedEdges.begin(); i != SelectedEdges.end(); ++i) {
+            IndexedEdge edge = mesh->GetIndexedEdge(*i);
+            render->DrawLine(mesh->GetVertex(edge.Indices[0]), mesh->GetVertex(edge.Indices[1]));
+        }*/
+
+        render->SetDrawingColor(Color(1, 1, 1, 0.5));
+        render->SetDebugPointSize(4);
+        for(std::unordered_set<int>::iterator i = SelectedVertices.begin(); i != SelectedVertices.end(); ++i) {
+            render->DrawPoint((*ShadowVertices.find(*i)).second);
+        }
+    }
+
+    // Input functions
+    Point GetMousePosition() {
+        ImVec2 screenLocation = ImGui::GetMousePos();
+        return render->ScreenToWorld(Point(screenLocation.x, ForLease->GameWindow->GetYResolution() - screenLocation.y));
+    }
+
+    void VertexModeTasks() {
+        // Mouse input
+        if(ImGui::IsMouseClicked(0) && !ImGui::IsMouseHoveringAnyWindow()) {
+            int index = mesh->GetVertexIndexNear(GetMousePosition());
+            if(ImGui::GetIO().KeyShift) {
+                if(index >= 0) {
+                    std::unordered_set<int>::iterator i = SelectedVertices.find(index);
+                    if(i == SelectedVertices.end()) {
+                        SelectedVertices.insert(index);
+                    }
+                    else {
+                        SelectedVertices.erase(i);
+                    }
+                }
+            }
+            else {
+                SelectedVertices.clear();
+                if(index >= 0)
+                    SelectedVertices.insert(index);
+            }
+        }
+
+        if(Moving) {
+
+        }
+
+        // Keyboard input
+        if(!ImGui::IsAnyItemActive()) {
+            if(ImGui::IsKeyPressed(Keys::M)) {
+                Moving = !Moving;
+                if(Moving) {
+                    LastMousePos = GetMousePosition();
+                }
             }
         }
     }
+
+    void ClearAllSelections() {
+            SelectedVertices.clear();
+            SelectedEdges.clear();
+            SelectedFaces.clear();
+        }
 }

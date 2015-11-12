@@ -32,6 +32,8 @@ namespace ForLeaseEngine {
                 void SetClearColor(const Color& color);
                 void SetDrawingColor(float r, float g, float b, float a = 1);
                 void SetDrawingColor(const Color& color);
+                void SetDebugPointSize(float size);
+                void SetDebugLineWidth(float width);
 
                 // For debug purposes, may be removed at any time, do not use
                 void DrawSprite(Components::Sprite* sprite);
@@ -48,6 +50,7 @@ namespace ForLeaseEngine {
                 void DrawArrow(const Point& start, const Point& end);
                 void DrawArrow(const Point& start, const Vector& displacement);
                 void DrawMesh(Mesh* mesh, bool drawEdges = false, bool drawVertices = false);
+                void DrawPoint(const Point& point);
 
                 // Debug stats
                 unsigned int GetVertexCount();
@@ -68,6 +71,9 @@ namespace ForLeaseEngine {
                 unsigned long CurrentCamera;
                 BlendMode BlendingMode;
                 GLuint CurrentTexture;
+
+                float DebugPointSize;
+                float DebugLineWidth;
 
                 // Debug info
                 unsigned int VertexCount;
