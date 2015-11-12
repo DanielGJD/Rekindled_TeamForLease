@@ -14,6 +14,8 @@
 #include "imgui.h"
 #include "Exception.h"
 #include "imgui_impl_sdl.h"
+#include "Face.h"
+#include "Edge.h"
 #include <vector>
 #include <iostream>
 #include <cmath>
@@ -222,5 +224,18 @@ namespace ForLeaseEngine {
     void FaceModeWindow() {
         ImGui::Spacing();
         ImGui::Text("Selected Faces: %d", SelectedFaces.size());
+
+        // Some bs testing code
+        if(mesh->GetFaceCount() > 0) {
+            int faceIndex = 0;
+            //Face face = mesh->GetFace(0);
+            //Color faceColor = mesh->GetFaceColor(0);
+            if(faceIndex > 1) {
+                ImGui::Button("MoveBack");
+            }
+            if(faceIndex < mesh->GetFaceCount() - 1) {
+                ImGui::Button("MoveForward");
+            }
+        }
     }
 }

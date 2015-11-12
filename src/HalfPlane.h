@@ -26,7 +26,7 @@ namespace ForLeaseEngine {
             Hcoord GetHcoord() const;
             Point GetAnchor() const;
             Vector GetNormal() const;
-            float Dot(Point& Q) const;
+            float Dot(const Point& Q) const;
         private:
             float Dot(const Hcoord& h, const Point& Q) const;
 

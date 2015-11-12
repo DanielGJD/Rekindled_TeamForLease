@@ -50,7 +50,7 @@ namespace ForLeaseEngine {
         return Normal;
     }
 
-    float HalfPlane::Dot(Point& Q) const {
+    float HalfPlane::Dot(const Point& Q) const {
         return Dot(GetHcoord(), Q);
     }
 

@@ -47,8 +47,6 @@ namespace ForLeaseEngine {
 
             void ClearData();
 
-            int GetVertexIndexNear(const Point& selection, float distance = 0.1);
-
             void SetCenter(const Point& newCenter);
             const Point& GetCenter() const;
             int GetVertexCount() const;
@@ -67,6 +65,10 @@ namespace ForLeaseEngine {
             void SetFaceColor(const Color& color, int index);
             void SetFaceColor(float r, float g, float b, float a, int index);
             Color GetFaceColor(int index) const;
+
+            int GetVertexIndexNear(const Point& location, float distance = 0.1);
+            int GetEdgeIndexNear(const Point& location, float distance = 0.1);
+            int GetFaceIndexAt(const Point& location);
         private:
             //! Center used for transformations
             Point Center;
