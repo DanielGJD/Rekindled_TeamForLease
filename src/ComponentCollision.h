@@ -27,7 +27,7 @@ namespace ForLeaseEngine {
             public:
                 static const ComponentType Type = ComponentType::Collision;
                 virtual ComponentType GetType() { return Type; }
-                Collision(Entity& owner, float width = 100, float height = 100, bool resolve = true);
+                Collision(Entity& owner, float width = 1, float height = 1, bool resolve = true);
                 void Update() {}
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
