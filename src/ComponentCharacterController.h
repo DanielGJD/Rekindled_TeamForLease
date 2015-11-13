@@ -11,6 +11,7 @@ namespace ForLeaseEngine {
         class CharacterController : public Component {
             public:
                 static const ComponentType Type = ComponentType::PlayerController;
+                virtual ComponentType GetType() { return Type; }
                 static CharacterController* Create(Entity& owner);
 
                 int RightKey;
