@@ -137,6 +137,8 @@ namespace ForLeaseEngine {
                 }
             }
             glFinish();
+            SetBlendMode(BlendMode::NONE);
+            SetTexture(NULL);
             RenderTime = renderTimer.GetTime();
         }
 
@@ -146,6 +148,10 @@ namespace ForLeaseEngine {
 
         void Renderer::SetCamera(long camera) {
             CurrentCamera = camera;
+        }
+
+        long Renderer::GetCameraID() {
+            return CurrentCamera;
         }
 
         void Renderer::SetClearColor(float r, float g, float b, float a) {
@@ -210,6 +216,10 @@ namespace ForLeaseEngine {
             SetBlendMode(BlendMode::ALPHA);
             std::string text = spriteText->Text;
             Font* font = ForLease->Resources.GetFont(spriteText->GetFont());
+            if(!font) {
+                std::cout << "Font " << spriteText->GetFont() << " not loaded" << std::endl;
+                return;
+            }
             float xMargin = position[0];
             Point currentDrawingLoc(position[0], position[1] - font->Base);
             for(unsigned int i = 0; i < text.length(); ++i) {

@@ -93,7 +93,6 @@ namespace ForLeaseEngine {
 
         render = new LevelComponents::Renderer(*this);
         render->SetClearColor(0, 0, 0.5f, 1);
-        ForLease->Resources.LoadFont("Arial.fnt");
 
         camera = AddEntity();
         camera->AddComponent(new Components::Transform(*camera, Point(0, 0.05f), 1, 1, 0));
@@ -189,6 +188,9 @@ namespace ForLeaseEngine {
                 Components::Model* workingModel = model->GetComponent<Components::Model>();
                 workingModel->ModelMesh = "";
                 workingModel->ModelTexture = "";
+                SelectedVertices.clear();
+                SelectedEdges.clear();
+                SelectedFaces.clear();
             }
             if(ImGui::MenuItem("Quit")) {
                 ForLease->GameStateManager().SetAction(Modules::StateAction::Quit);

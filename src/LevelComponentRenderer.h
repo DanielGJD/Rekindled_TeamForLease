@@ -28,6 +28,7 @@ namespace ForLeaseEngine {
                 void Update(std::vector<Entity*>& entities);
                 void SetCamera(const Entity& camera);
                 void SetCamera(long camera);
+                long GetCameraID();
                 void SetClearColor(float r, float g, float b, float a);
                 void SetClearColor(const Color& color);
                 void SetDrawingColor(float r, float g, float b, float a = 1);

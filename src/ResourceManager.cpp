@@ -52,6 +52,10 @@ namespace ForLeaseEngine {
         void ResourceManager::LoadFont(std::string fileName) {
             UnloadFont(fileName);
             std::ifstream fontFile(fileName, std::ios_base::in | std::ios_base::binary);
+            if(!fontFile.is_open()) {
+                std::cout << "Failed to open " << fileName << std::endl;
+                return;
+            }
             BmFont fontInfo;
             fontFile >> fontInfo;
             Font* font = new Font(fontInfo);
