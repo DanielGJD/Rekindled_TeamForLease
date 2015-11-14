@@ -19,7 +19,7 @@ void SeanState::Load() {
     FLE::LevelComponents::Renderer* renderer = new FLE::LevelComponents::Renderer(*this);
     FLE::Entity* camera = AddEntity("Camera");
     camera->AddComponent(new FLE::Components::Transform(*camera, FLE::Point(0,0), 1, 1, 0));
-    camera->AddComponent(new FLE::Components::Camera(*camera, 0, 1, 720));
+    camera->AddComponent(new FLE::Components::Camera(*camera, 0, 1, 50));
     renderer->SetCamera(*camera);
     AddLevelComponent(renderer);
     AddLevelComponent(new LevelComponents::Physics(*this, Vector(0,-10)));
@@ -48,9 +48,9 @@ void SeanState::Load() {
 
 
     FLE::Entity* entityBox = AddEntity("Box");
-    entityBox->AddComponent(new Components::Transform(*entityBox, 0, 0, 25, 25, 0));
+    entityBox->AddComponent(new Components::Transform(*entityBox, 0, 0, 1, 1, 0));
     entityBox->AddComponent(new Components::Model(*entityBox, true, "BoxMesh.json", "", Color(1,1,1,1)));
-    entityBox->AddComponent(new Components::Collision(*entityBox, 50, 50));
+    entityBox->AddComponent(new Components::Collision(*entityBox, 2, 2));
     entityBox->AddComponent(new Components::Physics(*entityBox));
 
     //entityBox->CreateArchetype("Box.arch");
@@ -92,6 +92,7 @@ void SeanState::Initialize() {
     Deserialize(serial);
 
     Health = 300;
+    ForLease->FrameRateController().TimeScaling(.1);
 }
 
 void SeanState::Update() {
@@ -108,11 +109,11 @@ void SeanState::Update() {
     LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
     
     std::vector<Ray> rays;
-    rays.push_back(Ray(Point(0, 100), Vector(0,-1), 300));
-    rays.push_back(Ray(Point(0, -200), Vector(0, 1), 300));
+    rays.push_back(Ray(Point(0, 1), Vector(0,-1), 300));
+    rays.push_back(Ray(Point(0, -2), Vector(0, 1), 300));
     rays.push_back(Ray(Point(0, 0), Vector(-1, -1), 300));
-    rays.push_back(Ray(Point(-100, -100), Vector(1, 0.5), 300));
-    rays.push_back(Ray(Point(100, -100), Vector(-1, -0.5), Ray::Unlimited));
+    rays.push_back(Ray(Point(-1, -1), Vector(1, 0.5), 300));
+    rays.push_back(Ray(Point(1, -1), Vector(-1, -0.5), Ray::Unlimited));
 
     for (Ray ray : rays) {
         for (Entity* entity : Entities) {
@@ -128,8 +129,8 @@ void SeanState::Update() {
     ForLease->GameWindow->UpdateGameWindow();
 
     --Health;
-    if (Health == 150) ForLease->FrameRateController().TimeScaling(.25);
-    if (Health == -150) ForLease->FrameRateController().TimeScaling(1);
+    //if (Health == 150) ForLease->FrameRateController().TimeScaling(.25);
+    //if (Health == -150) ForLease->FrameRateController().TimeScaling(1);
 //    if (Health <= 0) ForLease->GameStateManager().SetAction(Modules::StateAction::Restart);
 }
 
