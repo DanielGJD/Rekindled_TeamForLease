@@ -74,11 +74,12 @@ namespace ForLeaseEngine {
 
     static Point LastMousePos;
     static Point CurrentMousePos;
-
     static Point TransformOrigin;
     static bool Moving;
     static bool Rotating;
     static bool Scaling;
+
+    static int LastFaceSelected;
 
     void MeshEditorState::Load() {
         if(!ImGui_ImplSdl_Init(ForLease->GameWindow->DangerousGetRawWindow())){
@@ -301,26 +302,43 @@ namespace ForLeaseEngine {
 
         // Some bs testing code
         if(SelectedFaces.size() > 0) {
-            int faceIndex = *SelectedFaces.begin();
+            //int faceIndex = *SelectedFaces.begin();
             //Face face = mesh->GetFace(0);
-            Color faceColor = mesh->GetFaceColor(faceIndex);
+            Color faceColor = mesh->GetFaceColor(LastFaceSelected);
             float color[] = {faceColor.GetR(), faceColor.GetG(), faceColor.GetB(), faceColor.GetA()};
             ImGui::Spacing();
-            if(faceIndex > 0) {
-                ImGui::SameLine(); ImGui::Button("MoveBack");
+            if(SelectedFaces.size() == 1 && LastFaceSelected > 0) {
+                ImGui::SameLine();
+                if(ImGui::Button("MoveBack")) {
+
+                }
             }
-            if(faceIndex < mesh->GetFaceCount() - 1) {
+            if(SelectedFaces.size() == 1 && LastFaceSelected < mesh->GetFaceCount() - 1) {
                 ImGui::SameLine(); ImGui::Button("MoveForward");
             }
             ImGui::ColorEdit4("Face Color", color);
-            for(std::unordered_set<int>::iterator i = SelectedFaces.begin(); i != SelectedFaces.end(); ++i) {
-                mesh->SetFaceColor(color[0], color[1], color[2], color[3], *i);
+            if(color[0] != faceColor.GetR() || color[1] != faceColor.GetG() || color[2] != faceColor.GetB() || color[3] != faceColor.GetA()) {
+                for(std::unordered_set<int>::iterator i = SelectedFaces.begin(); i != SelectedFaces.end(); ++i) {
+                    mesh->SetFaceColor(color[0], color[1], color[2], color[3], *i);
+                }
             }
         }
     }
 
     // Render selections
     void RenderSelections() {
+        render->SetDrawingColor(0, 0, 0, 1);
+        render->SetDebugPointSize(8);
+        for(std::unordered_set<int>::iterator i = SelectedFaces.begin(); i != SelectedVertices.end(); ++i) {
+            IndexedFace face = mesh->GetIndexedFace(*i);
+            Point v1 = mesh->GetVertex(face.Indices[0]);
+            Point v2 = mesh->GetVertex(face.Indices[1]);
+            Point v3 = mesh->GetVertex(face.Indices[2]);
+            float x = (v1[0] + v2[0] + v3[0]) / 3;
+            float y = (v1[1] + v2[1] + v3[1]) / 3;
+            render->DrawPoint(Point(x, y));
+        }
+
         render->SetDrawingColor(Color(0, 0, 0, 1));
         render->SetDebugLineWidth(4);
         for(std::unordered_set<int>::iterator i = SelectedEdges.begin(); i != SelectedEdges.end(); ++i) {
@@ -446,10 +464,18 @@ namespace ForLeaseEngine {
                 if(index >= 0) {
                     std::unordered_set<int>::iterator i = SelectedFaces.find(index);
                     if(i == SelectedFaces.end()) {
+                        if(SelectedFaces.size() == 0)
+                            LastFaceSelected = index;
                         SelectedFaces.insert(index);
                     }
                     else {
+                        bool resetLastFace = false;
+                        if(index == LastFaceSelected)
+                            resetLastFace = true;
                         SelectedFaces.erase(i);
+                        std::unordered_set<int>::iterator j = SelectedFaces.begin();
+                        if(resetLastFace && j != SelectedFaces.end())
+                            LastFaceSelected = *j;
                     }
                 }
             }
@@ -457,6 +483,7 @@ namespace ForLeaseEngine {
                 SelectedFaces.clear();
                 if(index >= 0)
                     SelectedFaces.insert(index);
+                    LastFaceSelected = index;
             }
         }
     }
