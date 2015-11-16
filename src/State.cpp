@@ -181,6 +181,54 @@ namespace ForLeaseEngine {
 
     }
 
+    Entity* State::GetEntityAtPosition(Point position, bool throwOnFail) {
+        for (Entity* entity : Entities) {
+            if (!entity->HasComponent(ComponentType::Transform)) continue;
+
+            Components::Transform* transform = entity->GetComponent<Components::Transform>(true);
+            
+            if (position[0] > transform->Position[0] - transform->ScaleX / 2 &&
+                position[0] < transform->Position[0] + transform->ScaleX / 2 &&
+                position[1] > transform->Position[1] - transform->ScaleY / 2 &&
+                position[1] < transform->Position[1] + transform->ScaleY / 2)
+                return entity;
+        }
+
+        if (throwOnFail) {
+            std::stringstream ss;
+            ss << "No entity found at point " << position << ".";
+
+            throw EntityNotFoundException(0, ss.str());
+        }
+
+        else return 0;
+    }
+
+    std::vector<Entity *> State::GetEntitiesAtPosition(Point position, bool throwOnFail) {
+        std::vector<Entity *> entities;
+
+        for (Entity * entity : Entities) {
+            if (!entity->HasComponent(ComponentType::Transform)) continue;
+
+            Components::Transform* transform = entity->GetComponent<Components::Transform>(true);
+
+            if (position[0] > transform->Position[0] - transform->ScaleX / 2 &&
+                position[0] < transform->Position[0] + transform->ScaleX / 2 &&
+                position[1] > transform->Position[1] - transform->ScaleY / 2 &&
+                position[1] < transform->Position[1] + transform->ScaleY / 2)
+                entities.push_back(entity);
+        }
+
+        if (throwOnFail && entities.size() == 0) {
+            std::stringstream ss;
+            ss << "No entities found at point " << position << ".";
+
+            throw EntityNotFoundException(0, ss.str());
+        }
+
+        return entities;
+    }
+
     std::vector<Entity *>& State::GetAllEntities() {
         return Entities;
     }

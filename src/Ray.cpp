@@ -156,20 +156,4 @@ namespace ForLeaseEngine {
         return v1[0]*v2[1] - v1[1]*v2[0];
     }
 
-    bool LineSegmentsIntersect(Point p1, Vector v1, Point p2, Vector v2) {
-        /*float cross = Cross(v1, v2);
-
-        if (-v1.Epsilon < cross < v1.Epsilon) return false;
-        
-        float t1 = Cross((p2 - p1), Vector(v2[0] / cross, v2[1] / cross));
-        float t2 = Cross((p2 - p1), Vector(v1[0] / cross, v1[1] / cross));
-
-        if (t1 >= 0 && t1 <= 1 && t2 >= 0 && t2 <= 1)
-            return true;
-
-        return false;*/
-
-        return true;
-    }
-
 } // ForLeaseEngine

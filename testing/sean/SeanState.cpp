@@ -109,11 +109,11 @@ void SeanState::Update() {
     LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
     
     std::vector<Ray> rays;
-    rays.push_back(Ray(Point(0, 1), Vector(0,-1), 300));
-    rays.push_back(Ray(Point(0, -2), Vector(0, 1), 300));
-    rays.push_back(Ray(Point(0, 0), Vector(-1, -1), 300));
-    rays.push_back(Ray(Point(-1, -1), Vector(1, 0.5), 300));
-    rays.push_back(Ray(Point(1, -1), Vector(-1, -0.5), Ray::Unlimited));
+    rays.push_back(Ray(Point(1, 1), Vector(0,-1), 15));
+    rays.push_back(Ray(Point(-1.0, -1.0), Vector(0, 1), 15));
+    rays.push_back(Ray(Point(0, 0), Vector(-1, -1), 15));
+    rays.push_back(Ray(Point(-2, -2), Vector(1, 0.5), 15));
+    //rays.push_back(Ray(Point(2, -2), Vector(-1, -0.5), Ray::Unlimited));
 
     for (Ray ray : rays) {
         for (Entity* entity : Entities) {

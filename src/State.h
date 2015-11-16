@@ -47,6 +47,8 @@ namespace ForLeaseEngine {
             void DeleteAllEntities();
             Entity* GetEntityByID(long unsigned id, bool throwOnFail = false);
             Entity* GetEntityByName(std::string name, bool throwOnFail = false);
+            Entity* GetEntityAtPosition(Point position, bool throwOnFail = false);
+            std::vector<Entity *> GetEntitiesAtPosition(Point position, bool throwOnFail = false);
             std::vector<Entity *>& GetAllEntities();
 
             void DeleteAllLevelComponents();
