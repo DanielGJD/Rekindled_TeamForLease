@@ -187,10 +187,10 @@ namespace ForLeaseEngine {
 
             Components::Transform* transform = entity->GetComponent<Components::Transform>(true);
             
-            if (position[0] > transform->Position[0] - transform->ScaleX / 2 &&
-                position[0] < transform->Position[0] + transform->ScaleX / 2 &&
-                position[1] > transform->Position[1] - transform->ScaleY / 2 &&
-                position[1] < transform->Position[1] + transform->ScaleY / 2)
+            if (position[0] > transform->Position[0] - transform->ScaleX &&
+                position[0] < transform->Position[0] + transform->ScaleX &&
+                position[1] > transform->Position[1] - transform->ScaleY &&
+                position[1] < transform->Position[1] + transform->ScaleY)
                 return entity;
         }
 
@@ -212,10 +212,10 @@ namespace ForLeaseEngine {
 
             Components::Transform* transform = entity->GetComponent<Components::Transform>(true);
 
-            if (position[0] > transform->Position[0] - transform->ScaleX / 2 &&
-                position[0] < transform->Position[0] + transform->ScaleX / 2 &&
-                position[1] > transform->Position[1] - transform->ScaleY / 2 &&
-                position[1] < transform->Position[1] + transform->ScaleY / 2)
+            if (position[0] > transform->Position[0] - transform->ScaleX &&
+                position[0] < transform->Position[0] + transform->ScaleX &&
+                position[1] > transform->Position[1] - transform->ScaleY &&
+                position[1] < transform->Position[1] + transform->ScaleY)
                 entities.push_back(entity);
         }
 

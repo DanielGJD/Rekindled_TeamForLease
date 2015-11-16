@@ -97,7 +97,6 @@ void SeanState::Initialize() {
 
 void SeanState::Update() {
 
-
     for (FLE::Entity* entity : Entities) {
         entity->Update();
     }
@@ -123,8 +122,12 @@ void SeanState::Update() {
         renderer->DrawArrow(ray.GetStart(), ray.GetScaledVector());
     }
 
-
-    
+    renderer->DrawRectangleFilled(Point(0, -1), 0.2, 0.2);
+    Entity* entity = GetEntityAtPosition(Point(0,-1));
+    if (entity)
+        std::cout << entity->GetName() << std::endl;
+    else
+        std::cout << "No entity found." << std::endl;
 
     ForLease->GameWindow->UpdateGameWindow();
 
