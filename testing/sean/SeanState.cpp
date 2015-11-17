@@ -52,6 +52,10 @@ void SeanState::Load() {
     entityBox->AddComponent(new Components::Model(*entityBox, true, "BoxMesh.json", "", Color(1,1,1,1)));
     entityBox->AddComponent(new Components::Collision(*entityBox, 2, 2));
     entityBox->AddComponent(new Components::Physics(*entityBox, 1, Vector(0,10)));
+    Components::CharacterController* controller = Components::CharacterController::Create(*entityBox);
+    controller->JumpSpeed = 10;
+    controller->MoveSpeed = 10;
+    entityBox->AddComponent(controller);
 
     //entityBox->CreateArchetype("Box.arch");
 
@@ -96,6 +100,8 @@ void SeanState::Initialize() {
 }
 
 void SeanState::Update() {
+
+    ForLease->OSInput.ProcessAllInput();
 
     for (FLE::Entity* entity : Entities) {
         entity->Update();
