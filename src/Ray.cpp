@@ -40,6 +40,11 @@ namespace ForLeaseEngine {
         HalfPlane left(topLeft, botLeft, position);
         HalfPlane bot(botLeft, botRight, position);
 
+        if (right.Dot(Start) < 0 && bot.Dot(Start) < 0 && left.Dot(Start) < 0 && top.Dot(Start) < 0) {
+            Length = 0;
+            return true;
+        }
+
 
         //////////// DEBUG DRAWING //////////
         //LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
@@ -98,15 +103,12 @@ namespace ForLeaseEngine {
             if (Point::InBetween(botLeft, botRight, Start + Direction * Scale * interval.Start))
                 minDist = interval.Start;
 
-        if (right.Dot(Start) < 0 && bot.Dot(Start) < 0 && left.Dot(Start) < 0 && top.Dot(Start) < 0) {
-            Length = 0;
-            return true;
-        } else if (minDist > 0) {
+        if (minDist > 0 && Scale * minDist < Length) {
             Length = Scale * minDist;
             return true;
         }
         else {
-            Length = Unlimited;
+            //Length = Scale;
             return false;
         }
     }

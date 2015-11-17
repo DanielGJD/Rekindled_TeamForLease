@@ -51,17 +51,17 @@ void SeanState::Load() {
     entityBox->AddComponent(new Components::Transform(*entityBox, 0, 0, 1, 1, 0));
     entityBox->AddComponent(new Components::Model(*entityBox, true, "BoxMesh.json", "", Color(1,1,1,1)));
     entityBox->AddComponent(new Components::Collision(*entityBox, 2, 2));
-    entityBox->AddComponent(new Components::Physics(*entityBox));
+    entityBox->AddComponent(new Components::Physics(*entityBox, 1, Vector(0,10)));
 
     //entityBox->CreateArchetype("Box.arch");
 
     //SpawnArchetype("Box.arch", Point(-100, 0), "Box1");
     //SpawnArchetype("Box.arch", Point(100, 100), "Box2");
 
-    //Entity* entityFloor = AddEntity("Floor");
-    //entityFloor->AddComponent(new Components::Transform(*entityFloor, 0, -250, 250, 10, 0));
-    //entityFloor->AddComponent(new Components::Model(*entityFloor, true, "BoxMesh.json", "", Color(0,1,1,1)));
-    //entityFloor->AddComponent(new Components::Collision(*entityFloor, 500, 20));
+    Entity* entityFloor = AddEntity("Floor");
+    entityFloor->AddComponent(new Components::Transform(*entityFloor, 0, -10, 250, 1, 0));
+    entityFloor->AddComponent(new Components::Model(*entityFloor, true, "BoxMesh.json", "", Color(0,1,1,1)));
+    entityFloor->AddComponent(new Components::Collision(*entityFloor, 250, 2));
 
     //Entity* entityLight = AddEntity("Light");
     //entityLight->AddComponent(new Components::Transform(*entityLight, Point(-10,10), 1, 1, -1, 0));
@@ -92,7 +92,7 @@ void SeanState::Initialize() {
     Deserialize(serial);
 
     Health = 300;
-    ForLease->FrameRateController().TimeScaling(.1);
+    //ForLease->FrameRateController().TimeScaling(1);
 }
 
 void SeanState::Update() {
@@ -109,10 +109,10 @@ void SeanState::Update() {
     
     std::vector<Ray> rays;
     rays.push_back(Ray(Point(1, 1), Vector(0,-1), 15));
-    rays.push_back(Ray(Point(-1.0, -1.0), Vector(0, 1), 15));
+    rays.push_back(Ray(Point(-1, -1), Vector(0, 1), 15));
     rays.push_back(Ray(Point(0, 0), Vector(-1, -1), 15));
-    rays.push_back(Ray(Point(-2, -2), Vector(1, 0.5), 15));
-    //rays.push_back(Ray(Point(2, -2), Vector(-1, -0.5), Ray::Unlimited));
+    //rays.push_back(Ray(Point(-2, -2), Vector(1, 0.5), 15));
+    rays.push_back(Ray(Point(5, 5), Vector(1, 1), 15));
 
     for (Ray ray : rays) {
         for (Entity* entity : Entities) {
@@ -120,14 +120,22 @@ void SeanState::Update() {
         }
         renderer->SetDrawingColor(Color(1, 1, 1));
         renderer->DrawArrow(ray.GetStart(), ray.GetScaledVector());
+        renderer->DrawRectangle(ray.GetStart(),0.5,0.5);
     }
 
-    renderer->DrawRectangleFilled(Point(0, -1), 0.2, 0.2);
-    Entity* entity = GetEntityAtPosition(Point(0,-1));
-    if (entity)
-        std::cout << entity->GetName() << std::endl;
-    else
-        std::cout << "No entity found." << std::endl;
+    //for (Ray ray : rays) {
+    //    ray.IsColliding(GetEntityByName("Box"));
+    //    renderer->SetDrawingColor(Color(1, 1, 1));
+    //    renderer->DrawArrow(ray.GetStart(), ray.GetScaledVector());
+    //    renderer->DrawRectangle(ray.GetStart(),0.5,0.5);
+    //}
+
+    //renderer->DrawRectangleFilled(Point(0, -1), 0.2, 0.2);
+    //Entity* entity = GetEntityAtPosition(Point(0,-1));
+    //if (entity)
+    //    std::cout << entity->GetName() << std::endl;
+    //else
+    //    std::cout << "No entity found." << std::endl;
 
     ForLease->GameWindow->UpdateGameWindow();
 
