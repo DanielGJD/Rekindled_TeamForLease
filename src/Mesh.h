@@ -16,9 +16,13 @@
 #include "Edge.h"
 #include "Color.h"
 #include "Serializable.h"
+//#include "MeshAnimation.h"
 #include <vector>
+#include <unordered_map>
+#include <string>
 
 namespace ForLeaseEngine {
+    class MeshAnimation;
     /*!
         \class Mesh
 
@@ -69,6 +73,12 @@ namespace ForLeaseEngine {
             int GetVertexIndexNear(const Point& location, float distance = 0.03);
             int GetEdgeIndexNear(const Point& location, float distance = 0.03);
             int GetFaceIndexAt(const Point& location);
+
+            void CreateAnimation(std::string animationName);
+            void AddAnimation(MeshAnimation* animation);
+            MeshAnimation* GetAnimation(std::string animationName);
+            void DeleteAnimation(std::string animationName);
+            std::vector<std::string> GetAnimationNames();
         private:
             //! Center used for transformations
             Point Center;
@@ -88,6 +98,8 @@ namespace ForLeaseEngine {
             int EdgeCount;
             //! Number of faces
             int FaceCount;
+            //! Animations
+            std::unordered_map<std::string, MeshAnimation*> Animations;
 
             Mesh(Mesh& original) = delete;
             Mesh& operator=(Mesh& rhs) = delete;

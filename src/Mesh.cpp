@@ -15,6 +15,7 @@
 #include "Color.h"
 #include "Mesh.h"
 #include "HalfPlane.h"
+#include "MeshAnimation.h"
 #include <sstream>
 #include <iostream>
 
@@ -685,5 +686,80 @@ namespace ForLeaseEngine {
         }
 
         return faceIndex;
+    }
+
+    /*!
+        \brief
+            Creates an animation and adds it to the mesh
+
+        \param animationName
+            Name of the new animation
+    */
+    void Mesh::CreateAnimation(std::string animationName) {
+        if(Animations.find(animationName) == Animations.end())
+        {
+            MeshAnimation* animation = new MeshAnimation(this, animationName);
+            Animations.insert(std::make_pair(animationName, animation));
+        }
+    }
+
+    /*!
+        \brief
+            Adds an existing animation to the mesh, DO NOT USE: FOR TESTING ONLY
+
+        \param animation
+            Animation to add
+    */
+    void Mesh::AddAnimation(MeshAnimation* animation) {
+    }
+
+    /*!
+        \brief
+            Gets an animation from the mesh
+
+        \param animationName
+            Name of the animation to get
+
+        \return
+            The animation, NULL if not found
+    */
+    MeshAnimation* Mesh::GetAnimation(std::string animationName) {
+        std::unordered_map<std::string, MeshAnimation*>::iterator i = Animations.find(animationName);
+        if(i == Animations.end()) {
+            return NULL;
+        }
+
+        return (*i).second;
+    }
+
+    /*!
+        \brief
+            Deletes an animation from the mesh
+
+        \param animationName
+            Name of the animation to delete
+    */
+    void Mesh::DeleteAnimation(std::string animationName) {
+        std::unordered_map<std::string, MeshAnimation*>::iterator i = Animations.find(animationName);
+        if(i != Animations.end()) {
+            delete (*i).second;
+            Animations.erase(i);
+        }
+    }
+
+    /*!
+        \brief
+            Gets a collection of all animation names for the mesh file
+
+        \return
+            Collection of all animation names for the mesh file
+    */
+    std::vector<std::string> Mesh::GetAnimationNames() {
+        std::vector<std::string> names;
+        for(std::unordered_map<std::string, MeshAnimation*>::iterator i = Animations.begin(); i != Animations.end(); ++i) {
+            names.push_back((*i).first);
+        }
+
+        return names;
     }
 }
