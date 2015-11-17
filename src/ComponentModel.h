@@ -29,13 +29,23 @@ namespace ForLeaseEngine {
             public:
                 static const ComponentType Type = ComponentType::Model;
                 virtual ComponentType GetType() { return Type; }
-                Model(Entity& parent, bool visible, const std::string& mesh, const std::string& texture, Color color = Color(1, 1, 1, 1), BlendMode blend = BlendMode::NONE, bool drawEdges = false, bool drawVertices = false);
+                Model(Entity& parent, bool visible, const std::string& mesh,
+                      const std::string& texture, Color color = Color(1, 1, 1, 1),
+                      BlendMode blend = BlendMode::NONE, bool drawEdges = false,
+                      bool drawVertices = false, bool animationActive = false, float frameRate = 24.0f,
+                      unsigned int currentFrame = 0, std::string const& currentAnimation = "");
                 ~Model();
 
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
 
                 void Update();
+
+                void SetAnimation(std::string animation);
+                std::string const& GetAnimation();
+                void SetFrame(unsigned int frame);
+                unsigned int GetFrame();
+                float GetFrameTime();
 
                 //! If the model is visible
                 bool Visible;
@@ -47,9 +57,21 @@ namespace ForLeaseEngine {
                 Color ModelColor;
                 //! Blending mode to use for the model
                 BlendMode BlendingMode;
+                //! If edges should be drawn
                 bool DrawEdges;
+                //! If Vertices should be drawn
                 bool DrawVertices;
+                //! If the animation is active
+                bool AnimationActive;
+                //! Frame rate for animation
+                float FrameRate;
             private:
+                //! Current frame of animation
+                unsigned int CurrentFrame;
+                //! Current frame time
+                float FrameTime;
+                //! Current animation
+                std::string CurrentAnimation;
         };
     }
 }
