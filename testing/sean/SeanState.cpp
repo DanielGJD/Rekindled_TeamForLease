@@ -71,6 +71,7 @@ void SeanState::Load() {
     entityBox->AddComponent(new Components::Transform(*entityBox, 0, 0, 1, 1, 0));
     entityBox->AddComponent(new Components::Model(*entityBox, true, "TriMesh.json", "", Color(1,1,1,1)));
     entityBox->AddComponent(new Components::Collision(*entityBox, 2, 2));
+    entityBox->GetComponent<Components::Collision>()->Initialize();
     entityBox->AddComponent(new Components::Physics(*entityBox, 1, Vector(0,10)));
     Components::CharacterController* controller = Components::CharacterController::Create(*entityBox);
     controller->JumpSpeed = 10;
@@ -166,6 +167,7 @@ void SeanState::Update() {
     ForLease->GameWindow->UpdateGameWindow();
 
     --Health;
+    //std::cout << Health << std::endl;
     //if (Health == 150) ForLease->FrameRateController().TimeScaling(.25);
     //if (Health == -150) ForLease->FrameRateController().TimeScaling(1);
 //    if (Health <= 0) ForLease->GameStateManager().SetAction(Modules::StateAction::Restart);

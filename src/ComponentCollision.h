@@ -12,6 +12,7 @@
 
 #include "Component.h"
 #include "ComponentTransform.h"
+#include "Event.h"
 
 namespace ForLeaseEngine {
 
@@ -29,7 +30,7 @@ namespace ForLeaseEngine {
                 virtual ComponentType GetType() { return Type; }
                 Collision(Entity& owner, float width = 1, float height = 1, bool resolve = true);
                 void Initialize();
-                void Update() {}
+                void Update() {};
                 void OnCollide(const Event* e);
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);

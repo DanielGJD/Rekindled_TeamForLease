@@ -27,6 +27,7 @@ namespace ForLeaseEngine {
             ResolveCollisions(resolve) {}
 
         void Collision::Initialize() {
+            std::cout << Parent.GetName() << " collision init." << std::endl;
             ForLease->Dispatcher.Attach(NULL, this, "Collision", &Collision::OnCollide);
         }
 
