@@ -8,6 +8,9 @@
 */
 
 #include "ComponentCollision.h"
+#include "Engine.h"
+#include "Entity.h"
+#include "CollisionEvent.h"
 
 namespace ForLeaseEngine {
 
@@ -22,6 +25,15 @@ namespace ForLeaseEngine {
         Collision::Collision(Entity& owner, float width, float height, bool resolve)
             : Component(owner, ComponentType::Transform), Width(width), Height(height),
             ResolveCollisions(resolve) {}
+
+        void Collision::Initialize() {
+            ForLease->Dispatcher.Attach(NULL, this, "Collision", &Collision::OnCollide);
+        }
+
+        void Collision::OnCollide(const Event* e) {
+            const CollisionEvent* event = static_cast<const CollisionEvent *>(e);
+            std::cout << Parent.GetName() << " collided with " << event->Other->GetName() << std::endl;
+        }
 
         void Collision::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));

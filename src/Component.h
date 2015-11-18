@@ -65,6 +65,7 @@ namespace ForLeaseEngine {
             virtual void Serialize(Serializer& root);
             virtual void Deserialize(Serializer& root);
             ComponentType GetRequired();
+            virtual void Initialize() {};
             virtual void Update() = 0;
         protected:
             Entity& Parent;
