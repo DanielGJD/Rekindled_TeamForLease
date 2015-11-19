@@ -50,7 +50,7 @@ namespace ForLeaseEngine {
                 void DrawLine(const Point& start, const Vector& displacement);
                 void DrawArrow(const Point& start, const Point& end);
                 void DrawArrow(const Point& start, const Vector& displacement);
-                void DrawMesh(Mesh* mesh, bool drawEdges = false, bool drawVertices = false);
+                void DrawMesh(Mesh* mesh, bool drawEdges = false, bool drawVertices = false, std::string animationName = "", unsigned int frame = 0, float t = 0);
                 void DrawPoint(const Point& point);
 
                 // Debug stats

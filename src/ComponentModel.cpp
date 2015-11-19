@@ -36,12 +36,12 @@ namespace ForLeaseEngine {
         */
         Model::Model(Entity& parent, bool visible, const std::string& mesh,
                      const std::string& texture, Color color, BlendMode blend,
-                     bool drawEdges, bool drawVertices, bool animationActive, float frameRate,
+                     bool drawEdges, bool drawVertices, bool animationActive, bool looping, float frameRate,
                      unsigned int currentFrame, std::string const& currentAnimation)
                     : Component(parent, ComponentType::Transform),
                       Visible(visible), ModelMesh(mesh), ModelTexture(texture), ModelColor(color),
                       BlendingMode(blend), DrawEdges(drawEdges), DrawVertices(drawVertices),
-                      AnimationActive(animationActive), FrameRate(frameRate), CurrentFrame(currentFrame),
+                      AnimationActive(animationActive), Looping(looping), FrameRate(frameRate), CurrentFrame(currentFrame),
                       FrameTime(static_cast<float>(currentFrame) / frameRate), CurrentAnimation(currentAnimation){}
 
         /*!
@@ -85,12 +85,18 @@ namespace ForLeaseEngine {
             if(AnimationActive) {
                 FrameTime += ForLease->FrameRateController().GetDt();
                 unsigned int frameCount = ForLease->Resources.GetMesh(ModelMesh)->GetAnimation(CurrentAnimation)->GetFrameCount();
-                while(FrameTime >= frameCount / FrameRate) {
-                    FrameTime -= frameCount / FrameRate;
-                    std::cout << "Looped" << std::endl;
+                if(Looping) {
+                    while(FrameTime >= frameCount / FrameRate) {
+                        FrameTime -= frameCount / FrameRate;
+                    }
+                }
+                else {
+                    if(FrameTime >= (frameCount - 1) / FrameRate) {
+                        SetFrame(frameCount);
+                        AnimationActive = false;
+                    }
                 }
                 CurrentFrame = static_cast<int>(FrameTime * FrameRate);
-
             }
         }
 

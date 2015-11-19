@@ -29,10 +29,10 @@ namespace ForLeaseEngine {
             public:
                 static const ComponentType Type = ComponentType::Model;
                 virtual ComponentType GetType() { return Type; }
-                Model(Entity& parent, bool visible, const std::string& mesh,
-                      const std::string& texture, Color color = Color(1, 1, 1, 1),
+                Model(Entity& parent, bool visible = true, const std::string& mesh = "",
+                      const std::string& texture = "", Color color = Color(1, 1, 1, 1),
                       BlendMode blend = BlendMode::NONE, bool drawEdges = false,
-                      bool drawVertices = false, bool animationActive = false, float frameRate = 24.0f,
+                      bool drawVertices = false, bool animationActive = false, bool looping = false, float frameRate = 24.0f,
                       unsigned int currentFrame = 0, std::string const& currentAnimation = "");
                 ~Model();
 
@@ -63,6 +63,8 @@ namespace ForLeaseEngine {
                 bool DrawVertices;
                 //! If the animation is active
                 bool AnimationActive;
+                //! If the animation loops
+                bool Looping;
                 //! Frame rate for animation
                 float FrameRate;
             private:
