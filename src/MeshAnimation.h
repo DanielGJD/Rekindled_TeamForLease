@@ -3,13 +3,21 @@
 
 #include "Mesh.h"
 #include "Vector.h"
+#include "Serializable.h"
 #include <string>
 #include <vector>
 
 namespace ForLeaseEngine {
-    class MeshAnimation {
+    class MeshAnimation : public Serializable {
         public:
+            MeshAnimation();
             MeshAnimation(Mesh const* mesh, std::string name);
+            void Serialize(Serializer& root);
+            void Deserialize(Serializer& root);
+
+            void SetAnimationName(std::string const& name);
+            std::string const& GetAnimationName();
+
             void AddFrame();
             void InsertFrameBefore(unsigned int position);
             void InsertFrameAfter(unsigned int position);

@@ -711,6 +711,9 @@ namespace ForLeaseEngine {
             Animation to add
     */
     void Mesh::AddAnimation(MeshAnimation* animation) {
+        if(Animations.find(animation->GetAnimationName()) == Animations.end()) {
+            Animations.insert(std::make_pair(animation->GetAnimationName(), animation));
+        }
     }
 
     /*!
