@@ -84,7 +84,7 @@ namespace ForLeaseEngine {
         void Model::Update() {
             if(AnimationActive) {
                 FrameTime += ForLease->FrameRateController().GetDt();
-                unsigned int frameCount = ForLease->Resources.GetMesh(ModelMesh)->GetAnimation(CurrentAnimation)->GetFrameCount();
+                unsigned int frameCount = ForLease->Resources.GetMeshAnimation(CurrentAnimation)->GetFrameCount();
                 if(Looping) {
                     while(FrameTime >= frameCount / FrameRate) {
                         FrameTime -= frameCount / FrameRate;
@@ -133,7 +133,7 @@ namespace ForLeaseEngine {
         */
         void Model::SetFrame(unsigned int frame) {
             if(CurrentAnimation.compare("") != 0) {
-                unsigned int frameCount = ForLease->Resources.GetMesh(ModelMesh)->GetAnimation(CurrentAnimation)->GetFrameCount();
+                unsigned int frameCount = ForLease->Resources.GetMeshAnimation(CurrentAnimation)->GetFrameCount();
                 if(frame >= frameCount) {
                     CurrentFrame = frameCount - 1;
                 }

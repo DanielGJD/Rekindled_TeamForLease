@@ -390,7 +390,7 @@ namespace ForLeaseEngine {
         void Renderer::DrawMesh(Mesh* mesh, bool drawEdges, bool drawVertices, std::string animationName, unsigned int frame, float t) {
             Point* transformed = new Point[mesh->GetVertexCount()];
             if(animationName.compare("") != 0) {
-                MeshAnimation* animation = mesh->GetAnimation(animationName);
+                MeshAnimation* animation = ForLease->Resources.GetMeshAnimation(animationName);
                 for(int i = 0; i < mesh->GetVertexCount(); ++i) {
                     ModelToScreen(animation->InterpolateVertex(frame, i, t), transformed[i]);
                 }

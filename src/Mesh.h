@@ -18,7 +18,7 @@
 #include "Serializable.h"
 //#include "MeshAnimation.h"
 #include <vector>
-#include <unordered_map>
+#include <unordered_set>
 #include <string>
 
 namespace ForLeaseEngine {
@@ -74,10 +74,8 @@ namespace ForLeaseEngine {
             int GetEdgeIndexNear(const Point& location, float distance = 0.03);
             int GetFaceIndexAt(const Point& location);
 
-            void CreateAnimation(std::string animationName);
-            void AddAnimation(MeshAnimation* animation);
-            MeshAnimation* GetAnimation(std::string animationName);
-            void DeleteAnimation(std::string animationName);
+            void AddAnimation(std::string const& name);
+            void RemoveAnimation(std::string const& name);
             std::vector<std::string> GetAnimationNames();
         private:
             //! Center used for transformations
@@ -99,7 +97,7 @@ namespace ForLeaseEngine {
             //! Number of faces
             int FaceCount;
             //! Animations
-            std::unordered_map<std::string, MeshAnimation*> Animations;
+            std::unordered_set<std::string> Animations;
 
             Mesh(Mesh& original) = delete;
             Mesh& operator=(Mesh& rhs) = delete;

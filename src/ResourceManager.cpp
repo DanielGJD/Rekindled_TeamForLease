@@ -176,6 +176,38 @@ namespace ForLeaseEngine {
             }
         }
 
+        void ResourceManager::LoadMeshAnimation(std::string fileName) {
+            UnloadMeshAnimation(fileName);
+            MeshAnimation* animation = new MeshAnimation();
+            Serializer loader;
+            loader.ReadFile(fileName);
+            animation->Deserialize(loader);
+            MeshAnimations.insert(std::make_pair(fileName, animation));
+        }
+
+        MeshAnimation* ResourceManager::GetMeshAnimation(std::string fileName) {
+            std::unordered_map<std::string, MeshAnimation*>::iterator i = MeshAnimations.find(fileName);
+            if(i != MeshAnimations.end()) {
+                return (*i).second;
+            }
+
+            LoadMeshAnimation(fileName);
+            i = MeshAnimations.find(fileName);
+            if(i != MeshAnimations.end()) {
+                return (*i).second;
+            }
+
+            return NULL;
+        }
+
+        void ResourceManager::UnloadMeshAnimation(std::string fileName) {
+            std::unordered_map<std::string, MeshAnimation*>::iterator i = MeshAnimations.find(fileName);
+            if(i != MeshAnimations.end()) {
+                delete (*i).second;
+                MeshAnimations.erase(i);
+            }
+        }
+
         std::vector<std::string> ResourceManager::GetLoadedTextureNames() {
             std::vector<std::string> textureNames;
             for(std::unordered_map<std::string, Texture*>::iterator i = Textures.begin(); i != Textures.end(); ++i) {
@@ -198,6 +230,14 @@ namespace ForLeaseEngine {
                 meshNames.push_back(std::get<0>(*i));
             }
             return meshNames;
+        }
+
+        std::vector<std::string> ResourceManager::GetLoadedMeshAnimationNames() {
+            std::vector<std::string> meshAnimationNames;
+            for(std::unordered_map<std::string, MeshAnimation*>::iterator i = MeshAnimations.begin(); i != MeshAnimations.end(); ++i) {
+                meshAnimationNames.push_back((*i).first);
+            }
+            return meshAnimationNames;
         }
 
         std::ostream& operator<<(std::ostream& os, const ResourceManager& rhs) {

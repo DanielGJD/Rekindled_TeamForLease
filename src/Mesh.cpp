@@ -690,64 +690,26 @@ namespace ForLeaseEngine {
 
     /*!
         \brief
-            Creates an animation and adds it to the mesh
-
-        \param animationName
-            Name of the new animation
-    */
-    void Mesh::CreateAnimation(std::string animationName) {
-        if(Animations.find(animationName) == Animations.end())
-        {
-            MeshAnimation* animation = new MeshAnimation(this, animationName);
-            Animations.insert(std::make_pair(animationName, animation));
-        }
-    }
-
-    /*!
-        \brief
             Adds an existing animation to the mesh, DO NOT USE: FOR TESTING ONLY
 
-        \param animation
+        \param name
             Animation to add
     */
-    void Mesh::AddAnimation(MeshAnimation* animation) {
-        if(Animations.find(animation->GetAnimationName()) == Animations.end()) {
-            Animations.insert(std::make_pair(animation->GetAnimationName(), animation));
+    void Mesh::AddAnimation(std::string const& name) {
+        if(Animations.find(name) == Animations.end()) {
+            Animations.insert(name);
         }
-    }
-
-    /*!
-        \brief
-            Gets an animation from the mesh
-
-        \param animationName
-            Name of the animation to get
-
-        \return
-            The animation, NULL if not found
-    */
-    MeshAnimation* Mesh::GetAnimation(std::string animationName) {
-        std::unordered_map<std::string, MeshAnimation*>::iterator i = Animations.find(animationName);
-        if(i == Animations.end()) {
-            return NULL;
-        }
-
-        return (*i).second;
     }
 
     /*!
         \brief
             Deletes an animation from the mesh
 
-        \param animationName
+        \param name
             Name of the animation to delete
     */
-    void Mesh::DeleteAnimation(std::string animationName) {
-        std::unordered_map<std::string, MeshAnimation*>::iterator i = Animations.find(animationName);
-        if(i != Animations.end()) {
-            delete (*i).second;
-            Animations.erase(i);
-        }
+    void Mesh::RemoveAnimation(std::string const& name) {
+        Animations.erase(name);
     }
 
     /*!
@@ -759,8 +721,8 @@ namespace ForLeaseEngine {
     */
     std::vector<std::string> Mesh::GetAnimationNames() {
         std::vector<std::string> names;
-        for(std::unordered_map<std::string, MeshAnimation*>::iterator i = Animations.begin(); i != Animations.end(); ++i) {
-            names.push_back((*i).first);
+        for(std::unordered_set<std::string>::iterator i = Animations.begin(); i != Animations.end(); ++i) {
+            names.push_back(*i);
         }
 
         return names;
