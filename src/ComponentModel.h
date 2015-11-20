@@ -29,7 +29,11 @@ namespace ForLeaseEngine {
             public:
                 static const ComponentType Type = ComponentType::Model;
                 virtual ComponentType GetType() { return Type; }
-                Model(Entity& parent, bool visible, const std::string& mesh, const std::string& texture, Color color = Color(1, 1, 1, 1), BlendMode blend = BlendMode::NONE, bool drawEdges = false, bool drawVertices = false);
+                Model(Entity& parent, bool visible = true, bool flipX = false, bool flipY = false, const std::string& mesh = "",
+                      const std::string& texture = "", Color color = Color(1, 1, 1, 1),
+                      BlendMode blend = BlendMode::NONE, bool drawEdges = false,
+                      bool drawVertices = false, bool animationActive = false, bool looping = false, float frameRate = 24.0f,
+                      unsigned int currentFrame = 0, std::string const& currentAnimation = "");
                 ~Model();
 
                 void Serialize(Serializer& root);
@@ -37,8 +41,18 @@ namespace ForLeaseEngine {
 
                 void Update();
 
+                void SetAnimation(std::string animation);
+                std::string const& GetAnimation();
+                void SetFrame(unsigned int frame);
+                unsigned int GetFrame();
+                float GetFrameTime();
+
                 //! If the model is visible
                 bool Visible;
+                //! If the model should be flipped across y axis
+                bool FlipY;
+                //! If the model should be flipped across x axis
+                bool FlipX;
                 //! Mesh to use for the model
                 std::string ModelMesh;
                 //! Texture to apply to the mesh
@@ -47,9 +61,23 @@ namespace ForLeaseEngine {
                 Color ModelColor;
                 //! Blending mode to use for the model
                 BlendMode BlendingMode;
+                //! If edges should be drawn
                 bool DrawEdges;
+                //! If Vertices should be drawn
                 bool DrawVertices;
+                //! If the animation is active
+                bool AnimationActive;
+                //! If the animation loops
+                bool Looping;
+                //! Frame rate for animation
+                float FrameRate;
             private:
+                //! Current frame of animation
+                unsigned int CurrentFrame;
+                //! Current frame time
+                float FrameTime;
+                //! Current animation
+                std::string CurrentAnimation;
         };
     }
 }

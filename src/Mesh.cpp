@@ -15,6 +15,7 @@
 #include "Color.h"
 #include "Mesh.h"
 #include "HalfPlane.h"
+#include "MeshAnimation.h"
 #include <sstream>
 #include <iostream>
 
@@ -685,5 +686,45 @@ namespace ForLeaseEngine {
         }
 
         return faceIndex;
+    }
+
+    /*!
+        \brief
+            Adds an existing animation to the mesh, DO NOT USE: FOR TESTING ONLY
+
+        \param name
+            Animation to add
+    */
+    void Mesh::AddAnimation(std::string const& name) {
+        if(Animations.find(name) == Animations.end()) {
+            Animations.insert(name);
+        }
+    }
+
+    /*!
+        \brief
+            Deletes an animation from the mesh
+
+        \param name
+            Name of the animation to delete
+    */
+    void Mesh::RemoveAnimation(std::string const& name) {
+        Animations.erase(name);
+    }
+
+    /*!
+        \brief
+            Gets a collection of all animation names for the mesh file
+
+        \return
+            Collection of all animation names for the mesh file
+    */
+    std::vector<std::string> Mesh::GetAnimationNames() {
+        std::vector<std::string> names;
+        for(std::unordered_set<std::string>::iterator i = Animations.begin(); i != Animations.end(); ++i) {
+            names.push_back(*i);
+        }
+
+        return names;
     }
 }

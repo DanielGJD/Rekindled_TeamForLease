@@ -29,6 +29,7 @@
 #include "Serializable.h"
 #include "Serialize.h"
 #include "json-forwards.h"
+#include "MeshAnimation.h"
 //#include "ComponentSpriteText.h"
 
 namespace ForLeaseEngine {
@@ -116,16 +117,18 @@ namespace ForLeaseEngine {
                 }
                 if(entity->HasComponent(ComponentType::Model)) {
                     Components::Model* model = entity->GetComponent<Components::Model>();
-                    Components::Transform* transform = entity->GetComponent<Components::Transform>();
-                    if(model->ModelMesh.compare("")) {
-                        Mesh* mesh = ForLease->Resources.GetMesh(model->ModelMesh);
-                        SetBlendMode(model->BlendingMode);
-                        Point o;
-                        ModelView = Matrix::Translation(transform->Position) *
-                                    Matrix::Translation(mesh->GetCenter()) *
-                                    Matrix::RotationRad(transform->Rotation) * Matrix::Scale(transform->ScaleX, transform->ScaleY) *
-                                    Matrix::Translation(o - mesh->GetCenter());
-                        DrawMesh(mesh, model->DrawEdges, model->DrawVertices);
+                    if(model->Visible) {
+                        Components::Transform* transform = entity->GetComponent<Components::Transform>();
+                        if(model->ModelMesh.compare("")) {
+                            Mesh* mesh = ForLease->Resources.GetMesh(model->ModelMesh);
+                            SetBlendMode(model->BlendingMode);
+                            Point o;
+                            ModelView = Matrix::Translation(transform->Position) *
+                                        Matrix::Translation(mesh->GetCenter()) *
+                                        Matrix::RotationRad(transform->Rotation) * Matrix::Scale(transform->ScaleX * (model->FlipY? -1 : 1), transform->ScaleY * (model->FlipX? -1 : 1)) *
+                                        Matrix::Translation(o - mesh->GetCenter());
+                            DrawMesh(mesh, model->DrawEdges, model->DrawVertices, model->GetAnimation(), model->GetFrame(), model->GetFrameTime() * model->FrameRate - model->GetFrame());
+                        }
                     }
                 }
                 if(entity->HasComponent(ComponentType::SpriteText)) {
@@ -386,11 +389,20 @@ namespace ForLeaseEngine {
             TriCount += 2;
         }
 
-        void Renderer::DrawMesh(Mesh* mesh, bool drawEdges, bool drawVertices) {
+        void Renderer::DrawMesh(Mesh* mesh, bool drawEdges, bool drawVertices, std::string animationName, unsigned int frame, float t) {
             Point* transformed = new Point[mesh->GetVertexCount()];
-            for(int i = 0; i < mesh->GetVertexCount(); ++i) {
-                ModelToScreen(mesh->GetVertex(i), transformed[i]);
+            if(animationName.compare("") != 0) {
+                MeshAnimation* animation = ForLease->Resources.GetMeshAnimation(animationName);
+                for(int i = 0; i < mesh->GetVertexCount(); ++i) {
+                    ModelToScreen(animation->InterpolateVertex(frame, i, t), transformed[i]);
+                }
             }
+            else {
+                for(int i = 0; i < mesh->GetVertexCount(); ++i) {
+                    ModelToScreen(mesh->GetVertex(i), transformed[i]);
+                }
+            }
+
             glBegin(GL_TRIANGLES);
                 for(int i = 0; i < mesh->GetFaceCount(); ++i) {
                     IndexedFace face = mesh->GetIndexedFace(i);

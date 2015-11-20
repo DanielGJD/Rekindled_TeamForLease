@@ -10,6 +10,8 @@
 */
 
 #include "ComponentModel.h"
+#include "Engine.h"
+#include "MeshAnimation.h"
 
 namespace ForLeaseEngine {
     namespace Components {
@@ -32,9 +34,15 @@ namespace ForLeaseEngine {
             \param blend
                 Blend mode for model
         */
-        Model::Model(Entity& parent, bool visible, const std::string& mesh, const std::string& texture, Color color, BlendMode blend, bool drawEdges, bool drawVertices)
+        Model::Model(Entity& parent, bool visible, bool flipX, bool flipY, const std::string& mesh,
+                     const std::string& texture, Color color, BlendMode blend,
+                     bool drawEdges, bool drawVertices, bool animationActive, bool looping, float frameRate,
+                     unsigned int currentFrame, std::string const& currentAnimation)
                     : Component(parent, ComponentType::Transform),
-                      Visible(visible), ModelMesh(mesh), ModelTexture(texture), ModelColor(color), BlendingMode(blend), DrawEdges(drawEdges), DrawVertices(drawVertices) {}
+                      Visible(visible), FlipY(flipY), FlipX(flipX), ModelMesh(mesh), ModelTexture(texture), ModelColor(color),
+                      BlendingMode(blend), DrawEdges(drawEdges), DrawVertices(drawVertices),
+                      AnimationActive(animationActive), Looping(looping), FrameRate(frameRate), CurrentFrame(currentFrame),
+                      FrameTime(static_cast<float>(currentFrame) / frameRate), CurrentAnimation(currentAnimation){}
 
         /*!
             \brief
@@ -71,8 +79,91 @@ namespace ForLeaseEngine {
 
         /*!
             \brief
-                Updates model, no functionality
+                Updates model frame time
         */
-        void Model::Update() {}
+        void Model::Update() {
+            if(AnimationActive) {
+                FrameTime += ForLease->FrameRateController().GetDt();
+                unsigned int frameCount = ForLease->Resources.GetMeshAnimation(CurrentAnimation)->GetFrameCount();
+                if(Looping) {
+                    while(FrameTime >= frameCount / FrameRate) {
+                        FrameTime -= frameCount / FrameRate;
+                    }
+                }
+                else {
+                    if(FrameTime >= (frameCount - 1) / FrameRate) {
+                        SetFrame(frameCount);
+                        AnimationActive = false;
+                    }
+                }
+                CurrentFrame = static_cast<int>(FrameTime * FrameRate);
+            }
+        }
+
+        /*!
+            \brief
+                Sets the current animation
+
+            \param animation
+                Name of the animation to use
+        */
+        void Model::SetAnimation(std::string animation) {
+            FrameTime = 0;
+            CurrentFrame = 0;
+            CurrentAnimation = animation;
+        }
+
+        /*!
+            \brief
+                Gets the name of the current animation
+
+            \return
+                Name of the current animation
+        */
+        std::string const& Model::GetAnimation() {
+            return CurrentAnimation;
+        }
+
+        /*!
+            \brief
+                Sets the current frame
+
+            \param frame
+                Frame to go to
+        */
+        void Model::SetFrame(unsigned int frame) {
+            if(CurrentAnimation.compare("") != 0) {
+                unsigned int frameCount = ForLease->Resources.GetMeshAnimation(CurrentAnimation)->GetFrameCount();
+                if(frame >= frameCount) {
+                    CurrentFrame = frameCount - 1;
+                }
+                else {
+                    CurrentFrame = frame;
+                }
+                FrameTime = CurrentFrame / FrameRate;
+            }
+        }
+
+        /*!
+            \brief
+                Gets the current frame
+
+            \return
+                Current frame
+        */
+        unsigned int Model::GetFrame() {
+            return CurrentFrame;
+        }
+
+        /*!
+            \brief
+                Gets the current frame time
+
+            \return
+                Current frame time
+        */
+        float Model::GetFrameTime() {
+            return FrameTime;
+        }
     }
 }
