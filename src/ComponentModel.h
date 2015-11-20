@@ -29,7 +29,7 @@ namespace ForLeaseEngine {
             public:
                 static const ComponentType Type = ComponentType::Model;
                 virtual ComponentType GetType() { return Type; }
-                Model(Entity& parent, bool visible = true, const std::string& mesh = "",
+                Model(Entity& parent, bool visible = true, bool flipX = false, bool flipY = false, const std::string& mesh = "",
                       const std::string& texture = "", Color color = Color(1, 1, 1, 1),
                       BlendMode blend = BlendMode::NONE, bool drawEdges = false,
                       bool drawVertices = false, bool animationActive = false, bool looping = false, float frameRate = 24.0f,
@@ -49,6 +49,10 @@ namespace ForLeaseEngine {
 
                 //! If the model is visible
                 bool Visible;
+                //! If the model should be flipped across y axis
+                bool FlipY;
+                //! If the model should be flipped across x axis
+                bool FlipX;
                 //! Mesh to use for the model
                 std::string ModelMesh;
                 //! Texture to apply to the mesh

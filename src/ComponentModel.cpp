@@ -34,12 +34,12 @@ namespace ForLeaseEngine {
             \param blend
                 Blend mode for model
         */
-        Model::Model(Entity& parent, bool visible, const std::string& mesh,
+        Model::Model(Entity& parent, bool visible, bool flipX, bool flipY, const std::string& mesh,
                      const std::string& texture, Color color, BlendMode blend,
                      bool drawEdges, bool drawVertices, bool animationActive, bool looping, float frameRate,
                      unsigned int currentFrame, std::string const& currentAnimation)
                     : Component(parent, ComponentType::Transform),
-                      Visible(visible), ModelMesh(mesh), ModelTexture(texture), ModelColor(color),
+                      Visible(visible), FlipY(flipY), FlipX(flipX), ModelMesh(mesh), ModelTexture(texture), ModelColor(color),
                       BlendingMode(blend), DrawEdges(drawEdges), DrawVertices(drawVertices),
                       AnimationActive(animationActive), Looping(looping), FrameRate(frameRate), CurrentFrame(currentFrame),
                       FrameTime(static_cast<float>(currentFrame) / frameRate), CurrentAnimation(currentAnimation){}

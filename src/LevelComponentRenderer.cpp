@@ -117,16 +117,18 @@ namespace ForLeaseEngine {
                 }
                 if(entity->HasComponent(ComponentType::Model)) {
                     Components::Model* model = entity->GetComponent<Components::Model>();
-                    Components::Transform* transform = entity->GetComponent<Components::Transform>();
-                    if(model->ModelMesh.compare("")) {
-                        Mesh* mesh = ForLease->Resources.GetMesh(model->ModelMesh);
-                        SetBlendMode(model->BlendingMode);
-                        Point o;
-                        ModelView = Matrix::Translation(transform->Position) *
-                                    Matrix::Translation(mesh->GetCenter()) *
-                                    Matrix::RotationRad(transform->Rotation) * Matrix::Scale(transform->ScaleX, transform->ScaleY) *
-                                    Matrix::Translation(o - mesh->GetCenter());
-                        DrawMesh(mesh, model->DrawEdges, model->DrawVertices, model->GetAnimation(), model->GetFrame(), model->GetFrameTime() * model->FrameRate - model->GetFrame());
+                    if(model->Visible) {
+                        Components::Transform* transform = entity->GetComponent<Components::Transform>();
+                        if(model->ModelMesh.compare("")) {
+                            Mesh* mesh = ForLease->Resources.GetMesh(model->ModelMesh);
+                            SetBlendMode(model->BlendingMode);
+                            Point o;
+                            ModelView = Matrix::Translation(transform->Position) *
+                                        Matrix::Translation(mesh->GetCenter()) *
+                                        Matrix::RotationRad(transform->Rotation) * Matrix::Scale(transform->ScaleX * (model->FlipY? -1 : 1), transform->ScaleY * (model->FlipX? -1 : 1)) *
+                                        Matrix::Translation(o - mesh->GetCenter());
+                            DrawMesh(mesh, model->DrawEdges, model->DrawVertices, model->GetAnimation(), model->GetFrame(), model->GetFrameTime() * model->FrameRate - model->GetFrame());
+                        }
                     }
                 }
                 if(entity->HasComponent(ComponentType::SpriteText)) {
