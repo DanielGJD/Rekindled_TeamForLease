@@ -21,7 +21,7 @@ namespace ForLeaseEngine {
         to this entity to None.
     */
     Entity::Entity(std::string name)
-    : ID(++TotalEntities), ComponentMask(ComponentType::None) {
+    : ID(++TotalEntities), ComponentMask(ComponentType::None), Delete(false) {
         if (name != "")
             Name = name;
         else {

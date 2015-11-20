@@ -59,6 +59,8 @@ namespace ForLeaseEngine {
 
                 return 0;
             }
+
+            bool Delete;
         private:
             //! The ID of this Entity, to differentiate from other Entities.
             long unsigned ID;

@@ -47,25 +47,25 @@ void SeanState::Load() {
     serial.WriteFile("BoxMesh.json");
 
 
-    FLE::Entity* entityBox = AddEntity("Box");
-    entityBox->AddComponent(new Components::Transform(*entityBox, 0, 0, 1, 1, 0));
-    entityBox->AddComponent(new Components::Model(*entityBox, true, "BoxMesh.json", "", Color(1,1,1,1)));
-    entityBox->AddComponent(new Components::Collision(*entityBox, 2, 2));
-    entityBox->AddComponent(new Components::Physics(*entityBox, 1, Vector(0,10)));
-    Components::CharacterController* controller = Components::CharacterController::Create(*entityBox);
-    controller->JumpSpeed = 10;
-    controller->MoveSpeed = 10;
-    entityBox->AddComponent(controller);
+    //FLE::Entity* entityBox = AddEntity("Box");
+    //entityBox->AddComponent(new Components::Transform(*entityBox, 0, 0, 1, 1, 0));
+    //entityBox->AddComponent(new Components::Model(*entityBox, true, "BoxMesh.json", "", Color(1,1,1,1)));
+    //entityBox->AddComponent(new Components::Collision(*entityBox, 2, 2));
+    //entityBox->AddComponent(new Components::Physics(*entityBox, 1, Vector(0,10)));
+    //Components::CharacterController* controller = Components::CharacterController::Create(*entityBox);
+    //controller->JumpSpeed = 10;
+    //controller->MoveSpeed = 10;
+    //entityBox->AddComponent(controller);
 
-    //entityBox->CreateArchetype("Box.arch");
+    ////entityBox->CreateArchetype("Box.arch");
 
-    //SpawnArchetype("Box.arch", Point(-100, 0), "Box1");
-    //SpawnArchetype("Box.arch", Point(100, 100), "Box2");
+    ////SpawnArchetype("Box.arch", Point(-100, 0), "Box1");
+    ////SpawnArchetype("Box.arch", Point(100, 100), "Box2");
 
-    Entity* entityFloor = AddEntity("Floor");
-    entityFloor->AddComponent(new Components::Transform(*entityFloor, 0, -10, 250, 1, 0));
-    entityFloor->AddComponent(new Components::Model(*entityFloor, true, "BoxMesh.json", "", Color(0,1,1,1)));
-    entityFloor->AddComponent(new Components::Collision(*entityFloor, 250, 2));
+    //Entity* entityFloor = AddEntity("Floor");
+    //entityFloor->AddComponent(new Components::Transform(*entityFloor, 0, -10, 250, 1, 0));
+    //entityFloor->AddComponent(new Components::Model(*entityFloor, true, "BoxMesh.json", "", Color(0,1,1,1)));
+    //entityFloor->AddComponent(new Components::Collision(*entityFloor, 250, 2));
 
     //Entity* entityLight = AddEntity("Light");
     //entityLight->AddComponent(new Components::Transform(*entityLight, Point(-10,10), 1, 1, -1, 0));
