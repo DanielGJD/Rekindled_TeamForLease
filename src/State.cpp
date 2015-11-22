@@ -229,6 +229,33 @@ namespace ForLeaseEngine {
         return entities;
     }
 
+    Entity* State::GetEntityCollidingAtPoint(Point position, bool throwOnFail) {
+        LevelComponents::Collision* collision = GetLevelComponent<LevelComponents::Collision>();
+
+        if (!collision) {
+            if (throwOnFail) {
+                std::stringstream ss;
+                ss << "No entities found at point " << position << ".";
+                ss << "  This is because there is no collision level component attached.";
+
+                throw EntityNotFoundException(0, ss.str());
+            }
+
+            return 0;
+        }
+
+        Entity* entity = collision->GetEntityCollidingAtPoint(Entities, position);
+
+        if (!entity && throwOnFail) {
+            std::stringstream ss;
+            ss << "No entities found at point " << position << ".";
+
+            throw EntityNotFoundException(0, ss.str());
+        }
+
+        return entity;
+    }
+
     std::vector<Entity *>& State::GetAllEntities() {
         return Entities;
     }

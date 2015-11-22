@@ -8,6 +8,7 @@
 */
 
 #include "ComponentCollision.h"
+#include "LevelComponentRenderer.h"
 
 namespace ForLeaseEngine {
 
@@ -39,6 +40,12 @@ namespace ForLeaseEngine {
             collision.ReadFloat("Width", Width);
             collision.ReadBool("ResolveCollisions", ResolveCollisions);
             CollidedLastFrame = false;
+        }
+
+        void Collision::DebugDraw() {
+            LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true);
+            Components::Transform* transform = Parent.GetComponent<Components::Transform>(true);
+            renderer->DrawRectangle(transform->Position, Width, Height, transform->Rotation);
         }
     } // Components
 

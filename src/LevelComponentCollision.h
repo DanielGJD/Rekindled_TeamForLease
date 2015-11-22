@@ -38,6 +38,8 @@ namespace ForLeaseEngine {
                 void ResolveCollision(Entity* entity1, Entity* entity2);
                 void ResolveCollisionOneEntityOnly(Entity* toResolve, Entity* other);
 
+                Entity* GetEntityCollidingAtPoint(std::vector<Entity *>& entities, Point position);
+
                 virtual void Serialize(Serializer& root);
                 virtual void Deserialize(Serializer& root);
         };

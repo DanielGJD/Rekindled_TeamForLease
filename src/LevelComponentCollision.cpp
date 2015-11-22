@@ -11,6 +11,7 @@
 #include "ComponentsInclude.h"
 #include "Component.h"
 #include <cmath>
+#include "HalfPlane.h"
 
 namespace ForLeaseEngine {
 
@@ -71,6 +72,18 @@ namespace ForLeaseEngine {
             Point entity2Position = entity2->GetComponent<Components::Transform>()->Position;
             Components::Collision* entity1Collision = entity1->GetComponent<Components::Collision>();
             Components::Collision* entity2Collision = entity2->GetComponent<Components::Collision>();
+            bool collided =
+                  !(entity2Position[0] - entity2Collision->Width / 2 > entity1Position[0] + entity1Collision->Width / 2 ||
+                    entity2Position[0] + entity2Collision->Width / 2 < entity1Position[0] - entity1Collision->Width / 2 ||
+                    entity2Position[1] + entity2Collision->Height / 2 < entity1Position[1] - entity1Collision->Height / 2 ||
+                    entity2Position[1] - entity2Collision->Height / 2 > entity1Position[1] + entity1Collision->Height / 2);
+
+            if (!collided) return false;
+
+            entity1Collision->CollidedLastFrame = true;
+            entity2Collision->CollidedLastFrame = true;
+
+            return true;
 
 //            if (entity2Position[0] + entity2Collision->Width/2 > entity1Position[0] &&
 //                entity1Position[0] + entity1Collision->Width/2 > entity2Position[0] &&
@@ -92,10 +105,10 @@ namespace ForLeaseEngine {
 //            return (std::abs(entity1Position[0] - entity2Position[0]) * 2 < (entity1Collision->Width + entity2Collision->Width)) &&
 //                   (std::abs(entity1Position[1] - entity2Position[1]) * 2 < (entity1Collision->Height + entity2Collision->Height));
 
-            return !(entity2Position[0] - entity2Collision->Width / 2 > entity1Position[0] + entity1Collision->Width / 2 ||
+            /*return !(entity2Position[0] - entity2Collision->Width / 2 > entity1Position[0] + entity1Collision->Width / 2 ||
                      entity2Position[0] + entity2Collision->Width / 2 < entity1Position[0] - entity1Collision->Width / 2 ||
                      entity2Position[1] + entity2Collision->Height / 2 < entity1Position[1] - entity1Collision->Height / 2 ||
-                     entity2Position[1] - entity2Collision->Height / 2 > entity1Position[1] + entity1Collision->Height / 2);
+                     entity2Position[1] - entity2Collision->Height / 2 > entity1Position[1] + entity1Collision->Height / 2);*/
 
         }
 
@@ -162,6 +175,38 @@ namespace ForLeaseEngine {
             toResolveTransform->Position[1] -= toResolvePhysics->Velocity[1] * 2 * ForLease->FrameRateController().GetDt();
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             toResolvePhysics->Velocity[1] = 0;
+        }
+
+        /*!
+            Assumes bounding-box collisions.
+        */
+        Entity* Collision::GetEntityCollidingAtPoint(std::vector<Entity *>& entities, Point position) {
+            Components::Transform* transform;
+            Components::Collision* collision;
+            for (Entity* entity : entities) {
+                if (!entity->HasComponent(ComponentType::Transform)) continue;
+                if (!entity->HasComponent(ComponentType::Collision)) continue;
+                transform = entity->GetComponent<Components::Transform>();
+                collision = entity->GetComponent<Components::Collision>();
+
+                Point entPos = transform->Position;
+
+
+                Point topLeft(entPos[0] - collision->Width / 2, entPos[1] + collision->Height / 2);
+                Point topRight(entPos[0] + collision->Width / 2, entPos[1] + collision->Height / 2);
+                Point botRight(entPos[0] + collision->Width / 2, entPos[1] - collision->Height / 2);
+                Point botLeft(entPos[0] - collision->Width / 2, entPos[1] - collision->Height / 2);
+
+                HalfPlane top(topLeft, topRight, entPos);
+                HalfPlane right(topRight, botRight, entPos);
+                HalfPlane left(topLeft, botLeft, entPos);
+                HalfPlane bot(botLeft, botRight, entPos);
+
+                if (right.Dot(position) < 0 && bot.Dot(position) < 0 && left.Dot(position) < 0 && top.Dot(position) < 0)
+                    return entity;
+            }
+
+            return 0;
         }
 
         void Collision::Serialize(Serializer& root) {
