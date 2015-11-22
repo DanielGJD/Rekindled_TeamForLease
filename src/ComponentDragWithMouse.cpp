@@ -54,9 +54,6 @@ namespace ForLeaseEngine {
         }
 
         void DragWithMouse::OnMouseDown(Event const* e) {
-            if(!Active)
-                return;
-
             MouseButtonEvent const* mouse_e = static_cast<MouseButtonEvent const*>(e);
             if(mouse_e->Button == MouseButton::Left) {
                 State& state = ForLease->GameStateManager().CurrentState();
@@ -78,13 +75,15 @@ namespace ForLeaseEngine {
         }
 
         void DragWithMouse::OnMouseMove(Event const* e) {
-            MouseMotionEvent const* mouse_e = static_cast<MouseMotionEvent const*>(e);
+            if(Active) {
+                MouseMotionEvent const* mouse_e = static_cast<MouseMotionEvent const*>(e);
 
-            if(MouseDown) {
-                Components::Transform* trans = Parent.GetComponent<Components::Transform>();
-                Point old = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->ScreenToWorld(Point(mouse_e->X - mouse_e->RelativeX, mouse_e->Y - mouse_e->RelativeY));
-                Point current = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->ScreenToWorld(Point(mouse_e->X, mouse_e->Y));
-                trans->Position += current - old;
+                if(MouseDown) {
+                    Components::Transform* trans = Parent.GetComponent<Components::Transform>();
+                    Point old = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->ScreenToWorld(Point(mouse_e->X - mouse_e->RelativeX, mouse_e->Y - mouse_e->RelativeY));
+                    Point current = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->ScreenToWorld(Point(mouse_e->X, mouse_e->Y));
+                    trans->Position += current - old;
+                }
             }
         }
     }
