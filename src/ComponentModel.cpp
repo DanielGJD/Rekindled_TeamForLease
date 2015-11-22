@@ -54,19 +54,28 @@ namespace ForLeaseEngine {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer model = root.GetChild("Model");
             model.WriteBool("Visible", Visible);
+            model.WriteBool("FlipX", FlipX);
+            model.WriteBool("FlipY", FlipY);
             model.WriteString("Mesh", ModelMesh);
             model.WriteString("Texture", ModelTexture);
             ModelColor.Serialize(model);
             model.WriteInt("BlendingMode", BlendingMode);
-            model.WriteUint("Type", static_cast<unsigned>(Type));
             model.WriteBool("DrawEdges", DrawEdges);
             model.WriteBool("DrawVertices", DrawVertices);
+            model.WriteBool("AnimationActive", AnimationActive);
+            model.WriteBool("Looping", Looping);
+            model.WriteFloat("FrameRate", FrameRate);
+            model.WriteUint("CurrentFrame", CurrentFrame);
+            model.WriteUint("Type", static_cast<unsigned>(Type));
+            model.WriteString("CurrentAnimation", CurrentAnimation);
             root.Append(model, "Model");
         }
 
         void Model::Deserialize(Serializer& root) {
             Serializer model = root.GetChild("Model");
             model.ReadBool("Visible", Visible);
+            model.ReadBool("FlipX", FlipX);
+            model.ReadBool("FlipY", FlipY);
             model.ReadString("Mesh", ModelMesh);
             model.ReadString("Texture", ModelTexture);
             ModelColor.Deserialize(model);
@@ -75,6 +84,11 @@ namespace ForLeaseEngine {
             BlendingMode = static_cast<BlendMode>(blend);
             model.ReadBool("DrawEdges", DrawEdges);
             model.ReadBool("DrawVertices", DrawVertices);
+            model.ReadBool("AnimationActive", AnimationActive);
+            model.ReadBool("Looping", Looping);
+            model.ReadFloat("FrameRate", FrameRate);
+            model.ReadUint("CurrentFrame", CurrentFrame);
+            model.ReadString("CurrentAnimation", CurrentAnimation);
         }
 
         /*!

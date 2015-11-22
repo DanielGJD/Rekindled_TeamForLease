@@ -31,6 +31,7 @@ namespace ForLeaseEngine {
                 void Update() {}
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
+                void DebugDraw();
                 float Width;            //! Width of the collision box
                 float Height;           //! Height of the collision box
                 bool CollidedLastFrame; //! Whether or not the entity collided on the last frame.  This should be handled by an event.

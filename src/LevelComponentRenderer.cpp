@@ -9,8 +9,6 @@
     \see Renderer.h
 */
 #include <iostream>
-//#include <SDL_opengl.h>
-//#include <GL\GLU.h>
 #include <GL/gl.h>
 #include "Vector.h"
 #include "Matrix.h"
@@ -28,9 +26,8 @@
 #include "Exception.h"
 #include "Serializable.h"
 #include "Serialize.h"
-#include "json-forwards.h"
+//#include "json-forwards.h"
 #include "MeshAnimation.h"
-//#include "ComponentSpriteText.h"
 
 namespace ForLeaseEngine {
     namespace LevelComponents {
@@ -56,7 +53,7 @@ namespace ForLeaseEngine {
             Serializer clearColor = renderer.GetChild("ClearColor");
             ClearColor.Serialize(clearColor);
             renderer.Append(clearColor, "ClearColor");
-            renderer.WriteInt("CurrentCamera", static_cast<int>(CurrentCamera));
+            renderer.WriteUint("CurrentCamera", static_cast<unsigned int>(CurrentCamera));
             renderer.WriteUint("Type", static_cast<unsigned>(ComponentType::Renderer));
             root.Append(renderer, "Renderer");
         }
@@ -71,10 +68,10 @@ namespace ForLeaseEngine {
             clearColor.ReadFloat("A", a);
             std::cout << r << " " << g << " " << b << " " << a << std::endl;
             SetClearColor(r, g, b, a);
-            int cameraID;
-            renderer.ReadInt("CurrentCamera", cameraID);
+            unsigned int cameraID;
+            renderer.ReadUint("CurrentCamera", cameraID);
             CurrentCamera = cameraID;
-            std::cout << CurrentCamera << std::endl;
+            std::cout << "DESERIALIZED RENDERER WITH CAMERA ID " << CurrentCamera << std::endl;
         }
 
         void Renderer::Update(std::vector<Entity*>& entities) {
@@ -149,7 +146,7 @@ namespace ForLeaseEngine {
             CurrentCamera = camera.GetID();
         }
 
-        void Renderer::SetCamera(long camera) {
+        void Renderer::SetCamera(unsigned long camera) {
             CurrentCamera = camera;
         }
 
@@ -234,7 +231,6 @@ namespace ForLeaseEngine {
                     Glyph currentGlyph = font->GetGlyph(currentLetter);
                     Point glyphDrawingLoc;
                     glyphDrawingLoc[0] = currentDrawingLoc[0] + currentGlyph.Offset[0] * scaleX + currentGlyph.Width / 2 * scaleX;
-
                     glyphDrawingLoc[1] = currentDrawingLoc[1] - currentGlyph.Offset[1] * scaleY - currentGlyph.Height / 2 * scaleY;
                     SetModelView(glyphDrawingLoc, scaleX, scaleY, rotation);
                     DrawTextureRegion(&currentGlyph.Region);
@@ -353,7 +349,8 @@ namespace ForLeaseEngine {
         float Renderer::GetRenderTime() { return RenderTime; }
 
         Point Renderer::ScreenToWorld(const Point& point) {
-            Entity* cameraEntity = Owner.GetEntityByID(CurrentCamera);
+            State& state = ForLease->GameStateManager().CurrentState();
+            Entity* cameraEntity = state.GetEntityByID(CurrentCamera);
             return cameraEntity->GetComponent<Components::Camera>()->ScreenToWorld(point);
         }
 

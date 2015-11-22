@@ -39,7 +39,8 @@ namespace ForLeaseEngine {
         Renderer            = 1 <<  8,   //! Renderer
         Light               = 1 <<  9,   //! Light
         SoundEmitter        = 1 << 10,   //! Sound Emitter
-        Menu                = 1 << 11    //! Menu
+        DragWithMouse       = 1 << 11,   //! Item that can be dragged by the mouse
+        Menu                = 1 << 12    //! Menu
 
     };
 

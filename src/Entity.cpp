@@ -223,6 +223,8 @@ namespace ForLeaseEngine {
             case ComponentType::SoundEmitter:
                 component = new Components::SoundEmitter(entity);
                 break;
+            case ComponentType::DragWithMouse:
+                component = Components::DragWithMouse::Create(entity);
             default:
                 return 0;
         }
