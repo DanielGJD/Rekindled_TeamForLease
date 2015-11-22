@@ -22,9 +22,11 @@ namespace ForLeaseEngine {
             : Component(owner, ComponentType::Transform), UnfocusedScale(unfocusedScale),
               FocusedScale(focusedScale), Spacing(spacing), Active(active), LastActive(0) {
             if (Active) Activate();
+        }
 
-            ForLease->Dispatcher.Attach(NULL, this, "MouseMotion", &Menu::OnMouseMotion);
-            ForLease->Dispatcher.Attach(NULL, this, "MouseButtonDown", &Menu::OnMouseDown);
+        Menu::~Menu() {
+            ForLease->Dispatcher.Detach(this, "MouseMotion");
+            ForLease->Dispatcher.Detach(this, "MouseButtonDown");
         }
 
         void Menu::Update() {
@@ -63,6 +65,9 @@ namespace ForLeaseEngine {
         }
 
         void Menu::Activate() {
+            ForLease->Dispatcher.Attach(NULL, this, "MouseMotion", &Menu::OnMouseMotion);
+            ForLease->Dispatcher.Attach(NULL, this, "MouseButtonDown", &Menu::OnMouseDown);
+
             Active = true;
             State& currentState = ForLease->GameStateManager().CurrentState();
 
@@ -80,15 +85,19 @@ namespace ForLeaseEngine {
                 TextureRegion textureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
                 rep->GetComponent<Components::Sprite>(true)->SpriteSource.push_back(textureRegion);
                 rep->GetComponent<Components::Sprite>(true)->AnimationActive = false;
-                position += Spacing * UnfocusedScale * texture->GetHeight();
+                position += Spacing * FocusedScale * texture->GetHeight();
             }
         }
 
         void Menu::Deactivate() {
-            for (Entity* rep : Representations) {
-                ForLease->GameStateManager().CurrentState().DeleteEntity(rep->GetID());
+            if (Active) {
+                ForLease->Dispatcher.Detach(this, "MouseMotion");
+                ForLease->Dispatcher.Detach(this, "MouseButtonDown");
+
+                for (Entity* rep : Representations)
+                    ForLease->GameStateManager().CurrentState().DeleteEntity(rep->GetID());
+                Active = false;
             }
-            Active = false;
         }
 
         Entity* Menu::GetRepresentationAtPosition(Point position, bool throwOnFail) {

@@ -33,6 +33,7 @@ namespace ForLeaseEngine {
                 virtual ComponentType GetType() { return Type; }
 
                 Menu(Entity& owner, float unfocusedScale = 0.05, float focusedScale = 0.08, Vector spacing = Vector(0, -1), bool active = false);
+                ~Menu();
                 virtual void Update();
 
                 void OnMouseMotion(const Event* e);
