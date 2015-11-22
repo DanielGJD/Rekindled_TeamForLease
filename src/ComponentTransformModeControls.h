@@ -21,7 +21,8 @@ namespace ForLeaseEngine {
 
                 //void OnKeyDown(Event const* e);
                 void OnKeyUp(Event const* e);
-                void OnMouseDown(Event const* e);
+                //void OnMouseDown(Event const* e);
+                void OnMouseUp(Event const* e);
 
                 float SlowMotionSpeed;
                 float NormalSpeed;
