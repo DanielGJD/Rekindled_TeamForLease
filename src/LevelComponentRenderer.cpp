@@ -233,8 +233,9 @@ namespace ForLeaseEngine {
                 } else {
                     Glyph currentGlyph = font->GetGlyph(currentLetter);
                     Point glyphDrawingLoc;
-                    glyphDrawingLoc[0] = currentDrawingLoc[0] + currentGlyph.Offset[0] + currentGlyph.Width / 2 * scaleX;
-                    glyphDrawingLoc[1] = currentDrawingLoc[1] - currentGlyph.Offset[1] - currentGlyph.Height / 2 * scaleY;
+                    glyphDrawingLoc[0] = currentDrawingLoc[0] + currentGlyph.Offset[0] * scaleX + currentGlyph.Width / 2 * scaleX;
+
+                    glyphDrawingLoc[1] = currentDrawingLoc[1] - currentGlyph.Offset[1] * scaleY - currentGlyph.Height / 2 * scaleY;
                     SetModelView(glyphDrawingLoc, scaleX, scaleY, rotation);
                     DrawTextureRegion(&currentGlyph.Region);
                     //DrawRectangle(glyphDrawingLoc, currentGlyph.Region.GetWidth(), currentGlyph.Region.GetHeight());

@@ -1,4 +1,4 @@
-#include "SeanState.h"
+#include "SecondState.h"
 #include "ComponentsInclude.h"
 #include "ResourceManager.h"
 #include "Vector.h"
@@ -13,67 +13,67 @@
 namespace FLE = ForLeaseEngine;
 using namespace ForLeaseEngine;
 
-SeanState::SeanState() : State("Sean's State") {}
+SecondState::SecondState() : State("SecondState") {}
 
-void SeanState::Load() {
+void SecondState::Load() {
     FLE::LevelComponents::Renderer* renderer = new FLE::LevelComponents::Renderer(*this);
     FLE::Entity* camera = AddEntity("Camera");
-    camera->AddComponent(new FLE::Components::Transform(*camera, FLE::Point(0,0), 1, 1, 0));
+    camera->AddComponent(new FLE::Components::Transform(*camera, FLE::Point(0, 0), 1, 1, 0));
     camera->AddComponent(new FLE::Components::Camera(*camera, 0, 1, 50));
     renderer->SetCamera(*camera);
     AddLevelComponent(renderer);
-    AddLevelComponent(new LevelComponents::Physics(*this, Vector(0,-10)));
+    AddLevelComponent(new LevelComponents::Physics(*this, Vector(0, -10)));
     AddLevelComponent(new LevelComponents::Collision(*this));
 
     FLE::Mesh* box = new FLE::Mesh(4, 4, 2);
-    box->SetVertex(Point(-1,-1), 0);
-    box->SetVertex(Point(-1,1), 1);
-    box->SetVertex(Point(1,1), 2);
-    box->SetVertex(Point(1,-1), 3);
+    box->SetVertex(Point(-1, -1), 0);
+    box->SetVertex(Point(-1, 1), 1);
+    box->SetVertex(Point(1, 1), 2);
+    box->SetVertex(Point(1, -1), 3);
 
-    box->SetEdge(IndexedEdge(0,1), 0);
-    box->SetEdge(IndexedEdge(1,2), 1);
-    box->SetEdge(IndexedEdge(2,3), 2);
-    box->SetEdge(IndexedEdge(3,0), 3);
+    box->SetEdge(IndexedEdge(0, 1), 0);
+    box->SetEdge(IndexedEdge(1, 2), 1);
+    box->SetEdge(IndexedEdge(2, 3), 2);
+    box->SetEdge(IndexedEdge(3, 0), 3);
 
-    box->SetFace(IndexedFace(0,1,2), 0);
-    box->SetFace(IndexedFace(0,2,3), 1);
+    box->SetFace(IndexedFace(0, 1, 2), 0);
+    box->SetFace(IndexedFace(0, 2, 3), 1);
 
-    box->SetFaceColor(Color(1,0,0), 0);
-    box->SetFaceColor(Color(1,0,0), 1);
+    box->SetFaceColor(Color(1, 0, 0), 0);
+    box->SetFaceColor(Color(1, 0, 0), 1);
 
     Serializer serial;
     box->Serialize(serial);
     serial.WriteFile("BoxMesh.json");
 
 
-    //FLE::Entity* entityBox = AddEntity("Box");
-    //entityBox->AddComponent(new Components::Transform(*entityBox, 0, 0, 1, 1, 0));
-    //entityBox->AddComponent(new Components::Model(*entityBox, true, "BoxMesh.json", "", Color(1,1,1,1)));
-    //entityBox->AddComponent(new Components::Collision(*entityBox, 2, 2));
-    //entityBox->AddComponent(new Components::Physics(*entityBox, 1, Vector(0,10)));
-    //Components::CharacterController* controller = Components::CharacterController::Create(*entityBox);
-    //controller->JumpSpeed = 10;
-    //controller->MoveSpeed = 10;
-    //entityBox->AddComponent(controller);
+    FLE::Entity* entityBox = AddEntity("Box");
+    entityBox->AddComponent(new Components::Transform(*entityBox, 0, 0, 1, 1, 0));
+    entityBox->AddComponent(new Components::Model(*entityBox, true, false, false, "BoxMesh.json", "", Color(1,1,1,1)));
+    entityBox->AddComponent(new Components::Collision(*entityBox, 2, 2));
+    entityBox->AddComponent(new Components::Physics(*entityBox, 1, Vector(0,10)));
+    Components::CharacterController* controller = Components::CharacterController::Create(*entityBox);
+    controller->JumpSpeed = 10;
+    controller->MoveSpeed = 10;
+    entityBox->AddComponent(controller);
 
-    ////entityBox->CreateArchetype("Box.arch");
+    //entityBox->CreateArchetype("Box.arch");
 
-    ////SpawnArchetype("Box.arch", Point(-100, 0), "Box1");
-    ////SpawnArchetype("Box.arch", Point(100, 100), "Box2");
+    //SpawnArchetype("Box.arch", Point(-100, 0), "Box1");
+    //SpawnArchetype("Box.arch", Point(100, 100), "Box2");
 
-    //Entity* entityFloor = AddEntity("Floor");
-    //entityFloor->AddComponent(new Components::Transform(*entityFloor, 0, -10, 250, 1, 0));
-    //entityFloor->AddComponent(new Components::Model(*entityFloor, true, "BoxMesh.json", "", Color(0,1,1,1)));
-    //entityFloor->AddComponent(new Components::Collision(*entityFloor, 250, 2));
+    Entity* entityFloor = AddEntity("Floor");
+    entityFloor->AddComponent(new Components::Transform(*entityFloor, 0, -10, 250, 1, 0));
+    entityFloor->AddComponent(new Components::Model(*entityFloor, true, false, false, "BoxMesh.json", "", Color(0,1,1,1)));
+    entityFloor->AddComponent(new Components::Collision(*entityFloor, 250, 2));
 
-    //Entity* entityLight = AddEntity("Light");
-    //entityLight->AddComponent(new Components::Transform(*entityLight, Point(-10,10), 1, 1, -1, 0));
-    //entityLight->AddComponent(new Components::Light(*entityLight));
+    Entity* entityLight = AddEntity("Light");
+    entityLight->AddComponent(new Components::Transform(*entityLight, Point(-10,10), 1, 1, -1, 0));
+    entityLight->AddComponent(new Components::Light(*entityLight));
 
     Serializer serial2;
     Serialize(serial2);
-    serial2.WriteFile("StateTest.json");
+    serial2.WriteFile("SecondStateTest.json");
 
 
     ForLease->Resources.LoadMesh("BoxMesh.json");
@@ -85,23 +85,23 @@ void SeanState::Load() {
 
 
 
-//    Entity* entity = AddEntity();
-//    entity->AddComponent(new Components::Transform(*entity, Point(0,0), 100, 100, 0));
+    //    Entity* entity = AddEntity();
+    //    entity->AddComponent(new Components::Transform(*entity, Point(0,0), 100, 100, 0));
 
 }
 
-void SeanState::Initialize() {
+void SecondState::Initialize() {
     Serializer serial;
-    serial.ReadFile("StateTest.json");
+    serial.ReadFile("SecondStateTest.json");
     Deserialize(serial);
 
-    Entity* menu = AddEntity("Menu");
-    menu->AddComponent(new Components::Transform(*menu));
-    menu->AddComponent(new Components::Menu(*menu));
-    Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
-    menuComp->AddLoadLevel("HI", "SecondState");
-    menuComp->AddLoadLevel("YO", "SeanState");
-    menuComp->Activate();
+    //Entity* menu = AddEntity("Menu");
+    //menu->AddComponent(new Components::Transform(*menu));
+    //menu->AddComponent(new Components::Menu(*menu));
+    //Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
+    //menuComp->AddLoadLevel("HI", "SecondState");
+    //menuComp->AddLoadLevel("YO", "SecondState");
+    //menuComp->Activate();
 
     //AddLevelComponent(new LevelComponents::Menu(*this));
 
@@ -109,7 +109,7 @@ void SeanState::Initialize() {
     //ForLease->FrameRateController().TimeScaling(1);
 }
 
-void SeanState::Update() {
+void SecondState::Update() {
 
     ForLease->OSInput.ProcessAllInput();
 
@@ -128,7 +128,7 @@ void SeanState::Update() {
     //std::cout << "=========================================================" << std::endl;
 
     LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
-    
+
     //std::vector<Ray> rays;
     //rays.push_back(Ray(Point(1, 1), Vector(0,-1), 15));
     //rays.push_back(Ray(Point(-1, -1), Vector(0, 1), 15));
@@ -166,12 +166,12 @@ void SeanState::Update() {
     --Health;
     //if (Health == 150) ForLease->FrameRateController().TimeScaling(.25);
     //if (Health == -150) ForLease->FrameRateController().TimeScaling(1);
-//    if (Health <= 0) ForLease->GameStateManager().SetAction(Modules::StateAction::Restart);
+    //    if (Health <= 0) ForLease->GameStateManager().SetAction(Modules::StateAction::Restart);
 }
 
-void SeanState::Deinitialize() {
+void SecondState::Deinitialize() {
     DeleteAllEntities();
     DeleteAllLevelComponents();
 }
 
-void SeanState::Unload() {}
+void SecondState::Unload() {}

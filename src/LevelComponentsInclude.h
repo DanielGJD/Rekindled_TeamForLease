@@ -13,5 +13,6 @@
 #include "LevelComponentCollision.h"
 #include "LevelComponentPhysics.h"
 #include "LevelComponentRenderer.h"
+#include "LevelComponentMenu.h"
 
 #endif

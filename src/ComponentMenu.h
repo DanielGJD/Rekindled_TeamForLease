@@ -17,6 +17,9 @@
 #include "Serializable.h"
 #include "Serialize.h"
 #include "MenuItems.h"
+#include "Vector.h"
+#include "Event.h"
+#include "MouseMotionEvent.h"
 #include <string>
 
 namespace ForLeaseEngine {
@@ -29,11 +32,30 @@ namespace ForLeaseEngine {
                 static const ComponentType Type = ComponentType::Menu;
                 virtual ComponentType GetType() { return Type; }
 
+                Menu(Entity& owner, float unfocusedScale = 0.05, float focusedScale = 0.08, Vector spacing = Vector(0, -1), bool active = false);
+                virtual void Update();
+
+                void OnMouseMotion(const Event* e);
+                void OnMouseDown(const Event* e);
+
+                void Menu::AddLoadLevel(std::string text, std::string stateName);
+                void Activate();
+                void Deactivate();
+
+                Entity* GetRepresentationAtPosition(Point position, bool throwOnFail = false);
+
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
 
+                Vector Spacing;
+                float UnfocusedScale;
+                float FocusedScale;
+
             private:
-                std::vector<MenuItem> Items;
+                std::vector<Entity*> Representations;
+                std::vector<MenuItem*> Items;
+                Entity* LastActive;
+                bool Active;
 
         };
 

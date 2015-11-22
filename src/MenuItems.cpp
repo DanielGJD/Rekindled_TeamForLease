@@ -1,9 +1,20 @@
+/*!
+    \file   MenuItems.cpp
+    \author Sean McGeer
+    \date   11/20/15
+
+    \brief
+        Implements menu items.
+
+    \see MenuItems.h
+*/
+
 #include "MenuItems.h"
 #include "Engine.h"
 
 namespace ForLeaseEngine {
 
-    MenuItem::MenuItem(std::string text, MenuItemType type) : Text(text), Type(type) {}
+    MenuItem::MenuItem(MenuItemType type, std::string text) : Text(text), Type(type) {}
 
     void MenuItem::Serialize(Serializer& root) {
     }
@@ -14,9 +25,10 @@ namespace ForLeaseEngine {
     namespace MenuItems {
 
         LoadLevel::LoadLevel(std::string text, std::string stateName)
-            : MenuItem(text, MenuItemType::LoadLevel), StateName(stateName) {}
+            : MenuItem(MenuItemType::LoadLevel, text), StateName(stateName) {}
 
-        void LoadLevel::operator() () {
+        void LoadLevel::Action () {
+            std::cout << StateName << std::endl;
             ForLease->GameStateManager().SetState(StateName);
         }
 

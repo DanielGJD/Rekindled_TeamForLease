@@ -7,6 +7,7 @@
         Defines menu items.
 
     \see ComponentMenu.h
+    \see MenuItems.cpp
 */
 
 #ifndef MENU_ITEMS_H
@@ -24,9 +25,9 @@ namespace ForLeaseEngine {
 
     class MenuItem : public Serializable {
         public:
-            MenuItem(std::string text, MenuItemType type);
+            MenuItem(MenuItemType type, std::string text);
             std::string Text;
-            virtual void operator() () { }
+            virtual void Action() { }
             virtual void Serialize(Serializer& root);
             virtual void Deserialize(Serializer& root);
         private:
@@ -39,12 +40,11 @@ namespace ForLeaseEngine {
         class LoadLevel : public MenuItem {
             public:
                 LoadLevel(std::string text, std::string stateName);
-                virtual void operator() ();
+                virtual void Action();
 
                 virtual void Serialize(Serializer& root);
                 virtual void Deserialize(Serializer& root);
 
-            private:
                 std::string StateName;
         };
 
