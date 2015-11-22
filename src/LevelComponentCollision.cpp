@@ -168,7 +168,7 @@ namespace ForLeaseEngine {
         /*!
             Assumes bounding-box collisions.
         */
-        Entity* GetEntityCollidingAtPoint(std::vector<Entity *>& entities, Point position) {
+        Entity* Collision::GetEntityCollidingAtPoint(std::vector<Entity *>& entities, Point position) {
             Components::Transform* transform;
             Components::Collision* collision;
             for (Entity* entity : entities) {
