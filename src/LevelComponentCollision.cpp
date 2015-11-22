@@ -11,6 +11,7 @@
 #include "ComponentsInclude.h"
 #include "Component.h"
 #include <cmath>
+#include "HalfPlane.h"
 
 namespace ForLeaseEngine {
 
@@ -162,6 +163,38 @@ namespace ForLeaseEngine {
             toResolveTransform->Position[1] -= toResolvePhysics->Velocity[1] * 2 * ForLease->FrameRateController().GetDt();
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             toResolvePhysics->Velocity[1] = 0;
+        }
+
+        /*!
+            Assumes bounding-box collisions.
+        */
+        Entity* GetEntityCollidingAtPoint(std::vector<Entity *>& entities, Point position) {
+            Components::Transform* transform;
+            Components::Collision* collision;
+            for (Entity* entity : entities) {
+                if (!entity->HasComponent(ComponentType::Transform)) continue;
+                if (!entity->HasComponent(ComponentType::Collision)) continue;
+                transform = entity->GetComponent<Components::Transform>();
+                collision = entity->GetComponent<Components::Collision>();
+
+                Point entPos = transform->Position;
+
+
+                Point topLeft(entPos[0] - collision->Width / 2, entPos[1] + collision->Height / 2);
+                Point topRight(entPos[0] + collision->Width / 2, entPos[1] + collision->Height / 2);
+                Point botRight(entPos[0] + collision->Width / 2, entPos[1] - collision->Height / 2);
+                Point botLeft(entPos[0] - collision->Width / 2, entPos[1] - collision->Height / 2);
+
+                HalfPlane top(topLeft, topRight, entPos);
+                HalfPlane right(topRight, botRight, entPos);
+                HalfPlane left(topLeft, botLeft, entPos);
+                HalfPlane bot(botLeft, botRight, entPos);
+
+                if (right.Dot(position) < 0 && bot.Dot(position) < 0 && left.Dot(position) < 0 && top.Dot(position) < 0)
+                    return entity;
+            }
+
+            return 0;
         }
 
         void Collision::Serialize(Serializer& root) {

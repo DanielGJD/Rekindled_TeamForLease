@@ -49,6 +49,7 @@ namespace ForLeaseEngine {
             Entity* GetEntityByName(std::string name, bool throwOnFail = false);
             Entity* GetEntityAtPosition(Point position, bool throwOnFail = false);
             std::vector<Entity *> GetEntitiesAtPosition(Point position, bool throwOnFail = false);
+            Entity* GetEntityCollidingAtPoint(Point position, bool throwOnFail = false);
             std::vector<Entity *>& GetAllEntities();
 
             void DeleteAllLevelComponents();
