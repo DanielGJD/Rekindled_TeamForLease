@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentTransformModeControls.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a component for switching between the two gameplay modes
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "ComponentTransformModeControls.h"
 #include "Keys.h"
 #include "Engine.h"

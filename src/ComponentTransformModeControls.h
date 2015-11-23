@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentTransformModeControls.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a component for switching between the two game modes
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef TRANSFORM_MODE_CONTROLS_H
 #define TRANSFORM_MODE_CONTROLS_H
 

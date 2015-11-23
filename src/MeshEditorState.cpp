@@ -1,3 +1,13 @@
+/*!
+    \file   MeshEditorState.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines the state for the mesh editor
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "MeshEditorState.h"
 #include <string>
 #include "Entity.h"

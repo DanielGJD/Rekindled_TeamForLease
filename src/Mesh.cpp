@@ -4,7 +4,9 @@
     \date   10/03/15
 
     \brief
-        Defines classes to hold data about a triangular face
+        Defines classes to hold data about a triangular mesh.  Contains vertex, uv, edge, face, and face color data.
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 
     \see Mesh.h
 */

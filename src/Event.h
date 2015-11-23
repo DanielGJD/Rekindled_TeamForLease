@@ -5,6 +5,8 @@
 
     \brief
         Defines the base event class
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 #ifndef EVENT_H
 #define EVENT_H

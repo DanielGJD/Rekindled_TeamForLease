@@ -1,3 +1,13 @@
+/*!
+    \file   ScaleWithKeyboard.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a component for scaling an object with the keyboard
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef SCALE_WITH_KEYBOARD_H
 #define SCALE_WITH_KEYBOARD_H
 

@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentSprite.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a component for an animated sprite
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "ComponentSprite.h"
 #include "Engine.h"
 #include "TextureRegion.h"

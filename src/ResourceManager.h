@@ -1,3 +1,13 @@
+/*!
+    \file   ResourceManager.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a class to manage all resources used by the engine
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef RESOURCE_MANAGER_H
 #define RESOURCE_MANAGER_H
 

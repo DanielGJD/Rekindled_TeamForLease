@@ -4,9 +4,9 @@
     \date   09/22/15
 
     \brief
-        Defines a class that draws things to the screen
+        Defines a class that stores a callback function, for use with the event dispatcher
 
-    \see Listener.cpp
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef LISTENER_H

@@ -4,7 +4,9 @@
     \date   09/22/15
 
     \brief
-        Defines key codes and key states
+        Defines key codes and key states, a direct mapping to SDL key key codes.
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef KEYS_H

@@ -4,10 +4,11 @@
     \date   09/19/15
 
     \brief
-        Implementation of a class that handles the creation of a window and
-        rendering context
+        Implementation of a classes defining an edge and an edge in an indexed vertex list
 
     \see Edge.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "Edge.h"

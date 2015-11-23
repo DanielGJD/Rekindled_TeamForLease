@@ -7,6 +7,8 @@
         Implementation of a class that handles the creation of a window and
         rendering context
 
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+
     \see Window.h
 */
 #include <iostream>

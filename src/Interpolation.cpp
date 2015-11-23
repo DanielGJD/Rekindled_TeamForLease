@@ -1,3 +1,13 @@
+/*!
+    \file   Interpolation.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines functions for different types of interpolation
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "Interpolation.h"
 #include <cmath>
 

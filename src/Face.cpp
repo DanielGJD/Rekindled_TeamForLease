@@ -4,8 +4,9 @@
     \date   09/19/15
 
     \brief
-        Implementation of a class that handles the creation of a window and
-        rendering context
+        Implementation of classes that define a triangular face and a triangular face in an indexed vertex list
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 
     \see Face.h
 */

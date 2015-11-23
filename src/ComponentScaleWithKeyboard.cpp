@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentScaleWithKeyboard.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a component to allow scaling an object with the keyboard
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "ComponentScaleWithKeyboard.h"
 #include "Keys.h"
 #include "Engine.h"

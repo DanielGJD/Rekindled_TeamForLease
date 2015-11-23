@@ -1,3 +1,13 @@
+/*!
+    \file   MouseWheelEvent.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a class containing information on mouse wheel events
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef MOUSE_WHEEL_EVENT_H
 #define MOUSE_WHEEL_EVENT_H
 

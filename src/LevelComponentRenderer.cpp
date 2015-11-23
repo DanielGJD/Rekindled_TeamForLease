@@ -6,6 +6,8 @@
     \brief
         Defines a class to render things to the screen, internals will change a lot but functions should remain the same
 
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+
     \see Renderer.h
 */
 #include <iostream>

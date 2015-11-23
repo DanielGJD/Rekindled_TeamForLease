@@ -7,6 +7,8 @@
         Implementation of a class to dispatch events to registered listeners
 
     \see EventDispatcher.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 #include <deque>
 #include <unordered_map>

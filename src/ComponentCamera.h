@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentCamera.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a class representing a rendering area
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef COMPONENTCAMERA_H
 #define COMPONENTCAMERA_H
 

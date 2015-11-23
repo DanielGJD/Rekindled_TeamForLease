@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentCharacterController.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a component for controlling the main character
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef CHARACTER_CONTROLLER_H
 #define CHARACTER_CONTROLLER_H
 

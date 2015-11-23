@@ -6,6 +6,8 @@
     \brief
         Defines classes to hold data about an edge
 
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+
     \see Edge.cpp
 */
 

@@ -7,6 +7,8 @@
         Implementation of a base class for all exceptions
 
     \see Exception.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 #include "Exception.h"
 

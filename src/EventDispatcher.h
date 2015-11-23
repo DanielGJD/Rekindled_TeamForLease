@@ -6,7 +6,7 @@
     \brief
         Defines a class that dispatches events to registered listeners
 
-    \see EventDispatcher.cpp
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 #ifndef EVENTDISPATCHER_H
 #define EVENTDISPATCHER_H

@@ -1,12 +1,14 @@
 /*!
     \file   ComponentModel.cpp
     \author Christopher Hudson
-    \date   09/12/15
+    \date   11/21/15
 
     \brief
         Implementation of a class that stores data on a model
 
     \see ComponentModel.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "ComponentModel.h"

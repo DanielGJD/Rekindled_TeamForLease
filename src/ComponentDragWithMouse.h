@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentDragWithMouse.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a component for dragging an object with the mouse
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef DRAG_WITH_MOUSE_H
 #define DRAG_WITH_MOUSE_H
 

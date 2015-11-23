@@ -1,3 +1,13 @@
+/*!
+    \file   ResourceManager.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a class that manages all resources used by the engine
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "ResourceManager.h"
 #include "Exception.h"
 #include "GL/gl.h"

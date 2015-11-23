@@ -6,6 +6,8 @@
     \brief
         Implementation of an exception for graphics errors
 
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+
     \see GraphicsException.h
 */
 #include <string>

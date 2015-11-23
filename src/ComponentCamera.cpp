@@ -1,3 +1,12 @@
+/*!
+    \file   ComponentCamera.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a camera representing a clipping rectangle for rendering
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
 #include "ComponentCamera.h"
 #include "Serializable.h"
 #include "Serialize.h"

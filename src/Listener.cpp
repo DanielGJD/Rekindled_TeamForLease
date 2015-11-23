@@ -6,6 +6,8 @@
     \brief
         Implementation of a class to hold information about an object listening to another object
 
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+
     \see Listener.h
 */
 

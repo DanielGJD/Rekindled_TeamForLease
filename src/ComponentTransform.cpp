@@ -36,8 +36,11 @@ namespace ForLeaseEngine {
                 Defaults to 1.
 
             \param rotation
-                A flaot denoting the initial rotation of this object.
+                A float denoting the initial rotation of this object.
                 Defaults to 0.
+
+            \param zOrder
+                A float denoting the initial Z order of this object.
         */
         Transform::Transform(Entity& owner, float positionX, float positionY,
             float scaleX, float scaleY, float rotation, int zOrder)
@@ -62,8 +65,11 @@ namespace ForLeaseEngine {
                 Defaults to 1.
 
             \param rotation
-                A flaot denoting the initial rotation of this object.
+                A float denoting the initial rotation of this object.
                 Defaults to 0.
+
+            \param zOrder
+                A float denoting the initial Z order of this object.
         */
         Transform::Transform(Entity& owner, Point position, float scaleX,
             float scaleY, float rotation, int zOrder)

@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentSoundEmitter.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a component for playing a sound
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 // Note:
 //   Due to the way fmod works, using any of the control functions on a sound that is
 //   longer playing will cause unintended effects!  Will rework at a later time.

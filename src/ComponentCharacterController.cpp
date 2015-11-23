@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentCharacterController.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines the the controls for the main character
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "ComponentCharacterController.h"
 #include "ComponentPhysics.h"
 #include "Entity.h"

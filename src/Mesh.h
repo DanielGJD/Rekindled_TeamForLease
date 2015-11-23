@@ -6,7 +6,7 @@
     \brief
         Defines classes to hold data about a triangular face
 
-    \see Mesh.cpp
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef MESH_H

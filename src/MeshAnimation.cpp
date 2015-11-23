@@ -1,3 +1,13 @@
+/*!
+    \file   MeshAnimation.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a class to contain vertex data about a mesh animation
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "MeshAnimation.h"
 #include "Exception.h"
 #include "Interpolation.h"

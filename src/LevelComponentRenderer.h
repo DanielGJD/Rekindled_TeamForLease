@@ -1,3 +1,13 @@
+/*!
+    \file   LevelComponentRenderer.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a class for rendering
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef LEVEL_COMPONENT_RENDERER_H
 #define LEVEL_COMPONENT_RENDERER_H
 

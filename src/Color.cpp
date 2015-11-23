@@ -5,6 +5,8 @@
 
     \brief
         Implementation of a class to store colors in 0 - 1 format.
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "Color.h"

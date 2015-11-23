@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentDragWithMouse.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a component to allow clicking and dragging with the mouse
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "ComponentDragWithMouse.h"
 #include "MouseButtonEvent.h"
 #include "MouseMotionEvent.h"
