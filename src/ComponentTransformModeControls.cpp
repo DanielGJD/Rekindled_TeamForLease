@@ -15,6 +15,10 @@ namespace ForLeaseEngine {
             ForLease->Dispatcher.Detach(this, "KeyUp");
         }
 
+        ComponentType TransformModeControls::GetType() {
+            return Type;
+        }
+
         void TransformModeControls::Initialize() {
             ForLease->Dispatcher.Attach(NULL, this, "KeyUp", &TransformModeControls::OnKeyUp);
             ForLease->Dispatcher.Attach(NULL, this, "MouseButtonUp", &TransformModeControls::OnMouseUp);

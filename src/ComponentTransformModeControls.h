@@ -10,6 +10,7 @@ namespace ForLeaseEngine {
             public:
                 TransformModeControls(Entity& owner);
                 ~TransformModeControls();
+                virtual ComponentType GetType();
                 void Initialize();
                 void Update();
                 void Serialize(Serializer& root);
@@ -24,6 +25,7 @@ namespace ForLeaseEngine {
                 //void OnMouseDown(Event const* e);
                 void OnMouseUp(Event const* e);
 
+                static const ComponentType Type = ComponentType::TransformModeControls;
                 float SlowMotionSpeed;
                 float NormalSpeed;
                 int ModeToggleKey;
