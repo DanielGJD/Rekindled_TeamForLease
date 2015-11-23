@@ -1,3 +1,10 @@
+/*!
+    \file   SeanState.cpp
+    \author Sean McGeer
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "SeanState.h"
 #include "ComponentsInclude.h"
 #include "ResourceManager.h"

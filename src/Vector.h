@@ -5,6 +5,8 @@
   \brief
     Defines the vector and point classes
   \see Vector.cpp
+
+  \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include <iostream>

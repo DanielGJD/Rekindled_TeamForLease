@@ -7,6 +7,8 @@
         Implements menu items.
 
     \see MenuItems.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "MenuItems.h"

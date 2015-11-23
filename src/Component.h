@@ -6,6 +6,8 @@
         Defines the Component class.  Also defines the ComponentType enum and
         corresponding operator overloads.
     \see Component.cpp
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef COMPONENT_H

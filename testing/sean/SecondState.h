@@ -1,3 +1,10 @@
+/*!
+    \file   SecondState.h
+    \author Sean McGeer
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef SECOND_STATE_H
 #define SECOND_STATE_H
 

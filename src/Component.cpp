@@ -5,6 +5,8 @@
     \brief
         Implements the Component class defined in Component.h.
     \see Component.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "Component.h"

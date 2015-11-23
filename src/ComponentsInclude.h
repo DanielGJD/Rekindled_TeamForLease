@@ -4,6 +4,8 @@
     \date   9/19/15
     \brief
         Basic header that automatically includes all implmented components.
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef COMPONENTS_INCLUDE_H

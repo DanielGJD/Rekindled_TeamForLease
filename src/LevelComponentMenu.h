@@ -8,6 +8,8 @@
 
     \see ComponentMenu.h
     \see LevelComponentMenu.cpp
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef LC_MENU_H

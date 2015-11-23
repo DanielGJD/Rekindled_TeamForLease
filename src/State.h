@@ -5,6 +5,8 @@
     \brief
         Defines the State class.
     \see State.cpp
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef STATE_H

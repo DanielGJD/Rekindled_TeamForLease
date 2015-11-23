@@ -4,6 +4,8 @@
     \date   10/04/15
     \brief
         Basic header that automatically includes all implemented LevelComponents.
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef LC_INCLUDE_H

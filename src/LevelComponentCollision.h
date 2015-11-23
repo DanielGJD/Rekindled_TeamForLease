@@ -5,6 +5,8 @@
     \brief
         Defines the Collision system.
     \see LevelComponentCollision.cpp
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef LC_COLLISION_H

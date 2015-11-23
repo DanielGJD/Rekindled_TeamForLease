@@ -1,3 +1,7 @@
+/*!
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "SegmentPrototypeState.h"
 #include "Vector.h"
 #include "ComponentsInclude.h"

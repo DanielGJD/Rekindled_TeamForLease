@@ -5,6 +5,8 @@
     \brief
         Contains implementations for the State class defined in State.h.
     \see State.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "State.h"

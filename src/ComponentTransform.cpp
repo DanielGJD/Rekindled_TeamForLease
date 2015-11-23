@@ -5,6 +5,8 @@
     \brief
         Implements the Transform component.
     \see Transform.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "ComponentTransform.h"

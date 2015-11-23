@@ -5,6 +5,8 @@
     \brief
         Defines the Physics component.
     \see ComponentPhysics.cpp
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 

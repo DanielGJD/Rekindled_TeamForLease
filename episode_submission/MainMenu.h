@@ -5,6 +5,8 @@
     \brief
         Defines the main menu screen state.
     \see State.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef MAIN_MENU_H

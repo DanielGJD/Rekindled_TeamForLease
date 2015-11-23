@@ -5,6 +5,8 @@
   \brief
     Defines the matrix class
   \see Matrix.cpp
+
+  \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef MATRIX_H

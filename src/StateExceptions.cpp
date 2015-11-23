@@ -7,6 +7,8 @@
     \see StateExceptions.h
     \see State.h
     \see State.cpp
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "StateExceptions.h"

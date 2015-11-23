@@ -1,3 +1,17 @@
+/*!
+    \file   State.h
+
+    \author Sean McGeer
+
+    \date   9/17/15
+
+    \brief
+        Implements the Level class.
+
+    \see Level.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
 
 #include "Level.h"
 

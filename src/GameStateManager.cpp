@@ -5,6 +5,8 @@
     \brief
         Contains implementations for the GameStateManager class defined in GameStateManager.h.
     \see GameStateManager.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "GameStateManager.h"

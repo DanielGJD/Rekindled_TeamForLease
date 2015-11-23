@@ -5,6 +5,8 @@
     \brief
         Defines the GameStateManager class.
     \see GameStateManager.cpp
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef GAMESTATEMANAGER_H

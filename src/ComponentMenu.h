@@ -8,6 +8,8 @@
 
     \see ComponentMenu.cpp
     \see MenuItems.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef COMPONENT_MENU_H

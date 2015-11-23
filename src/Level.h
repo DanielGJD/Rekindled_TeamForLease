@@ -1,4 +1,18 @@
+/*!
+    \file   State.h
 
+    \author Sean McGeer
+
+    \date   9/17/15
+
+    \brief
+        Defines the Level class.
+
+    \see Level.cpp
+    \see State.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
 
 #ifndef LEVEL_H
 #define LEVEL_H

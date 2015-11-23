@@ -5,6 +5,8 @@
     \brief
         Implements the Entity class defined in Entity.h.
     \see Entity.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "Entity.h"

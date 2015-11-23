@@ -1,3 +1,10 @@
+/*!
+    \file   main.cpp
+    \author Sean McGEer
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include <vector>
 #include "State.h"
 #include "Engine.h"
