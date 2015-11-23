@@ -193,6 +193,8 @@ namespace ForLeaseEngine {
                 case MenuItemType::LoadLevel:
                     item = new MenuItems::LoadLevel("", "");
                     break;
+                case MenuItemType::NextLevel:
+                    item = new MenuItems::NextLevel("");
                 default:
                     break;
             }

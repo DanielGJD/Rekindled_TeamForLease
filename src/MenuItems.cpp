@@ -45,7 +45,7 @@ namespace ForLeaseEngine {
         }
 
         void LoadLevel::Deserialize(Serializer& root) {
-            Serializer loadLevel = root.GetChild("Menu");
+            Serializer loadLevel = root.GetChild("LoadLevel");
             loadLevel.ReadString("Image", Image);
             loadLevel.ReadString("StateName", StateName);
         }
@@ -59,13 +59,14 @@ namespace ForLeaseEngine {
         void NextLevel::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer nextLevel = root.GetChild("NextLevel");
+            std::cout << Image << std::endl;
             nextLevel.WriteString("Image", Image);
             nextLevel.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(nextLevel, "NextLevel");
         }
 
         void NextLevel::Deserialize(Serializer& root) {
-            Serializer nextLevel = root.GetChild("Menu");
+            Serializer nextLevel = root.GetChild("NextLevel");
             nextLevel.ReadString("Image", Image);
         }
 

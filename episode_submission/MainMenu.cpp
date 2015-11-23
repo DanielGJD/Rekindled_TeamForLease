@@ -60,14 +60,14 @@ void MainMenu::Load() {
     Serialize(serializer);
     serializer.WriteFile("MainMenu.json");
 
-    //DeleteAllEntities();
-    //DeleteAllLevelComponents();
+    DeleteAllEntities();
+    DeleteAllLevelComponents();
 }
 
 void MainMenu::Initialize() {
-    //Serializer serializer;
-    //serializer.ReadFile("MainMenu.json");
-    //Deserialize(serializer);
+    Serializer serializer;
+    serializer.ReadFile("MainMenu.json");
+    Deserialize(serializer);
 }
 
 void MainMenu::Update() {
