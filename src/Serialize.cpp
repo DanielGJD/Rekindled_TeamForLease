@@ -20,18 +20,23 @@ namespace ForLeaseEngine
 
         \param filename
             Name of the file being read from.
+
+        \return
+            If the file was read successfully
     */
-    void Serializer::ReadFile(const std::string& filename)
+    bool Serializer::ReadFile(const std::string& filename)
     {
         try
         {
             std::ifstream file(filename);
             file >> node;
+            return true;
         }
 
         catch (std::exception& e)
         {
             std::cout << e.what() << std::endl;
+            return false;
         }
     }
 
