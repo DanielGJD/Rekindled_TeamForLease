@@ -39,7 +39,8 @@ namespace ForLeaseEngine {
                 void OnMouseMotion(const Event* e);
                 void OnMouseDown(const Event* e);
 
-                void Menu::AddLoadLevel(std::string text, std::string stateName);
+                void Menu::AddItem(MenuItem* item);
+                void Menu::AddLoadLevel(std::string image, std::string stateName);
                 void Activate();
                 void Deactivate();
 
@@ -47,6 +48,7 @@ namespace ForLeaseEngine {
 
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
+                MenuItem* DeserializeItem(Serializer& root);
 
                 Vector Spacing;
                 float UnfocusedScale;

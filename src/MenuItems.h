@@ -19,19 +19,20 @@
 namespace ForLeaseEngine {
 
     enum class MenuItemType : unsigned {
-        None = 0,
-        LoadLevel = 1
+        None        = 0,
+        LoadLevel   = 1,
+        NextLevel   = 2
     };
 
     class MenuItem : public Serializable {
         public:
+            MenuItem() {}
             MenuItem(MenuItemType type, std::string image);
             std::string Image;
+            MenuItemType Type;
             virtual void Action() { }
             virtual void Serialize(Serializer& root);
             virtual void Deserialize(Serializer& root);
-        private:
-            MenuItemType Type;
 
     };
 
@@ -46,6 +47,15 @@ namespace ForLeaseEngine {
                 virtual void Deserialize(Serializer& root);
 
                 std::string StateName;
+        };
+
+        class NextLevel : public MenuItem {
+            public:
+                NextLevel(std::string image);
+                virtual void Action();
+
+                virtual void Serialize(Serializer& root);
+                virtual void Deserialize(Serializer& root);
         };
 
     } // MenuItems
