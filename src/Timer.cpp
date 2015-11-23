@@ -5,6 +5,8 @@
     \brief
         Contains implementations for the Timer class defined in Timer.h.
     \see Timer.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "Timer.h"

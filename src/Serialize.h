@@ -7,6 +7,8 @@
         Defines serialization class
 
     \see Serialize.cpp
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef SERIALIZER_H

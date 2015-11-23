@@ -79,12 +79,12 @@ namespace ForLeaseEngine {
             FrameVertexData.push_back(std::vector<Point>());
             std::stringstream frameNumber;
             frameNumber << "Frame" << i;
-            std::cout << "Loading " << frameNumber << std::endl;
+            std::cout << "Loading " << frameNumber.str() << std::endl;
             Serializer frame = frames.GetChild(frameNumber.str());
             for(unsigned int j = 0; j < vertexCount; ++j) {
                 std::stringstream vertexNumber;
                 vertexNumber << "Vertex" << j;
-                std::cout << "  Loading " << vertexNumber << std::endl;
+                std::cout << "  Loading " << vertexNumber.str() << std::endl;
                 Serializer vertex = frame.GetChild(vertexNumber.str());
                 float x;
                 float y;

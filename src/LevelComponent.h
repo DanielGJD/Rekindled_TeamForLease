@@ -5,6 +5,8 @@
     \brief
         Defines the LevelComponent class, which all level components should inherit from.
     \see LevelComponent.cpp
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef LEVEL_COMPONENT_H

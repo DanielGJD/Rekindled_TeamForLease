@@ -5,6 +5,8 @@
     \brief
         Defines the Entity class.
     \see Entity.cpp
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef ENTITY_H
@@ -59,6 +61,8 @@ namespace ForLeaseEngine {
 
                 return 0;
             }
+
+            bool Delete;
         private:
             //! The ID of this Entity, to differentiate from other Entities.
             long unsigned ID;

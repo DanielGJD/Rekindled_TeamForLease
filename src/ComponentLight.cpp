@@ -5,6 +5,8 @@
     \brief
         Implements the Light component.
     \see ComponentLight.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "ComponentLight.h"

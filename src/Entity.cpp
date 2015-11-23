@@ -5,6 +5,8 @@
     \brief
         Implements the Entity class defined in Entity.h.
     \see Entity.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "Entity.h"
@@ -21,7 +23,7 @@ namespace ForLeaseEngine {
         to this entity to None.
     */
     Entity::Entity(std::string name)
-    : ID(++TotalEntities), ComponentMask(ComponentType::None) {
+    : ID(++TotalEntities), ComponentMask(ComponentType::None), Delete(false) {
         if (name != "")
             Name = name;
         else {
@@ -225,6 +227,9 @@ namespace ForLeaseEngine {
                 break;
             case ComponentType::DragWithMouse:
                 component = Components::DragWithMouse::Create(entity);
+            case ComponentType::Menu:
+                component = new Components::Menu(entity);
+                break;
             default:
                 return 0;
         }

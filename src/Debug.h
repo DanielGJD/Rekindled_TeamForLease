@@ -1,3 +1,7 @@
+/*!
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef DEBUG_H
 #define DEBUG_H
 #include <fstream>

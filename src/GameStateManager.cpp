@@ -5,6 +5,8 @@
     \brief
         Contains implementations for the GameStateManager class defined in GameStateManager.h.
     \see GameStateManager.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "GameStateManager.h"
@@ -74,11 +76,15 @@ namespace ForLeaseEngine {
                 The name of the state to skip to.
         */
         void GameStateManager::SetState(std::string stateName) {
-            for (unsigned i = 0; i < States.size(); ++i)
+            std::cout << "===" << std::endl;
+            for (unsigned i = 0; i < States.size(); ++i) {
+                std::cout << States[i]->GetName() << std::endl;
                 if (States[i]->GetName() == stateName) {
                     NextStateIndex = i;
+                    SetAction(StateAction::Skip);
                     break;
                 }
+            }
         }
 
         /*!
@@ -89,6 +95,7 @@ namespace ForLeaseEngine {
         */
         void GameStateManager::SetState(unsigned stateIndex) {
             NextStateIndex = stateIndex;
+            SetAction(StateAction::Skip);
         }
         
         /*!

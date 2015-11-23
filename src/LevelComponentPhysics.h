@@ -5,6 +5,8 @@
     \brief
         Defines the Physics system.
     \see LevelComponentPhysics.cpp
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef LC_PHYSICS_H

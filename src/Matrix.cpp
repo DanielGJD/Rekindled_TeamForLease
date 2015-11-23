@@ -5,6 +5,8 @@
   \brief
     Contains implementations for the Matrix class defined in Matrix.h.
   \see Matrix.h
+
+  \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "Matrix.h"

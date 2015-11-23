@@ -1,3 +1,7 @@
+/*!
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef SEGMENT_PROTOTYPE_H
 #define SEGMENT_PROTOTYPE_H
 

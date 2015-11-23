@@ -5,6 +5,8 @@
     \brief
         Implements a ray, as well as some helper functions involved in raycasting.
     \see Ray.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "Ray.h"
