@@ -16,11 +16,12 @@
 
 int main(int argc, char** argv) {
     std::vector<ForLeaseEngine::State *> states;
-    //MainMenu* state = new MainMenu();
-    states.push_back(new ForLeaseEngine::Level("MainMenu.json"));
+    MainMenu* state = new MainMenu();
+    states.push_back(state);
+    //states.push_back(new ForLeaseEngine::Level("MainMenu.json"));
     states.push_back(new ForLeaseEngine::Level("SecondStateTest.json"));
 
-    ForLeaseEngine::Engine engine(states, 1024, 768, 60);
+    ForLeaseEngine::Engine engine(states, 1920, 1080, 60);
     engine.Run();
 
     return 0;
