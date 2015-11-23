@@ -9,6 +9,7 @@
 #include "Ray.h"
 
 #include <iostream>
+#include <string>
 
 namespace FLE = ForLeaseEngine;
 using namespace ForLeaseEngine;
@@ -95,12 +96,22 @@ void SeanState::Initialize() {
     serial.ReadFile("StateTest.json");
     Deserialize(serial);
 
+    Entity* background = AddEntity("Background");
+    background->AddComponent(new Components::Transform(*background));
+    background->AddComponent(new Components::Sprite(*background));
+    ForLease->Resources.LoadTexture("bg5.png");
+    Texture* texture = Texture::CreateTexture("bg5.png");
+    TextureRegion textureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
+    background->GetComponent<Components::Sprite>(true)->SpriteSource.push_back(textureRegion);
+    background->GetComponent<Components::Sprite>(true)->AnimationActive = false;
+
     Entity* menu = AddEntity("Menu");
     menu->AddComponent(new Components::Transform(*menu));
     menu->AddComponent(new Components::Menu(*menu));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
-    menuComp->AddLoadLevel("HI", "SecondState");
-    menuComp->AddLoadLevel("YO", "SeanState");
+    menuComp->AddLoadLevel("ButtonPlay.png", "SecondState");
+    menuComp->AddLoadLevel("ButtonOptions.png", "SecondState");
+    menuComp->AddLoadLevel("ButtonStartGame.png", "Sean's State");
     menuComp->Activate();
 
     //AddLevelComponent(new LevelComponents::Menu(*this));

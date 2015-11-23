@@ -14,7 +14,7 @@
 
 namespace ForLeaseEngine {
 
-    MenuItem::MenuItem(MenuItemType type, std::string text) : Text(text), Type(type) {}
+    MenuItem::MenuItem(MenuItemType type, std::string image) : Image(image), Type(type) {}
 
     void MenuItem::Serialize(Serializer& root) {
     }
@@ -24,8 +24,8 @@ namespace ForLeaseEngine {
 
     namespace MenuItems {
 
-        LoadLevel::LoadLevel(std::string text, std::string stateName)
-            : MenuItem(MenuItemType::LoadLevel, text), StateName(stateName) {}
+        LoadLevel::LoadLevel(std::string image, std::string stateName)
+            : MenuItem(MenuItemType::LoadLevel, image), StateName(stateName) {}
 
         void LoadLevel::Action () {
             std::cout << StateName << std::endl;

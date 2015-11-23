@@ -25,8 +25,8 @@ namespace ForLeaseEngine {
 
     class MenuItem : public Serializable {
         public:
-            MenuItem(MenuItemType type, std::string text);
-            std::string Text;
+            MenuItem(MenuItemType type, std::string image);
+            std::string Image;
             virtual void Action() { }
             virtual void Serialize(Serializer& root);
             virtual void Deserialize(Serializer& root);
@@ -39,7 +39,7 @@ namespace ForLeaseEngine {
 
         class LoadLevel : public MenuItem {
             public:
-                LoadLevel(std::string text, std::string stateName);
+                LoadLevel(std::string image, std::string stateName);
                 virtual void Action();
 
                 virtual void Serialize(Serializer& root);

@@ -75,13 +75,13 @@ namespace ForLeaseEngine {
             
             for (MenuItem* item : Items) {
                 std::stringstream name;
-                name << "Menu " << Parent.GetName() << " item " << item->Text;
+                name << "Menu " << Parent.GetName() << " item " << item->Image;
                 Entity* rep = currentState.AddEntity(name.str());
                 Representations.push_back(rep);
                 rep->AddComponent(new Components::Transform(*rep, position, UnfocusedScale, UnfocusedScale));
                 rep->AddComponent(new Components::Sprite(*rep));
-                ForLease->Resources.LoadTexture("ButtonTemplate.png");
-                Texture* texture = Texture::CreateTexture("ButtonTemplate.png");
+                ForLease->Resources.LoadTexture(item->Image);
+                Texture* texture = Texture::CreateTexture(item->Image);
                 TextureRegion textureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
                 rep->GetComponent<Components::Sprite>(true)->SpriteSource.push_back(textureRegion);
                 rep->GetComponent<Components::Sprite>(true)->AnimationActive = false;
