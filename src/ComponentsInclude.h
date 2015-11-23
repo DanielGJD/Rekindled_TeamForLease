@@ -20,6 +20,7 @@
 #include "ComponentCharacterController.h"
 #include "ComponentLight.h"
 #include "ComponentSoundEmitter.h"
+#include "ComponentMenu.h"
 #include "ComponentDragWithMouse.h"
 
 #endif

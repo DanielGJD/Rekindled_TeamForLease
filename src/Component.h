@@ -41,7 +41,8 @@ namespace ForLeaseEngine {
         SoundEmitter          = 1 << 10,   //! Sound Emitter
         DragWithMouse         = 1 << 11,   //! Item that can be dragged by the mouse
         ScaleWithKeyboard     = 1 << 12,   //! Item that can be scaled by the keyboard
-        TransformModeControls = 1 << 13    //! Controls for the transform mode of the main character
+        TransformModeControls = 1 << 13,   //! Controls for the transform mode of the main character
+        Menu                  = 1 << 14    //! Menu
     };
 
     ComponentType operator|(const ComponentType& lhs, const ComponentType& rhs);

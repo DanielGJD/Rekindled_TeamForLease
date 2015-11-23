@@ -9,6 +9,7 @@
 #include "Ray.h"
 
 #include <iostream>
+#include <string>
 
 namespace FLE = ForLeaseEngine;
 using namespace ForLeaseEngine;
@@ -47,25 +48,25 @@ void SeanState::Load() {
     serial.WriteFile("BoxMesh.json");
 
 
-    FLE::Entity* entityBox = AddEntity("Box");
-    entityBox->AddComponent(new Components::Transform(*entityBox, 0, 0, 1, 1, 0));
-    entityBox->AddComponent(new Components::Model(*entityBox, true, "BoxMesh.json", "", Color(1,1,1,1)));
-    entityBox->AddComponent(new Components::Collision(*entityBox, 2, 2));
-    entityBox->AddComponent(new Components::Physics(*entityBox, 1, Vector(0,10)));
-    Components::CharacterController* controller = Components::CharacterController::Create(*entityBox);
-    controller->JumpSpeed = 10;
-    controller->MoveSpeed = 10;
-    entityBox->AddComponent(controller);
+    //FLE::Entity* entityBox = AddEntity("Box");
+    //entityBox->AddComponent(new Components::Transform(*entityBox, 0, 0, 1, 1, 0));
+    //entityBox->AddComponent(new Components::Model(*entityBox, true, "BoxMesh.json", "", Color(1,1,1,1)));
+    //entityBox->AddComponent(new Components::Collision(*entityBox, 2, 2));
+    //entityBox->AddComponent(new Components::Physics(*entityBox, 1, Vector(0,10)));
+    //Components::CharacterController* controller = Components::CharacterController::Create(*entityBox);
+    //controller->JumpSpeed = 10;
+    //controller->MoveSpeed = 10;
+    //entityBox->AddComponent(controller);
 
-    //entityBox->CreateArchetype("Box.arch");
+    ////entityBox->CreateArchetype("Box.arch");
 
-    //SpawnArchetype("Box.arch", Point(-100, 0), "Box1");
-    //SpawnArchetype("Box.arch", Point(100, 100), "Box2");
+    ////SpawnArchetype("Box.arch", Point(-100, 0), "Box1");
+    ////SpawnArchetype("Box.arch", Point(100, 100), "Box2");
 
-    Entity* entityFloor = AddEntity("Floor");
-    entityFloor->AddComponent(new Components::Transform(*entityFloor, 0, -10, 250, 1, 0));
-    entityFloor->AddComponent(new Components::Model(*entityFloor, true, "BoxMesh.json", "", Color(0,1,1,1)));
-    entityFloor->AddComponent(new Components::Collision(*entityFloor, 250, 2));
+    //Entity* entityFloor = AddEntity("Floor");
+    //entityFloor->AddComponent(new Components::Transform(*entityFloor, 0, -10, 250, 1, 0));
+    //entityFloor->AddComponent(new Components::Model(*entityFloor, true, "BoxMesh.json", "", Color(0,1,1,1)));
+    //entityFloor->AddComponent(new Components::Collision(*entityFloor, 250, 2));
 
     //Entity* entityLight = AddEntity("Light");
     //entityLight->AddComponent(new Components::Transform(*entityLight, Point(-10,10), 1, 1, -1, 0));
@@ -95,6 +96,28 @@ void SeanState::Initialize() {
     serial.ReadFile("StateTest.json");
     Deserialize(serial);
 
+    Entity* background = AddEntity("Background");
+    background->AddComponent(new Components::Transform(*background));
+    background->AddComponent(new Components::Sprite(*background));
+    ForLease->Resources.LoadTexture("bg7.png");
+    Texture* texture = Texture::CreateTexture("bg7.png");
+    TextureRegion textureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
+    background->GetComponent<Components::Sprite>(true)->SpriteSource.push_back(textureRegion);
+    background->GetComponent<Components::Sprite>(true)->AnimationActive = false;
+    background->GetComponent<Components::Transform>(true)->ScaleX = 0.05;
+    background->GetComponent<Components::Transform>(true)->ScaleY = 0.05;
+
+    Entity* menu = AddEntity("Menu");
+    menu->AddComponent(new Components::Transform(*menu));
+    menu->AddComponent(new Components::Menu(*menu));
+    Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
+    menuComp->AddLoadLevel("ButtonPlay.png", "SecondState");
+    menuComp->AddLoadLevel("ButtonOptions.png", "SecondState");
+    menuComp->AddLoadLevel("ButtonStartGame.png", "Sean's State");
+    menuComp->Activate();
+
+    //AddLevelComponent(new LevelComponents::Menu(*this));
+
     Health = 300;
     //ForLease->FrameRateController().TimeScaling(1);
 }
@@ -111,23 +134,31 @@ void SeanState::Update() {
         levelComponent->Update(Entities);
     }
 
+    //for (Entity* entity : Entities) {
+    //    std::cout << entity->GetName() << std::endl;
+    //}
+
+    //std::cout << "=========================================================" << std::endl;
+
     LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
     
-    std::vector<Ray> rays;
-    rays.push_back(Ray(Point(1, 1), Vector(0,-1), 15));
-    rays.push_back(Ray(Point(-1, -1), Vector(0, 1), 15));
-    rays.push_back(Ray(Point(0, 0), Vector(-1, -1), 15));
-    //rays.push_back(Ray(Point(-2, -2), Vector(1, 0.5), 15));
-    rays.push_back(Ray(Point(5, 5), Vector(1, 1), 15));
+    //std::vector<Ray> rays;
+    //rays.push_back(Ray(Point(1, 1), Vector(0,-1), 15));
+    //rays.push_back(Ray(Point(-1, -1), Vector(0, 1), 15));
+    //rays.push_back(Ray(Point(0, 0), Vector(-1, -1), 15));
+    ////rays.push_back(Ray(Point(-2, -2), Vector(1, 0.5), 15));
+    //rays.push_back(Ray(Point(5, 5), Vector(1, 1), 15));
 
-    for (Ray ray : rays) {
-        for (Entity* entity : Entities) {
-            ray.IsColliding(entity);
-        }
-        renderer->SetDrawingColor(Color(1, 1, 1));
-        renderer->DrawArrow(ray.GetStart(), ray.GetScaledVector());
-        renderer->DrawRectangle(ray.GetStart(),0.5,0.5);
-    }
+    //renderer->DrawRectangle(Point(0, 0), 10, 10, 0);
+
+    //for (Ray ray : rays) {
+    //    for (Entity* entity : Entities) {
+    //        ray.IsColliding(entity);
+    //    }
+    //    renderer->SetDrawingColor(Color(1, 1, 1));
+    //    renderer->DrawArrow(ray.GetStart(), ray.GetScaledVector());
+    //    renderer->DrawRectangle(ray.GetStart(),0.5,0.5);
+    //}
 
     //for (Ray ray : rays) {
     //    ray.IsColliding(GetEntityByName("Box"));
