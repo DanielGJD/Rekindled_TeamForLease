@@ -24,7 +24,9 @@ namespace ForLeaseEngine {
             UnloadTexture(fileName);
             Texture* texture = Texture::CreateTexture(fileName);
             if(!texture) {
-                throw(new Exception(std::string("Failed to load texture :").append(fileName)));
+                //throw(new Exception(std::string("Failed to load texture :").append(fileName)));
+                std::cout << "Failed to load texture: " << fileName << std::endl;
+                return;
             }
             Textures.insert(std::make_pair(fileName.c_str(), texture));
             ++LoadedTextures;
@@ -63,7 +65,7 @@ namespace ForLeaseEngine {
             UnloadFont(fileName);
             std::ifstream fontFile(fileName, std::ios_base::in | std::ios_base::binary);
             if(!fontFile.is_open()) {
-                std::cout << "Failed to open " << fileName << std::endl;
+                std::cout << "Failed to load font: " << fileName << std::endl;
                 return;
             }
             BmFont fontInfo;
@@ -106,9 +108,13 @@ namespace ForLeaseEngine {
 
         void ResourceManager::LoadMesh(std::string fileName) {
             UnloadMesh(fileName);
-            Mesh* mesh = new Mesh();
             Serializer root;
-            root.ReadFile(fileName);
+            if(!root.ReadFile(fileName))
+            {
+                std::cout << "Failed to load mesh: " << fileName << std::endl;
+                return;
+            }
+            Mesh* mesh = new Mesh();
             mesh->Deserialize(root);
             Meshes.insert(std::make_pair(fileName.c_str(), mesh));
             ++LoadedMeshes;
@@ -154,7 +160,9 @@ namespace ForLeaseEngine {
             Sound* sound = ForLease->AudioSystem->CreateSound(fileName);
 
             if(!sound) {
-                throw(new Exception(std::string("Failed to load sound: ").append(fileName)));
+                //throw(new Exception(std::string("Failed to load sound: ").append(fileName)));
+                std::cout << "Failed to load sound: " << fileName << std::endl;
+                return;
             }
 
             Sounds.insert(std::make_pair(fileName.c_str(), sound));
@@ -188,9 +196,12 @@ namespace ForLeaseEngine {
 
         void ResourceManager::LoadMeshAnimation(std::string fileName) {
             UnloadMeshAnimation(fileName);
-            MeshAnimation* animation = new MeshAnimation();
             Serializer loader;
-            loader.ReadFile(fileName);
+            if(!loader.ReadFile(fileName)) {
+                std::cout << "Failed to load mesh animation: " << fileName << std::endl;
+                return;
+            }
+            MeshAnimation* animation = new MeshAnimation();
             animation->Deserialize(loader);
             MeshAnimations.insert(std::make_pair(fileName, animation));
         }
