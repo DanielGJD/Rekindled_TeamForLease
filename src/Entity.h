@@ -29,7 +29,7 @@ namespace ForLeaseEngine {
     class Entity : public Serializable{
 
         public:
-            Entity(std::string name = "");
+            Entity(std::string name = "", boolean serialize = true);
             ~Entity();
             void Update();
             void Serialize(Serializer& root);
@@ -63,6 +63,7 @@ namespace ForLeaseEngine {
             }
 
             bool Delete;
+            bool IncludeInSerialize;
         private:
             //! The ID of this Entity, to differentiate from other Entities.
             long unsigned ID;

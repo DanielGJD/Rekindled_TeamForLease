@@ -22,8 +22,8 @@ namespace ForLeaseEngine {
         it plus one.  It also initializes the bitfield mask of components added
         to this entity to None.
     */
-    Entity::Entity(std::string name)
-    : ID(++TotalEntities), ComponentMask(ComponentType::None), Delete(false) {
+    Entity::Entity(std::string name, boolean serialize)
+    : ID(++TotalEntities), ComponentMask(ComponentType::None), IncludeInSerialize(serialize), Delete(false) {
         if (name != "")
             Name = name;
         else {

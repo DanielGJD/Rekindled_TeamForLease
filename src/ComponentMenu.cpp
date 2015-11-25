@@ -83,6 +83,7 @@ namespace ForLeaseEngine {
                 std::stringstream name;
                 name << "Menu " << Parent.GetName() << " item " << item->Image;
                 Entity* rep = currentState.AddEntity(name.str());
+                rep->IncludeInSerialize = false;
                 Representations.push_back(rep);
                 rep->AddComponent(new Components::Transform(*rep, position, UnfocusedScale, UnfocusedScale));
                 rep->AddComponent(new Components::Sprite(*rep));
@@ -195,6 +196,10 @@ namespace ForLeaseEngine {
                     break;
                 case MenuItemType::NextLevel:
                     item = new MenuItems::NextLevel("");
+                    break;
+                case MenuItemType::Quit:
+                    item = new MenuItems::Quit("");
+                    break;
                 default:
                     break;
             }

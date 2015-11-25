@@ -286,6 +286,7 @@ namespace ForLeaseEngine {
         jsonEntities = state.GetChild("Entities");
 
         for (Entity* entity : Entities) {
+            if (!(entity->IncludeInSerialize)) continue;
             Serializer entitySerializer;
             entity->Serialize(entitySerializer);
             jsonEntities.Append(entitySerializer);

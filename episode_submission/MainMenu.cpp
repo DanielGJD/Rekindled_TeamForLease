@@ -51,6 +51,7 @@ void MainMenu::Load() {
     menu->AddComponent(new Components::Menu(*menu));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
     menuComp->AddItem(new MenuItems::NextLevel("ButtonPlay.png"));
+    menuComp->AddItem(new MenuItems::Quit("ButtonQuit.png"));
     //menuComp->AddLoadLevel("ButtonPlay.png", "SecondState");
     //menuComp->AddLoadLevel("ButtonOptions.png", "SecondState");
     //menuComp->AddLoadLevel("ButtonStartGame.png", "Sean's State");
