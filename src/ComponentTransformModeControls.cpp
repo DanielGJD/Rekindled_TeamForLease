@@ -62,6 +62,9 @@ namespace ForLeaseEngine {
                     if(entity->HasComponent(ComponentType::DragWithMouse)) {
                         entity->GetComponent<Components::DragWithMouse>()->Active = true;
                     }
+                    if(entity->HasComponent(ComponentType::ScaleWithKeyboard)) {
+                        entity->GetComponent<Components::ScaleWithKeyboard>()->Active = true;
+                    }
                 }
             }
 
@@ -77,6 +80,9 @@ namespace ForLeaseEngine {
                 if(entity) {
                     if(entity->HasComponent(ComponentType::DragWithMouse)) {
                         entity->GetComponent<Components::DragWithMouse>()->Active = false;
+                    }
+                    if(entity->HasComponent(ComponentType::ScaleWithKeyboard)) {
+                        entity->GetComponent<Components::ScaleWithKeyboard>()->Active = false;
                     }
                 }
 
@@ -113,11 +119,12 @@ namespace ForLeaseEngine {
             if(Active) {
                 Point worldLoc = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->ScreenToWorld(mouse_e->ScreenLocation);
                 Entity* entity = ForLease->GameStateManager().CurrentState().GetEntityAtPosition(worldLoc);
-                if(!entity || !entity->HasComponent(ComponentType::DragWithMouse)) {
+                if(!entity || (!entity->HasComponent(ComponentType::DragWithMouse) && !entity->HasComponent(ComponentType::ScaleWithKeyboard))) {
                     if(EntitySelected) {
                         Entity* selected = ForLease->GameStateManager().CurrentState().GetEntityByID(ActiveEntity);
                         if(selected) {
                             ForLease->GameStateManager().CurrentState().GetEntityByID(ActiveEntity)->GetComponent<Components::DragWithMouse>()->Active = false;
+                            ForLease->GameStateManager().CurrentState().GetEntityByID(ActiveEntity)->GetComponent<Components::ScaleWithKeyboard>()->Active = false;
                         }
                     }
                     EntitySelected = false;
@@ -126,10 +133,16 @@ namespace ForLeaseEngine {
                     Entity* selected = ForLease->GameStateManager().CurrentState().GetEntityByID(ActiveEntity);
                     if(selected) {
                         ForLease->GameStateManager().CurrentState().GetEntityByID(ActiveEntity)->GetComponent<Components::DragWithMouse>()->Active = false;
+                        ForLease->GameStateManager().CurrentState().GetEntityByID(ActiveEntity)->GetComponent<Components::ScaleWithKeyboard>()->Active = false;
                     }
                     EntitySelected = true;
                     ActiveEntity = entity->GetID();
-                    entity->GetComponent<Components::DragWithMouse>()->Active = true;
+                    if(entity->HasComponent(ComponentType::DragWithMouse)) {
+                        entity->GetComponent<Components::DragWithMouse>()->Active = false;
+                    }
+                    if(entity->HasComponent(ComponentType::ScaleWithKeyboard)) {
+                        entity->GetComponent<Components::ScaleWithKeyboard>()->Active = false;
+                    }
                 }
             }
         }

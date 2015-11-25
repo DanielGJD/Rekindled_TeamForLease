@@ -429,7 +429,7 @@ namespace ForLeaseEngine {
 
             if(drawVertices) {
                 glColor3f(1, 1, 1);
-                glPointSize(2);
+                glPointSize(4);
                 glBegin(GL_POINTS);
                     for(int i = 0; i < mesh->GetVertexCount(); ++i) {
                         glVertex2f(transformed[i][0], transformed[i][1]);

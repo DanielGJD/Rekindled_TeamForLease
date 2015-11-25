@@ -21,6 +21,7 @@ namespace ForLeaseEngine {
                                             : Component(owner, ComponentType::Transform), Active(false), ScaleSpeed(1),
                                               ScaleXUpKey(Keys::D), ScaleXDownKey(Keys::A),
                                               ScaleYUpKey(Keys::W), ScaleYDownKey(Keys::S),
+                                              MaxXScale(2), MinXScale(0.5f), MaxYScale(2), MinYScale(0.5f),
                                               ScaleXUp(false), ScaleXDown(false),
                                               ScaleYUp(false), ScaleYDown(false) {}
 
@@ -53,13 +54,51 @@ namespace ForLeaseEngine {
                 if(ScaleYDown) {
                     trans->ScaleY -= dt * ScaleSpeed;
                 }
+
+                if(trans->ScaleX > MaxXScale) {
+                    trans->ScaleX = MaxXScale;
+                }
+                if(trans->ScaleX < MinXScale) {
+                    trans->ScaleX = MinXScale;
+                }
+                if(trans->ScaleY > MaxYScale) {
+                    trans->ScaleY = MaxYScale;
+                }
+                if(trans->ScaleY < MinYScale) {
+                    trans->ScaleY = MinYScale;
+                }
             }
         }
 
         void ScaleWithKeyboard::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned int>(Type));
+            Serializer scaler = root.GetChild("ScaleWithKeyboard");
+            scaler.WriteUint("Type", static_cast<unsigned int>(Type));
+            scaler.WriteBool("Active", Active);
+            scaler.WriteFloat("ScaleSpeed", ScaleSpeed);
+            scaler.WriteInt("ScaleXUpKey", ScaleXUpKey);
+            scaler.WriteInt("ScaleXDownKey", ScaleXDownKey);
+            scaler.WriteInt("ScaleYUpKey", ScaleYUpKey);
+            scaler.WriteInt("ScaleYDownKey", ScaleYDownKey);
+            scaler.WriteFloat("MaxXScale", MaxXScale);
+            scaler.WriteFloat("MinXScale", MinXScale);
+            scaler.WriteFloat("MaxYScale", MaxYScale);
+            scaler.WriteFloat("MinYScale", MinYScale);
+            root.Append(scaler, "ScaleWithKeyboard");
         }
 
         void ScaleWithKeyboard::Deserialize(Serializer& root) {
+            Serializer scaler = root.GetChild("ScaleWithKeyboard");
+            scaler.ReadBool("Active", Active);
+            scaler.ReadFloat("ScaleSpeed", ScaleSpeed);
+            scaler.ReadInt("ScaleXUpKey", ScaleXUpKey);
+            scaler.ReadInt("ScaleXDownKey", ScaleXDownKey);
+            scaler.ReadInt("ScaleYUpKey", ScaleYUpKey);
+            scaler.ReadInt("ScaleYDownKey", ScaleYDownKey);
+            scaler.ReadFloat("MaxXScale", MaxXScale);
+            scaler.ReadFloat("MinXScale", MinXScale);
+            scaler.ReadFloat("MaxYScale", MaxYScale);
+            scaler.ReadFloat("MinYScale", MinYScale);
         }
 
         void ScaleWithKeyboard::Initialize() {

@@ -361,7 +361,7 @@ namespace ForLeaseEngine {
     // Render selections
     static void RenderSelections() {
         render->SetDrawingColor(0, 0, 0, 1);
-        render->SetDebugPointSize(8);
+        //render->SetDebugPointSize(16);
         for(std::unordered_set<int>::iterator i = SelectedFaces.begin(); i != SelectedVertices.end(); ++i) {
             IndexedFace face = mesh->GetIndexedFace(*i);
             Point v1 = mesh->GetVertex(face.Indices[0]);
@@ -380,7 +380,7 @@ namespace ForLeaseEngine {
         }
 
         render->SetDrawingColor(Color(1, 1, 1, 1));
-        render->SetDebugPointSize(4);
+        render->SetDebugPointSize(8);
         for(std::unordered_set<int>::iterator i = SelectedVertices.begin(); i != SelectedVertices.end(); ++i) {
             render->DrawPoint(mesh->GetVertex(*i));
         }
@@ -521,6 +521,51 @@ namespace ForLeaseEngine {
                     SelectedFaces.insert(index);
                     LastFaceSelected = index;
             }
+        }
+
+        // Keyboard input
+        if(!ImGui::IsAnyItemActive() && !Moving && !Scaling && !Rotating) {
+            /*if(ImGui::IsKeyPressed(Keys::M)) {
+                Moving = true;
+                TransformOrigin = GetMousePosition();
+                CurrentMousePos = TransformOrigin;
+                ShadowVertices.clear();
+                for(std::unordered_set<int>::iterator i = SelectedVertices.begin(); i != SelectedVertices.end(); ++i) {
+                    ShadowVertices.insert(std::make_pair(*i, mesh->GetVertex(*i)));
+                }
+            }*/
+            if(ImGui::IsKeyPressed(Keys::Delete)) {
+                for(std::unordered_set<int>::iterator i = SelectedFaces.begin(); i != SelectedFaces.end(); ++i) {
+                    mesh->DeleteFace(*i);
+                }
+                ClearAllSelections();
+            }
+            /*if(ImGui::IsKeyPressed(Keys::V)) {
+                Point CurrentMousePos = GetMousePosition();
+                if(CurrentMousePos[0] > 1)
+                    CurrentMousePos[0] = 1;
+                else if(CurrentMousePos[0] < -1)
+                    CurrentMousePos[0] = -1;
+                if(CurrentMousePos[1] > 1)
+                    CurrentMousePos[1] = 1;
+                else if(CurrentMousePos[1] < -1)
+                    CurrentMousePos[1] = -1;
+
+                mesh->AddVertex(CurrentMousePos, CurrentMousePos);
+            }
+            if(ImGui::IsKeyPressed(Keys::E) && SelectedVertices.size() == 2) {
+                std::unordered_set<int>::iterator i = SelectedVertices.begin();
+                int v1 = *(i++);
+                int v2 = *i;
+                mesh->AddEdge(v1, v2);
+            }
+            if(ImGui::IsKeyPressed(Keys::F) && SelectedVertices.size() == 3) {
+                std::unordered_set<int>::iterator i = SelectedVertices.begin();
+                int v1 = *(i++);
+                int v2 = *(i++);
+                int v3 = *i;
+                mesh->AddFace(v1, v2, v3, 0.5f, 0.5f, 0.5f, 1);
+            }*/
         }
     }
 

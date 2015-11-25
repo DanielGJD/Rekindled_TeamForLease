@@ -227,8 +227,12 @@ namespace ForLeaseEngine {
                 break;
             case ComponentType::DragWithMouse:
                 component = Components::DragWithMouse::Create(entity);
+                break;
             case ComponentType::Menu:
                 component = new Components::Menu(entity);
+                break;
+            case ComponentType::ScaleWithKeyboard:
+                component = Components::ScaleWithKeyboard::Create(entity);
                 break;
             default:
                 return 0;

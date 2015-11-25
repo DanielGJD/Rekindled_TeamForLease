@@ -35,6 +35,10 @@ namespace ForLeaseEngine {
                 int ScaleXDownKey;
                 int ScaleYUpKey;
                 int ScaleYDownKey;
+                float MaxXScale;
+                float MinXScale;
+                float MaxYScale;
+                float MinYScale;
             private:
                 ScaleWithKeyboard(Entity& owner);
                 void Initialize();
