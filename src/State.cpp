@@ -278,6 +278,14 @@ namespace ForLeaseEngine {
     */
     std::string State::GetName() { return Name; }
 
+    /*!
+        Setter for the name of a state.
+
+        \param name
+            The new name for the state.
+    */
+    void State::SetName(std::string name) { Name = name; }
+
     void State::Serialize(Serializer& root) {
         Serializer state = root.GetChild("State");
         state.WriteString("Name", Name);
