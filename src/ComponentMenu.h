@@ -25,7 +25,7 @@
 #include <string>
 
 namespace ForLeaseEngine {
-    
+
     namespace Components {
 
         class Menu : public Component {
@@ -41,8 +41,8 @@ namespace ForLeaseEngine {
                 void OnMouseMotion(const Event* e);
                 void OnMouseDown(const Event* e);
 
-                void Menu::AddItem(MenuItem* item);
-                void Menu::AddLoadLevel(std::string image, std::string stateName);
+                void AddItem(MenuItem* item);
+                void AddLoadLevel(std::string image, std::string stateName);
                 void Activate();
                 void Deactivate();
 

@@ -24,5 +24,7 @@
 #include "ComponentSoundEmitter.h"
 #include "ComponentMenu.h"
 #include "ComponentDragWithMouse.h"
+#include "ComponentScaleWithKeyboard.h"
+#include "ComponentTransformModeControls.h"
 
 #endif
