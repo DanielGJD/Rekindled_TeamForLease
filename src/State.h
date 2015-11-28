@@ -77,6 +77,7 @@ namespace ForLeaseEngine {
             }
 
             std::string GetName();
+            void SetName(std::string name);
 
             virtual void Serialize(Serializer& root);
             virtual void Deserialize(Serializer& root);

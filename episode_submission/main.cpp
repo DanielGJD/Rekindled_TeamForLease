@@ -19,7 +19,9 @@ int main(int argc, char** argv) {
     MainMenu* state = new MainMenu();
     states.push_back(state);
     //states.push_back(new ForLeaseEngine::Level("MainMenu.json"));
-    states.push_back(new ForLeaseEngine::Level("SecondStateTest.json"));
+    //states.push_back(new ForLeaseEngine::Level("Level1Modified.json"));
+    //states.push_back(new ForLeaseEngine::Level("Level2.json"));
+    states.push_back(new ForLeaseEngine::Level("Level3.json"));
 
     ForLeaseEngine::Engine engine(states, 1920, 1080, 60);
     engine.Run();
