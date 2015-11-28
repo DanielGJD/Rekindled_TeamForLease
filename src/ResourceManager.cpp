@@ -72,7 +72,7 @@ namespace ForLeaseEngine {
             fontFile >> fontInfo;
             Font* font = new Font(fontInfo);
             Fonts.insert(std::make_pair(fileName.c_str(), font));
-            std::cout << "Loaded Font: " << fileName << std::endl;
+            //std::cout << "Loaded Font: " << fileName << std::endl;
             ++LoadedFonts;
             RamUsed += sizeof(Font);
         }
@@ -102,7 +102,7 @@ namespace ForLeaseEngine {
                 --LoadedFonts;
                 RamUsed -= sizeof(Font);
                 delete font;
-                std::cout << "Unloaded Font: " << fileName << std::endl;
+                //std::cout << "Unloaded Font: " << fileName << std::endl;
             }
         }
 
@@ -262,11 +262,11 @@ namespace ForLeaseEngine {
         }
 
         std::ostream& operator<<(std::ostream& os, const ResourceManager& rhs) {
-            os << "Textures: " << rhs.LoadedTextures << std::endl
+            /*os << "Textures: " << rhs.LoadedTextures << std::endl
                << "Meshes: " << rhs.LoadedMeshes << std::endl
                << "Fonts: " << rhs.LoadedFonts << std::endl
                << "Texture Ram Used: " << rhs.TextureRamUsed << std::endl
-               << "Ram Used: " << rhs.RamUsed;
+               << "Ram Used: " << rhs.RamUsed;*/
             return os;
         }
     }

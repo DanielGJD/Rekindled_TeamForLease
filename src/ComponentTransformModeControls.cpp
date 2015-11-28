@@ -47,9 +47,20 @@ namespace ForLeaseEngine {
         }
 
         void TransformModeControls::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned int>(Type));
+            Serializer transModeCont = root.GetChild("TransformModeControls");
+            transModeCont.WriteFloat("SlowMotionSpeed", SlowMotionSpeed);
+            transModeCont.WriteFloat("NormalSpeed", NormalSpeed);
+            transModeCont.WriteInt("ModeToggleKey", ModeToggleKey);
+            transModeCont.WriteUint("Type", static_cast<unsigned int>(Type));
+            root.Append(transModeCont, "TransformModeControls");
         }
 
         void TransformModeControls::Deserialize(Serializer& root) {
+            Serializer transModeCont = root.GetChild("TransformModeControls");
+            transModeCont.ReadFloat("SlowMotionSpeed", SlowMotionSpeed);
+            transModeCont.ReadFloat("NormalSpeed", NormalSpeed);
+            transModeCont.ReadInt("ModeToggleKey", ModeToggleKey);
         }
 
         void TransformModeControls::Activate() {
@@ -118,7 +129,8 @@ namespace ForLeaseEngine {
 
             if(Active) {
                 Point worldLoc = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->ScreenToWorld(mouse_e->ScreenLocation);
-                Entity* entity = ForLease->GameStateManager().CurrentState().GetEntityAtPosition(worldLoc);
+                Entity* entity = ForLease->GameStateManager().CurrentState().GetEntityCollidingAtPoint(worldLoc);
+
                 if(!entity || (!entity->HasComponent(ComponentType::DragWithMouse) && !entity->HasComponent(ComponentType::ScaleWithKeyboard))) {
                     if(EntitySelected) {
                         Entity* selected = ForLease->GameStateManager().CurrentState().GetEntityByID(ActiveEntity);
@@ -138,10 +150,10 @@ namespace ForLeaseEngine {
                     EntitySelected = true;
                     ActiveEntity = entity->GetID();
                     if(entity->HasComponent(ComponentType::DragWithMouse)) {
-                        entity->GetComponent<Components::DragWithMouse>()->Active = false;
+                        entity->GetComponent<Components::DragWithMouse>()->Active = true;
                     }
                     if(entity->HasComponent(ComponentType::ScaleWithKeyboard)) {
-                        entity->GetComponent<Components::ScaleWithKeyboard>()->Active = false;
+                        entity->GetComponent<Components::ScaleWithKeyboard>()->Active = true;
                     }
                 }
             }

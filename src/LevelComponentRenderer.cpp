@@ -68,12 +68,12 @@ namespace ForLeaseEngine {
             clearColor.ReadFloat("G", g);
             clearColor.ReadFloat("B", b);
             clearColor.ReadFloat("A", a);
-            std::cout << r << " " << g << " " << b << " " << a << std::endl;
+            //std::cout << r << " " << g << " " << b << " " << a << std::endl;
             SetClearColor(r, g, b, a);
             unsigned int cameraID;
             renderer.ReadUint("CurrentCamera", cameraID);
             CurrentCamera = cameraID;
-            std::cout << "DESERIALIZED RENDERER WITH CAMERA ID " << CurrentCamera << std::endl;
+            //std::cout << "DESERIALIZED RENDERER WITH CAMERA ID " << CurrentCamera << std::endl;
         }
 
         void Renderer::Update(std::vector<Entity*>& entities) {

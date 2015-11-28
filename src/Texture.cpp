@@ -24,7 +24,7 @@ namespace ForLeaseEngine {
             std::cout << "Unable to load texture: " << filename << std::endl;
             return NULL;
         }
-        else {
+        /*else {
             std::cout << "Loaded texture " << filename << ":" << std::endl;
             std::cout << "  Dim: " << surface->w << "x" << surface->h << std::endl;
             std::cout << "  Pitch: " << surface->pitch << std::endl;
@@ -36,7 +36,7 @@ namespace ForLeaseEngine {
             std::cout << "    Green Mask: " << std::bitset<32>(surface->format->Gmask) << std::endl;
             std::cout << "    Blue Mask:  " << std::bitset<32>(surface->format->Bmask) << std::endl;
             std::cout << "    Alpha Mask: " << std::bitset<32>(surface->format->Amask) << std::endl;
-        }
+        }*/
 
         GLenum type;
         if(surface->format->Amask == 0) {

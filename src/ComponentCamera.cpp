@@ -24,7 +24,7 @@ namespace ForLeaseEngine {
                       Near(near), Far(far), Size(size) {}
 
         Camera::~Camera() {
-            std::cout << "CAMERA DELETED" << std::endl;
+            //std::cout << "CAMERA DELETED" << std::endl;
         }
 
         void Camera::Update() {}

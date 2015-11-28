@@ -19,7 +19,7 @@ namespace ForLeaseEngine {
 
     MeshAnimation::MeshAnimation(Mesh const* mesh, std::string name)
                                 : AnimationName(name) {
-        std::cout << "Creating animation from mesh with " << mesh->GetVertexCount() << " vertices" << std::endl;
+        //std::cout << "Creating animation from mesh with " << mesh->GetVertexCount() << " vertices" << std::endl;
         FrameVertexData.push_back(std::vector<Point>());
         for(unsigned int i = 0; i < static_cast<unsigned int>(mesh->GetVertexCount()); ++i) {
             FrameVertexData[0].push_back(mesh->GetVertex(i));
@@ -79,12 +79,12 @@ namespace ForLeaseEngine {
             FrameVertexData.push_back(std::vector<Point>());
             std::stringstream frameNumber;
             frameNumber << "Frame" << i;
-            std::cout << "Loading " << frameNumber.str() << std::endl;
+            //std::cout << "Loading " << frameNumber.str() << std::endl;
             Serializer frame = frames.GetChild(frameNumber.str());
             for(unsigned int j = 0; j < vertexCount; ++j) {
                 std::stringstream vertexNumber;
                 vertexNumber << "Vertex" << j;
-                std::cout << "  Loading " << vertexNumber.str() << std::endl;
+                //std::cout << "  Loading " << vertexNumber.str() << std::endl;
                 Serializer vertex = frame.GetChild(vertexNumber.str());
                 float x;
                 float y;
@@ -94,7 +94,7 @@ namespace ForLeaseEngine {
             }
         }
 
-        std::cout << "Loaded animation with " << FrameVertexData.size() << " frames with " << FrameVertexData[0].size() << " vertices" << std::endl;
+        //std::cout << "Loaded animation with " << FrameVertexData.size() << " frames with " << FrameVertexData[0].size() << " vertices" << std::endl;
     }
 
     void MeshAnimation::AddFrame() {
