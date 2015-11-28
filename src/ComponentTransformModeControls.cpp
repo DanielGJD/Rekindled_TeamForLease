@@ -41,7 +41,7 @@ namespace ForLeaseEngine {
                     Components::Transform* trans = entity->GetComponent<Components::Transform>();
                     Components::Collision* collider = entity->GetComponent<Components::Collision>();
                     ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->SetDrawingColor(1, 0, 0, 1);
-                    ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->DrawRectangle(trans->Position, collider->Width, collider->Height);
+                    ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->DrawRectangle(trans->Position, collider->Width * trans->ScaleX, collider->Height * trans->ScaleY);
                 }
             }
         }

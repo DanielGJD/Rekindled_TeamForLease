@@ -194,10 +194,10 @@ namespace ForLeaseEngine {
                 Point entPos = transform->Position;
 
 
-                Point topLeft(entPos[0] - collision->Width / 2, entPos[1] + collision->Height / 2);
-                Point topRight(entPos[0] + collision->Width / 2, entPos[1] + collision->Height / 2);
-                Point botRight(entPos[0] + collision->Width / 2, entPos[1] - collision->Height / 2);
-                Point botLeft(entPos[0] - collision->Width / 2, entPos[1] - collision->Height / 2);
+                Point topLeft(entPos[0] - collision->Width / 2 * transform->ScaleX, entPos[1] + collision->Height / 2 * transform->ScaleY);
+                Point topRight(entPos[0] + collision->Width / 2 * transform->ScaleX, entPos[1] + collision->Height / 2 * transform->ScaleY);
+                Point botRight(entPos[0] + collision->Width / 2 * transform->ScaleX, entPos[1] - collision->Height / 2 * transform->ScaleY);
+                Point botLeft(entPos[0] - collision->Width / 2 * transform->ScaleX, entPos[1] - collision->Height / 2 * transform->ScaleY);
 
                 HalfPlane top(topLeft, topRight, entPos);
                 HalfPlane right(topRight, botRight, entPos);
