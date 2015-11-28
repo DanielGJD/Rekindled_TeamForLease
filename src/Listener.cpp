@@ -28,11 +28,15 @@ namespace ForLeaseEngine {
 
         \param ReceivingCallback
             The callback function for the listener
+
+        \param Parent
+            The Parent of the listener
     */
     Listener::Listener(void* ObjectSending,
                        void* ObjectReceiving,
-                       std::function<void(const Event*)> ReceivingCallback) :
+                       std::function<void(const Event*)> ReceivingCallback, void* Parent) :
                            Sender(ObjectSending),
                            Receiver(ObjectReceiving),
-                           Callback(ReceivingCallback) {}
+                           Callback(ReceivingCallback),
+                           Parent(Parent) {}
 }

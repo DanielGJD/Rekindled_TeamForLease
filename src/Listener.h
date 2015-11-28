@@ -25,10 +25,11 @@ namespace ForLeaseEngine {
     struct Listener {
         Listener(void* ObjectSending,
                  void* ObjectReceiving,
-                 std::function<void(const Event*)> ReceivingCallback);
+                 std::function<void(const Event*)> ReceivingCallback, void* Parent = NULL);
         void* Sender;
         void* Receiver;
         std::function<void(const Event*)> Callback;
+        void* Parent;
     };
 }
 
