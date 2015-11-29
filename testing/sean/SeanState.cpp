@@ -114,14 +114,19 @@ void SeanState::Initialize() {
     background->GetComponent<Components::Transform>(true)->ScaleX = 0.05;
     background->GetComponent<Components::Transform>(true)->ScaleY = 0.05;
 
-    Entity* menu = AddEntity("Menu");
+    Entity* menu = AddEntity("MainMenu");
     menu->AddComponent(new Components::Transform(*menu));
     menu->AddComponent(new Components::Menu(*menu));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
-    menuComp->AddLoadLevel("ButtonPlay.png", "SecondState");
-    menuComp->AddLoadLevel("ButtonOptions.png", "SecondState");
-    menuComp->AddLoadLevel("ButtonStartGame.png", "Sean's State");
+    menuComp->AddItem(new MenuItems::NextLevel("ButtonTemplate.png"));
+    menuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonQuit.png", "QuitConfirm", "MainMenu"));
     menuComp->Activate();
+
+    Entity* quitConfirm = AddEntity("QuitConfirm");
+    quitConfirm->AddComponent(new Components::Transform(*quitConfirm));
+    quitConfirm->AddComponent(new Components::Menu(*quitConfirm));
+    Components::Menu* quitConfirmComp = quitConfirm->GetComponent<Components::Menu>();
+    quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonQuit.png", "MainMenu", "QuitConfirm"));
 
     //AddLevelComponent(new LevelComponents::Menu(*this));
 

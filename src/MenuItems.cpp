@@ -14,6 +14,7 @@
 #include "MenuItems.h"
 #include "Engine.h"
 #include "GameStateManager.h"
+#include "State.h"
 
 namespace ForLeaseEngine {
 
@@ -90,6 +91,66 @@ namespace ForLeaseEngine {
         void Quit::Deserialize(Serializer& root) {
             Serializer quit = root.GetChild("Quit");
             quit.ReadString("Image", Image);
+        }
+
+        // ==================================================================================
+
+        ActivateOther::ActivateOther(std::string image, std::string otherMenu) 
+            : MenuItem(MenuItemType::ActivateOther, image), OtherMenu(otherMenu) {}
+
+        void ActivateOther::Action() {
+            Entity* otherEnt = ForLease->GameStateManager().CurrentState().GetEntityByName(OtherMenu, true);
+            Components::Menu* other = otherEnt->GetComponent<Components::Menu>(true);
+
+            other->Activate();
+        }
+
+        void ActivateOther::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned>(Type));
+            Serializer activateOther = root.GetChild("ActivateOther");
+            activateOther.WriteString("Image", Image);
+            activateOther.WriteString("OtherMenu", OtherMenu);
+            activateOther.WriteUint("Type", static_cast<unsigned>(Type));
+            root.Append(activateOther, "ActivateOther");
+        }
+
+        void ActivateOther::Deserialize(Serializer& root) {
+            Serializer activateOther = root.GetChild("ActivateOther");
+            activateOther.ReadString("Image", Image);
+            activateOther.ReadString("OtherMenu", OtherMenu);
+        }
+
+        // ==================================================================================
+
+        ActivateAndDeactivate::ActivateAndDeactivate(std::string image, std::string toDeactivate, std::string toActivate)
+            : MenuItem(MenuItemType::ActivateAndDeactivate, image), ToDeactivate(toDeactivate), ToActivate(toActivate) {}
+
+        void ActivateAndDeactivate::Action() {
+            Entity* actEnt = ForLease->GameStateManager().CurrentState().GetEntityByName(ToDeactivate, true);
+            Components::Menu* activate = actEnt->GetComponent<Components::Menu>(true);
+
+            Entity* deactEnt = ForLease->GameStateManager().CurrentState().GetEntityByName(ToActivate, true);
+            Components::Menu* deactivate = deactEnt->GetComponent<Components::Menu>(true);
+
+            deactivate->Deactivate();
+            activate->Activate();
+        }
+
+        void ActivateAndDeactivate::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned>(Type));
+            Serializer actAndDeact = root.GetChild("ActivateAndDeactivate");
+            actAndDeact.WriteString("Image", Image);
+            actAndDeact.WriteString("ToDeactivate", ToDeactivate);
+            actAndDeact.WriteString("ToActivate", ToActivate);
+            actAndDeact.WriteUint("Type", static_cast<unsigned>(Type));
+            root.Append(actAndDeact, "ActivateAndDeactivate");
+        }
+
+        void ActivateAndDeactivate::Deserialize(Serializer& root) {
+            Serializer activateOther = root.GetChild("ActivateAndDeactivate");
+            activateOther.ReadString("Image", Image);
+            activateOther.ReadString("ToDeactivate", ToDeactivate);
+            activateOther.ReadString("ToActivate", ToActivate);
         }
 
     } // MenuItems

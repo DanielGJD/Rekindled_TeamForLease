@@ -21,10 +21,12 @@
 namespace ForLeaseEngine {
 
     enum class MenuItemType : unsigned {
-        None        = 0,
-        LoadLevel   = 1,
-        NextLevel   = 2,
-        Quit        = 3
+        None                    = 0,
+        LoadLevel               = 1,
+        NextLevel               = 2,
+        Quit                    = 3,
+        ActivateOther           = 4,
+        ActivateAndDeactivate   = 5
     };
 
     class MenuItem : public Serializable {
@@ -68,6 +70,31 @@ namespace ForLeaseEngine {
 
                 virtual void Serialize(Serializer& root);
                 virtual void Deserialize(Serializer& root);
+        };
+
+        class ActivateOther : public MenuItem {
+            public:
+                ActivateOther(std::string image, std::string otherMenu);
+
+                virtual void Action();
+
+                virtual void Serialize(Serializer& root);
+                virtual void Deserialize(Serializer& root);
+
+                std::string OtherMenu;
+        };
+
+        class ActivateAndDeactivate : public MenuItem {
+            public:
+                ActivateAndDeactivate(std::string image, std::string otherMenu, std::string thisMenu);
+
+                virtual void Action();
+
+                virtual void Serialize(Serializer& root);
+                virtual void Deserialize(Serializer& root);
+
+                std::string ToDeactivate;
+                std::string ToActivate;
         };
 
     } // MenuItems
