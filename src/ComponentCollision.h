@@ -17,6 +17,8 @@
 
 namespace ForLeaseEngine {
 
+    class Entity;
+
     namespace Components {
 
         /*!
@@ -39,6 +41,7 @@ namespace ForLeaseEngine {
                 float OffsetX;          //! Offset of the collision box on the X axis
                 float OffsetY;          //! Offset of the collision box on the Y axis
                 bool CollidedLastFrame; //! Whether or not the entity collided on the last frame.  This should be handled by an event.
+                Entity* CollidedWith;   //! The last entity this entity collided with
                 bool ResolveCollisions; //! Whether we want to resolve collisions by moving entities
             private:
                 Collision() = delete;

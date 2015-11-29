@@ -24,7 +24,7 @@ namespace ForLeaseEngine {
         */
         Collision::Collision(Entity& owner, float width, float height, bool resolve, float offsetX, float offsetY)
             : Component(owner, ComponentType::Transform), Width(width), Height(height),
-            OffsetX(offsetX), OffsetY(offsetY), ResolveCollisions(resolve) {}
+            OffsetX(offsetX), OffsetY(offsetY), CollidedLastFrame(false), CollidedWith(0), ResolveCollisions(resolve) {}
 
         void Collision::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
