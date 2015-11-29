@@ -497,6 +497,9 @@ namespace ForLeaseEngine {
             case ComponentType::Renderer:
                 lc = new LevelComponents::Renderer(state);
                 break;
+            case ComponentType::Menu:
+                lc = new LevelComponents::Menu(state);
+                break;
             default:
                 return 0;
         }

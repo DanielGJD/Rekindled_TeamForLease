@@ -20,7 +20,7 @@ namespace ForLeaseEngine {
 
     namespace Components {
 
-        Menu::Menu(Entity& owner, float unfocusedScale, float focusedScale, Vector spacing, bool active)
+        Menu::Menu(Entity& owner, Vector spacing, bool active, float unfocusedScale, float focusedScale)
             : Component(owner, ComponentType::Transform), UnfocusedScale(unfocusedScale),
               FocusedScale(focusedScale), Spacing(spacing), Active(active), LastActive(0) {
             if (Active) Activate();

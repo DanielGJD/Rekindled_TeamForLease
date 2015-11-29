@@ -122,14 +122,14 @@ namespace ForLeaseEngine {
 
         // ==================================================================================
 
-        ActivateAndDeactivate::ActivateAndDeactivate(std::string image, std::string toDeactivate, std::string toActivate)
+        ActivateAndDeactivate::ActivateAndDeactivate(std::string image, std::string toActivate, std::string toDeactivate)
             : MenuItem(MenuItemType::ActivateAndDeactivate, image), ToDeactivate(toDeactivate), ToActivate(toActivate) {}
 
         void ActivateAndDeactivate::Action() {
-            Entity* actEnt = ForLease->GameStateManager().CurrentState().GetEntityByName(ToDeactivate, true);
+            Entity* actEnt = ForLease->GameStateManager().CurrentState().GetEntityByName(ToActivate, true);
             Components::Menu* activate = actEnt->GetComponent<Components::Menu>(true);
 
-            Entity* deactEnt = ForLease->GameStateManager().CurrentState().GetEntityByName(ToActivate, true);
+            Entity* deactEnt = ForLease->GameStateManager().CurrentState().GetEntityByName(ToDeactivate, true);
             Components::Menu* deactivate = deactEnt->GetComponent<Components::Menu>(true);
 
             deactivate->Deactivate();
