@@ -74,6 +74,10 @@ namespace ForLeaseEngine {
             Point entity2Position = entity2->GetComponent<Components::Transform>()->Position;
             Components::Collision* entity1Collision = entity1->GetComponent<Components::Collision>();
             Components::Collision* entity2Collision = entity2->GetComponent<Components::Collision>();
+            entity1Position[0] += entity1Collision->OffsetX;
+            entity1Position[1] += entity1Collision->OffsetY;
+            entity2Position[0] += entity2Collision->OffsetX;
+            entity2Position[1] += entity2Collision->OffsetY;
             bool collided =
                   !(entity2Position[0] - entity2Collision->Width / 2 > entity1Position[0] + entity1Collision->Width / 2 ||
                     entity2Position[0] + entity2Collision->Width / 2 < entity1Position[0] - entity1Collision->Width / 2 ||

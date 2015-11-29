@@ -22,15 +22,17 @@ namespace ForLeaseEngine {
             \param owner
                 The entity that uses this Collision component.
         */
-        Collision::Collision(Entity& owner, float width, float height, bool resolve)
+        Collision::Collision(Entity& owner, float width, float height, bool resolve, float offsetX, float offsetY)
             : Component(owner, ComponentType::Transform), Width(width), Height(height),
-            ResolveCollisions(resolve) {}
+            OffsetX(offsetX), OffsetY(offsetY), ResolveCollisions(resolve) {}
 
         void Collision::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer collision = root.GetChild("Collision");
             collision.WriteFloat("Height", Height);
             collision.WriteFloat("Width", Width);
+            collision.WriteFloat("OffsetX", OffsetX);
+            collision.WriteFloat("OffsetY", OffsetY);
             collision.WriteBool("ResolveCollisions", ResolveCollisions);
             collision.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(collision, "Collision");
@@ -40,6 +42,8 @@ namespace ForLeaseEngine {
             Serializer collision = root.GetChild("Collision");
             collision.ReadFloat("Height", Height);
             collision.ReadFloat("Width", Width);
+            collision.ReadFloat("OffsetX", OffsetX);
+            collision.ReadFloat("OffsetY", OffsetY);
             collision.ReadBool("ResolveCollisions", ResolveCollisions);
             CollidedLastFrame = false;
         }
@@ -47,7 +51,10 @@ namespace ForLeaseEngine {
         void Collision::DebugDraw() {
             LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true);
             Components::Transform* transform = Parent.GetComponent<Components::Transform>(true);
-            renderer->DrawRectangle(transform->Position, Width, Height, transform->Rotation);
+            Point position = transform->Position;
+            position[0] += OffsetX;
+            position[1] += OffsetY;
+            renderer->DrawRectangle(position, Width, Height, transform->Rotation);
         }
     } // Components
 

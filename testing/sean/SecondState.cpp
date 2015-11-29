@@ -57,7 +57,7 @@ void SecondState::Load() {
     FLE::Entity* entityBox = AddEntity("Box");
     entityBox->AddComponent(new Components::Transform(*entityBox, 0, 0, 1, 1, 0));
     entityBox->AddComponent(new Components::Model(*entityBox, true, false, false, "BoxMesh.json", "", Color(1,1,1,1)));
-    entityBox->AddComponent(new Components::Collision(*entityBox, 2, 2));
+    entityBox->AddComponent(new Components::Collision(*entityBox, 2, 2, true, 0, 2));
     entityBox->AddComponent(new Components::Physics(*entityBox, 1, Vector(0,10)));
     Components::CharacterController* controller = Components::CharacterController::Create(*entityBox);
     controller->JumpSpeed = 10;
@@ -128,9 +128,10 @@ void SecondState::Update() {
         levelComponent->Update(Entities);
     }
 
-    //for (Entity* entity : Entities) {
-    //    std::cout << entity->GetName() << std::endl;
-    //}
+    for (Entity* entity : Entities) {
+        if (entity->HasComponent(ComponentType::Collision))
+            entity->GetComponent<Components::Collision>()->DebugDraw();
+    }
 
     //std::cout << "=========================================================" << std::endl;
 
