@@ -64,6 +64,7 @@ namespace ForLeaseEngine {
 
         void Menu::AddItem(MenuItem* item) {
             Items.push_back(item);
+            std::cout << Parent.GetName() << " added an item: " << item->Image << std::endl;
         }
 
         void Menu::AddLoadLevel(std::string image, std::string stateName) {
@@ -82,6 +83,7 @@ namespace ForLeaseEngine {
             for (MenuItem* item : Items) {
                 std::stringstream name;
                 name << "Menu " << Parent.GetName() << " item " << item->Image;
+                std::cout << "Activate: " << name.str() << std::endl;
                 Entity* rep = currentState.AddEntity(name.str());
                 rep->IncludeInSerialize = false;
                 Representations.push_back(rep);
@@ -94,6 +96,8 @@ namespace ForLeaseEngine {
                 rep->GetComponent<Components::Sprite>(true)->AnimationActive = false;
                 position += Spacing * FocusedScale * texture->GetHeight();
             }
+
+            std::cout << Parent.GetName() << " activated." << std::endl;
         }
 
         void Menu::Deactivate() {
@@ -103,6 +107,8 @@ namespace ForLeaseEngine {
 
                 for (Entity* rep : Representations)
                     ForLease->GameStateManager().CurrentState().DeleteEntity(rep->GetID());
+
+                Representations.clear();
                 Active = false;
             }
         }
