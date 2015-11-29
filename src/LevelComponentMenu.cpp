@@ -34,7 +34,7 @@ namespace ForLeaseEngine {
             Components::Menu* quitConfirmComp = new Components::Menu(*quitConfirm);
             quitConfirm->AddComponent(quitConfirmComp);
             quitConfirmComp->AddItem(new MenuItems::Quit("ButtonQuit.png"));
-            quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonTemplate.png", "PauseMenu", "QuitConfirm"));
+            quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonCancel.png", "PauseMenu", "QuitConfirm"));
             
 
             Entity* howToConfirm = owner.AddEntity("HowToConfirm");
@@ -43,7 +43,7 @@ namespace ForLeaseEngine {
             Components::Menu* howToConfirmComp = new Components::Menu(*howToConfirm);
             howToConfirm->AddComponent(howToConfirmComp);
             howToConfirmComp->AddItem(new MenuItems::Quit("ButtonQuit.png"));
-            howToConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonTemplate.png", "PauseMenu", "HowToConfirm"));
+            howToConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonCancel.png", "PauseMenu", "HowToConfirm"));
             
             
             ForLease->Dispatcher.Attach(NULL, this, "KeyDown", &Menu::OnKeyDown);
