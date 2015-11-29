@@ -31,6 +31,7 @@ void SecondState::Load() {
     AddLevelComponent(renderer);
     AddLevelComponent(new LevelComponents::Physics(*this, Vector(0, -10)));
     AddLevelComponent(new LevelComponents::Collision(*this));
+    AddLevelComponent(new LevelComponents::Menu(*this));
 
     FLE::Mesh* box = new FLE::Mesh(4, 4, 2);
     box->SetVertex(Point(-1, -1), 0);
@@ -57,7 +58,7 @@ void SecondState::Load() {
     FLE::Entity* entityBox = AddEntity("Box");
     entityBox->AddComponent(new Components::Transform(*entityBox, 0, 0, 1, 1, 0));
     entityBox->AddComponent(new Components::Model(*entityBox, true, false, false, "BoxMesh.json", "", Color(1,1,1,1)));
-    entityBox->AddComponent(new Components::Collision(*entityBox, 2, 2, true, 0, 2));
+    entityBox->AddComponent(new Components::Collision(*entityBox, 2, 2/*, true, 0, 2*/));
     entityBox->AddComponent(new Components::Physics(*entityBox, 1, Vector(0,10)));
     Components::CharacterController* controller = Components::CharacterController::Create(*entityBox);
     controller->JumpSpeed = 10;
@@ -88,7 +89,8 @@ void SecondState::Load() {
     DeleteAllEntities();
     DeleteAllLevelComponents();
 
-
+    for (Entity* entity : Entities)
+        std::cout << "There's still an entity!" << std::endl;
 
 
 

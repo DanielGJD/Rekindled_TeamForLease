@@ -118,7 +118,7 @@ void SeanState::Initialize() {
     menu->AddComponent(new Components::Transform(*menu));
     menu->AddComponent(new Components::Menu(*menu));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
-    menuComp->AddItem(new MenuItems::NextLevel("ButtonTemplate.png"));
+    menuComp->AddItem(new MenuItems::NextLevel("ButtonPlay.png"));
     menuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonQuit.png", "QuitConfirm", "MainMenu"));
     menuComp->Activate();
 
@@ -126,7 +126,8 @@ void SeanState::Initialize() {
     quitConfirm->AddComponent(new Components::Transform(*quitConfirm));
     quitConfirm->AddComponent(new Components::Menu(*quitConfirm));
     Components::Menu* quitConfirmComp = quitConfirm->GetComponent<Components::Menu>();
-    quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonQuit.png", "MainMenu", "QuitConfirm"));
+    quitConfirmComp->AddItem(new MenuItems::Quit("ButtonQuit.png"));
+    quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonTemplate.png", "MainMenu", "QuitConfirm"));
 
     //AddLevelComponent(new LevelComponents::Menu(*this));
 

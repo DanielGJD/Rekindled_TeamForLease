@@ -19,22 +19,81 @@ namespace ForLeaseEngine {
 
     namespace LevelComponents {
 
-        Menu::Menu(State& owner) : LevelComponent(owner) {}
+        Menu::Menu(State& owner) : LevelComponent(owner), Paused(false) {
+            Entity* pauseMenu = owner.AddEntity("PauseMenu");
+            pauseMenu->IncludeInSerialize = false;
+            pauseMenu->AddComponent(new Components::Transform(*pauseMenu));
+            Components::Menu* pauseMenuComp = new Components::Menu(*pauseMenu);
+            pauseMenu->AddComponent(pauseMenuComp);
+            pauseMenuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonHowTo.png", "HowToConfirm", "PauseMenu"));
+            pauseMenuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonQuit.png", "QuitConfirm", "PauseMenu"));
 
-        void Menu::Update(std::vector<Entity*>& entities) {
-            //for (Entity* entity : entities) {
-            //    if (!entity->HasComponent(ComponentType::Menu)) continue;
+            Entity* quitConfirm = owner.AddEntity("QuitConfirm");
+            quitConfirm->IncludeInSerialize = false;
+            quitConfirm->AddComponent(new Components::Transform(*quitConfirm));
+            Components::Menu* quitConfirmComp = new Components::Menu(*quitConfirm);
+            quitConfirm->AddComponent(quitConfirmComp);
+            quitConfirmComp->AddItem(new MenuItems::Quit("ButtonQuit.png"));
+            quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonTemplate.png", "PauseMenu", "QuitConfirm"));
+            
 
-            //    Components::SpriteText text(*entity, "Arial.fnt", "HI!", Color(1, 1, 1));
-            //    LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
-            //    renderer->DrawSpriteText(&text, Point(0, 0), 3, 3, 0);
-            //}
+            Entity* howToConfirm = owner.AddEntity("HowToConfirm");
+            howToConfirm->IncludeInSerialize = false;
+            howToConfirm->AddComponent(new Components::Transform(*howToConfirm));
+            Components::Menu* howToConfirmComp = new Components::Menu(*howToConfirm);
+            howToConfirm->AddComponent(howToConfirmComp);
+            howToConfirmComp->AddItem(new MenuItems::Quit("ButtonQuit.png"));
+            howToConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonTemplate.png", "PauseMenu", "HowToConfirm"));
+            
+            
+            ForLease->Dispatcher.Attach(NULL, this, "KeyDown", &Menu::OnKeyDown);
         }
 
+        void Menu::Update(std::vector<Entity *>& entities) { }
+
         void Menu::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned>(ComponentType::Menu));
+            Serializer menu = root.GetChild("Menu");
+            menu.WriteUint("Type", static_cast<unsigned>(ComponentType::Menu));
+            root.Append(menu, "Menu");
         }
 
         void Menu::Deserialize(Serializer& root) {
+            Serializer menu = root.GetChild("Menu");
+        }
+
+        void Menu::OnKeyDown(const Event* e) {
+            const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
+            if (key_e->Key == Keys::Escape) {
+                if (Paused) Unpause();
+                else Pause();
+            }
+        }
+
+        void Menu::Pause() {
+            Entity* pauseMenu = ForLease->GameStateManager().CurrentState().GetEntityByName("PauseMenu");
+            Components::Menu* pauseMenuComp = pauseMenu->GetComponent<Components::Menu>();
+            pauseMenuComp->Activate();
+            LastTimeScale = ForLease->FrameRateController().TimeScaling();
+            std::cout << LastTimeScale << std::endl;
+            ForLease->FrameRateController().TimeScaling(0);
+            Paused = true;
+        }
+
+        void Menu::Unpause() {
+            std::vector<Entity *> menus;
+
+            menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("PauseMenu"));
+            menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("QuitConfirm"));
+            menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("HowToConfirm"));
+
+            for (Entity* menu : menus) {
+                Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
+                if (menuComp) menuComp->Deactivate();
+            }
+            
+            ForLease->FrameRateController().TimeScaling(1);
+            Paused = false;
         }
 
     } // LevelComponents

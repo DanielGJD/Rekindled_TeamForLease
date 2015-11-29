@@ -86,7 +86,7 @@ namespace ForLeaseEngine {
 
         class ActivateAndDeactivate : public MenuItem {
             public:
-                ActivateAndDeactivate(std::string image, std::string otherMenu, std::string thisMenu);
+                ActivateAndDeactivate(std::string image, std::string toActivate, std::string toDeactivate);
 
                 virtual void Action();
 
