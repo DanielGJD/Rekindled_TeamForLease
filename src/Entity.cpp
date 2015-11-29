@@ -234,6 +234,9 @@ namespace ForLeaseEngine {
             case ComponentType::ScaleWithKeyboard:
                 component = Components::ScaleWithKeyboard::Create(entity);
                 break;
+            case ComponentType::TransformModeControls:
+                component = new Components::TransformModeControls(entity);
+                break;
             default:
                 return 0;
         }

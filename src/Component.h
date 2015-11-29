@@ -44,7 +44,8 @@ namespace ForLeaseEngine {
         DragWithMouse         = 1 << 11,   //! Item that can be dragged by the mouse
         ScaleWithKeyboard     = 1 << 12,   //! Item that can be scaled by the keyboard
         TransformModeControls = 1 << 13,   //! Controls for the transform mode of the main character
-        Menu                  = 1 << 14    //! Menu
+        Menu                  = 1 << 14,   //! Menu
+        VisionCone            = 1 << 15    //! Used for detecting objects in a radius within an angle
     };
 
     ComponentType operator|(const ComponentType& lhs, const ComponentType& rhs);

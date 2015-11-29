@@ -108,6 +108,13 @@ namespace ForLeaseEngine {
 
             for(unsigned int i = 0; i < entities.size(); ++i) {
                 Entity* entity = entities[i];
+                if(entity->HasComponent(ComponentType::VisionCone)) {
+                    Components::VisionCone* visionCone = entity->GetComponent<Components::VisionCone>();
+                    Components::Transform* trans = entity->GetComponent<Components::Transform>();
+                    ModelView = Matrix::Translation(trans->Position);
+                    SetBlendMode(BlendMode::ALPHA);
+                    DrawMesh(visionCone->GetVisionMesh(), visionCone->DrawOutline, false);
+                }
                 if(entity->HasComponent(ComponentType::Sprite)) {
                     Components::Sprite* sprite = entity->GetComponent<Components::Sprite>();
                     Components::Transform* transform = entity->GetComponent<Components::Transform>();

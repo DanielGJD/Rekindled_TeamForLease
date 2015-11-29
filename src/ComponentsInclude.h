@@ -26,5 +26,6 @@
 #include "ComponentDragWithMouse.h"
 #include "ComponentScaleWithKeyboard.h"
 #include "ComponentTransformModeControls.h"
+#include "ComponentVisionCone.h"
 
 #endif
