@@ -226,7 +226,7 @@ namespace ForLeaseEngine {
       \return
         The scaled vector
 	*/
-	Vector Vector::Scale(Vector vec, float magnitude) {
+	Vector Vector::Scale(Vector const& vec, float magnitude) {
         return Vector(vec[0] * magnitude, vec[1] * magnitude);
 	}
 
@@ -287,7 +287,7 @@ namespace ForLeaseEngine {
 		\return
 			The scaled vector.
 	*/
-	Vector Vector::operator*(float rhs) { return Scale(*this, rhs); }
+	Vector Vector::operator*(float rhs) const { return Scale(*this, rhs); }
 
 	/*!
 	  \brief

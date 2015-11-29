@@ -46,7 +46,7 @@ namespace ForLeaseEngine {
 
             // Check for observed objects
             Components::Transform* trans = Parent.GetComponent<Components::Transform>();
-            std::vector<Entity*> detected = ForLease->GameStateManager().CurrentState().GetEntitiesInRadius(trans->Position + Offset, Radius);
+            std::vector<Entity*> detected = ForLease->GameStateManager().CurrentState().GetEntitiesInCone(trans->Position + Offset, Radius, Direction, Angle);
             std::cout << "Can see " << detected.size() << " entities" << std::endl;
         }
 

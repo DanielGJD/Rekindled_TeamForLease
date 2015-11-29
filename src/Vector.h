@@ -57,12 +57,12 @@ namespace ForLeaseEngine {
 		float Magnitude();
         float MagnitudeSquared();
 		static float DotProduct(const Vector& vec1, const Vector& vec2);
-        static Vector Scale(Vector vec, float magnitude);
+        static Vector Scale(Vector const& vec, float magnitude);
         static Vector Rotate(Vector vec, float angle);
         static float ToAngle(Vector const& vec);
         static float AngleBetween(Vector const& vec1, Vector const& vec2);
         Vector& operator+=(const Vector& rhs);
-        Vector operator*(float rhs);
+        Vector operator*(float rhs) const;
         friend std::ostream& operator<<(std::ostream& os, const Vector& vector);
 	};
 
