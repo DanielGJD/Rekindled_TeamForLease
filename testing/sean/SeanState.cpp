@@ -127,7 +127,7 @@ void SeanState::Initialize() {
     quitConfirm->AddComponent(new Components::Menu(*quitConfirm));
     Components::Menu* quitConfirmComp = quitConfirm->GetComponent<Components::Menu>();
     quitConfirmComp->AddItem(new MenuItems::Quit("ButtonQuit.png"));
-    quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonTemplate.png", "MainMenu", "QuitConfirm"));
+    quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonCancel.png", "MainMenu", "QuitConfirm"));
 
     //AddLevelComponent(new LevelComponents::Menu(*this));
 

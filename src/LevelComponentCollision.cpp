@@ -43,6 +43,7 @@ namespace ForLeaseEngine {
                 if (!CheckEntityCompatibility(entity1)) continue;
 
                 entity1->GetComponent<Components::Collision>()->CollidedLastFrame = false;
+                entity1->GetComponent<Components::Collision>()->CollidedWith = 0;
 
                 for (Entity* entity2 : entities) {
                     if (entity2 == entity1 || !CheckEntityCompatibility(entity2)) continue;
@@ -88,6 +89,9 @@ namespace ForLeaseEngine {
 
             entity1Collision->CollidedLastFrame = true;
             entity2Collision->CollidedLastFrame = true;
+
+            entity1Collision->CollidedWith = entity2;
+            entity2Collision->CollidedWith = entity1;
 
             return true;
 
