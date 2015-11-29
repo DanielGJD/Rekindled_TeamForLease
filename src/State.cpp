@@ -188,7 +188,7 @@ namespace ForLeaseEngine {
             if (!entity->HasComponent(ComponentType::Transform)) continue;
 
             Components::Transform* transform = entity->GetComponent<Components::Transform>(true);
-            
+
             if (position[0] > transform->Position[0] - transform->ScaleX &&
                 position[0] < transform->Position[0] + transform->ScaleX &&
                 position[1] > transform->Position[1] - transform->ScaleY &&
@@ -256,6 +256,53 @@ namespace ForLeaseEngine {
         }
 
         return entity;
+    }
+
+    std::vector<Entity*> State::GetEntitiesInRadius(Point const& position, float radius) {
+        std::vector<Entity*> detected;
+        float radius2 = radius * radius;
+        for(std::vector<Entity*>::iterator i = Entities.begin(); i != Entities.end(); ++i) {
+            if((*i)->HasComponent(ComponentType::Collision)){
+                Components::Transform* trans = (*i)->GetComponent<Components::Transform>();
+                Components::Collision* collide = (*i)->GetComponent<Components::Collision>();
+                float halfwidth = collide->Width / 2 * trans->ScaleX;
+                float halfheight = collide->Height / 2 * trans->ScaleY;
+                float entityx = trans->Position[0];
+                float entityy = trans->Position[1];
+                float posx = position[0];
+                float posy = position[1];
+                Point closest;
+
+                if(posx > entityx + halfwidth) {
+                    closest[0] = entityx + halfwidth;
+                }
+                else if(posx < entityx - halfwidth) {
+                    closest[0] = entityx - halfwidth;
+                }
+                else {
+                    closest[0] = posx;
+                }
+
+                if(posy > entityy + halfheight) {
+                    closest[1] = entityy + halfheight;
+                }
+                else if(posy < entityy - halfheight) {
+                    closest[1] = entityy - halfheight;
+                }
+                else {
+                    closest[1] = posy;
+                }
+
+                if(Point::DistanceSquared(closest, position) <= radius2) {
+                    detected.push_back(*i);
+                }
+            }
+        }
+        return detected;
+    }
+
+    std::vector<Entity*> State::GetEntitiesInCone(Point const& position, float radius, Vector const& direction, float angle) {
+        return std::vector<Entity*>();
     }
 
     std::vector<Entity *>& State::GetAllEntities() {

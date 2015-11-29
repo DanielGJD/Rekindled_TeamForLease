@@ -2,6 +2,7 @@
 #include "Engine.h" // Just for testing, remove when done
 #include "LevelComponentRenderer.h" // Testing
 #include <vector>
+#include <iostream>
 
 static const int ViewResolution = 12;
 
@@ -43,6 +44,10 @@ namespace ForLeaseEngine {
             }
             ViewMesh.AddEdge(ViewMesh.GetVertexCount() - 1, 0);
 
+            // Check for observed objects
+            Components::Transform* trans = Parent.GetComponent<Components::Transform>();
+            std::vector<Entity*> detected = ForLease->GameStateManager().CurrentState().GetEntitiesInRadius(trans->Position + Offset, Radius);
+            std::cout << "Can see " << detected.size() << " entities" << std::endl;
         }
 
         void VisionCone::Serialize(Serializer& root) {
