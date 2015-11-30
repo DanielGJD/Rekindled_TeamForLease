@@ -19,6 +19,7 @@
 #include "ComponentMenu.h"
 #include "Engine.h"
 #include "LevelComponentRenderer.h"
+#include "Timer.h"
 
 namespace ForLeaseEngine {
 
@@ -29,7 +30,7 @@ namespace ForLeaseEngine {
                 static const ComponentType Type = ComponentType::Menu;
                 virtual ComponentType GetType() { return Type; }
 
-                Menu(State& owner);
+                Menu(State& owner, double pauseCD = 0.2);
 
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
@@ -44,7 +45,8 @@ namespace ForLeaseEngine {
             private:
                 bool Paused;
                 float LastTimeScale;
-
+                Timer PauseTimer;
+                double PauseCooldown;
         };
 
     } // LevelComponents

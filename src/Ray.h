@@ -23,13 +23,15 @@ namespace ForLeaseEngine {
     class Ray {
         public:
             const static int Unlimited = -1;
-            Ray(Point start = Point(0,0), Vector direction = Vector(1,1), float scale = Unlimited, int collisions = Unlimited);
+            Ray(Point start = Point(0,0), Vector direction = Vector(1,1), float scale = 20, int collisions = Unlimited);
             bool IsColliding(Entity* entity);
             std::vector<Point> GetCollisionPoints();
             void ResetLength();
             Point GetStart();
             Vector GetScaledVector();
+            Point GetIntersectionPoint();
             HalfPlane::CollisionInterval GetHalfPlaneInterval(const HalfPlane& halfPlane);
+            static Entity* CheckCollisions(Ray& ray, std::vector<Entity *>& entities);
         private:
             Point Start;
             Vector Direction;
@@ -38,7 +40,7 @@ namespace ForLeaseEngine {
             int Collisions;
     };
 
-    std::vector<Entity *> CheckCollisions(const Ray& ray, std::vector<Entity *> entities);
+    //Entity* CheckCollisions(const Ray& ray, std::vector<Entity *>& entities);
 
 } // ForLeaseEngine
 

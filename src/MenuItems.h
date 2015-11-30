@@ -26,7 +26,8 @@ namespace ForLeaseEngine {
         NextLevel               = 2,
         Quit                    = 3,
         ActivateOther           = 4,
-        ActivateAndDeactivate   = 5
+        ActivateAndDeactivate   = 5,
+        ResumeGame              = 6
     };
 
     class MenuItem : public Serializable {
@@ -95,6 +96,16 @@ namespace ForLeaseEngine {
 
                 std::string ToDeactivate;
                 std::string ToActivate;
+        };
+
+        class ResumeGame : public MenuItem {
+            public:
+                ResumeGame(std::string image);
+
+                virtual void Action();
+
+                virtual void Serialize(Serializer& root);
+                virtual void Deserialize(Serializer& root);
         };
 
     } // MenuItems

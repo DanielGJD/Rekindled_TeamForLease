@@ -14,8 +14,6 @@
 #include "Engine.h"
 #include "LevelComponentsInclude.h"
 
-int i = 0;
-
 namespace ForLeaseEngine {
 
     Ray::Ray(Point start, Vector direction, float scale, int collisions)
@@ -79,8 +77,6 @@ namespace ForLeaseEngine {
 
         float minDist = Unlimited;
 
-        Vector searchVec = Vector::Scale(Direction, Length);
-
         HalfPlane::CollisionInterval interval = GetHalfPlaneInterval(top);
 
         if (interval() && top.Dot(Start) > 0 && (minDist == Unlimited || interval.Start < minDist))
@@ -132,6 +128,10 @@ namespace ForLeaseEngine {
         else
             return Direction * Length;
     }
+    
+    Point Ray::GetIntersectionPoint() {
+        return GetStart() + GetScaledVector();
+    }
 
     HalfPlane::CollisionInterval Ray::GetHalfPlaneInterval(const HalfPlane& halfPlane) {
         float dotStart = halfPlane.Dot(Start);
@@ -146,12 +146,12 @@ namespace ForLeaseEngine {
         else return HalfPlane::CollisionInterval(0, ti);
     }
 
-    std::vector<Entity *> CheckCollisions(Ray& ray, std::vector<Entity *> entities) {
-        std::vector<Entity *> colliding;
+    Entity* Ray::CheckCollisions(Ray& ray, std::vector<Entity *>& entities) {
+        Entity* colliding = 0;
 
         for (Entity* entity : entities)
             if (ray.IsColliding(entity))
-                colliding.push_back(entity);
+                colliding = entity;
 
         return colliding;
     }

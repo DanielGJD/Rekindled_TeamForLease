@@ -206,6 +206,15 @@ namespace ForLeaseEngine {
                 case MenuItemType::Quit:
                     item = new MenuItems::Quit("");
                     break;
+                case MenuItemType::ActivateOther:
+                    item = new MenuItems::ActivateOther("", "");
+                    break;
+                case MenuItemType::ActivateAndDeactivate:
+                    item = new MenuItems::ActivateAndDeactivate("", "", "");
+                    break;
+                case MenuItemType::ResumeGame:
+                    item = new MenuItems::ResumeGame("");
+                    break;
                 default:
                     break;
             }
