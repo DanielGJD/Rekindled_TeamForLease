@@ -59,7 +59,7 @@ void SecondState::Load() {
     entityBox->AddComponent(new Components::Transform(*entityBox, 0, 0, 1, 1, 0));
     entityBox->AddComponent(new Components::Model(*entityBox, true, false, false, "BoxMesh.json", "", Color(1,1,1,1)));
     entityBox->AddComponent(new Components::Collision(*entityBox, 2, 2/*, true, 0, 2*/));
-    entityBox->AddComponent(new Components::Physics(*entityBox, 1, Vector(0,10)));
+    entityBox->AddComponent(new Components::Physics(*entityBox, 1));
     Components::CharacterController* controller = Components::CharacterController::Create(*entityBox);
     controller->JumpSpeed = 10;
     controller->MoveSpeed = 10;
@@ -164,13 +164,13 @@ void SecondState::Update() {
     //    renderer->DrawRectangle(ray.GetStart(),0.5,0.5);
     //}
 
-    Ray ray(Point(0, 0), Vector(0, -1));
+    //Ray ray(Point(0, 0), Vector(0, -1));
 
-    Entity* collidedWith = Ray::CheckCollisions(ray, Entities);
+    //Entity* collidedWith = Ray::CheckCollisions(ray, Entities);
 
-    if (collidedWith) std::cout << collidedWith->GetName() << std::endl;
+    //if (collidedWith) std::cout << collidedWith->GetName() << std::endl;
 
-    renderer->DrawArrow(ray.GetStart(), ray.GetScaledVector());
+    //renderer->DrawArrow(ray.GetStart(), ray.GetScaledVector());
 
     //renderer->DrawRectangleFilled(Point(0, -1), 0.2, 0.2);
     //Entity* entity = GetEntityAtPosition(Point(0,-1));
