@@ -18,7 +18,7 @@ namespace ForLeaseEngine {
         CharacterController::CharacterController(Entity& owner)
                                                 : Component(owner, ComponentType::Physics),
                                                   RightKey(Keys::Right), LeftKey(Keys::Left), JumpKey(Keys::Space),
-                                                  MoveSpeed(0), JumpSpeed(0) {};
+                                                  MoveSpeed(0), JumpSpeed(0), CanJump(false) {};
 
         CharacterController* CharacterController::Create(Entity& owner) {
             CharacterController* controller = new CharacterController(owner);
@@ -31,7 +31,11 @@ namespace ForLeaseEngine {
             ForLease->Dispatcher.Attach(NULL, this, "KeyUp", &CharacterController::OnKeyUp);
         }
 
-        void CharacterController::Update() {};
+        void CharacterController::Update() {
+            Collision* collider = Parent.GetComponent<Collision>();
+            if(collider->CollidedLastFrame)
+                CanJump = true;
+        };
 
         void CharacterController::OnKeyDown(const Event* e) {
             const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
@@ -45,7 +49,11 @@ namespace ForLeaseEngine {
             }
             else if(key_e->Key == JumpKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
-                rbody->Velocity += Vector(0, JumpSpeed);
+                Collision* collider = Parent.GetComponent<Collision>();
+                if(CanJump) {
+                    rbody->Velocity += Vector(0, JumpSpeed);
+                    CanJump = false;
+                }
             }
             else if(key_e->Key == Keys::Q) {
                 ForLease->GameStateManager().SetAction(Modules::StateAction::Quit);

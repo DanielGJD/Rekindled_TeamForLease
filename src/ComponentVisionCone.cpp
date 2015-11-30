@@ -1,6 +1,7 @@
 #include "ComponentVisionCone.h"
 #include "Engine.h" // Just for testing, remove when done
 #include "LevelComponentRenderer.h" // Testing
+#include "MultiEntityEvent.h"
 #include <vector>
 #include <iostream>
 
@@ -47,7 +48,17 @@ namespace ForLeaseEngine {
             // Check for observed objects
             Components::Transform* trans = Parent.GetComponent<Components::Transform>();
             std::vector<Entity*> detected = ForLease->GameStateManager().CurrentState().GetEntitiesInCone(trans->Position + Offset, Radius, Direction, Angle);
-            std::cout << "Can see " << detected.size() << " entities" << std::endl;
+            if(detected.size() > 0) {
+                MultiEntityEvent multi_e = MultiEntityEvent("EntitiesSeen");
+                unsigned long parentID = Parent.GetID();
+                for(int i = 0; i < detected.size(); ++i) {
+                    unsigned long detectedID = detected[i]->GetID();
+                    if(detectedID != parentID) {
+                        multi_e.EntityIDs.push_back(detectedID);
+                    }
+                }
+                ForLease->Dispatcher.DispatchTo(&multi_e, &Parent);
+            }
         }
 
         void VisionCone::Serialize(Serializer& root) {

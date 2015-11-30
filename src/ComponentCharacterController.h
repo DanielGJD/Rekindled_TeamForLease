@@ -42,6 +42,7 @@ namespace ForLeaseEngine {
                 void Deserialize(Serializer& root);
 
             private:
+                bool CanJump;
                 CharacterController(Entity& owner);
         };
     }
