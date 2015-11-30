@@ -5,6 +5,8 @@
     \brief
         Defines the Timer class.
     \see Timer.cpp
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef TIMER_H

@@ -1,3 +1,13 @@
+/*!
+    \file   Audio.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines the audio system, mainly a wrapper around low level fmod
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "Audio.h"
 #include "Exception.h"
 #include "Engine.h"

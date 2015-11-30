@@ -1,3 +1,13 @@
+/*!
+    \file   BmFont.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a class for loading and storing data for a bitmap font
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef BMFONT_H
 #define BMFONT_H
 

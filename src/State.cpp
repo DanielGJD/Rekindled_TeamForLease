@@ -5,10 +5,13 @@
     \brief
         Contains implementations for the State class defined in State.h.
     \see State.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "State.h"
 #include "Engine.h"
+#include "HalfPlane.h"
 #include <sstream>
 
 namespace ForLeaseEngine {
@@ -186,7 +189,7 @@ namespace ForLeaseEngine {
             if (!entity->HasComponent(ComponentType::Transform)) continue;
 
             Components::Transform* transform = entity->GetComponent<Components::Transform>(true);
-            
+
             if (position[0] > transform->Position[0] - transform->ScaleX &&
                 position[0] < transform->Position[0] + transform->ScaleX &&
                 position[1] > transform->Position[1] - transform->ScaleY &&
@@ -229,6 +232,175 @@ namespace ForLeaseEngine {
         return entities;
     }
 
+    Entity* State::GetEntityCollidingAtPoint(Point position, bool throwOnFail) {
+        LevelComponents::Collision* collision = GetLevelComponent<LevelComponents::Collision>();
+
+        if (!collision) {
+            if (throwOnFail) {
+                std::stringstream ss;
+                ss << "No entities found at point " << position << ".";
+                ss << "  This is because there is no collision level component attached.";
+
+                throw EntityNotFoundException(0, ss.str());
+            }
+
+            return 0;
+        }
+
+        Entity* entity = collision->GetEntityCollidingAtPoint(Entities, position);
+
+        if (!entity && throwOnFail) {
+            std::stringstream ss;
+            ss << "No entities found at point " << position << ".";
+
+            throw EntityNotFoundException(0, ss.str());
+        }
+
+        return entity;
+    }
+
+    std::vector<Entity*> State::GetEntitiesInRadius(Point const& position, float radius) {
+        std::vector<Entity*> detected;
+        float radius2 = radius * radius;
+        for(std::vector<Entity*>::iterator i = Entities.begin(); i != Entities.end(); ++i) {
+            if((*i)->HasComponent(ComponentType::Collision)){
+                Components::Transform* trans = (*i)->GetComponent<Components::Transform>();
+                Components::Collision* collide = (*i)->GetComponent<Components::Collision>();
+                float halfwidth = collide->Width / 2 * trans->ScaleX;
+                float halfheight = collide->Height / 2 * trans->ScaleY;
+                float entityx = trans->Position[0];
+                float entityy = trans->Position[1];
+                float posx = position[0];
+                float posy = position[1];
+                Point closest;
+
+                if(posx > entityx + halfwidth) {
+                    closest[0] = entityx + halfwidth;
+                }
+                else if(posx < entityx - halfwidth) {
+                    closest[0] = entityx - halfwidth;
+                }
+                else {
+                    closest[0] = posx;
+                }
+
+                if(posy > entityy + halfheight) {
+                    closest[1] = entityy + halfheight;
+                }
+                else if(posy < entityy - halfheight) {
+                    closest[1] = entityy - halfheight;
+                }
+                else {
+                    closest[1] = posy;
+                }
+
+                if(Point::DistanceSquared(closest, position) <= radius2) {
+                    detected.push_back(*i);
+                }
+            }
+        }
+        return detected;
+    }
+
+    // This function is ugly and slow, but it works, will not make better unless really causing problems
+    std::vector<Entity*> State::GetEntitiesInCone(Point const& position, float radius, Vector const& direction, float angle) {
+        LevelComponents::Renderer* render = GetLevelComponent<LevelComponents::Renderer>();
+
+        std::vector<Entity*> detected;
+        float radius2 = radius * radius;
+        for(std::vector<Entity*>::iterator i = Entities.begin(); i != Entities.end(); ++i) {
+            if((*i)->HasComponent(ComponentType::Collision)){
+                Components::Transform* trans = (*i)->GetComponent<Components::Transform>();
+                Components::Collision* collide = (*i)->GetComponent<Components::Collision>();
+                float halfwidth = collide->Width / 2 * trans->ScaleX;
+                float halfheight = collide->Height / 2 * trans->ScaleY;
+                float entityx = trans->Position[0];
+                float entityy = trans->Position[1];
+                float posx = position[0];
+                float posy = position[1];
+                Point closest;
+
+                if(posx > entityx + halfwidth) {
+                    closest[0] = entityx + halfwidth;
+                }
+                else if(posx < entityx - halfwidth) {
+                    closest[0] = entityx - halfwidth;
+                }
+                else {
+                    closest[0] = posx;
+                }
+
+                if(posy > entityy + halfheight) {
+                    closest[1] = entityy + halfheight;
+                }
+                else if(posy < entityy - halfheight) {
+                    closest[1] = entityy - halfheight;
+                }
+                else {
+                    closest[1] = posy;
+                }
+
+                if(Point::DistanceSquared(closest, position) <= radius2) {
+                    Point mid = position + direction * radius;
+                    Point top = position + Vector::Rotate(direction, angle / 2) * radius;
+                    Point bot = position + Vector::Rotate(direction, -angle / 2) * radius;
+                    HalfPlane hp1 = HalfPlane(position, top, mid);
+                    HalfPlane hp2 = HalfPlane(position, bot, mid);
+                    float bbtop = entityy + halfheight;
+                    float bbright = entityx + halfwidth;
+                    float bbbottom = entityy - halfheight;
+                    float bbleft = entityx - halfwidth;
+
+                    render->SetDrawingColor(1, 1, 1);
+                    render->SetDebugPointSize(16);
+                    render->DrawPoint(top);
+                    render->DrawPoint(bot);
+                    render->DrawPoint(mid);
+
+                    // Check if closest point is in cone
+                    if(hp1.Dot(closest) < 0 && hp2.Dot(closest) < 0) {
+                        render->SetDrawingColor(1, 1, 1, 1);
+                        render->DrawLine(position, closest);
+                        detected.push_back(*i);
+                    }
+                    // Check if cone end points are in bb
+                    else if(top[0] > bbleft && top[0] < bbright && top[1] > bbbottom && top[1] < bbtop) {
+                        render->SetDrawingColor(1, 1, 1, 1);
+                        render->DrawLine(position, top);
+                        detected.push_back(*i);
+                    }
+                    else if(bot[0] > bbleft && bot[0] < bbright && bot[1] > bbbottom && bot[1] < bbtop) {
+                        render->SetDrawingColor(1, 1, 1, 1);
+                        render->DrawLine(position, bot);
+                        detected.push_back(*i);
+                    }
+                    // Check if any bb corners are in cone
+                    else if(hp1.Dot(Point(bbright, bbtop)) < 0 && hp2.Dot(Point(bbright, bbtop)) < 0) {
+                        render->SetDrawingColor(1, 1, 1, 1);
+                        render->DrawLine(position, Point(bbright, bbtop));
+                        detected.push_back(*i);
+                    }
+                    else if(hp1.Dot(Point(bbright, bbbottom)) < 0 && hp2.Dot(Point(bbright, bbbottom)) < 0) {
+                        render->SetDrawingColor(1, 1, 1, 1);
+                        render->DrawLine(position, Point(bbright, bbbottom));
+                        detected.push_back(*i);
+                    }
+                    else if(hp1.Dot(Point(bbleft, bbbottom)) < 0 && hp2.Dot(Point(bbleft, bbbottom)) < 0) {
+                        render->SetDrawingColor(1, 1, 1, 1);
+                        render->DrawLine(position, Point(bbleft, bbbottom));
+                        detected.push_back(*i);
+                    }
+                    else if(hp1.Dot(Point(bbleft, bbtop))  < 0 && hp2.Dot(Point(bbleft, bbtop)) < 0) {
+                        render->SetDrawingColor(1, 1, 1, 1);
+                        render->DrawLine(position, Point(bbleft, bbtop));
+                        detected.push_back(*i);
+                    }
+                }
+            }
+        }
+        return detected;
+    }
+
     std::vector<Entity *>& State::GetAllEntities() {
         return Entities;
     }
@@ -249,6 +421,14 @@ namespace ForLeaseEngine {
     */
     std::string State::GetName() { return Name; }
 
+    /*!
+        Setter for the name of a state.
+
+        \param name
+            The new name for the state.
+    */
+    void State::SetName(std::string name) { Name = name; }
+
     void State::Serialize(Serializer& root) {
         Serializer state = root.GetChild("State");
         state.WriteString("Name", Name);
@@ -257,6 +437,7 @@ namespace ForLeaseEngine {
         jsonEntities = state.GetChild("Entities");
 
         for (Entity* entity : Entities) {
+            if (!(entity->IncludeInSerialize)) continue;
             Serializer entitySerializer;
             entity->Serialize(entitySerializer);
             jsonEntities.Append(entitySerializer);
@@ -315,6 +496,9 @@ namespace ForLeaseEngine {
                 break;
             case ComponentType::Renderer:
                 lc = new LevelComponents::Renderer(state);
+                break;
+            case ComponentType::Menu:
+                lc = new LevelComponents::Menu(state);
                 break;
             default:
                 return 0;

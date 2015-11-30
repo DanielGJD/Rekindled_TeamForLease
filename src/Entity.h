@@ -5,6 +5,8 @@
     \brief
         Defines the Entity class.
     \see Entity.cpp
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef ENTITY_H
@@ -27,7 +29,7 @@ namespace ForLeaseEngine {
     class Entity : public Serializable{
 
         public:
-            Entity(std::string name = "");
+            Entity(std::string name = "", boolean serialize = true);
             ~Entity();
             void Update();
             void Serialize(Serializer& root);
@@ -51,14 +53,20 @@ namespace ForLeaseEngine {
                 if (T::Type == ComponentType::None && throwOnFail)
                     throw EntityException(ID, "No component specified.");
 
-                for (Component* component : Components)
+                for (Component* component : Components) {
+                    if (!component) continue;
+
                     if (component->GetType() == T::Type)
                         return reinterpret_cast<T*>(component);
+                }
 
                 if (throwOnFail) throw EntityException(ID, "Error finding component.");
 
                 return 0;
             }
+
+            bool Delete;
+            bool IncludeInSerialize;
         private:
             //! The ID of this Entity, to differentiate from other Entities.
             long unsigned ID;

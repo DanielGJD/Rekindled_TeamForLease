@@ -5,6 +5,8 @@
     \brief
         Contains implementations for the Engine class defined in Engine.h.
     \see Engine.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #define SDL_MAIN_HANDLED

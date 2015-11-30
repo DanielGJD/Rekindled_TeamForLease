@@ -5,11 +5,18 @@
   \brief
     Contains implementations for the Vector classes defined in Vector.h.
   \see Vector.h
+
+  \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "Vector.h"
 #include <iostream>
 #include <cmath>
+
+#ifndef PI
+#define PI 3.14159265358979323846
+#endif // PI
+
 namespace ForLeaseEngine {
 
     bool Near(float f1, float f2) {
@@ -193,6 +200,9 @@ namespace ForLeaseEngine {
 
       \param angle
         Angle of rotation
+
+      \return
+        The rotated vector
 	*/
 	Vector Vector::Rotate(Vector vec, float angle)
 	{
@@ -205,17 +215,53 @@ namespace ForLeaseEngine {
 
 	/*!
 	  \brief
-	    Rotates a vector
+	    Scales a vector
 
       \param vec
-        Vector to rotate
+        Vector to scale
 
       \param magnitude
         Scale magnitude
+
+      \return
+        The scaled vector
 	*/
-	Vector Vector::Scale(Vector vec, float magnitude) {
+	Vector Vector::Scale(Vector const& vec, float magnitude) {
         return Vector(vec[0] * magnitude, vec[1] * magnitude);
 	}
+
+	/*!
+        \brief
+            Finds the angle between the +x axis and the vector, Range [0, 2*pi]
+
+        \param vec
+            Vector to calculate the angle of
+
+        \return
+            Angle of the vector
+    */
+    float Vector::ToAngle(Vector const& vec) {
+        float angle = atan2(vec[1], vec[0]) - atan2(0, 1);
+        return angle;
+    }
+
+    /*!
+        \brief
+            Finds the angle between two vectors
+
+        \param vec1
+            First vector
+
+        \param vec2
+            Second vector
+
+        \return
+            Angle between the vectors
+    */
+    float Vector::AngleBetween(Vector const& vec1, Vector const& vec2) {
+        float angle = atan2(vec2[1], vec2[0]) - atan2(vec1[1], vec1[0]);
+        return angle;
+    }
 
 	/*!
 		Adds another vector to this vector.
@@ -241,7 +287,7 @@ namespace ForLeaseEngine {
 		\return
 			The scaled vector.
 	*/
-	Vector Vector::operator*(float rhs) { return Scale(*this, rhs); }
+	Vector Vector::operator*(float rhs) const { return Scale(*this, rhs); }
 
 	/*!
 	  \brief

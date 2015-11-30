@@ -7,6 +7,8 @@
     \see EntityExceptions.cpp
     \see Entity.h
     \see Entity.cpp
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef ENTITY_EXCEPTIONS_H

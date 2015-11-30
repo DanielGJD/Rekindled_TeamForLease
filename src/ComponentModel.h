@@ -6,6 +6,8 @@
     \brief
         Defines a class that holds data pertaining to a model
 
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+
     \see ComponentModel.cpp
 */
 #ifndef COMPONENTMODEL_H

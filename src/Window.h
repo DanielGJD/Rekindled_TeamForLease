@@ -7,7 +7,7 @@
         Defines a class that handles the creation of a window and rendering
         context and a class to hold window properties
 
-    \see Window.cpp
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef WINDOW_H

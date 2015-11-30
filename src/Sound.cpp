@@ -1,3 +1,13 @@
+/*!
+    \file   Sound.cpp
+    \author Christopher Hudson
+
+    \brief
+        A class containing data on a loaded sound
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "Sound.h"
 
 namespace ForLeaseEngine {

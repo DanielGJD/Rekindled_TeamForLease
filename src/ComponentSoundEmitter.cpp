@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentSoundEmitter.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a component to allow emitting of sounds
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "ComponentSoundEmitter.h"
 #include "Engine.h"
 

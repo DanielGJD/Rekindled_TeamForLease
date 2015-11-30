@@ -6,7 +6,7 @@
     \brief
         Defines a class that dispatches events to registered listeners
 
-    \see EventDispatcher.cpp
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 #ifndef EVENTDISPATCHER_H
 #define EVENTDISPATCHER_H
@@ -29,18 +29,19 @@ namespace ForLeaseEngine {
         public:
             //void AddHandler(void* sender, void* receiver, std::string event, std::function<void(const Event*)> callback);
             template<typename R, typename F>
-            void Attach(void* sender, R* receiver, std::string event, F function) {
+            void Attach(void* sender, R* receiver, std::string event, F function, void* parent = NULL) {
                 if(EventListeners.find(event) == EventListeners.end()) {
                     // EventListenerIterator i = EventListeners.find(event);
                     // std::deque<Listener> listenerList = std::get<1>(*i);
                     EventListeners.insert(std::make_pair<std::string, std::deque<Listener>>(event.c_str(), std::deque<Listener>()));
                 }
-                Listener newListener = Listener(sender, receiver, std::bind(function, receiver, std::placeholders::_1));
+                Listener newListener = Listener(sender, receiver, std::bind(function, receiver, std::placeholders::_1), parent);
                 EventListeners.at(event).push_back(newListener);
             }
             void Detach(void* receiver, std::string event);
             void Dispatch(const Event* e, void* sender) const;
             void DispatchTo(const Event* e, void* receiver) const;
+            void DispatchToParent(const Event* e, void* parent) const;
 
 
         private:

@@ -1,3 +1,13 @@
+/*!
+    \file   Interpolation.h
+    \author Christopher Hudson
+
+    \brief
+        Defines functions for interpolating between two values
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef INTERPOLATION_H
 #define INTERPOLATION_H
 

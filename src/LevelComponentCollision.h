@@ -5,6 +5,8 @@
     \brief
         Defines the Collision system.
     \see LevelComponentCollision.cpp
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef LC_COLLISION_H
@@ -37,6 +39,8 @@ namespace ForLeaseEngine {
                 bool CheckCollision(Entity* entity1, Entity* entity2);
                 void ResolveCollision(Entity* entity1, Entity* entity2);
                 void ResolveCollisionOneEntityOnly(Entity* toResolve, Entity* other);
+
+                Entity* GetEntityCollidingAtPoint(std::vector<Entity *>& entities, Point position);
 
                 virtual void Serialize(Serializer& root);
                 virtual void Deserialize(Serializer& root);

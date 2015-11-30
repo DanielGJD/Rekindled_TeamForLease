@@ -5,6 +5,8 @@
     \brief
         Defines the Engine class.
     \see Engine.cpp
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef ENGINE_H

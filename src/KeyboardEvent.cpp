@@ -6,6 +6,8 @@
     \brief
         Implementation of a class that holds information about keyboard state changes
 
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+
     \see KeyboardEvent.h
 */
 

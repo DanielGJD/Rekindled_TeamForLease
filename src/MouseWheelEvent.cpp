@@ -1,3 +1,13 @@
+/*!
+    \file   MouseWheelEvent.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a class that contains information about the mouse scroll wheel
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "MouseWheelEvent.h"
 
 namespace ForLeaseEngine {

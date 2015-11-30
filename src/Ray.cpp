@@ -5,14 +5,14 @@
     \brief
         Implements a ray, as well as some helper functions involved in raycasting.
     \see Ray.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "Ray.h"
 #include "Entity.h"
 #include "Engine.h"
 #include "LevelComponentsInclude.h"
-
-int i = 0;
 
 namespace ForLeaseEngine {
 
@@ -78,8 +78,6 @@ namespace ForLeaseEngine {
         float minDist = Unlimited;
         Vector normal;
         Components::Collision::Side side;
-
-        Vector searchVec = Vector::Scale(Direction, Length);
 
         HalfPlane::CollisionInterval interval = GetHalfPlaneInterval(top);
 
@@ -185,12 +183,12 @@ namespace ForLeaseEngine {
         else return HalfPlane::CollisionInterval(0, ti);
     }
 
-    std::vector<Entity *> CheckCollisions(Ray& ray, std::vector<Entity *> entities) {
-        std::vector<Entity *> colliding;
+    Entity* Ray::CheckCollisions(Ray& ray, std::vector<Entity *>& entities) {
+        Entity* colliding = 0;
 
         for (Entity* entity : entities)
             if (ray.IsColliding(entity))
-                colliding.push_back(entity);
+                colliding = entity;
 
         return colliding;
     }

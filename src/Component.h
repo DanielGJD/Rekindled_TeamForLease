@@ -6,6 +6,8 @@
         Defines the Component class.  Also defines the ComponentType enum and
         corresponding operator overloads.
     \see Component.cpp
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef COMPONENT_H
@@ -27,19 +29,23 @@ namespace ForLeaseEngine {
             loading game code.
     */
     enum class ComponentType : unsigned long {
-        None                = 0,         //! No component
-        Transform           = 1 <<  0,   //! Transform
-        PlayerController    = 1 <<  1,   //! Player controls
-        Physics             = 1 <<  2,   //! Physics
-        Collision           = 1 <<  3,   //! Collision
-        Camera              = 1 <<  4,   //! Camera
-        Sprite              = 1 <<  5,   //! Sprite
-        Model               = 1 <<  6,   //! Model
-        SpriteText          = 1 <<  7,   //! Sprite text
-        Renderer            = 1 <<  8,   //! Renderer
-        Light               = 1 <<  9,   //! Light
-        SoundEmitter        = 1 << 10,   //! Sound Emitter
-
+        None                  = 0,         //! No component
+        Transform             = 1 <<  0,   //! Transform
+        PlayerController      = 1 <<  1,   //! Player controls
+        Physics               = 1 <<  2,   //! Physics
+        Collision             = 1 <<  3,   //! Collision
+        Camera                = 1 <<  4,   //! Camera
+        Sprite                = 1 <<  5,   //! Sprite
+        Model                 = 1 <<  6,   //! Model
+        SpriteText            = 1 <<  7,   //! Sprite text
+        Renderer              = 1 <<  8,   //! Renderer
+        Light                 = 1 <<  9,   //! Light
+        SoundEmitter          = 1 << 10,   //! Sound Emitter
+        DragWithMouse         = 1 << 11,   //! Item that can be dragged by the mouse
+        ScaleWithKeyboard     = 1 << 12,   //! Item that can be scaled by the keyboard
+        TransformModeControls = 1 << 13,   //! Controls for the transform mode of the main character
+        Menu                  = 1 << 14,   //! Menu
+        VisionCone            = 1 << 15    //! Used for detecting objects in a radius within an angle
     };
 
     ComponentType operator|(const ComponentType& lhs, const ComponentType& rhs);

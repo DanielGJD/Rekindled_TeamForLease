@@ -7,6 +7,8 @@
         Implementation of a class to dispatch events to registered listeners
 
     \see EventDispatcher.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 #include <deque>
 #include <unordered_map>
@@ -77,6 +79,18 @@ namespace ForLeaseEngine {
             std::deque<Listener> listeners = EventListeners.at(e->EventName);
             for(std::deque<Listener>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
                 if((*i).Receiver == receiver) {
+                    (*i).Callback(e);
+                    break;
+                }
+            }
+        }
+    }
+
+    void EventDispatcher::DispatchToParent(const Event* e, void* parent) const {
+        if(EventListeners.find(e->EventName) != EventListeners.end()) {
+            std::deque<Listener> listeners = EventListeners.at(e->EventName);
+            for(std::deque<Listener>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
+                if((*i).Parent == parent) {
                     (*i).Callback(e);
                     break;
                 }

@@ -1,3 +1,14 @@
+/*!
+    \file   MouseMotionEvent.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a class containing information on mouse movement
+
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "MouseMotionEvent.h"
 
 namespace ForLeaseEngine {

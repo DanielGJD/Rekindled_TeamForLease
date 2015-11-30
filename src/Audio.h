@@ -1,3 +1,13 @@
+/*!
+    \file   Audio.h
+    \author Christopher Hudson
+
+    \brief
+        Defines the audio system, mainly a wrapper around low level fmod
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef AUDIO_H
 #define AUDIO_H
 

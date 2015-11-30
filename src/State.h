@@ -5,6 +5,8 @@
     \brief
         Defines the State class.
     \see State.cpp
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef STATE_H
@@ -49,6 +51,9 @@ namespace ForLeaseEngine {
             Entity* GetEntityByName(std::string name, bool throwOnFail = false);
             Entity* GetEntityAtPosition(Point position, bool throwOnFail = false);
             std::vector<Entity *> GetEntitiesAtPosition(Point position, bool throwOnFail = false);
+            Entity* GetEntityCollidingAtPoint(Point position, bool throwOnFail = false);
+            std::vector<Entity*> GetEntitiesInRadius(Point const& position, float radius);
+            std::vector<Entity*> GetEntitiesInCone(Point const& position, float radius, Vector const& direction, float angle);
             std::vector<Entity *>& GetAllEntities();
 
             void DeleteAllLevelComponents();
@@ -74,6 +79,7 @@ namespace ForLeaseEngine {
             }
 
             std::string GetName();
+            void SetName(std::string name);
 
             virtual void Serialize(Serializer& root);
             virtual void Deserialize(Serializer& root);

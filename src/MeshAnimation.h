@@ -1,3 +1,13 @@
+/*!
+    \file   MeshAnimation.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a class containing vertex data for a mesh animation
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef MESH_ANIMATION_H
 #define MESH_ANIMATION_H
 

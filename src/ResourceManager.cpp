@@ -1,3 +1,13 @@
+/*!
+    \file   ResourceManager.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a class that manages all resources used by the engine
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "ResourceManager.h"
 #include "Exception.h"
 #include "GL/gl.h"
@@ -14,7 +24,9 @@ namespace ForLeaseEngine {
             UnloadTexture(fileName);
             Texture* texture = Texture::CreateTexture(fileName);
             if(!texture) {
-                throw(new Exception(std::string("Failed to load texture :").append(fileName)));
+                //throw(new Exception(std::string("Failed to load texture :").append(fileName)));
+                std::cout << "Failed to load texture: " << fileName << std::endl;
+                return;
             }
             Textures.insert(std::make_pair(fileName.c_str(), texture));
             ++LoadedTextures;
@@ -53,14 +65,14 @@ namespace ForLeaseEngine {
             UnloadFont(fileName);
             std::ifstream fontFile(fileName, std::ios_base::in | std::ios_base::binary);
             if(!fontFile.is_open()) {
-                std::cout << "Failed to open " << fileName << std::endl;
+                std::cout << "Failed to load font: " << fileName << std::endl;
                 return;
             }
             BmFont fontInfo;
             fontFile >> fontInfo;
             Font* font = new Font(fontInfo);
             Fonts.insert(std::make_pair(fileName.c_str(), font));
-            std::cout << "Loaded Font: " << fileName << std::endl;
+            //std::cout << "Loaded Font: " << fileName << std::endl;
             ++LoadedFonts;
             RamUsed += sizeof(Font);
         }
@@ -90,15 +102,19 @@ namespace ForLeaseEngine {
                 --LoadedFonts;
                 RamUsed -= sizeof(Font);
                 delete font;
-                std::cout << "Unloaded Font: " << fileName << std::endl;
+                //std::cout << "Unloaded Font: " << fileName << std::endl;
             }
         }
 
         void ResourceManager::LoadMesh(std::string fileName) {
             UnloadMesh(fileName);
-            Mesh* mesh = new Mesh();
             Serializer root;
-            root.ReadFile(fileName);
+            if(!root.ReadFile(fileName))
+            {
+                std::cout << "Failed to load mesh: " << fileName << std::endl;
+                return;
+            }
+            Mesh* mesh = new Mesh();
             mesh->Deserialize(root);
             Meshes.insert(std::make_pair(fileName.c_str(), mesh));
             ++LoadedMeshes;
@@ -144,7 +160,9 @@ namespace ForLeaseEngine {
             Sound* sound = ForLease->AudioSystem->CreateSound(fileName);
 
             if(!sound) {
-                throw(new Exception(std::string("Failed to load sound: ").append(fileName)));
+                //throw(new Exception(std::string("Failed to load sound: ").append(fileName)));
+                std::cout << "Failed to load sound: " << fileName << std::endl;
+                return;
             }
 
             Sounds.insert(std::make_pair(fileName.c_str(), sound));
@@ -178,9 +196,12 @@ namespace ForLeaseEngine {
 
         void ResourceManager::LoadMeshAnimation(std::string fileName) {
             UnloadMeshAnimation(fileName);
-            MeshAnimation* animation = new MeshAnimation();
             Serializer loader;
-            loader.ReadFile(fileName);
+            if(!loader.ReadFile(fileName)) {
+                std::cout << "Failed to load mesh animation: " << fileName << std::endl;
+                return;
+            }
+            MeshAnimation* animation = new MeshAnimation();
             animation->Deserialize(loader);
             MeshAnimations.insert(std::make_pair(fileName, animation));
         }
@@ -241,11 +262,11 @@ namespace ForLeaseEngine {
         }
 
         std::ostream& operator<<(std::ostream& os, const ResourceManager& rhs) {
-            os << "Textures: " << rhs.LoadedTextures << std::endl
+            /*os << "Textures: " << rhs.LoadedTextures << std::endl
                << "Meshes: " << rhs.LoadedMeshes << std::endl
                << "Fonts: " << rhs.LoadedFonts << std::endl
                << "Texture Ram Used: " << rhs.TextureRamUsed << std::endl
-               << "Ram Used: " << rhs.RamUsed;
+               << "Ram Used: " << rhs.RamUsed;*/
             return os;
         }
     }

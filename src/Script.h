@@ -1,3 +1,14 @@
+/*!
+    \file   Script.h
+    \author Christopher Hudson
+
+    \brief
+        This is just an experiment, not for actual use at the moment!  Designed to be a base class for "script" files, ideally to make writing
+        small behavior code easier.
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef SCRIPT_H
 #define SCRITP_H
 

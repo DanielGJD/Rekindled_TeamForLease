@@ -1,3 +1,13 @@
+/*!
+    \file   LevelComponentRenderer.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a class for rendering
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef LEVEL_COMPONENT_RENDERER_H
 #define LEVEL_COMPONENT_RENDERER_H
 
@@ -27,7 +37,7 @@ namespace ForLeaseEngine {
 
                 void Update(std::vector<Entity*>& entities);
                 void SetCamera(const Entity& camera);
-                void SetCamera(long camera);
+                void SetCamera(unsigned long camera);
                 long GetCameraID();
                 void SetClearColor(float r, float g, float b, float a);
                 void SetClearColor(const Color& color);

@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentSpriteText.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a component for rendering text
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef SPRITETEXT_H
 #define SPRITETEXT_H
 

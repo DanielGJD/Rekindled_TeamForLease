@@ -1,3 +1,12 @@
+/*!
+    \file   BmFont.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a class for loading and storing a bitmap font
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
 #include "BmFont.h"
 
 namespace ForLeaseEngine {

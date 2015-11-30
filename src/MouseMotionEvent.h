@@ -1,3 +1,13 @@
+/*!
+    \file   MouseMotionEvent.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a class containing information on mouse motion events
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef MOUSE_MOTION_EVENT_H
 #define MOUSE_MOTION_EVENT_H
 

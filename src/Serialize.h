@@ -7,6 +7,8 @@
         Defines serialization class
 
     \see Serialize.cpp
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef SERIALIZER_H
@@ -30,7 +32,7 @@ namespace ForLeaseEngine
         //! Container with the formatted JSON string
         Json::Value node;
     public:
-        void ReadFile(const std::string& filename);
+        bool ReadFile(const std::string& filename);
         void WriteFile(const std::string& filename) const;
 
         void WriteInt(const std::string& path, const int i);

@@ -1,3 +1,7 @@
+/*!
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "Debug.h"
 namespace ForLeaseEngine
 {

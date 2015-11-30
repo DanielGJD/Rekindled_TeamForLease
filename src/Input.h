@@ -6,7 +6,7 @@
     \brief
         Defines a class to process OS events
 
-    \see Input.cpp
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 #ifndef INPUT_H
 #define INPUT_H

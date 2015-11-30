@@ -6,7 +6,7 @@
     \brief
         Defines a class for a keyboard event
 
-    \see KeyboardEvent.cpp
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef KEYBOARDEVENT_H

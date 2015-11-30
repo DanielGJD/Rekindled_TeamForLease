@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentSprite.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a component for displaying an animated sprite
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef SPRITE_H
 #define SPRITE_H
 

@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentSpriteText.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a component to draw text
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "ComponentSpriteText.h"
 #include "Font.h"
 #include <string>

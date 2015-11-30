@@ -7,6 +7,8 @@
         Implementation of serialization class
 
     \see Serialize.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 #include "Serialize.h"
 #include <iostream>
@@ -20,18 +22,23 @@ namespace ForLeaseEngine
 
         \param filename
             Name of the file being read from.
+
+        \return
+            If the file was read successfully
     */
-    void Serializer::ReadFile(const std::string& filename)
+    bool Serializer::ReadFile(const std::string& filename)
     {
         try
         {
             std::ifstream file(filename);
             file >> node;
+            return true;
         }
 
         catch (std::exception& e)
         {
             std::cout << e.what() << std::endl;
+            return false;
         }
     }
 

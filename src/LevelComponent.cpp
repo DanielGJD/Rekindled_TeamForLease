@@ -5,6 +5,8 @@
     \brief
         Implements the LevelComponent class.
     \see LevelComponent.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "LevelComponent.h"

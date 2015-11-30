@@ -1,3 +1,13 @@
+/*!
+    \file   Texture.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a class containing information on a texture loaded into vram
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef TEXTURE_H
 #define TEXTURE_H
 

@@ -5,6 +5,8 @@
     \brief
         Implements the Physics system.
     \see LevelComponentPhysics.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "LevelComponentPhysics.h"

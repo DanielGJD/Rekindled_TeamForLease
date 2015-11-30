@@ -1,3 +1,13 @@
+/*!
+    \file   Font.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a class holding all the information for a font
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "Font.h"
 #include "BmFont.h"
 #include "Engine.h"

@@ -4,7 +4,9 @@
     \date   09/22/15
 
     \brief
-        Implementation of a class that manages user input
+        Implementation of a class that dispatches OS events
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 
     \see KeyboardEvent.h
 */

@@ -5,6 +5,8 @@
     \brief
         Implements the Entity class defined in Entity.h.
     \see Entity.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "Entity.h"
@@ -20,8 +22,8 @@ namespace ForLeaseEngine {
         it plus one.  It also initializes the bitfield mask of components added
         to this entity to None.
     */
-    Entity::Entity(std::string name)
-    : ID(++TotalEntities), ComponentMask(ComponentType::None) {
+    Entity::Entity(std::string name, boolean serialize)
+    : ID(++TotalEntities), ComponentMask(ComponentType::None), IncludeInSerialize(serialize), Delete(false) {
         if (name != "")
             Name = name;
         else {
@@ -222,6 +224,18 @@ namespace ForLeaseEngine {
                 break;
             case ComponentType::SoundEmitter:
                 component = new Components::SoundEmitter(entity);
+                break;
+            case ComponentType::DragWithMouse:
+                component = Components::DragWithMouse::Create(entity);
+                break;
+            case ComponentType::Menu:
+                component = new Components::Menu(entity);
+                break;
+            case ComponentType::ScaleWithKeyboard:
+                component = Components::ScaleWithKeyboard::Create(entity);
+                break;
+            case ComponentType::TransformModeControls:
+                component = new Components::TransformModeControls(entity);
                 break;
             default:
                 return 0;

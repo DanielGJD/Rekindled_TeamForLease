@@ -1,3 +1,13 @@
+/*!
+    \file   TextureRegion.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a class that contains information defining a portion of a texture
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "TextureRegion.h"
 #include "Serializable.h"
 #include "Serialize.h"

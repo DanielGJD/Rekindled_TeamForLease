@@ -4,7 +4,9 @@
     \date   10/03/15
 
     \brief
-        Defines classes to hold data about a triangular face
+        Defines classes to hold data about a triangular mesh.  Contains vertex, uv, edge, face, and face color data.
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 
     \see Mesh.h
 */
@@ -656,7 +658,41 @@ namespace ForLeaseEngine {
             Index of the closest edge or -1 if no edge near location
     */
     int Mesh::GetEdgeIndexNear(const Point& location, float distance) {
-        return 0;
+        if(Vertices.size() > 0) {
+            int closestIndex = -1;
+            float closestDistance = distance * distance;
+            for(int i = 0; i < Edges.size(); ++i) {
+                Edge edge = GetEdge(i);
+                float edgeLength = Point::DistanceSquared(edge.Vertices[0], edge.Vertices[1]);
+                float currentDistance;
+                if(edgeLength == 0) {
+                    currentDistance = edgeLength;
+                }
+                else {
+                    float t = Vector::DotProduct(location - edge.Vertices[0],
+                                                 edge.Vertices[1] - edge.Vertices[0]) / edgeLength;
+                    if(t < 0) {
+                        currentDistance = Point::DistanceSquared(location, edge.Vertices[0]);
+                    }
+                    else if(t > 1) {
+                        currentDistance = Point::DistanceSquared(location, edge.Vertices[1]);
+                    }
+                    else {
+                        Point proj = edge.Vertices[0] + (edge.Vertices[1] - edge.Vertices[0]) * t;
+                        currentDistance = Point::DistanceSquared(location, proj);
+                    }
+                }
+
+                if(currentDistance < closestDistance) {
+                    closestDistance = currentDistance;
+                    closestIndex = i;
+                }
+            }
+
+            return closestIndex;
+        }
+
+        return 1;
     }
 
     /*!

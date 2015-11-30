@@ -1,3 +1,13 @@
+/*!
+    \file   MouseButtonEvent.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a class containing information on mouse buttons events
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef MOUSE_BUTTON_EVENT_H
 #define MOUSE_BUTTON_EVENT_H
 
