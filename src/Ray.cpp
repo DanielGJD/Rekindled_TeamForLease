@@ -148,10 +148,17 @@ namespace ForLeaseEngine {
 
     Entity* Ray::CheckCollisions(Ray& ray, std::vector<Entity *>& entities) {
         Entity* colliding = 0;
+        float dist = ray.GetScaledVector().Magnitude();
 
-        for (Entity* entity : entities)
-            if (ray.IsColliding(entity))
-                colliding = entity;
+        for (Entity* entity : entities) {
+            ray.ResetLength();
+            if (ray.IsColliding(entity)) {
+                if (dist > ray.GetScaledVector().Magnitude()) {
+                    dist = ray.GetScaledVector().Magnitude();
+                    colliding = entity;
+                }
+            }
+        }
 
         return colliding;
     }
