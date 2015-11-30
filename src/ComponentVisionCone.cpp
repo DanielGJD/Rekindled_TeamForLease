@@ -1,7 +1,20 @@
+/*!
+    \file   ComponentVisionCone.cpp
+    \author Christopher Hudson
+
+    \brief
+        A component for detecting entities in a cone
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "ComponentVisionCone.h"
 #include "Engine.h" // Just for testing, remove when done
 #include "LevelComponentRenderer.h" // Testing
 #include "MultiEntityEvent.h"
+#include "Ray.h"
+#include "ComponentTransform.h"
+#include "ComponentCollision.h"
 #include <vector>
 #include <iostream>
 
@@ -54,6 +67,46 @@ namespace ForLeaseEngine {
                 for(int i = 0; i < detected.size(); ++i) {
                     unsigned long detectedID = detected[i]->GetID();
                     if(detectedID != parentID) {
+                        // Check for line of sight, this will be slow
+                        Collision* collide = detected[i]->GetComponent<Collision>();
+                        Transform* targettrans = detected[i]->GetComponent<Transform>();
+                        float halfwidth = collide->Width / 2;
+                        float halfheight = collide->Height / 2;
+                        Point tl = Point(targettrans->Position[0] - halfwidth, targettrans->Position[1] + halfheight);
+                        Point tr = Point(targettrans->Position[0] + halfwidth, targettrans->Position[1] + halfheight);
+                        Point br = Point(targettrans->Position[0] + halfwidth, targettrans->Position[1] - halfheight);
+                        Point bl = Point(targettrans->Position[0] - halfwidth, targettrans->Position[1] - halfheight);
+
+                        Point rayStart = trans->Position + Offset;
+                        // Check visibility for top left
+                        Ray los = Ray(rayStart, tl - rayStart, Radius);
+                        std::vector<Entity*> visible = CheckCollisions(los, detected);
+                        Point rayEnd = los.GetStart() + los.GetScaledVector();
+                        // If not visible, check for top right
+                        if(visible.size() > 0 &&  // Didn't hit anything (Due to floating point error)
+                           visible[0]->GetID() != parentID && // Hit something besides the object casting towards
+                           Point::DistanceSquared(rayStart, rayEnd) < Point::DistanceSquared(rayStart, tl)) // Closer than the object casting towards
+                        {
+                            Ray los = Ray(rayStart, tr - rayStart, Radius);
+                            visible = CheckCollisions(los, detected);
+                            rayEnd = los.GetStart() + los.GetScaledVector();
+                            // If not visible, check bottom right
+                            if(visible.size() > 0 && visible[0]->GetID() != parentID && Point::DistanceSquared(rayStart, rayEnd) < Point::DistanceSquared(rayStart, tr)) {
+                                Ray los = Ray(rayStart, br - rayStart, Radius);
+                                visible = CheckCollisions(los, detected);
+                                rayEnd = los.GetStart() + los.GetScaledVector();
+                                // If not visible, check bottom left
+                                if(visible.size() > 0 && visible[0]->GetID() != parentID && Point::DistanceSquared(rayStart, rayEnd) < Point::DistanceSquared(rayStart, br)) {
+                                    Ray los = Ray(rayStart, bl - rayStart, Radius);
+                                    visible = CheckCollisions(los, detected);
+                                    rayEnd = los.GetStart() + los.GetScaledVector();
+                                    // If not visible, entity is not visible
+                                    if(visible.size() > 0 && visible[0]->GetID() != parentID && Point::DistanceSquared(rayStart, rayEnd) < Point::DistanceSquared(rayStart, tr)) {
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
                         multi_e.EntityIDs.push_back(detectedID);
                     }
                 }
