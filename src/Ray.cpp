@@ -157,6 +157,10 @@ namespace ForLeaseEngine {
         else
             return Direction * Length;
     }
+    
+    Point Ray::GetIntersectionPoint() {
+        return GetStart() + GetScaledVector();
+    }
 
     Vector Ray::GetLastNormal() {
         return LastNormal;

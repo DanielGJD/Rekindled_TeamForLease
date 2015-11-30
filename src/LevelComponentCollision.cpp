@@ -195,8 +195,9 @@ namespace ForLeaseEngine {
             Components::Transform* otherTransform = other->GetComponent<Components::Transform>(true);
             Components::Collision* otherCollision = other->GetComponent<Components::Collision>(true);
 
-            Point toResolvePosition = toResolveTransform->Position;
             Vector velocity = toResolvePhysics->Velocity * ForLease->FrameRateController().GetDt();
+            toResolveTransform->Position -= velocity;
+            Point toResolvePosition = toResolveTransform->Position;
             toResolvePosition -= velocity;
 
             Point toResolveTopLeft(toResolvePosition[0] - toResolveCollision->Width / 2, toResolvePosition[1] + toResolveCollision->Height / 2);
@@ -215,6 +216,46 @@ namespace ForLeaseEngine {
             renderer->DrawArrow(toResolveTopRight, toResolveTopRightRay.GetScaledVector());
             renderer->DrawArrow(toResolveBotRight, toResolveBotRightRay.GetScaledVector());
             renderer->DrawArrow(toResolveBotLeft, toResolveBotLeftRay.GetScaledVector());
+
+            toResolveTopLeftRay.IsColliding(other);
+            toResolveTopRightRay.IsColliding(other);
+            toResolveBotRightRay.IsColliding(other);
+            toResolveBotLeftRay.IsColliding(other);
+
+            Components::Collision::Side side;
+            float dist = 9999;
+
+            if (toResolveTopLeftRay.GetLastDistance() < dist) {
+                side = toResolveTopLeftRay.GetLastSide();
+                dist = toResolveTopLeftRay.GetLastDistance();
+            }
+
+            if (toResolveTopRightRay.GetLastDistance() < dist) {
+                side = toResolveTopRightRay.GetLastSide();
+                dist = toResolveTopRightRay.GetLastDistance();
+            }
+
+            if (toResolveBotRightRay.GetLastDistance() < dist) {
+                side = toResolveBotRightRay.GetLastSide();
+                dist = toResolveBotRightRay.GetLastDistance();
+            }
+
+            if (toResolveBotLeftRay.GetLastDistance() < dist) {
+                side = toResolveBotLeftRay.GetLastSide();
+                dist = toResolveBotLeftRay.GetLastDistance();
+            }
+
+            toResolveTransform->Position += velocity * dist;
+            dist = 1.0f - dist;
+            velocity = velocity * dist;
+
+            if (side == Components::Collision::Side::Bottom || side == Components::Collision::Side::Top)
+                velocity[1] = 0;
+            else
+                velocity[0] = 0;
+
+            toResolveTransform->Position += velocity;
+
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //toResolveTransform->Position[1] -= toResolvePhysics->Velocity[1] * 2 * ForLease->FrameRateController().GetDt();
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
