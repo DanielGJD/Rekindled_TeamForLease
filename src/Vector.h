@@ -61,6 +61,7 @@ namespace ForLeaseEngine {
         static Vector Rotate(Vector vec, float angle);
         static float ToAngle(Vector const& vec);
         static float AngleBetween(Vector const& vec1, Vector const& vec2);
+        Vector& operator=(const Vector& rhs);
         Vector& operator+=(const Vector& rhs);
         Vector operator*(float rhs) const;
         friend std::ostream& operator<<(std::ostream& os, const Vector& vector);

@@ -61,10 +61,10 @@ namespace ForLeaseEngine {
                     if (entity2 == entity1 || !CheckEntityCompatibility(entity2)) continue;
 
                     if (CheckCollision(entity1, entity2)) {
-                        CollisionEvent e1 = CollisionEvent(entity1);
-                        CollisionEvent e2 = CollisionEvent(entity2);
-                        ForLease->Dispatcher.DispatchTo(&e1, entity2);
-                        ForLease->Dispatcher.DispatchTo(&e2, entity1);
+                        //CollisionEvent e1 = CollisionEvent(entity1);
+                        //CollisionEvent e2 = CollisionEvent(entity2);
+                        //ForLease->Dispatcher.DispatchTo(&e1, entity2);
+                        //ForLease->Dispatcher.DispatchTo(&e2, entity1);
                         ResolveCollision(entity1, entity2);
                     }
 
@@ -197,6 +197,7 @@ namespace ForLeaseEngine {
                 A pointer that toResolve is colliding with.
         */
         void Collision::ResolveCollisionOneEntityOnly(Entity* toResolve, Entity* other) {
+            std::cout << "FUCK A SHIT" << std::endl;
             Components::Transform* toResolveTransform = toResolve->GetComponent<Components::Transform>(true);
             Components::Physics*   toResolvePhysics   = toResolve->GetComponent<Components::Physics>(true);
             Components::Collision* toResolveCollision = toResolve->GetComponent<Components::Collision>(true);
@@ -256,6 +257,11 @@ namespace ForLeaseEngine {
 
             toResolvePhysics->Acceleration = Vector(0, 0);
             toResolvePhysics->Velocity = Vector(0, 0);
+
+            toResolvePhysics->Acceleration[0] = 0;
+            toResolvePhysics->Acceleration[1] = 0;
+            toResolvePhysics->Velocity[0] = 0;
+            toResolvePhysics->Velocity[1] = 0;
 
             //dist -= 0.001f;
             toResolveTransform->Position += velocity * dist;
