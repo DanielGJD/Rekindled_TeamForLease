@@ -128,6 +128,10 @@ namespace ForLeaseEngine {
         else
             return Direction * Length;
     }
+    
+    Point Ray::GetIntersectionPoint() {
+        return GetStart() + GetScaledVector();
+    }
 
     HalfPlane::CollisionInterval Ray::GetHalfPlaneInterval(const HalfPlane& halfPlane) {
         float dotStart = halfPlane.Dot(Start);

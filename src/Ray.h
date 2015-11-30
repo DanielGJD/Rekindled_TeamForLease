@@ -29,6 +29,7 @@ namespace ForLeaseEngine {
             void ResetLength();
             Point GetStart();
             Vector GetScaledVector();
+            Point GetIntersectionPoint();
             HalfPlane::CollisionInterval GetHalfPlaneInterval(const HalfPlane& halfPlane);
             static Entity* CheckCollisions(Ray& ray, std::vector<Entity *>& entities);
         private:
