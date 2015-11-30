@@ -9,6 +9,7 @@
 
 #include "Vector.h"
 #include "HalfPlane.h"
+#include "ComponentCollision.h"
 #include <vector>
 
 #ifndef RAY_H
@@ -27,6 +28,9 @@ namespace ForLeaseEngine {
             void ResetLength();
             Point GetStart();
             Vector GetScaledVector();
+            Vector GetLastNormal();
+            float GetLastDistance();
+            Components::Collision::Side GetLastSide();
             HalfPlane::CollisionInterval GetHalfPlaneInterval(const HalfPlane& halfPlane);
         private:
             Point Start;
@@ -34,6 +38,9 @@ namespace ForLeaseEngine {
             const float Scale;
             float Length;
             int Collisions;
+            Vector LastNormal;
+            Components::Collision::Side LastSide;
+            float LastDistance;
     };
 
     std::vector<Entity *> CheckCollisions(const Ray& ray, std::vector<Entity *> entities);

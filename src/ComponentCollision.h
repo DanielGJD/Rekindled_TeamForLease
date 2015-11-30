@@ -26,6 +26,14 @@ namespace ForLeaseEngine {
         */
         class Collision : public Component {
             public:
+
+                enum class Side : char {
+                    Left,
+                    Right,
+                    Top,
+                    Bottom
+                };
+
                 static const ComponentType Type = ComponentType::Collision;
                 virtual ComponentType GetType() { return Type; }
                 Collision(Entity& owner, float width = 1, float height = 1, bool resolve = true);

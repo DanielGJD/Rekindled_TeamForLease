@@ -14,6 +14,9 @@
 #include "EventDispatcher.h"
 #include "Engine.h"
 #include "CollisionEvent.h"
+#include "HalfPlane.h"
+#include "Ray.h"
+#include "LevelComponentRenderer.h"
 
 namespace ForLeaseEngine {
 
@@ -162,14 +165,37 @@ namespace ForLeaseEngine {
                 A pointer that toResolve is colliding with.
         */
         void Collision::ResolveCollisionOneEntityOnly(Entity* toResolve, Entity* other) {
-            Components::Transform* toResolveTransform = toResolve->GetComponent<Components::Transform>();
-            Components::Physics*   toResolvePhysics   = toResolve->GetComponent<Components::Physics>();
+            Components::Transform* toResolveTransform = toResolve->GetComponent<Components::Transform>(true);
+            Components::Physics*   toResolvePhysics   = toResolve->GetComponent<Components::Physics>(true);
+            Components::Collision* toResolveCollision = toResolve->GetComponent<Components::Collision>(true);
 
-            //toResolveTransform->Position -= toResolvePhysics->Velocity * 2 * ForLease->FrameRateController().GetDt();
-            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            toResolveTransform->Position[1] -= toResolvePhysics->Velocity[1] * 2 * ForLease->FrameRateController().GetDt();
-            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            toResolvePhysics->Velocity[1] = 0;
+            Components::Transform* otherTransform = other->GetComponent<Components::Transform>(true);
+            Components::Collision* otherCollision = other->GetComponent<Components::Collision>(true);
+
+            Point toResolvePosition = toResolveTransform->Position;
+            Vector velocity = toResolvePhysics->Velocity * ForLease->FrameRateController().GetDt();
+            toResolvePosition -= velocity;
+
+            Point toResolveTopLeft(toResolvePosition[0] - toResolveCollision->Width / 2, toResolvePosition[1] + toResolveCollision->Height / 2);
+            Point toResolveTopRight(toResolvePosition[0] + toResolveCollision->Width / 2, toResolvePosition[1] + toResolveCollision->Height / 2);
+            Point toResolveBotRight(toResolvePosition[0] + toResolveCollision->Width / 2, toResolvePosition[1] - toResolveCollision->Height / 2);
+            Point toResolveBotLeft(toResolvePosition[0] - toResolveCollision->Width / 2, toResolvePosition[1] - toResolveCollision->Height / 2);
+
+
+            Ray toResolveTopLeftRay(toResolveTopLeft, velocity, velocity.Magnitude(), 1);
+            Ray toResolveTopRightRay(toResolveTopRight, velocity, velocity.Magnitude(), 1);
+            Ray toResolveBotRightRay(toResolveBotRight, velocity, velocity.Magnitude(), 1);
+            Ray toResolveBotLeftRay(toResolveBotLeft, velocity, velocity.Magnitude(), 1);
+
+            LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true);
+            renderer->DrawArrow(toResolveTopLeft, toResolveTopLeftRay.GetScaledVector());
+            renderer->DrawArrow(toResolveTopRight, toResolveTopRightRay.GetScaledVector());
+            renderer->DrawArrow(toResolveBotRight, toResolveBotRightRay.GetScaledVector());
+            renderer->DrawArrow(toResolveBotLeft, toResolveBotLeftRay.GetScaledVector());
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //toResolveTransform->Position[1] -= toResolvePhysics->Velocity[1] * 2 * ForLease->FrameRateController().GetDt();
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //toResolvePhysics->Velocity[1] = 0;
         }
 
         void Collision::Serialize(Serializer& root) {
