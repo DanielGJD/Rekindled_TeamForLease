@@ -19,12 +19,14 @@ namespace ForLeaseEngine {
 
     namespace LevelComponents {
 
-        Menu::Menu(State& owner) : LevelComponent(owner), Paused(false) {
+        Menu::Menu(State& owner, double pauseCD)
+        : LevelComponent(owner), Paused(false), PauseTimer("Pause Timer"), PauseCooldown(pauseCD) {
             Entity* pauseMenu = owner.AddEntity("PauseMenu");
             pauseMenu->IncludeInSerialize = false;
             pauseMenu->AddComponent(new Components::Transform(*pauseMenu));
             Components::Menu* pauseMenuComp = new Components::Menu(*pauseMenu);
             pauseMenu->AddComponent(pauseMenuComp);
+            pauseMenuComp->AddItem(new MenuItems::ResumeGame("ButtonResume.png"));
             pauseMenuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonHowTo.png", "HowToConfirm", "PauseMenu"));
             pauseMenuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonQuit.png", "QuitConfirm", "PauseMenu"));
 
@@ -63,19 +65,21 @@ namespace ForLeaseEngine {
         }
 
         void Menu::OnKeyDown(const Event* e) {
-            const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
-            if (key_e->Key == Keys::Escape) {
-                if (Paused) Unpause();
-                else Pause();
+            if (PauseTimer.GetTime() > PauseCooldown) {
+                PauseTimer.Reset();
+                const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
+                if (key_e->Key == Keys::Escape) {
+                    Paused ? Unpause() : Pause();
+                }
             }
         }
 
         void Menu::Pause() {
+            std::cout << std::endl << "HERE" << std::endl << std::endl;
             Entity* pauseMenu = ForLease->GameStateManager().CurrentState().GetEntityByName("PauseMenu");
             Components::Menu* pauseMenuComp = pauseMenu->GetComponent<Components::Menu>();
             pauseMenuComp->Activate();
             LastTimeScale = ForLease->FrameRateController().TimeScaling();
-            std::cout << LastTimeScale << std::endl;
             ForLease->FrameRateController().TimeScaling(0);
             Paused = true;
         }

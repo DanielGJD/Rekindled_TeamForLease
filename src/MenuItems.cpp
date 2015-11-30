@@ -153,6 +153,28 @@ namespace ForLeaseEngine {
             activateOther.ReadString("ToActivate", ToActivate);
         }
 
+        // ==================================================================================
+
+        ResumeGame::ResumeGame(std::string image) : MenuItem(MenuItemType::ResumeGame, image) {}
+
+        void ResumeGame::Action() {
+            LevelComponents::Menu* pauseMenu = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Menu>(true);
+            pauseMenu->Unpause();
+        }
+
+        void ResumeGame::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned>(Type));
+            Serializer resume = root.GetChild("ResumeGame");
+            resume.WriteString("Image", Image);
+            resume.WriteUint("Type", static_cast<unsigned>(Type));
+            root.Append(resume, "ResumeGame");
+        }
+
+        void ResumeGame::Deserialize(Serializer& root) {
+            Serializer resume = root.GetChild("ResumeGame");
+            resume.ReadString("Image", Image);
+        }
+
     } // MenuItems
 
 } // ForLeaseEngine
