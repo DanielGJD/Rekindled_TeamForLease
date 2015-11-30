@@ -18,7 +18,14 @@
 #include "Timer.h"
 #include "Serialize.h"
 #include "MouseButtonEvent.h"
+#include "MouseMotionEvent.h"
 #include "FrameRatePrinter.h"
+#include "Audio.h"
+#include "MeshAnimation.h"
+#include "ComponentTransformModeControls.h"
+#include "ComponentScaleWithKeyboard.h"
+#include "ComponentVisionCone.h"
+#include "fmod.hpp"
 #include <iostream>
 #include <cmath>
 #include <fstream>
@@ -33,7 +40,17 @@ class DTPrinter {
 };
 
 Point mousePos;
+Mesh* testMesh;
+Entity* camera;
 bool addObject = false;
+LevelComponents::Renderer* render;
+Sound* sound;
+Components::SoundEmitter* soundEmitter;
+MeshAnimation* animation;
+float frameTime = 0;
+Components::TransformModeControls* transCont;
+Components::ScaleWithKeyboard* keyScale;
+Components::VisionCone* visionCone;
 
 class MouseListener {
     public:
@@ -45,7 +62,13 @@ class MouseListener {
                   << "[" << mouse_e->ScreenLocation[0] << "," << mouse_e->ScreenLocation[1] << "]" << std::endl << std::endl;
         mousePos[0] = mouse_e->ScreenLocation[0] - 720 / 2;
         mousePos[1] = -(mouse_e->ScreenLocation[1] - 720 / 2);
-        addObject = true;
+        //addObject = true;
+        if(mouse_e->Button == MouseButton::Left) {
+            //testMesh->DeleteVertex(0);
+        }
+        else if(mouse_e->Button == MouseButton::Right) {
+            //testMesh->AddFace(0, 3, 5, 1, 1, 1, 1);
+        }
     }
 
     void OnMouseUp(const ForLeaseEngine::Event* e) {
@@ -55,18 +78,67 @@ class MouseListener {
                   << mouse_e->Clicks << std::endl
                   << "[" << mouse_e->ScreenLocation[0] << "," << mouse_e->ScreenLocation[1] << "]" << std::endl << std::endl;
     }
+
+    void OnMouseMove(const ForLeaseEngine::Event* e) {
+        const ForLeaseEngine::MouseMotionEvent* mouse_e = reinterpret_cast<const ForLeaseEngine::MouseMotionEvent*>(e);
+        ForLeaseEngine::MouseMotionEvent temp = *mouse_e;
+        //std::cout << temp << std::endl;
+        Point p = render->ScreenToWorld(Point(mouse_e->X, mouse_e->Y));
+        p = render->WorldToScreen(p);
+        std::cout << "X: " << p[0] << "|Y: " << p[1] << std::endl;
+    }
+};
+
+class CameraController {
+public:
+    void OnKeyDown(const ForLeaseEngine::Event* e) {
+        const ForLeaseEngine::KeyboardEvent* keyboard_e = reinterpret_cast<const ForLeaseEngine::KeyboardEvent*>(e);
+        Components::Transform* trans = camera->GetComponent<Components::Transform>();
+        switch(keyboard_e->Key) {
+        case Keys::W:
+            trans->Position[1] += 0.01f;
+            break;
+        case Keys::A:
+            trans->Position[0] -= 0.01f;
+            break;
+        case Keys::S:
+            trans->Position[1] -= 0.01f;
+            break;
+        case Keys::D:
+            trans->Position[0] += 0.01f;
+            break;
+        case Keys::E:
+            trans->Rotation -= 3.1415927 / 20;
+            break;
+        case Keys::Q:
+            trans->Rotation += 3.1415927 / 20;
+            break;
+        case Keys::One:
+            soundEmitter->Play("fluteCheerful1.wav");
+            break;
+        case Keys::Two:
+            soundEmitter->Play("harpgraceful1.wav");
+            break;
+        case Keys::Three:
+            soundEmitter->Play("frenchhornupset.wav");
+            break;
+        case Keys::Space:
+            soundEmitter->Play();
+            break;
+        }
+    }
 };
 
 DTPrinter printer;
 MouseListener mouse;
-LevelComponents::Renderer* render;
-Mesh* testMesh;
 Entity* spriteTest;
 Texture* testTexture;
-Entity* camera;
+CameraController cameraController;
 Font* arial32;
 int numToDraw = 1;
 FrameRatePrinter fpsPrinter;
+Components::Model* model;
+Components::DragWithMouse* mouseDrag;
 
 void DTPrinter::PrintDt(const ForLeaseEngine::Event* e) {
     const ForLeaseEngine::UpdateEvent* updateEvent = reinterpret_cast<const ForLeaseEngine::UpdateEvent*>(e);
@@ -74,149 +146,61 @@ void DTPrinter::PrintDt(const ForLeaseEngine::Event* e) {
 }
 
 void TestingState::Load() {
+    ForLease->Resources.LoadSound("harpgraceful1.wav");
+    ForLease->Resources.LoadSound("frenchhornupset.wav");
+    ForLease->Resources.LoadSound("flutecheerful1.wav");
+    ForLease->Resources.LoadTexture("bg7.png");
     render = new LevelComponents::Renderer(*this);
-
-    ForLease->Dispatcher.Attach(NULL, &printer, "UpdateEvent", &DTPrinter::PrintDt);
-    ForLease->Dispatcher.Attach(NULL, &mouse, "MouseButtonDown", &MouseListener::OnMouseDown);
-    ForLease->Dispatcher.Attach(NULL, &mouse, "MouseButtonUp", &MouseListener::OnMouseUp);
-//    testMesh = new Mesh(15, 17, 7);
-//
-//    testMesh->SetVertex(Point(-3.0f / 11,  0.5f / 11),  0);
-//    testMesh->SetVertex(Point( 3.0f / 11,  0.5f / 11),  1);
-//    testMesh->SetVertex(Point( 3.0f / 11,  5.5f / 11),  2);
-//    testMesh->SetVertex(Point(-3.0f / 11,  5.5f / 11),  3);
-//    testMesh->SetVertex(Point( 3.0f / 11,  2.5f / 11),  4);
-//    testMesh->SetVertex(Point( 4.0f / 11,  2.5f / 11),  5);
-//    testMesh->SetVertex(Point( 3.0f / 11,  3.5f / 11),  6);
-//    testMesh->SetVertex(Point(-3.0f / 11, -4.5f / 11),  7);
-//    testMesh->SetVertex(Point( 3.0f / 11, -4.5f / 11),  8);
-//    testMesh->SetVertex(Point(-1.0f / 11, -17.0f / 11 / 6),  9);
-//    testMesh->SetVertex(Point( 1.0f / 11, -17.0f / 11 / 6), 10);
-//    testMesh->SetVertex(Point( 1.0f / 11, -7.0f / 11 / 6), 11);
-//    testMesh->SetVertex(Point(-1.0f / 11, -5.5f / 11), 12);
-//    testMesh->SetVertex(Point( 1.0f / 11, -5.5f / 11), 13);
-//    testMesh->SetVertex(Point(-1.0f / 11, -4.5f / 11), 14);
-//
-//
-//    testMesh->SetEdge(IndexedEdge(0, 1), 0);
-//    testMesh->SetEdge(IndexedEdge(1, 2), 1);
-//    testMesh->SetEdge(IndexedEdge(2, 0), 2);
-//    testMesh->SetEdge(IndexedEdge(2, 3), 3);
-//    testMesh->SetEdge(IndexedEdge(3, 0), 4);
-//    testMesh->SetEdge(IndexedEdge(4, 5), 5);
-//    testMesh->SetEdge(IndexedEdge(5, 6), 6);
-//    testMesh->SetEdge(IndexedEdge(0, 7), 7);
-//    testMesh->SetEdge(IndexedEdge(7, 8), 8);
-//    testMesh->SetEdge(IndexedEdge(8, 1), 9);
-//    testMesh->SetEdge(IndexedEdge(7, 1), 10);
-//    testMesh->SetEdge(IndexedEdge(9, 10), 11);
-//    testMesh->SetEdge(IndexedEdge(10, 11), 12);
-//    testMesh->SetEdge(IndexedEdge(11, 9), 13);
-//    testMesh->SetEdge(IndexedEdge(12, 13), 14);
-//    testMesh->SetEdge(IndexedEdge(13, 14), 15);
-//    testMesh->SetEdge(IndexedEdge(14, 12), 16);
-//
-//    testMesh->SetFace(IndexedFace(0, 1, 2), 0);
-//    testMesh->SetFace(IndexedFace(0, 2, 3), 1);
-//    testMesh->SetFace(IndexedFace(4, 5, 6), 2);
-//    testMesh->SetFace(IndexedFace(7, 1, 0), 3);
-//    testMesh->SetFace(IndexedFace(7, 8, 1), 4);
-//    testMesh->SetFace(IndexedFace(9, 10, 11), 5);
-//    testMesh->SetFace(IndexedFace(12, 13, 14), 6);
-//
-//    Color clothes = Color( 52.0f / 255,  77.0f / 255, 103.0f / 255);
-//    Color skin    = Color(218.0f / 255, 200.0f / 255, 183.0f / 255);
-//
-//    testMesh->SetFaceColor(skin, 0);
-//    testMesh->SetFaceColor(clothes, 1);
-//    testMesh->SetFaceColor(skin, 2);
-//    testMesh->SetFaceColor(clothes, 3);
-//    testMesh->SetFaceColor(clothes, 4);
-//    testMesh->SetFaceColor(skin, 5);
-//    testMesh->SetFaceColor(clothes, 6);
-
-    ////////////////Serialize test for mesh//////////////////
-//    Serializer serializer;
-//    testMesh->Serialize(serializer);
-//    serializer.WriteFile("MeshTest.json");
-
-    ///////////////Deserialize test for mesh//////////////////
-//    Serializer serializer;
-//    serializer.ReadFile("MeshTest.json");
-//    testMesh = new Mesh();
-//    testMesh->Deserialize(serializer);
-
-    //for(int i = 0; i < 5000; ++i) {
-        ForLease->Resources.LoadMesh("MeshTest.json");
-    //}
-    testMesh = ForLease->Resources.GetMesh("MeshTest.json");
-    //testMesh->ClearData();
-
-    /*Serializer s2;
-    testMesh->Serialize(s2);
-    s2.WriteFile("MeshTest2.json");*/
-
-    //testTexture = Texture::CreateTexture("BlobCharacter.png");
-    ForLease->Resources.LoadTexture("BlobCharacter.png");
-//    testTexture = ForLease->Resources.GetTexture("BlobCharacter.png");
-//    TextureRegion frame1 = TextureRegion(testTexture, 0, 32, 0, 32);
-//    TextureRegion frame2 = TextureRegion(testTexture, 32, 64, 0, 32);
-//    TextureRegion frame3 = TextureRegion(testTexture, 64, 96, 0, 32);
-//    TextureRegion frame4 = TextureRegion(testTexture, 96, 128, 0, 32);
-//    TextureRegion frame5 = TextureRegion(testTexture, 128, 160, 0, 32);
-//    TextureRegion frame6 = TextureRegion(testTexture, 160, 192, 0, 32);
-//    TextureRegion frame7 = TextureRegion(testTexture, 192, 224, 0, 32);
-//    TextureRegion frame8 = TextureRegion(testTexture, 224, 256, 0, 32);
-
-    /////////////////Texture Region Serialize Test////////////////////////
-//    Serializer root;
-//    frame1.Serialize(root);
-//    root.WriteFile("TextureRegion.json");
-
-    ////////////////Texture Region Deserialize Test////////////////////////
-    /*Serializer root;
-    root.ReadFile("TextureRegion.json");
-    frame1.Deserialize(root);*/
-
-
+    ForLease->Dispatcher.Attach(NULL, &mouse, "MouseButtonDown", &MouseListener::OnMouseDown, this);
+    MouseButtonEvent me = MouseButtonEvent("MouseButtonDown");
+    me.ScreenLocation = Point(99, 99);
+    ForLease->Dispatcher.DispatchToParent(&me, this);
 
     Components::Transform* transform = new Components::Transform(*spriteTest, 0, 0, 100, 100, 0);
-    Components::Sprite* sprite = new Components::Sprite(*spriteTest);
-//    sprite->SpriteColor = Color(0, 1, 0);
-//    sprite->AnimationActive = true;
-//    sprite->SpriteSource.push_back(frame1);
-//    sprite->SpriteSource.push_back(frame2);
-//    sprite->SpriteSource.push_back(frame3);
-//    sprite->SpriteSource.push_back(frame4);
-//    sprite->SpriteSource.push_back(frame5);
-//    sprite->SpriteSource.push_back(frame6);
-//    sprite->SpriteSource.push_back(frame7);
-//    sprite->SpriteSource.push_back(frame8);
-//    sprite->FrameRate = 12;
-
-    /////////////////////Sprite Serialize Test///////////////////////
-//    Serializer root;
-//    sprite->Serialize(root);
-//    root.WriteFile("Sprite.json");
-
-    /////////////////////Sprite Deserialize Test/////////////////////////
-    Serializer root;
-    root.ReadFile("Sprite.json");
-    sprite->Deserialize(root);
-    //std::cout << *sprite << std::endl;
 
     //spriteTest->AddComponent(sprite);
-    Components::Model* model = new Components::Model(*spriteTest, true, "MeshTest.json", "", Color(1, 1, 1, 1));
+    model = new Components::Model(*spriteTest, true, false, false, "MeshTest.json", "", Color(1, 1, 1, 1), BlendMode::NONE, true, true);
+    testMesh = ForLease->Resources.GetMesh("MeshTest.json");
+//    testMesh->CreateAnimation("TestAnimation");
+//    animation = testMesh->GetAnimation("TestAnimation");
+//    animation->AddFrame();
+//    animation->SetVertex(1, 12, Point(-1.0f / 11, -4.5f / 11));
+//    animation->SetVertex(1, 13, Point(1.0f / 11, -4.5f / 11));
+//    animation->SetVertex(1, 14, Point(-1.0f / 11, -3.5f / 11));
+    animation = new MeshAnimation();
+
+    /////////////////////Animation Serialization test///////////////////
+//    Serializer animationWriter;
+//    animation->Serialize(animationWriter);
+//    animationWriter.WriteFile("AnimationTest.json");
+
+    /////////////////////Animation Deserialize test///////////////////
+    //Serializer animationReader;
+    //animationReader.ReadFile("AnimationTest.json");
+    //animation->Deserialize(animationReader);
+
+    //testMesh->AddAnimation(animation);
+
+    model->AnimationActive = true;
+    model->SetAnimation("AnimationTest.json");
+    model->FrameRate = 3;
+    model->Looping = true;
+    model->FlipY = true;
+    ForLease->Resources.GetMeshAnimation("AnimationTest.json");
+    //std::cout << ForLease->Resources.GetLoadedMeshAnimationNames()[0] << std::endl;
+
+    //    testMesh->SetVertex(Point(-1.0f / 11, -5.5f / 11), 12);
+//    testMesh->SetVertex(Point( 1.0f / 11, -5.5f / 11), 13);
+//    testMesh->SetVertex(Point(-1.0f / 11, -4.5f / 11), 14);
     ////////////////Model Serialize Test//////////////////////////////////
 //    Serializer modelWriter;
 //    model->Serialize(modelWriter);
 //    modelWriter.WriteFile("Model.json");
 
     ///////////////Model Deserialize Test/////////////////////////////////
-    Serializer modelReader;
-    modelReader.ReadFile("Model.json");
-    model->Deserialize(modelReader);
-
+    //Serializer modelReader;
+    //modelReader.ReadFile("Model.json");
+    //model->Deserialize(modelReader);
 
     //spriteTest->AddComponent(model);
 //    std::ifstream fontFile("Arial.fnt", std::ios_base::in | std::ios_base::binary);
@@ -243,18 +227,85 @@ void TestingState::Load() {
 //    cp->Serialize(vSerializer);
 //    vSerializer.WriteFile("VirtualText.json");
 
-    for(int i = 0; i < 1; ++i) {
-        Entity* entity = AddEntity();
-        entity->AddComponent(new Components::Transform(*entity, 200 * cos(2 * 3.14 * i / 500), 200 * sin(2 * 3.14 * i / 500), 500, 500, i));
+    Entity* entity = AddEntity();
+
+    soundEmitter = new Components::SoundEmitter(*entity);
+
+    //////////////////Sound Emitter serialize///////////////////////
+//    Serializer soundEmitterWriter;
+//    soundEmitter->Serialize(soundEmitterWriter);
+//    soundEmitterWriter.WriteFile("SoundEmitter.json");
+
+    /////////////////Sound Emitter deserialize/////////////////////
+    Serializer soundEmitterReader;
+    soundEmitterReader.ReadFile("SoundEmitter.json");
+    soundEmitter->Deserialize(soundEmitterReader);
+
+
+    mouseDrag = Components::DragWithMouse::Create(*entity);
+    //mouseDrag->Active = true;
+
+    //////////////Mouse Drag serialize///////////////////
+    //Serializer mouseDragWriter;
+    //mouseDrag->Serialize(mouseDragWriter);
+    //mouseDragWriter.WriteFile("MouseDragTest.json");
+
+    /////////////Mouse Drag deserialize///////////////////
+    Serializer mouseDragReader;
+    mouseDragReader.ReadFile("MouseDragTest.json");
+    mouseDrag->Deserialize(mouseDragReader);
+    mouseDrag->Active = false;
+
+    transCont = new Components::TransformModeControls(*entity);
+    transCont->SlowMotionSpeed = 0.1f;
+    transCont->Initialize();
+
+    keyScale = ScaleWithKeyboard::Create(*entity);
+    //keyScale->Active = true;
+
+        //entity->AddComponent(new Components::Transform(*entity, 200 * cos(2 * 3.14 * i / 500), 200 * sin(2 * 3.14 * i / 500), 500, 500, i));
+        entity->AddComponent(new Components::Transform(*entity));
         entity->AddComponent(model);
-    }
+        //Components::Sprite* sprite = new Components::Sprite(*entity);
+        //sprite->SpriteSource.push_back(TextureRegion(ForLease->Resources.GetTexture("bg11.jpg"), 0, 512, 0, 512));
+        //entity->AddComponent(sprite);
+        entity->AddComponent(soundEmitter);
+        entity->AddComponent(new Components::Collision(*entity));
+        entity->AddComponent(mouseDrag);
+        entity->AddComponent(keyScale);
+        visionCone = new Components::VisionCone(*entity, true, true, true, Vector(-0.2, 0.35), 4, Vector(-1, 0), PI / 4, Color(0.5f, 0, 0.5f, 1));
+        entity->AddComponent(visionCone);
 
+    Serializer mouseDragWriter;
+    mouseDrag->Serialize(mouseDragWriter);
+    mouseDragWriter.WriteFile("MouseDragTest.json");
+    Serializer keyScaleWriter;
+    keyScale->Serialize(keyScaleWriter);
+    keyScaleWriter.WriteFile("KeyScaleTest.json");
+    Serializer transContWriter;
+    transCont->Serialize(transContWriter);
+    transContWriter.WriteFile("TransContTest.json");
 
-    camera = new Entity();
+    Entity* anotherEntity = AddEntity("AnotherEntity");
+    anotherEntity->AddComponent(new Components::Transform(*anotherEntity, -1, 1));
+    anotherEntity->AddComponent(new Components::Model(*anotherEntity, true, false, false, "MainCharMesh.json"));
+    anotherEntity->AddComponent(new Components::Collision(*anotherEntity, 0.5, 1));
+    anotherEntity->AddComponent(Components::DragWithMouse::Create(*anotherEntity));
+    anotherEntity->AddComponent(Components::ScaleWithKeyboard::Create(*anotherEntity));
+
+    Entity* oneMoreEntity = AddEntity("OneMoreEntity");
+    oneMoreEntity->AddComponent(new Components::Transform(*oneMoreEntity, -2, -3));
+    oneMoreEntity->AddComponent(new Components::Model(*oneMoreEntity, true, false, false, "Building1Mesh.json"));
+    oneMoreEntity->AddComponent(new Components::Collision(*oneMoreEntity, 1.2, 2));
+    oneMoreEntity->AddComponent(Components::DragWithMouse::Create(*oneMoreEntity));
+    oneMoreEntity->AddComponent(Components::ScaleWithKeyboard::Create(*oneMoreEntity));
+
+    camera = AddEntity();
     camera->AddComponent(new Components::Transform(*camera, 0, 0, 1, 1, 0));
-    camera->AddComponent(new Components::Camera(*camera, 0, 1, 720));
+    camera->AddComponent(new Components::Camera(*camera, 0, 1, 8));
 
-    render->SetCamera(&camera);
+    render->SetCamera(camera->GetID());
+    render->SetClearColor(0.3f, 0.3f, 0.5f, 1);
 
     spriteTest = AddEntity();
     spriteTest->AddComponent(transform);
@@ -263,82 +314,96 @@ void TestingState::Load() {
     Serializer entityWriter;
     spriteTest->Serialize(entityWriter);
     entityWriter.WriteFile("Entity.json");
+
+    ///////////////////Renderer Serialize Test///////////////////////
+//    Serializer rendererWriter;
+//    render->Serialize(rendererWriter);
+//    rendererWriter.WriteFile("RendererTest.json");
+
+    ///////////////////Renderer Deserialize Test//////////////////////
+    Serializer rendererReader;
+    rendererReader.ReadFile("RendererTest.json");
+    render->Deserialize(rendererReader);
+
+    render->SetClearColor(0.3f, 0.3f, 0.5f, 1);
+
+    render->SetCamera(camera->GetID());
+    LevelComponents.push_back(render);
+    LevelComponents.push_back(new LevelComponents::Collision(*this));
+
+    Serializer test;
+    model->Serialize(test);
+    test.WriteFile("Model.json");
 }
 
 void TestingState::Initialize() {
     //render.SetProjection(Point(0, 0), 720, 720, 0, 1, 0);
     fpsPrinter.Initialize();
+    Serializer stringTest;
+    stringTest.WriteString("Test", "This is a newline test:\nDidja get the newline?");
+    stringTest.WriteFile("NewlineTest.json");
+    /*std::cout << "Entity IDs: ";
+    for(unsigned int i = 0; i < Entities.size(); ++i) {
+        std::cout << Entities[i]->GetID() << ", ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "Loaded Textures:" << std::endl;
+    std::vector<std::string> textures = ForLease->Resources.GetLoadedTextureNames();
+    for(int i = 0; i < textures.size(); ++i) {
+        std::cout << textures[i] << std::endl;
+    }
+
+    std::cout << "Loaded Fonts:" << std::endl;
+    std::vector<std::string> fonts = ForLease->Resources.GetLoadedFontNames();
+    for(int i = 0; i < fonts.size(); ++i) {
+        std::cout << fonts[i] << std::endl;
+    }
+
+    std::cout << "Loaded Meshes:" << std::endl;
+    std::vector<std::string> meshes = ForLease->Resources.GetLoadedMeshNames();
+    for(int i = 0; i < meshes.size(); ++i) {
+        std::cout << meshes[i] << std::endl;
+    }*/
 }
 
 void TestingState::Update() {
-    //double dt = ForLease->FrameRateController().GetDt();
+    double dt = ForLease->FrameRateController().GetDt();
+    frameTime += dt;
     //std::cout << static_cast<int>(1 / dt) << std::endl;
     //ForLeaseEngine::UpdateEvent e = ForLeaseEngine::UpdateEvent(dt);
     //ForLease->Dispatcher.Dispatch(&e, NULL);
     //ForLease->Dispatcher.DispatchTo(&e, &printer);
     ForLease->OSInput.ProcessAllInput();
+    ForLease->AudioSystem->Update();
     //Components::Sprite* sprite = reinterpret_cast<Components::Sprite*>(spriteTest->GetComponent(ComponentType::Sprite));
     //Components::Transform* transform = reinterpret_cast<Components::Transform*>(spriteTest->GetComponent(ComponentType::Transform));
     for(unsigned int i = 0; i < Entities.size(); ++i) {
-        Components::Sprite* sprite = Entities[i]->GetComponent<Components::Sprite*>(ComponentType::Sprite);
+        Components::Sprite* sprite = Entities[i]->GetComponent<Components::Sprite>();
         if(sprite)
             sprite->Update();
+        Components::ScaleWithKeyboard* scale = Entities[i]->GetComponent<Components::ScaleWithKeyboard>();
+        if(scale)
+            scale->Update();
     }
-    //ForLease->Resources.LoadTexture("BlobCharacter.png");
-    Components::SpriteText* spriteText = spriteTest->GetComponent<Components::SpriteText*>(ComponentType::SpriteText);
-    std::stringstream ss;
-    ss << "FPS: " << static_cast<int>(1 / ForLease->FrameRateController().GetDt()) << std::endl
-       << "Tris: " << render->GetTriCount() << std::endl
-       << "Lines: " << render->GetLineCount() << std::endl
-       << "Blend Mode Swaps: " << render->GetBlendModeSwapCount() << std::endl
-       << "Texture Swaps: " << render->GetTextureSwapCount() << std::endl
-       << "Render Time: " << render->GetRenderTime() << std::endl;
-    //ss << ForLease->Resources;
-
-    spriteText->Text = ss.str();
-    //Components::Model* model = reinterpret_cast<Components::Model*>(spriteTest->GetComponent(ComponentType::Model));
-    //sprite->Update();
-    //render->SetDrawingColor(0.5, 0.5, 0.5);
-    //render->DrawRectangleFilled(Point(0, 0), 720, 720);
-
-//    for(int i = 0; i < model->ModelMesh->GetFaceCount(); ++i) {
-//        Face face = model->ModelMesh->GetFace(i);
-//        Color color = model->ModelMesh->GetFaceColor(i);
-//        render.SetDrawingColor(color.GetR(), color.GetG(), color.GetB());
-//        glBegin(GL_TRIANGLES);
-//            for(int j = 0; j < 3; ++j) {
-//                glVertex2f(face.Vertices[j][0], face.Vertices[j][1]);
-//            }
-//        glEnd();
-//    }
-    //Point o;
-    //glLineWidth(4.0f);
-    //glColor3f(0, 0, 0);
-    //render.DrawWireframeMesh(*model->ModelMesh, transform->Position, 1, 1, transform->Rotation);
-    //render.SetDrawingColor(1, 0, 0, 0.5f);
-    //render.SetBlendMode(BlendMode::NONE);
-    //render.DrawTextureRegion(transform->Position + Vector(-80, 0), sprite->GetCurrentRegion(), transform->ScaleX, transform->ScaleY, transform->Rotation);
-    //render->DrawTextureRegion(transform->Position + Vector(80, 0), sprite->GetCurrentRegion(), transform->ScaleX, transform->ScaleY, transform->Rotation, numToDraw);
-    //render->SetModelView(transform);
-    //render->DrawModel(model);
-    //render->DrawSprite(sprite);
-    //for(int i = 0; i < 500; ++i) {
-        //render.DrawTexture(Point(0, 0), testTexture);
-    //}
-
-    if(addObject) {
-        Entity* entity = AddEntity();
-        entity->AddComponent(new Components::Transform(*entity, mousePos[0], mousePos[1], 100, 100, 0));
-        Components::Model* model = new Components::Model(*entity, true, "MeshTest.json", "", Color(), BlendMode::NONE);
-        entity->AddComponent(model);
-        addObject = false;
-    }
+    model->Update();
+    if(mouseDrag)
+        mouseDrag->Update();
 
     render->Update(Entities);
+    render->SetDrawingColor(Color(1, 1, 1, 1));
+    render->SetDebugPointSize(4);
 
-    //ForLease->Resources.LoadMesh("MeshTest.json");
-    //std::cout << ForLease->Resources << std::endl;
-    Timer t;
+    float animationTime = model->GetFrameTime();
+    float frameRate = model->FrameRate;
+    unsigned int currentFrame = model->GetFrame();
+    float t = animationTime * frameRate - currentFrame;
+    for(unsigned int i = 0; i < animation->GetFrameVertexCount(); ++i) {
+        render->DrawPoint(animation->InterpolateVertex(currentFrame, i, t));
+    }
+    transCont->Update();
+    visionCone->Update();
+    //Timer t;
     ForLease->GameWindow->UpdateGameWindow();
     //std::cout << t.GetTime() << std::endl;
 }
