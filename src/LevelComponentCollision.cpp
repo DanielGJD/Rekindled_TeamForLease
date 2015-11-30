@@ -21,6 +21,8 @@
 #include "LevelComponentRenderer.h"
 #include "HalfPlane.h"
 
+int i = 0;
+
 namespace ForLeaseEngine {
 
     namespace LevelComponents {
@@ -45,11 +47,15 @@ namespace ForLeaseEngine {
             then.
         */
         void Collision::Update(std::vector<Entity *>& entities) {
+            for (Entity* entity : entities) {
+                if (!CheckEntityCompatibility(entity)) continue;
+
+                entity->GetComponent<Components::Collision>()->CollidedLastFrame = false;
+                entity->GetComponent<Components::Collision>()->CollidedWith = 0;
+            }
+
             for (Entity* entity1 : entities) {
                 if (!CheckEntityCompatibility(entity1)) continue;
-
-                entity1->GetComponent<Components::Collision>()->CollidedLastFrame = false;
-                entity1->GetComponent<Components::Collision>()->CollidedWith = 0;
 
                 for (Entity* entity2 : entities) {
                     if (entity2 == entity1 || !CheckEntityCompatibility(entity2)) continue;
@@ -86,6 +92,9 @@ namespace ForLeaseEngine {
             Point entity2Position = entity2->GetComponent<Components::Transform>()->Position;
             Components::Collision* entity1Collision = entity1->GetComponent<Components::Collision>();
             Components::Collision* entity2Collision = entity2->GetComponent<Components::Collision>();
+
+            if (entity1Collision->CollidedLastFrame || entity2Collision->CollidedLastFrame) return false;
+
             entity1Position[0] += entity1Collision->OffsetX;
             entity1Position[1] += entity1Collision->OffsetY;
             entity2Position[0] += entity2Collision->OffsetX;
@@ -198,7 +207,7 @@ namespace ForLeaseEngine {
             Vector velocity = toResolvePhysics->Velocity * ForLease->FrameRateController().GetDt();
             toResolveTransform->Position -= velocity;
             Point toResolvePosition = toResolveTransform->Position;
-            toResolvePosition -= velocity;
+            //toResolvePosition -= velocity;
 
             Point toResolveTopLeft(toResolvePosition[0] - toResolveCollision->Width / 2, toResolvePosition[1] + toResolveCollision->Height / 2);
             Point toResolveTopRight(toResolvePosition[0] + toResolveCollision->Width / 2, toResolvePosition[1] + toResolveCollision->Height / 2);
@@ -225,36 +234,43 @@ namespace ForLeaseEngine {
             Components::Collision::Side side;
             float dist = 9999;
 
-            if (toResolveTopLeftRay.GetLastDistance() < dist) {
+            if (toResolveTopLeftRay.GetLastDistance() < dist && toResolveTopLeftRay.GetLastDistance() > 0.0001f) {
                 side = toResolveTopLeftRay.GetLastSide();
                 dist = toResolveTopLeftRay.GetLastDistance();
             }
 
-            if (toResolveTopRightRay.GetLastDistance() < dist) {
+            if (toResolveTopRightRay.GetLastDistance() < dist && toResolveTopRightRay.GetLastDistance() > 0.0001f) {
                 side = toResolveTopRightRay.GetLastSide();
                 dist = toResolveTopRightRay.GetLastDistance();
             }
 
-            if (toResolveBotRightRay.GetLastDistance() < dist) {
+            if (toResolveBotRightRay.GetLastDistance() < dist && toResolveBotRightRay.GetLastDistance() > 0.0001f) {
                 side = toResolveBotRightRay.GetLastSide();
                 dist = toResolveBotRightRay.GetLastDistance();
             }
 
-            if (toResolveBotLeftRay.GetLastDistance() < dist) {
+            if (toResolveBotLeftRay.GetLastDistance() < dist && toResolveBotLeftRay.GetLastDistance() > 0.0001f) {
                 side = toResolveBotLeftRay.GetLastSide();
                 dist = toResolveBotLeftRay.GetLastDistance();
             }
 
+            toResolvePhysics->Acceleration = Vector(0, 0);
+            toResolvePhysics->Velocity = Vector(0, 0);
+
+            //dist -= 0.001f;
             toResolveTransform->Position += velocity * dist;
             dist = 1.0f - dist;
             velocity = velocity * dist;
-
-            if (side == Components::Collision::Side::Bottom || side == Components::Collision::Side::Top)
-                velocity[1] = 0;
-            else
-                velocity[0] = 0;
-
             toResolveTransform->Position += velocity;
+
+            std::cout << "In Here " << ++i << std::endl;
+
+            //if (side == Components::Collision::Side::Bottom || side == Components::Collision::Side::Top)
+            //    velocity[1] = 0.0f;
+            //else
+            //    velocity[0] = 0.0f;
+
+            //toResolveTransform->Position += velocity;
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //toResolveTransform->Position[1] -= toResolvePhysics->Velocity[1] * 2 * ForLease->FrameRateController().GetDt();

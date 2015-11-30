@@ -21,6 +21,8 @@ namespace ForLeaseEngine {
 
         Menu::Menu(State& owner, double pauseCD)
         : LevelComponent(owner), Paused(false), PauseTimer("Pause Timer"), PauseCooldown(pauseCD) {
+            PauseTimer.Reset();
+
             Entity* pauseMenu = owner.AddEntity("PauseMenu");
             pauseMenu->IncludeInSerialize = false;
             pauseMenu->AddComponent(new Components::Transform(*pauseMenu));
