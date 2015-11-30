@@ -164,6 +164,14 @@ void SecondState::Update() {
     //    renderer->DrawRectangle(ray.GetStart(),0.5,0.5);
     //}
 
+    Ray ray(Point(0, 0), Vector(0, -1));
+
+    Entity* collidedWith = Ray::CheckCollisions(ray, Entities);
+
+    if (collidedWith) std::cout << collidedWith->GetName() << std::endl;
+
+    renderer->DrawArrow(ray.GetStart(), ray.GetScaledVector());
+
     //renderer->DrawRectangleFilled(Point(0, -1), 0.2, 0.2);
     //Entity* entity = GetEntityAtPosition(Point(0,-1));
     //if (entity)
