@@ -15,8 +15,11 @@
 #include "Ray.h"
 #include "ComponentTransform.h"
 #include "ComponentCollision.h"
+#include "HalfPlane.h"
 #include <vector>
 #include <iostream>
+#include <map>
+#include <unordered_set>
 
 static const int ViewResolution = 12;
 
@@ -68,76 +71,128 @@ namespace ForLeaseEngine {
                 }
             }
 
-            if(detected.size() > 0) {
+            if(true) {
+                std::unordered_set<unsigned long> visibleEntityIDs;
+                std::map<float, Point> collisionPoints;
+                std::vector<Point> castingPoints;
                 MultiEntityEvent multi_e = MultiEntityEvent("EntitiesSeen");
-                unsigned long parentID = Parent.GetID();
+                Point castingPoint = trans->Position + Offset;
+                //unsigned long parentID = Parent.GetID();
+
+                // Get half planes for vision cone
+                Point mid = castingPoint + Direction * Radius;
+                Point bot = castingPoint + Vector::Rotate(Direction, Angle / 2) * Radius;
+                Point top = castingPoint + Vector::Rotate(Direction, -Angle / 2) * Radius;
+                HalfPlane hp1 = HalfPlane(castingPoint, top, mid);
+                HalfPlane hp2 = HalfPlane(castingPoint, bot, mid);
+                Vector zeroAngleVector = top - castingPoint;
+                float radius2 = Radius * Radius;
+                Vector worldToModel = Point(0, 0) - trans->Position;
+
+                render->SetDrawingColor(0, 0, 1);
+                render->SetDebugPointSize(8);
+                // Add corners of screen, skipping for now
+
+                // Add required points for outside edge
+                /*const int numPoints = 30;
+                for(int i = 0; i < numPoints; ++i) {
+                    Vector currentDir = Vector::Rotate(start, Angle / (numPoints - 1) * i);
+                    castingPoints.push_back(castingPoint + currentDir);
+                }*/
+
+                // Get all casting points
                 for(int i = 0; i < detected.size(); ++i) {
-                    unsigned long detectedID = detected[i]->GetID();
-                    if(detectedID != parentID) { // This if not needed now, should remove
-                        // Check for line of sight, this will be slow
-                        Collision* collide = detected[i]->GetComponent<Collision>();
-                        Transform* targettrans = detected[i]->GetComponent<Transform>();
-                        float halfwidth = collide->Width / 2 * targettrans->ScaleX;
-                        float halfheight = collide->Height / 2 * targettrans->ScaleY;
-                        Point tl = Point(targettrans->Position[0] - halfwidth, targettrans->Position[1] + halfheight);
-                        Point tr = Point(targettrans->Position[0] + halfwidth, targettrans->Position[1] + halfheight);
-                        Point br = Point(targettrans->Position[0] + halfwidth, targettrans->Position[1] - halfheight);
-                        Point bl = Point(targettrans->Position[0] - halfwidth, targettrans->Position[1] - halfheight);
+                    Components::Transform* detectedTrans = detected[i]->GetComponent<Components::Transform>();
+                    Components::Collision* detectedCollision = detected[i]->GetComponent<Components::Collision>();
+                    float halfWidth = detectedCollision->Width / 2 * detectedTrans->ScaleX;
+                    float halfHeight = detectedCollision->Height / 2 * detectedTrans->ScaleY;
+                    Point colliderCenter = detectedTrans->Position + Vector(detectedCollision->OffsetX, detectedCollision->OffsetY);
+                    Point tl = Point(colliderCenter[0] - halfWidth, colliderCenter[1] + halfHeight);
+                    Point tr = Point(colliderCenter[0] + halfWidth, colliderCenter[1] + halfHeight);
+                    Point br = Point(colliderCenter[0] + halfWidth, colliderCenter[1] - halfHeight);
+                    Point bl = Point(colliderCenter[0] - halfWidth, colliderCenter[1] - halfHeight);
 
-                        render->SetDrawingColor(0, 1, 0);
-                        render->SetDebugPointSize(8);
-
-                        Point rayStart = trans->Position + Offset;
-                        // Check visibility for top left
-                        Ray los = Ray(rayStart, tl - rayStart, Radius);
-                        Entity* visible = Ray::CheckCollisions(los, detected);
-                        Point rayEnd = los.GetStart() + los.GetScaledVector();
-                        render->DrawArrow(rayStart, rayEnd);
-                        // If not visible, check for top right
-                        if(visible &&  // Didn't hit anything (Due to floating point error)
-                           visible->GetID() != detected[i]->GetID() && // Hit something besides the object casting towards
-                           Point::DistanceSquared(rayStart, rayEnd) < Point::DistanceSquared(rayStart, tl)) // Closer than the object casting towards
-                        {
-                            Ray los = Ray(rayStart, tr - rayStart, Radius);
-                            visible = Ray::CheckCollisions(los, detected);
-                            rayEnd = los.GetStart() + los.GetScaledVector();
-                            render->DrawArrow(rayStart, rayEnd);
-                            // If not visible, check bottom right
-                            if(visible && visible->GetID() != detected[i]->GetID() && Point::DistanceSquared(rayStart, rayEnd) < Point::DistanceSquared(rayStart, tr)) {
-                                Ray los = Ray(rayStart, br - rayStart, Radius);
-                                visible = Ray::CheckCollisions(los, detected);
-                                rayEnd = los.GetStart() + los.GetScaledVector();
-                                render->DrawArrow(rayStart, rayEnd);
-                                // If not visible, check bottom left
-                                if(visible && visible->GetID() != detected[i]->GetID() && Point::DistanceSquared(rayStart, rayEnd) < Point::DistanceSquared(rayStart, br)) {
-                                    Ray los = Ray(rayStart, bl - rayStart, Radius);
-                                    visible = Ray::CheckCollisions(los, detected);
-                                    rayEnd = los.GetStart() + los.GetScaledVector();
-                                    render->DrawArrow(rayStart, rayEnd);
-                                    // If not visible, entity is not visible
-                                    if(visible && visible->GetID() != detected[i]->GetID() && Point::DistanceSquared(rayStart, rayEnd) < Point::DistanceSquared(rayStart, tr)) {
-                                        render->SetDrawingColor(1, 0, 0);
-                                        render->DrawPoint(rayEnd);
-                                        continue;
-                                    }
-                                    else {
-                                        render->DrawPoint(rayEnd);
-                                    }
-                                }
-                                else {
-                                    render->DrawPoint(rayEnd);
-                                }
-                            }
-                            else {
-                                render->DrawPoint(rayEnd);
-                            }
-                        }
-                        else {
-                            render->DrawPoint(rayEnd);
-                        }
-                        multi_e.EntityIDs.push_back(detectedID);
+                    if(hp1.Dot(tl) < 0 && hp2.Dot(tl) < 0 && Point::DistanceSquared(tl, castingPoint) < radius2) {
+                        castingPoints.push_back(tl);
+                        //render->DrawPoint(tl);
+                    }
+                    if(hp1.Dot(tr) < 0 && hp2.Dot(tr) < 0 && Point::DistanceSquared(tr, castingPoint) < radius2) {
+                        castingPoints.push_back(tr);
+                        //render->DrawPoint(tr);
+                    }
+                    if(hp1.Dot(br) < 0 && hp2.Dot(br) < 0 && Point::DistanceSquared(br, castingPoint) < radius2) {
+                        castingPoints.push_back(br);
+                        //render->DrawPoint(br);
+                    }
+                    if(hp1.Dot(bl) < 0 && hp2.Dot(bl) < 0 && Point::DistanceSquared(bl, castingPoint) < radius2) {
+                        castingPoints.push_back(bl);
+                        //render->DrawPoint(bl);
                     }
                 }
+
+                const float angleOffset = 0.00001;
+                // This whole thing should be adjusted to only do 1 ray cast when ray casting can return more than one entity
+                for(std::vector<Point>::iterator i = castingPoints.begin(); i != castingPoints.end(); ++i) {
+                    Point point = (*i);
+                    Point prePoint = castingPoint + Vector::Rotate(point - castingPoint, -angleOffset);
+                    Point postPoint = castingPoint + Vector::Rotate(point - castingPoint, angleOffset);
+
+                    Ray preRay = Ray(castingPoint, prePoint - castingPoint, Radius);
+                    Ray ray = Ray(castingPoint, point - castingPoint, Radius);
+                    Ray postRay = Ray(castingPoint, postPoint - castingPoint, Radius);
+
+                    Entity* preHit = Ray::CheckCollisions(preRay, detected);
+                    Entity* hit = Ray::CheckCollisions(ray, detected);
+                    Entity* postHit = Ray::CheckCollisions(postRay, detected);
+
+                    if(preHit) {
+                        visibleEntityIDs.insert(preHit->GetID());
+                    }
+//                    float preAngle = Vector::AngleBetween(zeroAngleVector, preRay.GetIntersectionPoint() - castingPoint);
+//                    if(preAngle < 0)
+//                        preAngle += 2 * PI;
+//                    collisionPoints.insert(std::make_pair(preAngle, preRay.GetIntersectionPoint()));
+
+                    if(hit) {
+                        visibleEntityIDs.insert(hit->GetID());
+                    }
+//                    float angle = Vector::AngleBetween(zeroAngleVector, ray.GetIntersectionPoint() - castingPoint);
+//                    if(angle < 0)
+//                        angle += 2 * PI;
+//                    collisionPoints.insert(std::make_pair(angle, ray.GetIntersectionPoint()));
+
+                    if(postHit) {
+                        visibleEntityIDs.insert(postHit->GetID());
+                    }
+//                    float postAngle = Vector::AngleBetween(zeroAngleVector, postRay.GetIntersectionPoint() - castingPoint);
+//                    if(postAngle < 0)
+//                        postAngle += 2 * PI;
+//                    collisionPoints.insert(std::make_pair(postAngle, postRay.GetIntersectionPoint()));
+                }
+
+                // Add vertices to mesh
+                /*for(std::map<float, Point>::iterator i = collisionPoints.begin(); i != collisionPoints.end(); ++i) {
+                    ViewMesh.AddVertex((*i).second + worldToModel, Point(0, 0));
+                }*/
+
+                // Debug drawing
+                /*render->SetDrawingColor(1, 0, 0);
+                for(int i = 1; i < ViewMesh.GetVertexCount(); ++i) {
+                    render->DrawLine(ViewMesh.GetVertex(0) + (trans->Position  - Point(0, 0)), ViewMesh.GetVertex(i) + (trans->Position - Point(0, 0)));
+                }*/
+
+                // Create Faces
+                /*for(int i = 2; i < ViewMesh.GetVertexCount(); ++i) {
+                    ViewMesh.AddFace(IndexedFace(0, i - 1, i), IndicatorColor);
+                }
+
+                // Add edges
+                for(int i = 1; i < ViewMesh.GetVertexCount(); ++i) {
+                    ViewMesh.AddEdge(i - 1, i);
+                }
+                ViewMesh.AddEdge(ViewMesh.GetVertexCount() - 1, 0);*/
+
+                multi_e.EntityIDs = std::vector<unsigned long>(visibleEntityIDs.begin(), visibleEntityIDs.end());
 
                 std::cout << "I see " << multi_e.EntityIDs.size() << " entities" << std::endl;
                 ForLease->Dispatcher.DispatchTo(&multi_e, &Parent);

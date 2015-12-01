@@ -63,6 +63,7 @@ namespace ForLeaseEngine {
         static float AngleBetween(Vector const& vec1, Vector const& vec2);
         Vector& operator+=(const Vector& rhs);
         Vector operator*(float rhs) const;
+        Vector operator-(const Vector& rhs);
         friend std::ostream& operator<<(std::ostream& os, const Vector& vector);
 	};
 
