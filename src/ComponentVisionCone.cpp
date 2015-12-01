@@ -37,6 +37,9 @@ namespace ForLeaseEngine {
 
         void VisionCone::Update() {
             ViewMesh.ClearData();
+            if(!Active) {
+                return;
+            }
             Direction.Normalize();
             Vector start = Vector::Rotate(Direction, -Angle / 2);
 
@@ -99,6 +102,8 @@ namespace ForLeaseEngine {
                     Vector currentDir = Vector::Rotate(start, Angle / (numPoints - 1) * i);
                     castingPoints.push_back(castingPoint + currentDir);
                 }*/
+                castingPoints.push_back(top);
+                castingPoints.push_back(bot);
 
                 // Get all casting points
                 for(int i = 0; i < detected.size(); ++i) {
@@ -152,6 +157,7 @@ namespace ForLeaseEngine {
 //                    if(preAngle < 0)
 //                        preAngle += 2 * PI;
 //                    collisionPoints.insert(std::make_pair(preAngle, preRay.GetIntersectionPoint()));
+                    //render->DrawLine(castingPoint, preRay.GetScaledVector());
 
                     if(hit) {
                         visibleEntityIDs.insert(hit->GetID());
@@ -160,6 +166,7 @@ namespace ForLeaseEngine {
 //                    if(angle < 0)
 //                        angle += 2 * PI;
 //                    collisionPoints.insert(std::make_pair(angle, ray.GetIntersectionPoint()));
+                    //render->DrawLine(castingPoint, ray.GetScaledVector());
 
                     if(postHit) {
                         visibleEntityIDs.insert(postHit->GetID());
@@ -168,6 +175,7 @@ namespace ForLeaseEngine {
 //                    if(postAngle < 0)
 //                        postAngle += 2 * PI;
 //                    collisionPoints.insert(std::make_pair(postAngle, postRay.GetIntersectionPoint()));
+                    //render->DrawLine(castingPoint, postRay.GetScaledVector());
                 }
 
                 // Add vertices to mesh
@@ -200,9 +208,43 @@ namespace ForLeaseEngine {
         }
 
         void VisionCone::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned int>(Type));
+            Serializer visionCone = root.GetChild("VisionCone");
+            visionCone.WriteUint("Type", static_cast<unsigned int>(Type));
+            visionCone.WriteBool("Active", Active);
+            visionCone.WriteBool("Visible", Visible);
+            visionCone.WriteBool("DrawOutlines", DrawOutline);
+            Serializer offset = visionCone.GetChild("Offset");
+            offset.WriteFloat("X", Offset[0]);
+            offset.WriteFloat("Y", Offset[1]);
+            visionCone.Append(offset, "Offset");
+            visionCone.WriteFloat("Radius", Radius);
+            Serializer direction = visionCone.GetChild("Direction");
+            direction.WriteFloat("X", Direction[0]);
+            direction.WriteFloat("Y", Direction[1]);
+            visionCone.Append(direction, "Direction");
+            visionCone.WriteFloat("Angle", Angle);
+            Serializer indicatorColor = visionCone.GetChild("IndicatorColor");
+            IndicatorColor.Serialize(indicatorColor);
+            visionCone.Append(indicatorColor, "IndicatorColor");
+            root.Append(visionCone, "VisionCone");
         }
 
         void VisionCone::Deserialize(Serializer& root) {
+            Serializer visionCone = root.GetChild("VisionCone");
+            visionCone.ReadBool("Active", Active);
+            visionCone.ReadBool("Visible", Visible);
+            visionCone.ReadBool("DrawOutlines", DrawOutline);
+            Serializer offset = visionCone.GetChild("Offset");
+            offset.ReadFloat("X", Offset[0]);
+            offset.ReadFloat("Y", Offset[1]);
+            visionCone.ReadFloat("Radius", Radius);
+            Serializer direction = visionCone.GetChild("Direction");
+            direction.ReadFloat("X", Direction[0]);
+            direction.ReadFloat("Y", Direction[1]);
+            visionCone.ReadFloat("Angle", Angle);
+            Serializer indicatorColor = visionCone.GetChild("IndicatorColor");
+            IndicatorColor.Deserialize(indicatorColor);
         }
 
         Mesh* VisionCone::GetVisionMesh() {
