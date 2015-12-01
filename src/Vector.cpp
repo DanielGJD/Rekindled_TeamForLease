@@ -296,6 +296,10 @@ namespace ForLeaseEngine {
 	*/
 	Vector Vector::operator*(float rhs) const { return Scale(*this, rhs); }
 
+	Vector Vector::operator-(const Vector& rhs) {
+        return Vector(x - rhs.x, y - rhs.y);
+	}
+
 	/*!
 	  \brief
 	    Generates an Identity matrix

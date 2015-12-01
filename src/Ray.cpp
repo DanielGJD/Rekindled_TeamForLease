@@ -28,12 +28,14 @@ namespace ForLeaseEngine {
         if (!transform) return false;
         Point position = transform->Position;
         Components::Collision* collision = entity->GetComponent<Components::Collision>();
+        float halfWidth = collision->Width / 2 * transform->ScaleX;
+        float halfHeight = collision->Height / 2 * transform->ScaleY;
 
 
-        Point topLeft(position[0] - collision->Width / 2, position[1] + collision->Height / 2);
-        Point topRight(position[0] + collision->Width / 2, position[1] + collision->Height / 2);
-        Point botRight(position[0] + collision->Width / 2, position[1] - collision->Height / 2);
-        Point botLeft(position[0] - collision->Width / 2, position[1] - collision->Height / 2);
+        Point topLeft(position[0] - halfWidth, position[1] + halfHeight);
+        Point topRight(position[0] + halfWidth, position[1] + halfHeight);
+        Point botRight(position[0] + halfWidth, position[1] - halfHeight);
+        Point botLeft(position[0] - halfWidth, position[1] - halfHeight);
 
         HalfPlane top(topLeft, topRight, position);
         HalfPlane right(topRight, botRight, position);
@@ -157,7 +159,7 @@ namespace ForLeaseEngine {
         else
             return Direction * Length;
     }
-    
+
     Point Ray::GetIntersectionPoint() {
         return GetStart() + GetScaledVector();
     }

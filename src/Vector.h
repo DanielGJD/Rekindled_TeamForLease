@@ -64,6 +64,7 @@ namespace ForLeaseEngine {
         Vector& operator=(const Vector& rhs);
         Vector& operator+=(const Vector& rhs);
         Vector operator*(float rhs) const;
+        Vector operator-(const Vector& rhs);
         friend std::ostream& operator<<(std::ostream& os, const Vector& vector);
 	};
 
