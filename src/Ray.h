@@ -24,7 +24,8 @@ namespace ForLeaseEngine {
         public:
             const static int Unlimited = -1;
             Ray(Point start = Point(0,0), Vector direction = Vector(1,1), float scale = 20, int collisions = Unlimited);
-            bool IsColliding(Entity* entity);
+            //bool IsColliding(Entity* entity);
+            float IsColliding(Entity* entity);
             std::vector<Point> GetCollisionPoints();
             void ResetLength();
             Point GetStart();
