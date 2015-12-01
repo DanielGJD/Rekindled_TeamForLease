@@ -70,11 +70,11 @@ void SecondState::Load() {
     //SpawnArchetype("Box.arch", Point(-100, 0), "Box1");
     //SpawnArchetype("Box.arch", Point(100, 100), "Box2");
 
-    Entity* shitfuck = AddEntity();
-    shitfuck->AddComponent(new Components::Transform(*shitfuck, Point(3, 0)));
-    shitfuck->AddComponent(new Components::Model(*shitfuck, true, false, false, "BoxMesh.json", "", Color(1, 1, 1, 1)));
-    shitfuck->AddComponent(new Components::Collision(*shitfuck, 2, 2));
-    shitfuck->AddComponent(new Components::Physics(*shitfuck, 1/*, Vector(20, 0)*/));
+    //Entity* shitfuck = AddEntity();
+    //shitfuck->AddComponent(new Components::Transform(*shitfuck, Point(3, 0)));
+    //shitfuck->AddComponent(new Components::Model(*shitfuck, true, false, false, "BoxMesh.json", "", Color(1, 1, 1, 1)));
+    //shitfuck->AddComponent(new Components::Collision(*shitfuck, 2, 2));
+    //shitfuck->AddComponent(new Components::Physics(*shitfuck, 1/*, Vector(20, 0)*/));
 
     Entity* entityFloor = AddEntity("Floor");
     entityFloor->AddComponent(new Components::Transform(*entityFloor, 0, -10, 250, 1, 0));
@@ -150,8 +150,8 @@ void SecondState::Update() {
     Entity* player = GetEntityByName("Box", true);
     camera->GetComponent<Components::Transform>(true)->Position = player->GetComponent<Components::Transform>(true)->Position;
 
-    std::cout << player->GetComponent<Components::Physics>(true)->Acceleration << std::endl;
-    std::cout << player->GetComponent<Components::Physics>(true)->Velocity << std::endl;
+    //std::cout << player->GetComponent<Components::Physics>(true)->Acceleration << std::endl;
+    //std::cout << player->GetComponent<Components::Physics>(true)->Velocity << std::endl;
 
 
     //std::cout << "=========================================================" << std::endl;

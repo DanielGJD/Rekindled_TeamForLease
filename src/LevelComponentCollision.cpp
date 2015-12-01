@@ -93,7 +93,7 @@ namespace ForLeaseEngine {
             Components::Collision* entity1Collision = entity1->GetComponent<Components::Collision>();
             Components::Collision* entity2Collision = entity2->GetComponent<Components::Collision>();
 
-            if (entity1Collision->CollidedLastFrame || entity2Collision->CollidedLastFrame) return false;
+            //if (entity1Collision->CollidedLastFrame || entity2Collision->CollidedLastFrame) return false;
 
             entity1Position[0] += entity1Collision->OffsetX;
             entity1Position[1] += entity1Collision->OffsetY;
@@ -197,7 +197,6 @@ namespace ForLeaseEngine {
                 A pointer that toResolve is colliding with.
         */
         void Collision::ResolveCollisionOneEntityOnly(Entity* toResolve, Entity* other) {
-            std::cout << "FUCK A SHIT" << std::endl;
             Components::Transform* toResolveTransform = toResolve->GetComponent<Components::Transform>(true);
             Components::Physics*   toResolvePhysics   = toResolve->GetComponent<Components::Physics>(true);
             Components::Collision* toResolveCollision = toResolve->GetComponent<Components::Collision>(true);
@@ -222,59 +221,73 @@ namespace ForLeaseEngine {
             Ray toResolveBotLeftRay(toResolveBotLeft, velocity, velocity.Magnitude(), 1);
 
             LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true);
+
+            //toResolveTopLeftRay.IsColliding(other);
+            //toResolveTopRightRay.IsColliding(other);
+            //toResolveBotRightRay.IsColliding(other);
+            //toResolveBotLeftRay.IsColliding(other);
+
+            Components::Collision::Side side;
+            float dist = 9999;
+
+            if (toResolveTopLeftRay.IsColliding(other) && toResolveTopLeftRay.GetLastDistance() < dist && toResolveTopLeftRay.GetLastDistance() > Epsilon) {
+                std::cout << "TopLeft" << std::endl;
+                side = toResolveTopLeftRay.GetLastSide();
+                dist = toResolveTopLeftRay.GetLastDistance();
+            }
+
+            if (toResolveTopRightRay.IsColliding(other) && toResolveTopRightRay.GetLastDistance() < dist && toResolveTopRightRay.GetLastDistance() > Epsilon) {
+                std::cout << "TopRight" << std::endl;
+                side = toResolveTopRightRay.GetLastSide();
+                dist = toResolveTopRightRay.GetLastDistance();
+            }
+
+            if (toResolveBotRightRay.IsColliding(other) && toResolveBotRightRay.GetLastDistance() < dist && toResolveBotRightRay.GetLastDistance() > Epsilon) {
+                std::cout << "BotRight" << std::endl;
+                side = toResolveBotRightRay.GetLastSide();
+                dist = toResolveBotRightRay.GetLastDistance();
+            }
+
+            if (toResolveBotLeftRay.IsColliding(other) && toResolveBotLeftRay.GetLastDistance() < dist && toResolveBotLeftRay.GetLastDistance() > Epsilon) {
+                std::cout << "BotLeft" << std::endl;
+                side = toResolveBotLeftRay.GetLastSide();
+                dist = toResolveBotLeftRay.GetLastDistance();
+            }
+
             renderer->DrawArrow(toResolveTopLeft, toResolveTopLeftRay.GetScaledVector());
             renderer->DrawArrow(toResolveTopRight, toResolveTopRightRay.GetScaledVector());
             renderer->DrawArrow(toResolveBotRight, toResolveBotRightRay.GetScaledVector());
             renderer->DrawArrow(toResolveBotLeft, toResolveBotLeftRay.GetScaledVector());
 
-            toResolveTopLeftRay.IsColliding(other);
-            toResolveTopRightRay.IsColliding(other);
-            toResolveBotRightRay.IsColliding(other);
-            toResolveBotLeftRay.IsColliding(other);
+            //toResolvePhysics->Acceleration = Vector(0, 0);
+            //toResolvePhysics->Velocity = Vector(0, 0);
 
-            Components::Collision::Side side;
-            float dist = 9999;
+            //toResolvePhysics->Acceleration[0] = 0;
+            //toResolvePhysics->Acceleration[1] = 0;
+            //toResolvePhysics->Velocity[0] = 0;
+            //toResolvePhysics->Velocity[1] = 0;
 
-            if (toResolveTopLeftRay.GetLastDistance() < dist && toResolveTopLeftRay.GetLastDistance() > 0.0001f) {
-                side = toResolveTopLeftRay.GetLastSide();
-                dist = toResolveTopLeftRay.GetLastDistance();
+            //if (dist > 1) return;
+
+            //dist -= 1;
+            //toResolveTransform->Position += velocity * dist;
+
+            if (side == Components::Collision::Side::Bottom || side == Components::Collision::Side::Top) {
+                velocity[1] = 0.0f;
+                toResolvePhysics->Velocity[1] = 0.0f;
+            } else {
+                velocity[0] = 0.0f;
+                toResolvePhysics->Velocity[0] = 0.0f;
             }
 
-            if (toResolveTopRightRay.GetLastDistance() < dist && toResolveTopRightRay.GetLastDistance() > 0.0001f) {
-                side = toResolveTopRightRay.GetLastSide();
-                dist = toResolveTopRightRay.GetLastDistance();
-            }
-
-            if (toResolveBotRightRay.GetLastDistance() < dist && toResolveBotRightRay.GetLastDistance() > 0.0001f) {
-                side = toResolveBotRightRay.GetLastSide();
-                dist = toResolveBotRightRay.GetLastDistance();
-            }
-
-            if (toResolveBotLeftRay.GetLastDistance() < dist && toResolveBotLeftRay.GetLastDistance() > 0.0001f) {
-                side = toResolveBotLeftRay.GetLastSide();
-                dist = toResolveBotLeftRay.GetLastDistance();
-            }
-
-            toResolvePhysics->Acceleration = Vector(0, 0);
-            toResolvePhysics->Velocity = Vector(0, 0);
-
-            toResolvePhysics->Acceleration[0] = 0;
-            toResolvePhysics->Acceleration[1] = 0;
-            toResolvePhysics->Velocity[0] = 0;
-            toResolvePhysics->Velocity[1] = 0;
-
-            //dist -= 0.001f;
-            toResolveTransform->Position += velocity * dist;
-            dist = 1.0f - dist;
-            velocity = velocity * dist;
             toResolveTransform->Position += velocity;
 
-            std::cout << "In Here " << ++i << std::endl;
+            //dist = 1.0f - dist;
+            //velocity = velocity * dist;
+            //toResolveTransform->Position += velocity;
+            //std::cout << velocity << std::endl;
 
-            //if (side == Components::Collision::Side::Bottom || side == Components::Collision::Side::Top)
-            //    velocity[1] = 0.0f;
-            //else
-            //    velocity[0] = 0.0f;
+            //std::cout << "In Here " << ++i << std::endl;
 
             //toResolveTransform->Position += velocity;
 
