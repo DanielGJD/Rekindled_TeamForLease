@@ -75,14 +75,14 @@ namespace ForLeaseEngine {
         //////////// DEBUG DRAWING //////////
 
 
-        float minDist = Unlimited;
+        float minDist = 9999;
         Vector normal;
         Components::Collision::Side side;
 
         HalfPlane::CollisionInterval interval = GetHalfPlaneInterval(top);
 
         if (interval() && top.Dot(Start) > 0 && (minDist == Unlimited || interval.Start < minDist)) {
-            if (Point::InBetween(topLeft, topRight, Start + Direction * Scale * interval.Start)) {
+            if (Point::InBetween(topLeft, topRight, Start + Direction * Length * interval.Start)) {
                 if (interval.Start < minDist) {
                     minDist = interval.Start;
                     normal = top.GetNormal();
@@ -94,7 +94,7 @@ namespace ForLeaseEngine {
         interval = GetHalfPlaneInterval(left);
 
         if (interval() && left.Dot(Start) > 0 && (minDist == Unlimited || interval.Start < minDist)) {
-            if (Point::InBetween(topLeft, botLeft, Start + Direction * Scale * interval.Start)) {
+            if (Point::InBetween(topLeft, botLeft, Start + Direction * Length * interval.Start)) {
                 if (interval.Start < minDist) {
                     minDist = interval.Start;
                     normal = left.GetNormal();
@@ -106,7 +106,7 @@ namespace ForLeaseEngine {
         interval = GetHalfPlaneInterval(right);
 
         if (interval() && right.Dot(Start) > 0 && (minDist == Unlimited || interval.Start < minDist)) {
-            if (Point::InBetween(topRight, botRight, Start + Direction * Scale * interval.Start)) {
+            if (Point::InBetween(topRight, botRight, Start + Direction * Length * interval.Start)) {
                 if (interval.Start < minDist) {
                     minDist = interval.Start;
                     normal = right.GetNormal();
@@ -118,7 +118,7 @@ namespace ForLeaseEngine {
         interval = GetHalfPlaneInterval(bot);
 
         if (interval() && bot.Dot(Start) > 0 && (minDist == Unlimited || interval.Start < minDist)) {
-            if (Point::InBetween(botLeft, botRight, Start + Direction * Scale * interval.Start)) {
+            if (Point::InBetween(botLeft, botRight, Start + Direction * Length * interval.Start)) {
                 if (interval.Start < minDist) {
                     minDist = interval.Start;
                     normal = bot.GetNormal();
@@ -127,8 +127,8 @@ namespace ForLeaseEngine {
             }
         }
 
-        if (minDist > 0 && Scale * minDist < Length) {
-            Length = Scale * minDist;
+        if (minDist > 0 && minDist < 2 && Length * minDist < Length) {
+            Length = Length * minDist;
             LastNormal = normal;
             LastSide = side;
             LastDistance = minDist;
@@ -192,7 +192,7 @@ namespace ForLeaseEngine {
         float dist = ray.GetScaledVector().Magnitude();
 
         for (Entity* entity : entities) {
-            ray.ResetLength();
+            //ray.ResetLength();
             if (ray.IsColliding(entity)) {
                 if (dist > ray.GetScaledVector().Magnitude()) {
                     dist = ray.GetScaledVector().Magnitude();

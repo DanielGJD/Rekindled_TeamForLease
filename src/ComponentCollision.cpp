@@ -63,6 +63,7 @@ namespace ForLeaseEngine {
 
         void Collision::DebugDraw() {
             LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true);
+            renderer->SetDrawingColor(Color(1, 1, 1));
             Components::Transform* transform = Parent.GetComponent<Components::Transform>(true);
             Point position = transform->Position;
             position[0] += OffsetX;
