@@ -12,6 +12,7 @@
 #include "SecondState.h"
 #include "RaycastTest.h"
 #include "Utilities.h"
+#include "RaycastTest.h"
 //#include "SegmentPrototypeState.h"
 
 #undef main

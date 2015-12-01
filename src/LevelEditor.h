@@ -1,5 +1,5 @@
-#ifndef TESTINGSTATE_H
-#define TESTINGSTATE_H
+#ifndef LEVELEDITOR_H
+#define LEVELEDITOR_H
 
 #include "LevelComponentsInclude.h"
 #include "Mesh.h"
@@ -9,17 +9,22 @@
 #include "Entity.h"
 #include "ComponentsInclude.h"
 
-class TestState : public ForLeaseEngine::State {
+namespace ForLeaseEngine
+{
+    class LevelEditor : public State
+    {
     public:
         void Load();
         void Initialize();
         void Update();
         void Deinitialize();
         void Unload();
-};
+        void SaveFiles(Serializer& root);
+        void LoadFiles(Serializer& root);
+        void Input();
+    };
+}
 
 
 
-#endif // ENGINE_PROOF_STATE_H
-
-
+#endif // LEVELEDITOR_H

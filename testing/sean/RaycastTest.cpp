@@ -126,7 +126,7 @@ void RaycastTest::Update() {
             entity->GetComponent<Components::Collision>()->DebugDraw();
     }
 
-    Ray ray(Point(-5, 0), Vector(1, -1), 20.0f, 1);
+    Ray ray(Point(-4, -2), Vector(1, 0), 20.0f, 1);
     Entity* collision = ray.CheckCollisions(ray, Entities);
 
     if (collision) std::cout << collision->GetName() << std::endl;

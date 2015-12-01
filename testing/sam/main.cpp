@@ -2,7 +2,7 @@
 #include <iostream>
 #include "State.h"
 #include "Engine.h"
-#include "TestState.h"
+#include "LevelEditor.h"
 #include "Exception.h"
 #include "ResourceManager.h"
 #include "Texture.h"
@@ -12,10 +12,10 @@ using namespace ForLeaseEngine;
 
 int main(int argc, char** argv){
     std::vector<ForLeaseEngine::State *> states;
-    TestState* state = new TestState();
+    LevelEditor* state = new LevelEditor();
     states.push_back(state);
 
-    ForLeaseEngine::Engine engine(states, 720, 720, 60);
+    ForLeaseEngine::Engine engine(states, 1280, 720, 60);
     try {
         engine.Run();
     }
