@@ -14,6 +14,7 @@
 
 #include "Component.h"
 #include "ComponentTransform.h"
+#include "Event.h"
 
 namespace ForLeaseEngine {
 
@@ -29,10 +30,22 @@ namespace ForLeaseEngine {
         */
         class Collision : public Component {
             public:
+
+                enum class Side : char {
+                    Left,
+                    Right,
+                    Top,
+                    Bottom
+                };
+
                 static const ComponentType Type = ComponentType::Collision;
                 virtual ComponentType GetType() { return Type; }
+
                 Collision(Entity& owner, float width = 1, float height = 1, bool resolve = true, float offsetX = 0, float offsetY = 0);
-                void Update() {}
+                void Initialize();
+                void Update() {};
+                void OnCollide(const Event* e);
+
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
                 void DebugDraw();
