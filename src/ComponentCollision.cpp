@@ -10,6 +10,9 @@
 */
 
 #include "ComponentCollision.h"
+#include "Engine.h"
+#include "Entity.h"
+#include "CollisionEvent.h"
 #include "LevelComponentRenderer.h"
 
 namespace ForLeaseEngine {
@@ -25,6 +28,16 @@ namespace ForLeaseEngine {
         Collision::Collision(Entity& owner, float width, float height, bool resolve, float offsetX, float offsetY)
             : Component(owner, ComponentType::Transform), Width(width), Height(height),
             OffsetX(offsetX), OffsetY(offsetY), CollidedLastFrame(false), CollidedWith(0), ResolveCollisions(resolve) {}
+
+        void Collision::Initialize() {
+            std::cout << Parent.GetName() << " collision init." << std::endl;
+            ForLease->Dispatcher.Attach(NULL, this, "Collision", &Collision::OnCollide);
+        }
+
+        void Collision::OnCollide(const Event* e) {
+            const CollisionEvent* event = static_cast<const CollisionEvent *>(e);
+            std::cout << Parent.GetName() << " collided with " << event->Other->GetName() << std::endl;
+        }
 
         void Collision::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
@@ -50,6 +63,7 @@ namespace ForLeaseEngine {
 
         void Collision::DebugDraw() {
             LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true);
+            renderer->SetDrawingColor(Color(1, 1, 1));
             Components::Transform* transform = Parent.GetComponent<Components::Transform>(true);
             Point position = transform->Position;
             position[0] += OffsetX;
