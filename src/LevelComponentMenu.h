@@ -31,6 +31,7 @@ namespace ForLeaseEngine {
                 virtual ComponentType GetType() { return Type; }
 
                 Menu(State& owner, double pauseCD = 0.2);
+                ~Menu();
 
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);

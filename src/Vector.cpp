@@ -263,6 +263,13 @@ namespace ForLeaseEngine {
         return angle;
     }
 
+    Vector& Vector::operator=(const Vector& rhs) {
+        x = rhs.x;
+        y = rhs.y;
+
+        return *this;
+    }
+
 	/*!
 		Adds another vector to this vector.
 

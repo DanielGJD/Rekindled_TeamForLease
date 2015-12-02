@@ -33,6 +33,8 @@ void SeanState::Load() {
     AddLevelComponent(new LevelComponents::Physics(*this, Vector(0,-10)));
     AddLevelComponent(new LevelComponents::Collision(*this));
 
+
+    // BOX
     FLE::Mesh* box = new FLE::Mesh(4, 4, 2);
     box->SetVertex(Point(-1,-1), 0);
     box->SetVertex(Point(-1,1), 1);
@@ -54,6 +56,34 @@ void SeanState::Load() {
     box->Serialize(serial);
     serial.WriteFile("BoxMesh.json");
 
+    // TRIANGLE
+    //FLE::Mesh* triangle = new FLE::Mesh(3, 3, 1);
+    //triangle->SetVertex(Point(-1, -1), 0);
+    //triangle->SetVertex(Point(1, -1), 1);
+    //triangle->SetVertex(Point(0, 1), 2);
+
+    //triangle->SetEdge(IndexedEdge(0, 1), 0);
+    //triangle->SetEdge(IndexedEdge(1, 2), 1);
+    //triangle->SetEdge(IndexedEdge(2, 0), 2);
+
+    //triangle->SetFace(IndexedFace(0, 1, 2), 0);
+
+    //Serializer triSerial;
+    //triangle->Serialize(triSerial);
+    //triSerial.WriteFile("TriMesh.json");
+
+
+
+    //FLE::Entity* entityBox = AddEntity("Box");
+    //entityBox->AddComponent(new Components::Transform(*entityBox, 0, 0, 1, 1, 0));
+    //entityBox->AddComponent(new Components::Model(*entityBox, true, "TriMesh.json", "", Color(1,1,1,1)));
+    //entityBox->AddComponent(new Components::Collision(*entityBox, 2, 2));
+    //entityBox->GetComponent<Components::Collision>()->Initialize();
+    //entityBox->AddComponent(new Components::Physics(*entityBox, 1, Vector(0,10)));
+    //Components::CharacterController* controller = Components::CharacterController::Create(*entityBox);
+    //controller->JumpSpeed = 10;
+    //controller->MoveSpeed = 10;
+    //entityBox->AddComponent(controller);
 
     //FLE::Entity* entityBox = AddEntity("Box");
     //entityBox->AddComponent(new Components::Transform(*entityBox, 0, 0, 1, 1, 0));
@@ -132,7 +162,7 @@ void SeanState::Initialize() {
     //AddLevelComponent(new LevelComponents::Menu(*this));
 
     Health = 300;
-    //ForLease->FrameRateController().TimeScaling(1);
+    ForLease->FrameRateController().TimeScaling(1);
 }
 
 void SeanState::Update() {
@@ -190,6 +220,7 @@ void SeanState::Update() {
     ForLease->GameWindow->UpdateGameWindow();
 
     --Health;
+    //std::cout << Health << std::endl;
     //if (Health == 150) ForLease->FrameRateController().TimeScaling(.25);
     //if (Health == -150) ForLease->FrameRateController().TimeScaling(1);
 //    if (Health <= 0) ForLease->GameStateManager().SetAction(Modules::StateAction::Restart);
