@@ -27,5 +27,6 @@
 #include "ComponentScaleWithKeyboard.h"
 #include "ComponentTransformModeControls.h"
 #include "ComponentVisionCone.h"
+#include "ComponentEnemyAI.h"
 
 #endif

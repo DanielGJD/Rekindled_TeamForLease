@@ -21,12 +21,12 @@
 #include <map>
 #include <unordered_set>
 
-static const int ViewResolution = 12;
+//static const int ViewResolution = 12;
 
 namespace ForLeaseEngine {
     namespace Components {
         VisionCone::VisionCone(Entity& parent, bool active, bool drawOutline, bool visible, Vector const& offset, float radius, Vector const& direction, float angle, Color const& indicatorColor)
-                              : Component(parent),
+                              : Component(parent, ComponentType::Transform | ComponentType::Collision),
                                 Active(active), Visible(visible), DrawOutline(drawOutline),
                                 Offset(offset), Radius(radius), Direction(direction),
                                 Angle(angle), IndicatorColor(indicatorColor) {}
@@ -202,8 +202,8 @@ namespace ForLeaseEngine {
 
                 multi_e.EntityIDs = std::vector<unsigned long>(visibleEntityIDs.begin(), visibleEntityIDs.end());
 
-                std::cout << "I see " << multi_e.EntityIDs.size() << " entities" << std::endl;
-                ForLease->Dispatcher.DispatchTo(&multi_e, &Parent);
+                //std::cout << "I see " << multi_e.EntityIDs.size() << " entities" << std::endl;
+                ForLease->Dispatcher.DispatchToParent(&multi_e, &Parent);
             }
         }
 

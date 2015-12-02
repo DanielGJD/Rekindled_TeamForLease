@@ -26,9 +26,9 @@ namespace ForLeaseEngine {
         }
 
         DragWithMouse::~DragWithMouse() {
-            ForLease->Dispatcher.Detach(&Parent, "MouseButtonDown");
-            ForLease->Dispatcher.Detach(&Parent, "MouseButtonUp");
-            ForLease->Dispatcher.Detach(&Parent, "MouseMotion");
+            ForLease->Dispatcher.Detach(this, "MouseButtonDown");
+            ForLease->Dispatcher.Detach(this, "MouseButtonUp");
+            ForLease->Dispatcher.Detach(this, "MouseMotion");
         }
 
         DragWithMouse* DragWithMouse::Create(Entity& owner) {

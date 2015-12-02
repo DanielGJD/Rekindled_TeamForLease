@@ -26,6 +26,11 @@ namespace ForLeaseEngine {
             return controller;
         }
 
+        CharacterController::~CharacterController() {
+            ForLease->Dispatcher.Detach(this, "KeyDown");
+            ForLease->Dispatcher.Detach(this, "KeyUp");
+        }
+
         void CharacterController::Initialize() {
             ForLease->Dispatcher.Attach(NULL, this, "KeyDown", &CharacterController::OnKeyDown);
             ForLease->Dispatcher.Attach(NULL, this, "KeyUp", &CharacterController::OnKeyUp);

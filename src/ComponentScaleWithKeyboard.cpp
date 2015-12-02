@@ -26,6 +26,8 @@ namespace ForLeaseEngine {
                                               ScaleYUp(false), ScaleYDown(false) {}
 
         ScaleWithKeyboard::~ScaleWithKeyboard() {
+            ForLease->Dispatcher.Detach(this, "KeyDown");
+            ForLease->Dispatcher.Detach(this, "KeyUp");
         }
 
         ScaleWithKeyboard* ScaleWithKeyboard::Create(Entity& owner) {

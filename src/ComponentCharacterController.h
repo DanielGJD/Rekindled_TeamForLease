@@ -23,6 +23,8 @@ namespace ForLeaseEngine {
                 static const ComponentType Type = ComponentType::PlayerController;
                 virtual ComponentType GetType() { return Type; }
                 static CharacterController* Create(Entity& owner);
+                CharacterController(Entity& owner);
+                ~CharacterController();
 
                 int RightKey;
                 int LeftKey;
@@ -43,7 +45,6 @@ namespace ForLeaseEngine {
 
             private:
                 bool CanJump;
-                CharacterController(Entity& owner);
         };
     }
 }

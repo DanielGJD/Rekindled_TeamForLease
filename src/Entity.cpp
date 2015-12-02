@@ -237,7 +237,14 @@ namespace ForLeaseEngine {
             case ComponentType::TransformModeControls:
                 component = new Components::TransformModeControls(entity);
                 break;
+            case ComponentType::VisionCone:
+                component = new Components::VisionCone(entity);
+                break;
+            case ComponentType::EnemyAI:
+                component = Components::EnemyAI::Create(entity);
+                break;
             default:
+                std::cout << "Unknown Type: " << type << std::endl;
                 return 0;
         }
 

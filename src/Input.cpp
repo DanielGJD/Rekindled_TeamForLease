@@ -53,7 +53,11 @@ namespace ForLeaseEngine {
     void Input::ProcessAllInputWithImgui() {
         SDL_Event SDL_e;
         while(SDL_PollEvent(&SDL_e)) {
-            if(!ImGui_ImplSdl_ProcessEvent(&SDL_e)) {
+            /*if(!ImGui_ImplSdl_ProcessEvent(&SDL_e)) {
+                ProcessEvent(SDL_e);
+            }*/
+            ImGui_ImplSdl_ProcessEvent(&SDL_e);
+            if(SDL_e.type == SDL_QUIT) {
                 ProcessEvent(SDL_e);
             }
         }
