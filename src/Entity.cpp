@@ -142,6 +142,22 @@ namespace ForLeaseEngine {
     }
 
     /*!
+        Delete a Component from this Entity.
+
+        \param type
+            A ComponentType of the Component we want to delete.
+    */
+    void Entity::DeleteComponent(ComponentType type) {
+        for (unsigned i = 0; i < Components.size(); ++i) {
+            if (Components[i]->GetType() == type) {
+                delete Components[i];
+                Components.erase(Components.begin() + i);
+                break;
+            }
+        }
+    }
+
+    /*!
         Get the component mask from this Entity.
 
         \return
