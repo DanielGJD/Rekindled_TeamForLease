@@ -53,6 +53,21 @@ namespace ForLeaseEngine {
             ForLease->Dispatcher.Attach(NULL, this, "KeyDown", &Menu::OnKeyDown);
         }
 
+        Menu::~Menu() {
+            std::vector<Entity *> menus;
+
+            menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("PauseMenu"));
+            menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("QuitConfirm"));
+            menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("HowToConfirm"));
+
+            for (Entity* menu : menus) {
+                if (menu)
+                    menu->GetComponent<Components::Menu>(true)->Deactivate();
+            }
+
+            ForLease->Dispatcher.Detach(this, "KeyDown");
+        }
+
         void Menu::Update(std::vector<Entity *>& entities) {
             std::vector<Entity *> menus;
 
