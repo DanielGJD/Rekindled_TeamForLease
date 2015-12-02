@@ -32,6 +32,7 @@ std::vector<ForLeaseEngine::State *> LoadLevels(std::string levelList, std::vect
         FLE::Level* levelInstance = new FLE::Level(file);
 
         appendTo.push_back(levelInstance);
+        std::cout << "Just got " << file << std::endl;
     }
 
     return appendTo;
