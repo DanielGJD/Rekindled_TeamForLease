@@ -267,7 +267,7 @@ namespace ForLeaseEngine {
             //toResolvePhysics->Velocity[0] = 0;
             //toResolvePhysics->Velocity[1] = 0;
 
-            //if (dist > 1) return;
+            if (dist > 1) return;
 
             //dist -= 1;
             //toResolveTransform->Position += velocity * dist;
