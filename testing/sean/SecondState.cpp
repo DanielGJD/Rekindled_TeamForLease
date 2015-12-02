@@ -149,6 +149,7 @@ void SecondState::Update() {
     Entity* camera = GetEntityByName("Camera", true);
     Entity* player = GetEntityByName("Box", true);
     camera->GetComponent<Components::Transform>(true)->Position = player->GetComponent<Components::Transform>(true)->Position;
+    std::cout << static_cast<int>(player->GetComponent<Components::Collision>()->CollidedWithSide) << std::endl;
 
     //std::cout << player->GetComponent<Components::Physics>(true)->Acceleration << std::endl;
     //std::cout << player->GetComponent<Components::Physics>(true)->Velocity << std::endl;

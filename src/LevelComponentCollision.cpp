@@ -269,6 +269,8 @@ namespace ForLeaseEngine {
 
             if (dist > 1) return;
 
+            toResolveCollision->CollidedWithSide = side;
+
             //dist -= 1;
             //toResolveTransform->Position += velocity * dist;
 
