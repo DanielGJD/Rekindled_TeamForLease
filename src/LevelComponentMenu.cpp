@@ -53,7 +53,24 @@ namespace ForLeaseEngine {
             ForLease->Dispatcher.Attach(NULL, this, "KeyDown", &Menu::OnKeyDown);
         }
 
-        void Menu::Update(std::vector<Entity *>& entities) { }
+        void Menu::Update(std::vector<Entity *>& entities) {
+            std::vector<Entity *> menus;
+
+            menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("PauseMenu"));
+            menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("QuitConfirm"));
+            menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("HowToConfirm"));
+            
+            unsigned long camID = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->GetCameraID();
+            Entity* camera = ForLease->GameStateManager().CurrentState().GetEntityByID(camID);
+            if (!camera) return;
+            Components::Transform* camTransform = camera->GetComponent<Components::Transform>();
+            if (!camTransform) return;
+
+            for (Entity* menu : menus) {
+                Components::Transform* transform = menu->GetComponent<Components::Transform>();
+                if (transform) transform->Position = camTransform->Position;
+            }
+        }
 
         void Menu::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(ComponentType::Menu));
