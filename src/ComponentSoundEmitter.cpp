@@ -21,7 +21,9 @@ namespace ForLeaseEngine {
         }
 
         void SoundEmitter::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned int>(Type));
             Serializer soundEmitter = root.GetChild("SoundEmitter");
+            soundEmitter.WriteUint("Type", static_cast<unsigned int>(Type));
             soundEmitter.WriteFloat("Pitch", Pitch);
             soundEmitter.WriteFloat("Volume", Volume);
             soundEmitter.WriteBool("Looping", Looping);
