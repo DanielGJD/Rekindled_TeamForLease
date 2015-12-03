@@ -416,10 +416,10 @@ namespace ForLeaseEngine
         \param a
             Array being read into. If using std::vector, pass &vec[0]
     */
-    void Serializer::ReadStringArray(const std::string& path, std::string* a) const
+    void Serializer::ReadStringArray(const std::string& path, std::vector<std::string>& a) const
     {
         for (unsigned i = 0; i < node[path].size(); i++)
-            a[i] = node[path][i].asString();
+            a.push_back(node[path][i].asString());
     }
 
     /*!

@@ -52,7 +52,7 @@ namespace ForLeaseEngine {
                 std::vector<std::string> GetLoadedTextureNames();
                 std::vector<std::string> GetLoadedFontNames();
                 std::vector<std::string> GetLoadedMeshNames();
-                std::vector<std::string> GetLodedSoundNames();
+                std::vector<std::string> GetLoadedSoundNames();
                 std::vector<std::string> GetLoadedMeshAnimationNames();
 
                 friend std::ostream& operator<<(std::ostream& os, const ResourceManager& resources);
