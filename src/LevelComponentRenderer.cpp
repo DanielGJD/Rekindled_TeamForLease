@@ -31,6 +31,7 @@
 //#include "json-forwards.h"
 #include "MeshAnimation.h"
 #include <map>
+#include <vector>
 
 namespace ForLeaseEngine {
     namespace LevelComponents {
@@ -107,13 +108,21 @@ namespace ForLeaseEngine {
                 //std::cout << "No camera, setting to default" << std::cout;
             }
 
-            std::map<int, Entity*> sorted;
+            std::map<int, std::vector<Entity*>> sorted;
             for(unsigned int i = 0; i < entities.size(); ++i) {
+                Components::Transform* trans = entities[i]->GetComponent<Components::Transform>();
+                std::map<int, std::vector<Entity*>>::iterator it = sorted.find(trans->ZOrder);
+                if(it == sorted.end()) {
+                    sorted.insert(std::make_pair(trans->ZOrder, std::vector<Entity*>()));
+                    it = sorted.find(trans->ZOrder);
+                }
 
+                (*it).second.push_back(entities[i]);
             }
 
-            for(unsigned int i = 0; i < entities.size(); ++i) {
-                Entity* entity = entities[i];
+            for(std::map<int, std::vector<Entity*>>::const_iterator it = sorted.begin(); it != sorted.end(); ++it) {
+                for(unsigned int i = 0; i < (*it).second.size(); ++i) {
+                Entity* entity = (*it).second[i];
                 if(entity->HasComponent(ComponentType::VisionCone)) {
                     Components::VisionCone* visionCone = entity->GetComponent<Components::VisionCone>();
                     Components::Transform* trans = entity->GetComponent<Components::Transform>();
@@ -134,6 +143,7 @@ namespace ForLeaseEngine {
                         if(model->ModelMesh.compare("")) {
                             Mesh* mesh = ForLease->Resources.GetMesh(model->ModelMesh);
                             SetBlendMode(model->BlendingMode);
+                            SetTexture(NULL);
                             Point o;
                             ModelView = Matrix::Translation(transform->Position) *
                                         Matrix::Translation(mesh->GetCenter()) *
@@ -149,6 +159,7 @@ namespace ForLeaseEngine {
                     SetBlendMode(BlendMode::ALPHA);
                     SetDrawingColor(spriteText->TextColor);
                     DrawSpriteText(spriteText, transform->Position, transform->ScaleX, transform->ScaleY, 0);
+                }
                 }
             }
             glFinish();
