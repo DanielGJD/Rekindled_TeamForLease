@@ -88,8 +88,10 @@ namespace ForLeaseEngine {
                 Not well done.
         */
         bool Collision::CheckCollision(Entity* entity1, Entity* entity2) {
-            Point entity1Position = entity1->GetComponent<Components::Transform>()->Position;
-            Point entity2Position = entity2->GetComponent<Components::Transform>()->Position;
+            Components::Transform* entity1Transform = entity1->GetComponent<Components::Transform>();
+            Components::Transform* entity2Transform = entity2->GetComponent<Components::Transform>();
+            Point entity1Position = entity1Transform->Position;
+            Point entity2Position = entity2Transform->Position;
             Components::Collision* entity1Collision = entity1->GetComponent<Components::Collision>();
             Components::Collision* entity2Collision = entity2->GetComponent<Components::Collision>();
 
@@ -97,18 +99,23 @@ namespace ForLeaseEngine {
 
             LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true);
 
-            std::cout << "Here" << std::endl;
-            renderer->DrawRectangle(entity1Position, entity1Collision->Width, entity1Collision->Height);
+            float ent1HalfWidth = entity1Collision->ScaledHalfWidth();
+            float ent1HalfHeight = entity1Collision->ScaledHalfHeight();
+            float ent2HalfWidth = entity2Collision->ScaledHalfWidth();
+            float ent2HalfHeight = entity2Collision->ScaledHalfHeight();
+
+            renderer->DrawRectangle(entity1Position, entity1Collision->Width * entity1Transform->ScaleX, entity1Collision->Height * entity1Transform->ScaleY);
 
             entity1Position[0] += entity1Collision->OffsetX;
             entity1Position[1] += entity1Collision->OffsetY;
             entity2Position[0] += entity2Collision->OffsetX;
             entity2Position[1] += entity2Collision->OffsetY;
+
             bool collided =
-                  !(entity2Position[0] - entity2Collision->Width / 2 > entity1Position[0] + entity1Collision->Width / 2 ||
-                    entity2Position[0] + entity2Collision->Width / 2 < entity1Position[0] - entity1Collision->Width / 2 ||
-                    entity2Position[1] + entity2Collision->Height / 2 < entity1Position[1] - entity1Collision->Height / 2 ||
-                    entity2Position[1] - entity2Collision->Height / 2 > entity1Position[1] + entity1Collision->Height / 2);
+                  !(entity2Position[0] - ent2HalfWidth > entity1Position[0] + ent1HalfWidth ||
+                    entity2Position[0] + ent2HalfWidth < entity1Position[0] - ent1HalfWidth ||
+                    entity2Position[1] + ent2HalfHeight < entity1Position[1] - ent1HalfHeight ||
+                    entity2Position[1] - ent2HalfHeight > entity1Position[1] + ent1HalfHeight);
 
             if (!collided) return false;
 
@@ -214,10 +221,13 @@ namespace ForLeaseEngine {
             Point toResolvePosition = toResolveTransform->Position;
             //toResolvePosition -= velocity;
 
-            Point toResolveTopLeft(toResolvePosition[0] - toResolveCollision->Width / 2, toResolvePosition[1] + toResolveCollision->Height / 2);
-            Point toResolveTopRight(toResolvePosition[0] + toResolveCollision->Width / 2, toResolvePosition[1] + toResolveCollision->Height / 2);
-            Point toResolveBotRight(toResolvePosition[0] + toResolveCollision->Width / 2, toResolvePosition[1] - toResolveCollision->Height / 2);
-            Point toResolveBotLeft(toResolvePosition[0] - toResolveCollision->Width / 2, toResolvePosition[1] - toResolveCollision->Height / 2);
+            float toResolveHalfWidth = toResolveCollision->Width / 2 * toResolveTransform->ScaleX;
+            float toResolveHalfHeight = toResolveCollision->Height / 2 * toResolveTransform->ScaleY;
+
+            Point toResolveTopLeft(toResolvePosition[0] - toResolveHalfWidth, toResolvePosition[1] + toResolveHalfHeight);
+            Point toResolveTopRight(toResolvePosition[0] + toResolveHalfWidth, toResolvePosition[1] + toResolveHalfHeight);
+            Point toResolveBotRight(toResolvePosition[0] + toResolveHalfWidth, toResolvePosition[1] - toResolveHalfHeight);
+            Point toResolveBotLeft(toResolvePosition[0] - toResolveHalfWidth, toResolvePosition[1] - toResolveHalfHeight);
 
 
             Ray toResolveTopLeftRay(toResolveTopLeft, velocity, velocity.Magnitude(), 1);
@@ -231,6 +241,8 @@ namespace ForLeaseEngine {
             //toResolveTopRightRay.IsColliding(other);
             //toResolveBotRightRay.IsColliding(other);
             //toResolveBotLeftRay.IsColliding(other);
+
+            std::cout << "Resolving for " << toResolve->GetName() << " against " << other->GetName() << std::endl;
 
             Components::Collision::Side side;
             float dist = 9999;
@@ -271,6 +283,8 @@ namespace ForLeaseEngine {
             //toResolvePhysics->Acceleration[1] = 0;
             //toResolvePhysics->Velocity[0] = 0;
             //toResolvePhysics->Velocity[1] = 0;
+
+            std::cout << dist << std::endl;
 
             if (dist > 1) return;
 

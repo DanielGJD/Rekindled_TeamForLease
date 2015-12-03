@@ -108,6 +108,10 @@ namespace ForLeaseEngine {
             return *States[StateIndex];
         }
 
+        unsigned GameStateManager::NumLevels() {
+            return States.size();
+        }
+
     }
 
 } // ForLeaseEngine

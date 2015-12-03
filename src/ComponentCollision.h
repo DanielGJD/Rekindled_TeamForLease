@@ -46,6 +46,13 @@ namespace ForLeaseEngine {
                 void Update() {};
                 void OnCollide(const Event* e);
 
+                float ScaledWidth();
+                float ScaledHeight();
+                float HalfWidth();
+                float HalfHeight();
+                float ScaledHalfWidth();
+                float ScaledHalfHeight();
+
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
                 void DebugDraw();

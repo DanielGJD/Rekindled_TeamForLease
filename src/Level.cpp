@@ -27,6 +27,7 @@ namespace ForLeaseEngine {
         Serializer serial;
         serial.ReadFile(File);
         Deserialize(serial);
+        ForLease->FrameRateController().TimeScaling(1);
     }
 
     void Level::Update() {

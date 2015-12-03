@@ -61,8 +61,18 @@ namespace ForLeaseEngine {
                     CanJump = false;
                 }
             }
-            else if(key_e->Key == Keys::Q) {
+            else if (key_e->Key == Keys::Q) {
                 ForLease->GameStateManager().SetAction(Modules::StateAction::Quit);
+            }
+
+            // CHEAT CODES //
+
+            else if (key_e->Key == Keys::N)
+                ForLease->GameStateManager().SetAction(Modules::StateAction::Next);
+            else if (key_e->Key == Keys::M)
+                ForLease->GameStateManager().SetAction(Modules::StateAction::Restart);
+            else if (key_e->Key == Keys::B) {
+                ForLease->GameStateManager().SetState(ForLease->GameStateManager().NumLevels() - 2);
             }
         }
 

@@ -11,6 +11,7 @@
 #include "Engine.h"
 #include "Level.h"
 #include "MainMenu.h"
+#include "HowToPlay.h"
 #include "Utilities.h"
 #include "Platforms.h"
 
@@ -24,6 +25,7 @@ int Start() {
     //states.push_back(new ForLeaseEngine::Level("Level1Modified.json"));
     //states.push_back(new ForLeaseEngine::Level("Level2.json"));
     //states.push_back(new ForLeaseEngine::Level("Level3.json"));
+    states.push_back(new HowToPlay());
 
     ForLeaseEngine::Engine engine(states, 1920, 1080, 60);
     engine.Run();
