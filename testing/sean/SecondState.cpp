@@ -83,7 +83,7 @@ void SecondState::Load() {
 
     Entity* entityLight = AddEntity("Light");
     entityLight->AddComponent(new Components::Transform(*entityLight, Point(-10,10), 1, 1, -1, 0));
-    entityLight->AddComponent(new Components::Light(*entityLight));
+    entityLight->AddComponent(new Components::Light(*entityLight, Vector(1,-1), Color(0,1,0), 0.5, 2000));
 
     Entity* entityWall = AddEntity("Wall");
     entityWall->AddComponent(new Components::Transform(*entityWall, 10, 0, 1, 10, 0, 1));
