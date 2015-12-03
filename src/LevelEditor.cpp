@@ -6,7 +6,7 @@
     \brief
         Implementation of serialization class
 
-    \see Serialize.h
+    \see LevelEditor.h
 
     \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
@@ -49,6 +49,7 @@ namespace ForLeaseEngine
         LevelComponents::Renderer* render;
         LevelComponents::Physics*  levelPhysics;
         LevelComponents::Menu*     levelMenu;
+        LevelComponents::Collision* levelCollision;
         Vector gravity;
 
         Entity*                            selection;
@@ -110,12 +111,14 @@ namespace ForLeaseEngine
         char enemyHateS[70];
         char enemyLikeS[70];
         char animationfile[70];
+        char spriteSource[70];
 
         float spriteTextColor[4] = { 0 };
         float visionConeColor[4] = { 0 };
         float happyColor[4] = { 0 };
         float detectionColor[4] = { 0 };
         float noDetectionColor[4] = { 0 };
+        float spriteColor[4] = { 0 };
 
         const char* archToSpawn = NULL;
     }
@@ -126,10 +129,10 @@ namespace ForLeaseEngine
     {
         leg::render = new LevelComponents::Renderer(*this);
         leg::levelPhysics = new LevelComponents::Physics(*this);
-        leg::levelMenu = new LevelComponents::Menu(*this);
         AddLevelComponent(leg::render);
         AddLevelComponent(leg::levelPhysics);
-        AddLevelComponent(leg::levelMenu);
+        AddLevelComponent(new LevelComponents::Menu(*this));
+        AddLevelComponent(new LevelComponents::Collision(*this));
         leg::gravity = leg::levelPhysics->GetGravity();
         leg::camera = AddEntity("Level Camera");
         leg::camTrans = new Components::Transform(*leg::camera);
@@ -144,13 +147,14 @@ namespace ForLeaseEngine
         leg::componentNames.push_back("Collision");
         leg::componentNames.push_back("Drag with Mouse");
         leg::componentNames.push_back("Enemy AI");
-        leg::componentNames.push_back("Menu");
+        leg::componentNames.push_back("Light");
+        //leg::componentNames.push_back("Menu");
         leg::componentNames.push_back("Model");
         leg::componentNames.push_back("Physics");
         leg::componentNames.push_back("Player Controller");
         leg::componentNames.push_back("Scale with Keyboard");
         leg::componentNames.push_back("Sound");
-        //leg::componentNames.push_back("Sprite");
+        leg::componentNames.push_back("Sprite");
         leg::componentNames.push_back("Sprite Text");
         leg::componentNames.push_back("Transform Control");
         leg::componentNames.push_back("Vision Cone");
@@ -482,6 +486,13 @@ namespace ForLeaseEngine
                     }
                 }
                 ImGui::EndChild();
+
+                if (meshFilter.IsActive() && ImGui::IsKeyPressed(Keys::Return))
+                {
+                    ForLease->Resources.LoadMesh(meshFilter.InputBuf);
+                    leg::meshNames = ForLease->Resources.GetLoadedMeshNames();
+                }
+
             }
 
             if (ImGui::CollapsingHeader("Edit Animation"))
@@ -503,7 +514,11 @@ namespace ForLeaseEngine
                             leg::selModel->SetAnimation(s);
                     }
                 }
-
+                if (animations.IsActive() && ImGui::IsKeyPressed(Keys::Return))
+                {
+                    ForLease->Resources.LoadMeshAnimation(animations.InputBuf);
+                    leg::animationNames = ForLease->Resources.GetLoadedMeshAnimationNames();
+                }
                 ImGui::EndChild();
             }
             ImGui::Unindent();
@@ -576,10 +591,10 @@ namespace ForLeaseEngine
                                                      leg::noDetectionColor[1],
                                                      leg::noDetectionColor[2],
                                                      leg::noDetectionColor[3]);
-            if (ImGui::InputText("Hated Entity", leg::enemyHateN, 70, ImGuiInputTextFlags_EnterReturnsTrue))
+            if (ImGui::InputText("Hated Entity Name", leg::enemyHateN, 70, ImGuiInputTextFlags_EnterReturnsTrue))
                 leg::selEnemyAI->HatedEntityName = leg::enemyHateN;
 
-            if (ImGui::InputText("Liked Entity", leg::enemyLikeN, 70, ImGuiInputTextFlags_EnterReturnsTrue))
+            if (ImGui::InputText("Liked Entity Name", leg::enemyLikeN, 70, ImGuiInputTextFlags_EnterReturnsTrue))
                 leg::selEnemyAI->LikedEntityName = leg::enemyLikeN;
 
             ImGui::Checkbox("Liked Sound", &(leg::setLiked));
@@ -617,7 +632,11 @@ namespace ForLeaseEngine
                 }
             }
             ImGui::EndChild();
-
+            if (sounds.IsActive() && ImGui::IsKeyPressed(Keys::Return))
+            {
+                ForLease->Resources.LoadSound(sounds.InputBuf);
+                leg::soundNames = ForLease->Resources.GetLoadedSoundNames();
+            }
             if (ImGui::Button("Remove"))
             {
                 leg::selection->DeleteComponent(ComponentType::EnemyAI);
@@ -713,6 +732,34 @@ namespace ForLeaseEngine
             ImGui::Checkbox("Flip X", &(leg::selSprite->FlipX));
             ImGui::SameLine();
             ImGui::Checkbox("Flip Y", &(leg::selSprite->FlipY));
+            ImGui::PushItemWidth(250);
+            ImGui::ColorEdit4("Sprite Color", leg::spriteColor);
+            ImGui::Text("Current Sprite Source: %s", leg::selSprite->GetSourceName().c_str());
+            static ImGuiTextFilter textures;
+            textures.Draw("", 300);
+            ImGui::Text("Available Sprite Sources");
+            ImGui::Separator();
+            ImGui::BeginChild("textures", ImVec2(0,100));
+            for (std::string s : leg::textureNames)
+            {
+                if (textures.PassFilter(s.c_str()))
+                {
+                    if (ImGui::MenuItem(s.c_str()))
+                    {
+                        leg::selSprite->SetSpriteSource(s);
+                    }
+                }
+            }
+            ImGui::EndChild();
+            if (textures.IsActive() && ImGui::IsKeyPressed(Keys::Return))
+            {
+                ForLease->Resources.LoadTexture(textures.InputBuf);
+                leg::textureNames = ForLease->Resources.GetLoadedTextureNames();
+            }
+            leg::selSprite->SpriteColor.SetAll(leg::spriteColor[0],
+                                               leg::spriteColor[1],
+                                               leg::spriteColor[2],
+                                               leg::spriteColor[3]);
             if (ImGui::Button("Remove"))
             {
                 leg::selection->DeleteComponent(ComponentType::Sprite);
@@ -761,9 +808,9 @@ namespace ForLeaseEngine
             ImGui::SameLine();
             ImGui::Checkbox("Visible", &(leg::selVision->Visible));
             ImGui::DragFloat("Angle", &(leg::selVision->Angle), 0.05);
-            ImGui::DragFloat("Direction X", &(leg::selVision->Direction[0]));
+            ImGui::DragFloat("Direction X", &(leg::selVision->Direction[0]), 0.01);
             ImGui::SameLine();
-            ImGui::DragFloat("Direction Y", &(leg::selVision->Direction[1]));
+            ImGui::DragFloat("Direction Y", &(leg::selVision->Direction[1]), 0.01);
             ImGui::DragFloat("Radius", &(leg::selVision->Radius), 0.25);
             ImGui::PushItemWidth(250);
             ImGui::ColorEdit4("Indicator Color", leg::visionConeColor);
@@ -875,6 +922,13 @@ namespace ForLeaseEngine
                         leg::happyColor[2]       = leg::selEnemyAI->HappyColor.GetB();
                         leg::happyColor[3]       = leg::selEnemyAI->HappyColor.GetA();
                     }
+                    if (leg::selSprite)
+                    {
+                        leg::spriteColor[0] = leg::selSprite->SpriteColor.GetR();
+                        leg::spriteColor[1] = leg::selSprite->SpriteColor.GetG();
+                        leg::spriteColor[2] = leg::selSprite->SpriteColor.GetB();
+                        leg::spriteColor[3] = leg::selSprite->SpriteColor.GetA();
+                    }
                     leg::selMade = true;
                     break;
                 }
@@ -931,19 +985,32 @@ namespace ForLeaseEngine
                 DeleteAllEntities();
                 Deserialize(root);
                 leg::camera = GetEntityByName("Level Camera", true);
+                leg::render->SetCamera(*leg::camera);
                 leg::camTrans = leg::camera->GetComponent<Components::Transform>();
                 leg::camCamera = leg::camera->GetComponent<Components::Camera>();
                 leg::selection = NULL;
                 Point moved(100000, 100000);
-                Entity* ent = GetEntityByName("PauseMenu", true);
-                Components::Transform* trans = ent->GetComponent<Components::Transform>();
-                trans->Position = moved;
-                ent = GetEntityByName("QuitConfirm", true);
-                trans = ent->GetComponent<Components::Transform>();
-                trans->Position = moved;
-                ent = GetEntityByName("HowToConfirm", true);
-                trans = ent->GetComponent<Components::Transform>();
-                trans->Position = moved;
+                Entity* ent = GetEntityByName("PauseMenu");
+                Components::Transform* trans;
+                if (ent != NULL)
+                {
+                    trans = ent->GetComponent<Components::Transform>();
+                    trans->Position = moved;
+                }
+
+                ent = GetEntityByName("QuitConfirm");
+                if (ent != NULL)
+                {
+                    trans = ent->GetComponent<Components::Transform>();
+                    trans->Position = moved;
+                }
+                ent = GetEntityByName("HowToConfirm");
+                if (ent != NULL)
+                {
+                    trans = ent->GetComponent<Components::Transform>();
+                    trans->Position = moved;
+                }
+
             }
             leg::toLoad = false;
         }
@@ -975,7 +1042,10 @@ namespace ForLeaseEngine
             {
                 Components::Transform* tran = it->GetComponent<Components::Transform>();
                 leg::render->SetDrawingColor(1,1,1,1);
-                leg::render->DrawRectangle(tran->Position, 2, 2, tran->Rotation);
+                if (tran != NULL)
+                {
+                    leg::render->DrawRectangle(tran->Position, 2, 2, tran->Rotation);
+                }
             }
         }
 
@@ -1001,6 +1071,7 @@ namespace ForLeaseEngine
         root.WriteStringArray("Sounds", &(leg::soundNames[0]), leg::soundNames.size());
         root.WriteStringArray("Animations", &(leg::animationNames[0]), leg::animationNames.size());
         root.WriteStringArray("Fonts", &(leg::fontNames[0]), leg::fontNames.size());
+        root.WriteStringArray("Textures", &(leg::textureNames[0]), leg::textureNames.size());
         root.WriteFile("LevelEditorData.json");
     }
 
@@ -1014,6 +1085,7 @@ namespace ForLeaseEngine
             root.ReadStringArray("Sounds", leg::soundNames);
             root.ReadStringArray("Animations", leg::animationNames);
             root.ReadStringArray("Fonts", leg::fontNames);
+            root.ReadStringArray("Textures", leg::textureNames);
             for (auto i : leg::meshNames)
                 ForLease->Resources.LoadMesh(i);
             for (auto i : leg::soundNames)
@@ -1022,11 +1094,14 @@ namespace ForLeaseEngine
                 ForLease->Resources.LoadMeshAnimation(i);
             for (auto i : leg::fontNames)
                 ForLease->Resources.LoadFont(i);
+            for (auto i : leg::textureNames)
+                ForLease->Resources.LoadTexture(i);
 
             leg::meshNames = ForLease->Resources.GetLoadedMeshNames();
             leg::soundNames = ForLease->Resources.GetLoadedSoundNames();
             leg::animationNames = ForLease->Resources.GetLoadedMeshAnimationNames();
             leg::fontNames = ForLease->Resources.GetLoadedFontNames();
+            leg::textureNames = ForLease->Resources.GetLoadedTextureNames();
         }
     }
 }
