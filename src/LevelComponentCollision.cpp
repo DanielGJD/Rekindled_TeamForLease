@@ -95,6 +95,11 @@ namespace ForLeaseEngine {
 
             //if (entity1Collision->CollidedLastFrame || entity2Collision->CollidedLastFrame) return false;
 
+            LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true);
+
+            std::cout << "Here" << std::endl;
+            renderer->DrawRectangle(entity1Position, entity1Collision->Width, entity1Collision->Height);
+
             entity1Position[0] += entity1Collision->OffsetX;
             entity1Position[1] += entity1Collision->OffsetY;
             entity2Position[0] += entity2Collision->OffsetX;
