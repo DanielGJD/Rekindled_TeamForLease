@@ -12,10 +12,11 @@
 #include "Level.h"
 #include "MainMenu.h"
 #include "Utilities.h"
+#include "Platforms.h"
 
 #undef main
 
-int main(int argc, char** argv) {
+int Start() {
     std::vector<ForLeaseEngine::State *> states;
     //MainMenu* state = new MainMenu();
     //states.push_back(state);
@@ -30,3 +31,22 @@ int main(int argc, char** argv) {
 
     return 0;
 }
+
+
+#ifdef FLE_WINDOWS
+
+#ifndef FLE_DEBUG
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine, int iCmdShow) {
+    return Start();
+}
+#else
+int main(int argc, char**argv) {
+    return Start();
+}
+#endif
+
+#else
+int main(int argc, char** argv) {
+    return Start();
+}
+#endif
