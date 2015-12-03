@@ -138,9 +138,10 @@ void SeanState::Initialize() {
     background->AddComponent(new Components::Sprite(*background));
     ForLease->Resources.LoadTexture("bg7.png");
     Texture* texture = Texture::CreateTexture("bg7.png");
-    TextureRegion textureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
-    background->GetComponent<Components::Sprite>(true)->SpriteSource.push_back(textureRegion);
+    //TextureRegion textureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
+    //background->GetComponent<Components::Sprite>(true)->SpriteSource.push_back(textureRegion);
     background->GetComponent<Components::Sprite>(true)->AnimationActive = false;
+    background->GetComponent<Components::Sprite>(true)->SetSpriteSource("bg7.png");
     background->GetComponent<Components::Transform>(true)->ScaleX = 0.05;
     background->GetComponent<Components::Transform>(true)->ScaleY = 0.05;
 

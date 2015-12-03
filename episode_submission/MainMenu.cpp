@@ -40,8 +40,8 @@ void MainMenu::Load() {
     background->AddComponent(new Components::Sprite(*background));
     ForLease->Resources.LoadTexture("bg7.png");
     Texture* texture = Texture::CreateTexture("bg7.png");
-    TextureRegion textureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
-    background->GetComponent<Components::Sprite>(true)->SpriteSource.push_back(textureRegion);
+    //TextureRegion textureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
+    background->GetComponent<Components::Sprite>(true)->SetSpriteSource("bg7.png");
     background->GetComponent<Components::Sprite>(true)->AnimationActive = false;
     background->GetComponent<Components::Transform>(true)->ScaleX = 0.05;
     background->GetComponent<Components::Transform>(true)->ScaleY = 0.05;
@@ -51,8 +51,15 @@ void MainMenu::Load() {
     menu->AddComponent(new Components::Menu(*menu));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
     menuComp->AddItem(new MenuItems::NextLevel("ButtonPlay.png"));
-    menuComp->AddItem(new MenuItems::Quit("ButtonQuit.png"));
+    menuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonQuit.png", "QuitConfirm", "Menu"));
     menuComp->Activate();
+
+    Entity* quitConfirm = AddEntity("QuitConfirm");
+    quitConfirm->AddComponent(new Components::Transform(*quitConfirm));
+    quitConfirm->AddComponent(new Components::Menu(*quitConfirm));
+    Components::Menu* quitConfirmComp = quitConfirm->GetComponent<Components::Menu>();
+    quitConfirmComp->AddItem(new MenuItems::Quit("ButtonQuit.png"));
+    quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonCancel.png", "Menu", "QuitConfirm"));
 
     Serializer serializer;
     Serialize(serializer);

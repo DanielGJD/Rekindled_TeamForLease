@@ -111,6 +111,7 @@ namespace ForLeaseEngine {
             std::map<int, std::vector<Entity*>> sorted;
             for(unsigned int i = 0; i < entities.size(); ++i) {
                 Components::Transform* trans = entities[i]->GetComponent<Components::Transform>();
+                if (!trans) continue;
                 std::map<int, std::vector<Entity*>>::iterator it = sorted.find(trans->ZOrder);
                 if(it == sorted.end()) {
                     sorted.insert(std::make_pair(trans->ZOrder, std::vector<Entity*>()));
