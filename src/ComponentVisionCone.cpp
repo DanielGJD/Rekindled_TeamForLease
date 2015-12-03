@@ -40,8 +40,9 @@ namespace ForLeaseEngine {
             if(!Active) {
                 return;
             }
-            Direction.Normalize();
-            Vector start = Vector::Rotate(Direction, -Angle / 2);
+            Vector normalized = Vector(Direction);
+            normalized.Normalize();
+            Vector start = Vector::Rotate(normalized, -Angle / 2);
 
             // Testing code
             LevelComponents::Renderer* render = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
@@ -66,7 +67,7 @@ namespace ForLeaseEngine {
 
             // Check for observed objects
             Components::Transform* trans = Parent.GetComponent<Components::Transform>();
-            std::vector<Entity*> detected = ForLease->GameStateManager().CurrentState().GetEntitiesInCone(trans->Position + Offset, Radius, Direction, Angle);
+            std::vector<Entity*> detected = ForLease->GameStateManager().CurrentState().GetEntitiesInCone(trans->Position + Offset, Radius, normalized, Angle);
             for(std::vector<Entity*>::iterator i = detected.begin(); i != detected.end(); ++i) {
                 if(*i == &Parent) {
                     detected.erase(i);
@@ -83,9 +84,9 @@ namespace ForLeaseEngine {
                 //unsigned long parentID = Parent.GetID();
 
                 // Get half planes for vision cone
-                Point mid = castingPoint + Direction * Radius;
-                Point bot = castingPoint + Vector::Rotate(Direction, Angle / 2) * Radius;
-                Point top = castingPoint + Vector::Rotate(Direction, -Angle / 2) * Radius;
+                Point mid = castingPoint + normalized * Radius;
+                Point bot = castingPoint + Vector::Rotate(normalized, Angle / 2) * Radius;
+                Point top = castingPoint + Vector::Rotate(normalized, -Angle / 2) * Radius;
                 HalfPlane hp1 = HalfPlane(castingPoint, top, mid);
                 HalfPlane hp2 = HalfPlane(castingPoint, bot, mid);
                 Vector zeroAngleVector = top - castingPoint;
