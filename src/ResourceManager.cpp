@@ -253,6 +253,15 @@ namespace ForLeaseEngine {
             return meshNames;
         }
 
+        std::vector<std::string> ResourceManager::GetLoadedSoundNames() {
+            std::vector<std::string> soundNames;
+            for(std::unordered_map<std::string, Sound*>::iterator i = Sounds.begin(); i != Sounds.end(); ++i) {
+                soundNames.push_back(std::get<0>(*i));
+            }
+            return soundNames;
+        }
+
+
         std::vector<std::string> ResourceManager::GetLoadedMeshAnimationNames() {
             std::vector<std::string> meshAnimationNames;
             for(std::unordered_map<std::string, MeshAnimation*>::iterator i = MeshAnimations.begin(); i != MeshAnimations.end(); ++i) {

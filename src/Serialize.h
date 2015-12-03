@@ -58,7 +58,7 @@ namespace ForLeaseEngine
         void ReadIntArray(const std::string& path, int* a) const;
         void ReadUintArray(const std::string& path, unsigned* a) const;
         void ReadFloatArray(const std::string& path, float* a) const;
-        void ReadStringArray(const std::string& path, std::string* a) const;
+        void ReadStringArray(const std::string& path, std::vector<std::string>& a) const;
         void ReadBoolArray(const std::string& path, bool* a) const;
 
         virtual Serializer& operator=(const Serializer& rhs);
