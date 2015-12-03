@@ -79,7 +79,7 @@ namespace ForLeaseEngine {
             State& currentState = ForLease->GameStateManager().CurrentState();
 
             Point position = Parent.GetComponent<Components::Transform>()->Position;
-            
+
             for (MenuItem* item : Items) {
                 std::stringstream name;
                 name << "Menu " << Parent.GetName() << " item " << item->Image;
@@ -89,10 +89,16 @@ namespace ForLeaseEngine {
                 Representations.push_back(rep);
                 rep->AddComponent(new Components::Transform(*rep, position, UnfocusedScale, UnfocusedScale));
                 rep->AddComponent(new Components::Sprite(*rep));
-                ForLease->Resources.LoadTexture(item->Image);
-                Texture* texture = Texture::CreateTexture(item->Image);
-                TextureRegion textureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
-                rep->GetComponent<Components::Sprite>(true)->SpriteSource.push_back(textureRegion);
+                //ForLease->Resources.LoadTexture(item->Image);
+                //Texture* texture = Texture::CreateTexture(item->Image);
+                //TextureRegion textureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
+                //rep->GetComponent<Components::Sprite>(true)->SpriteSource.push_back(textureRegion);
+
+                ///////////////// Chris hacked in some crazy magic here //////////////////////
+                Texture* texture = ForLease->Resources.GetTexture(item->Image);
+
+                //////////////////////////////////////////////////////////////////////////////
+
                 rep->GetComponent<Components::Sprite>(true)->AnimationActive = false;
                 position += Spacing * FocusedScale * texture->GetHeight();
             }
@@ -120,8 +126,13 @@ namespace ForLeaseEngine {
 
                 Components::Transform* transform = entity->GetComponent<Components::Transform>(true);
                 Components::Sprite* sprite = entity->GetComponent<Components::Sprite>(true);
-                float scaleX = transform->ScaleX * sprite->SpriteSource[0].GetWidth();
-                float scaleY = transform->ScaleY * sprite->SpriteSource[0].GetHeight();
+//                float scaleX = transform->ScaleX * sprite->SpriteSource[0].GetWidth();
+//                float scaleY = transform->ScaleY * sprite->SpriteSource[0].GetHeight();
+
+                ///////////////////////////// More Chris hax /////////////////////////
+                float scaleX = transform->ScaleX * sprite->SpriteSource.GetWidth();
+                float scaleY = transform->ScaleY * sprite->SpriteSource.GetHeight();
+                //////////////////////////////////////////////////////////////////////
 
                 //std::cout
                 //    << (position[0] > transform->Position[0] - scaleX)

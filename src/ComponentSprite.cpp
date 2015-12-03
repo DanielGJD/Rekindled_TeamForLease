@@ -37,14 +37,17 @@ namespace ForLeaseEngine {
             sprite.WriteBool("Visible", Visible);
             SpriteColor.Serialize(sprite);
             sprite.WriteInt("BlendingMode", BlendingMode);
-            sprite.WriteInt("NumFrames", SpriteSource.size());
-            for(unsigned int i = 0; i < SpriteSource.size(); ++i) {
+            sprite.WriteInt("NumFrames", 1/* Don't even worry about this, needed for animations later*/);
+            /*for(unsigned int i = 0; i < SpriteSource.size(); ++i) {
                 std::stringstream ss;
                 ss << "TextureRegion" << i;
                 Serializer textureRegion = root.GetChild(ss.str());
                 SpriteSource[i].Serialize(textureRegion);
                 root.Append(textureRegion, ss.str());
-            }
+            }*/
+            Serializer textureRegion = sprite.GetChild("TextureRegion");
+            SpriteSource.Serialize(textureRegion);
+            sprite.Append(textureRegion, "TextureRegion");
             sprite.WriteBool("FlipX", FlipX);
             sprite.WriteBool("FlipY", FlipY);
             sprite.WriteBool("AnimationActive", AnimationActive);
@@ -64,7 +67,7 @@ namespace ForLeaseEngine {
             BlendingMode = static_cast<BlendMode>(blendMode);
             int numFrames;
             sprite.ReadInt("NumFrames", numFrames);
-            SpriteSource.clear();
+            /*SpriteSource.clear();
             for(int i = 0; i < numFrames; ++i) {
                 std::stringstream ss;
                 ss << "TextureRegion" << i;
@@ -72,7 +75,9 @@ namespace ForLeaseEngine {
                 TextureRegion region;
                 region.Deserialize(textureRegion);
                 SpriteSource.push_back(region);
-            }
+            }*/
+            Serializer textureRegion = sprite.GetChild("TextureRegion");
+            SpriteSource.Deserialize(textureRegion);
             sprite.ReadBool("FlipX", FlipX);
             sprite.ReadBool("FlipY", FlipY);
             sprite.ReadBool("AnimationActive", AnimationActive);
@@ -82,32 +87,41 @@ namespace ForLeaseEngine {
         }
 
         void Sprite::Update() {
-            if(SpriteSource.size() > 0 && AnimationActive) {
+            /*if(SpriteSource.size() > 0 && AnimationActive) {
                 double dt = ForLease->FrameRateController().GetDt();
                 FrameTime += dt * FrameRate * AnimationSpeed;
                 if(static_cast<unsigned int>(FrameTime) >= SpriteSource.size()) {
                     FrameTime -= SpriteSource.size();
                 }
                 CurrentFrame = static_cast<unsigned int>(FrameTime);
-            }
+            }*/
         }
 
         int Sprite::GetCurrentFrame() { return CurrentFrame; }
 
         void Sprite::SetCurrentFrame(unsigned int frame) {
-            if(frame < SpriteSource.size()) {
+            /*if(frame < SpriteSource.size()) {
                 CurrentFrame = frame;
                 FrameTime = frame;
-            }
+            }*/
         }
 
-        TextureRegion* Sprite::GetCurrentRegion() { return &SpriteSource[CurrentFrame]; }
+        TextureRegion* Sprite::GetCurrentRegion() { return &SpriteSource; }
+
+        void Sprite::SetSpriteSource(std::string const& textureName) {
+            Texture* texture = ForLease->Resources.GetTexture(textureName);
+            SpriteSource = TextureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
+        }
+
+        std::string Sprite::GetSourceName() {
+            return SpriteSource.GetTexture();
+        }
 
         std::ostream& operator<<(std::ostream& os, Sprite& rhs) {
             os << "Visible: " << rhs.Visible << std::endl
                << "Color: No output yet" << std::endl
                << "Blend Mode: " << rhs.BlendingMode << std::endl
-               << "Frames: " << rhs.SpriteSource.size() << std::endl
+               << "Frames: " << 1 /*Don't forget this hack here*/ << std::endl
                << "FlipX: " << rhs.FlipX << std::endl
                << "FlipY: " << rhs.FlipY << std::endl
                << "Animation Active: " << rhs.AnimationActive << std::endl

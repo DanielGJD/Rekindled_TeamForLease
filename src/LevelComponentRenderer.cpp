@@ -30,6 +30,7 @@
 #include "Serialize.h"
 //#include "json-forwards.h"
 #include "MeshAnimation.h"
+#include <map>
 
 namespace ForLeaseEngine {
     namespace LevelComponents {
@@ -104,6 +105,11 @@ namespace ForLeaseEngine {
             else {
                 Projection = Matrix();
                 //std::cout << "No camera, setting to default" << std::cout;
+            }
+
+            std::map<int, Entity*> sorted;
+            for(unsigned int i = 0; i < entities.size(); ++i) {
+
             }
 
             for(unsigned int i = 0; i < entities.size(); ++i) {
@@ -378,6 +384,9 @@ namespace ForLeaseEngine {
 
         void Renderer::DrawTextureRegion(TextureRegion* region) {
             //std::cout << "Drawing texture region" << std::endl;
+            if(region->GetTexture().compare("") == 0) {
+                return;
+            }
             Texture* texture = ForLease->Resources.GetTexture(region->GetTexture());
             float halfWidth = region->GetWidth() / 2;
             float halfHeight = region->GetHeight() / 2;

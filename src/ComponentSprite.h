@@ -18,6 +18,7 @@
 #include "Serializable.h"
 #include "Serialize.h"
 #include <vector>
+#include <string>
 
 namespace ForLeaseEngine {
     namespace Components {
@@ -41,13 +42,17 @@ namespace ForLeaseEngine {
                 bool Visible;
                 Color SpriteColor;
                 BlendMode BlendingMode;
-                std::vector<TextureRegion> SpriteSource;
+                TextureRegion SpriteSource;
                 bool FlipX;
                 bool FlipY;
                 bool AnimationActive;
                 float FrameRate;
                 float AnimationSpeed;
                 int StartFrame;
+
+                //////////////////////// Everything past here is temporary and subject to change//////////////
+                void SetSpriteSource(std::string const& textureName);
+                std::string GetSourceName();
 
             private:
                 float FrameTime;
