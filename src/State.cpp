@@ -40,6 +40,13 @@ namespace ForLeaseEngine {
     }
 
     void State::AddLevelComponent(LevelComponent* levelComponent) {
+        for (LevelComponent* lc : LevelComponents) {
+            if (lc->GetType() == levelComponent->GetType()) {
+                delete levelComponent;
+                return;
+            }
+        }
+
         LevelComponents.push_back(levelComponent);
     }
 
