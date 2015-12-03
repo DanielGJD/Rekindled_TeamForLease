@@ -23,10 +23,17 @@ namespace ForLeaseEngine {
         : LevelComponent(owner), Paused(false), PauseTimer("Pause Timer"), PauseCooldown(pauseCD) {
             PauseTimer.Reset();
 
+            long cameraID = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true)->GetCameraID();
+            Entity* camera = ForLease->GameStateManager().CurrentState().GetEntityByID(cameraID, true);
+            float camScale = camera->GetComponent<Components::Camera>(true)->Size / 50;
+
+            float unfocusedScale = 0.05 * camScale;
+            float focusedScale = 0.08 * camScale;
+
             Entity* pauseMenu = owner.AddEntity("PauseMenu");
             pauseMenu->IncludeInSerialize = false;
             pauseMenu->AddComponent(new Components::Transform(*pauseMenu));
-            Components::Menu* pauseMenuComp = new Components::Menu(*pauseMenu);
+            Components::Menu* pauseMenuComp = new Components::Menu(*pauseMenu, Vector(0,-1), false, unfocusedScale, focusedScale);
             pauseMenu->AddComponent(pauseMenuComp);
             pauseMenuComp->AddItem(new MenuItems::ResumeGame("ButtonResume.png"));
             pauseMenuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonHowTo.png", "HowToConfirm", "PauseMenu"));
@@ -35,7 +42,7 @@ namespace ForLeaseEngine {
             Entity* quitConfirm = owner.AddEntity("QuitConfirm");
             quitConfirm->IncludeInSerialize = false;
             quitConfirm->AddComponent(new Components::Transform(*quitConfirm));
-            Components::Menu* quitConfirmComp = new Components::Menu(*quitConfirm);
+            Components::Menu* quitConfirmComp = new Components::Menu(*quitConfirm, Vector(0, -1), false, unfocusedScale, focusedScale);
             quitConfirm->AddComponent(quitConfirmComp);
             quitConfirmComp->AddItem(new MenuItems::Quit("ButtonQuit.png"));
             quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonCancel.png", "PauseMenu", "QuitConfirm"));
@@ -44,7 +51,7 @@ namespace ForLeaseEngine {
             Entity* howToConfirm = owner.AddEntity("HowToConfirm");
             howToConfirm->IncludeInSerialize = false;
             howToConfirm->AddComponent(new Components::Transform(*howToConfirm));
-            Components::Menu* howToConfirmComp = new Components::Menu(*howToConfirm);
+            Components::Menu* howToConfirmComp = new Components::Menu(*howToConfirm, Vector(0, -1), false, unfocusedScale, focusedScale);
             howToConfirm->AddComponent(howToConfirmComp);
             howToConfirmComp->AddItem(new MenuItems::Quit("ButtonQuit.png"));
             howToConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonCancel.png", "PauseMenu", "HowToConfirm"));
