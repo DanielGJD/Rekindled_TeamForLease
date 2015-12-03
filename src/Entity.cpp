@@ -260,6 +260,9 @@ namespace ForLeaseEngine {
             case ComponentType::EnemyAI:
                 component = Components::EnemyAI::Create(entity);
                 break;
+            case ComponentType::FadeWithDistance:
+                component = new Components::FadeWithDistance(entity);
+                break;
             default:
                 std::cout << "Unknown Type: " << type << std::endl;
                 return 0;

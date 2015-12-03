@@ -28,5 +28,6 @@
 #include "ComponentTransformModeControls.h"
 #include "ComponentVisionCone.h"
 #include "ComponentEnemyAI.h"
+#include "ComponentFadeWithDistance.h"
 
 #endif

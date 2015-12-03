@@ -46,7 +46,8 @@ namespace ForLeaseEngine {
         TransformModeControls = 1 << 13,   //! Controls for the transform mode of the main character
         Menu                  = 1 << 14,   //! Menu
         VisionCone            = 1 << 15,   //! Used for detecting objects in a radius within an angle
-        EnemyAI               = 1 << 16    //! Very basic ai, does not move, just detects player and signals loss condition
+        EnemyAI               = 1 << 16,   //! Very basic ai, does not move, just detects player and signals loss condition
+        FadeWithDistance      = 1 << 17    //! Causes and object's sprite to fade out with distance from an entity
     };
 
     ComponentType operator|(const ComponentType& lhs, const ComponentType& rhs);
