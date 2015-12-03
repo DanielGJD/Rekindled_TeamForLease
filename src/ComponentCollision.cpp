@@ -39,6 +39,32 @@ namespace ForLeaseEngine {
             std::cout << Parent.GetName() << " collided with " << event->Other->GetName() << std::endl;
         }
 
+        float Collision::ScaledWidth() {
+            Components::Transform* transform = Parent.GetComponent<Components::Transform>(true);
+            return Width * transform->ScaleX;
+        }
+
+        float Collision::ScaledHeight() {
+            Components::Transform* transform = Parent.GetComponent<Components::Transform>(true);
+            return Height * transform->ScaleY;
+        }
+
+        float Collision::HalfWidth() {
+            return Width / 2;
+        }
+
+        float Collision::HalfHeight() {
+            return Height / 2;
+        }
+
+        float Collision::ScaledHalfWidth() {
+            return ScaledWidth() / 2;
+        }
+
+        float Collision::ScaledHalfHeight() {
+            return ScaledHeight() / 2;
+        }
+
         void Collision::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer collision = root.GetChild("Collision");

@@ -99,10 +99,10 @@ namespace ForLeaseEngine {
 
             LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true);
 
-            float ent1HalfWidth = entity1Collision->Width / 2 * entity1Transform->ScaleX;
-            float ent1HalfHeight = entity1Collision->Height / 2 * entity1Transform->ScaleY;
-            float ent2HalfWidth = entity2Collision->Width / 2 * entity2Transform->ScaleX;
-            float ent2HalfHeight = entity2Collision->Height / 2 * entity2Transform->ScaleY;
+            float ent1HalfWidth = entity1Collision->ScaledHalfWidth();
+            float ent1HalfHeight = entity1Collision->ScaledHalfHeight();
+            float ent2HalfWidth = entity2Collision->ScaledHalfWidth();
+            float ent2HalfHeight = entity2Collision->ScaledHalfHeight();
 
             renderer->DrawRectangle(entity1Position, entity1Collision->Width * entity1Transform->ScaleX, entity1Collision->Height * entity1Transform->ScaleY);
 

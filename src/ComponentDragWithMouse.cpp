@@ -71,10 +71,10 @@ namespace ForLeaseEngine {
                 Point location = render->ScreenToWorld(Point(mouse_e->ScreenLocation));
                 Components::Collision* collider = Parent.GetComponent<Components::Collision>();
                 Components::Transform* trans = Parent.GetComponent<Components::Transform>();
-                if(location[0] >= trans->Position[0] - collider->Width / 2 &&
-                   location[0] <= trans->Position[0] + collider->Width / 2 &&
-                   location[1] >= trans->Position[1] - collider->Height / 2 &&
-                   location[1] <= trans->Position[1] + collider->Height / 2)
+                if(location[0] >= trans->Position[0] - collider->Width * trans->ScaleX / 2 &&
+                   location[0] <= trans->Position[0] + collider->Width * trans->ScaleX / 2 &&
+                   location[1] >= trans->Position[1] - collider->Height * trans->ScaleY / 2 &&
+                   location[1] <= trans->Position[1] + collider->Height * trans->ScaleY / 2)
                     MouseDown = true;
             }
         }
