@@ -53,7 +53,7 @@ namespace ForLeaseEngine {
             howToConfirm->AddComponent(new Components::Transform(*howToConfirm));
             Components::Menu* howToConfirmComp = new Components::Menu(*howToConfirm, Vector(0, -1), false, unfocusedScale, focusedScale);
             howToConfirm->AddComponent(howToConfirmComp);
-            howToConfirmComp->AddItem(new MenuItems::Quit("ButtonQuit.png"));
+            howToConfirmComp->AddItem(new MenuItems::LoadLevel("ButtonHowTo.png", "HowToPlay"));
             howToConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonCancel.png", "PauseMenu", "HowToConfirm"));
             
             
