@@ -500,6 +500,9 @@ namespace ForLeaseEngine {
             case ComponentType::Menu:
                 lc = new LevelComponents::Menu(state);
                 break;
+            case ComponentType::Light:
+                lc = new LevelComponents::Light(state);
+                break;
             default:
                 return 0;
         }

@@ -18,8 +18,7 @@
 
 int Start() {
     std::vector<ForLeaseEngine::State *> states;
-    //MainMenu* state = new MainMenu();
-    //states.push_back(state);
+    //states.push_back(new MainMenu());
     states = LoadLevels("Game.json", states);
     //states.push_back(new ForLeaseEngine::Level("MainMenu.json"));
     //states.push_back(new ForLeaseEngine::Level("Level1Modified.json"));

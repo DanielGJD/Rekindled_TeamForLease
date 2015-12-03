@@ -32,6 +32,7 @@ void SecondState::Load() {
     AddLevelComponent(new LevelComponents::Physics(*this, Vector(0, -10)));
     AddLevelComponent(new LevelComponents::Collision(*this));
     AddLevelComponent(new LevelComponents::Menu(*this));
+    AddLevelComponent(new LevelComponents::Light(*this));
 
     FLE::Mesh* box = new FLE::Mesh(4, 4, 2);
     box->SetVertex(Point(-1, -1), 0);
@@ -53,6 +54,11 @@ void SecondState::Load() {
     Serializer serial;
     box->Serialize(serial);
     serial.WriteFile("BoxMesh.json");
+
+    FLE::Entity* background = AddEntity("Background");
+    background->AddComponent(new Components::Transform(*background, Point(0,0), 0.025, 0.025, 0, -50));
+    background->AddComponent(new Components::Sprite(*background));
+    background->GetComponent<Components::Sprite>(true)->SetSpriteSource("BG_Composite.png");
 
 
     FLE::Entity* entityBox = AddEntity("Box");
@@ -82,8 +88,8 @@ void SecondState::Load() {
     entityFloor->AddComponent(new Components::Collision(*entityFloor, 250, 2));
 
     Entity* entityLight = AddEntity("Light");
-    entityLight->AddComponent(new Components::Transform(*entityLight, Point(-10,10), 1, 1, -1, 0));
-    entityLight->AddComponent(new Components::Light(*entityLight, Vector(1,-1), Color(0,1,0), 0.5, 2000));
+    entityLight->AddComponent(new Components::Transform(*entityLight, Point(-10,10), 1, 1, -1, 500));
+    entityLight->AddComponent(new Components::Light(*entityLight, Vector(1,-1), Color(0,1,0,0.5), 0.5, 50));
 
     Entity* entityWall = AddEntity("Wall");
     entityWall->AddComponent(new Components::Transform(*entityWall, 10, 0, 1, 10, 0, 1));

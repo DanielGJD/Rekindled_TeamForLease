@@ -16,5 +16,6 @@
 #include "LevelComponentPhysics.h"
 #include "LevelComponentRenderer.h"
 #include "LevelComponentMenu.h"
+#include "LevelComponentLight.h"
 
 #endif

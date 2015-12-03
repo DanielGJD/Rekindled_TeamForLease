@@ -87,7 +87,7 @@ namespace ForLeaseEngine {
                 Entity* rep = currentState.AddEntity(name.str());
                 rep->IncludeInSerialize = false;
                 Representations.push_back(rep);
-                rep->AddComponent(new Components::Transform(*rep, position, UnfocusedScale, UnfocusedScale));
+                rep->AddComponent(new Components::Transform(*rep, position, UnfocusedScale, UnfocusedScale, 0, 500));
                 rep->AddComponent(new Components::Sprite(*rep));
                 //ForLease->Resources.LoadTexture(item->Image);
                 //Texture* texture = Texture::CreateTexture(item->Image);
@@ -100,6 +100,7 @@ namespace ForLeaseEngine {
                 //////////////////////////////////////////////////////////////////////////////
 
                 rep->GetComponent<Components::Sprite>(true)->AnimationActive = false;
+                rep->GetComponent<Components::Sprite>(true)->SetSpriteSource(item->Image);
                 position += Spacing * FocusedScale * texture->GetHeight();
             }
 
