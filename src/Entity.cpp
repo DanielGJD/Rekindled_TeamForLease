@@ -152,6 +152,7 @@ namespace ForLeaseEngine {
             if (Components[i]->GetType() == type) {
                 delete Components[i];
                 Components.erase(Components.begin() + i);
+                ComponentMask = static_cast<ComponentType>(static_cast<unsigned long>(ComponentMask) - static_cast<unsigned long>(type));
                 break;
             }
         }
