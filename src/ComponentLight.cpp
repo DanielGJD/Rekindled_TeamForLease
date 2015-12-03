@@ -20,15 +20,12 @@ namespace ForLeaseEngine {
 
     namespace Components {
 
-        Light::Light(Entity& owner, float sweep, unsigned rays)
-            : Component(owner, ComponentType::Transform), Rays(rays) {}
+        Light::Light(Entity& owner, Vector direction, Color drawColor, float sweep, unsigned rays)
+            : Component(owner, ComponentType::Transform), Direction(direction), DrawColor(drawColor), Sweep(sweep), Rays(rays) {}
 
         void Light::Update() {
             // Raycasting stuff
-
-            float rotation = Parent.GetComponent<Components::Transform>()->Rotation;
-            Vector mid = Vector::Rotate(Vector(1,0), rotation);
-            Vector start = Vector::Rotate(mid, -Sweep / 2);
+            Vector start = Vector::Rotate(Direction, -Sweep / 2);
 
             float rotStep = Sweep / Rays;
 
@@ -37,10 +34,11 @@ namespace ForLeaseEngine {
             LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
 
 
-            renderer->SetDrawingColor(1, 1, 153.0f/255, 1);
+            renderer->SetDrawingColor(DrawColor);
 
+            // The Andrew Method
             for (unsigned i = 0; i <= Rays; ++i) {
-                Ray ray(Parent.GetComponent<Components::Transform>()->Position, rayVec, Ray::Unlimited);
+                Ray ray(Parent.GetComponent<Components::Transform>()->Position, rayVec, 666);
                 std::vector<Entity *> entities = ForLease->GameStateManager().CurrentState().GetAllEntities();
                 for (Entity* entity : entities) {
                     if (!entity->HasComponent(ComponentType::Collision)) continue;
@@ -63,6 +61,7 @@ namespace ForLeaseEngine {
             light.WriteFloat("Sweep", Sweep);
             light.WriteUint("Rays", Rays);
             light.WriteUint("Type", static_cast<unsigned>(Type));
+            DrawColor.Serialize(light);
             root.Append(light, "Light");
         }
 
@@ -71,6 +70,7 @@ namespace ForLeaseEngine {
             light.ReadVec("Direction", Direction);
             light.ReadFloat("Sweep", Sweep);
             light.ReadUint("Rays", Rays);
+            DrawColor.Deserialize(light);
         }
 
     } // Components

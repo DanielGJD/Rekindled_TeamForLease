@@ -38,6 +38,7 @@ namespace ForLeaseEngine {
 
         void CharacterController::Update() {
             Collision* collider = Parent.GetComponent<Collision>();
+            CanJump = false;
             if(collider->CollidedLastFrame)
                 CanJump = true;
         };
@@ -69,11 +70,11 @@ namespace ForLeaseEngine {
             const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
             if(key_e->Key == LeftKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
-                rbody->Velocity += Vector(0, 0);
+                rbody->Velocity[0] = 0;
             }
             else if(key_e->Key == RightKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
-                rbody->Velocity += Vector(0, 0);
+                rbody->Velocity[0] = 0;
             }
         }
 

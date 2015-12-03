@@ -112,7 +112,7 @@ namespace ForLeaseEngine {
                 ForLease->Dispatcher.Detach(this, "MouseButtonDown");
 
                 for (Entity* rep : Representations)
-                    ForLease->GameStateManager().CurrentState().DeleteEntity(rep->GetID());
+                    ForLease->GameStateManager().CurrentState().DeleteEntity(rep->GetName());
 
                 Representations.clear();
                 Active = false;

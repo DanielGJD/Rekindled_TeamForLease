@@ -16,6 +16,7 @@
 #include "Component.h"
 #include "ComponentTransform.h"
 #include "Vector.h"
+#include "Color.h"
 
 namespace ForLeaseEngine {
 
@@ -34,11 +35,12 @@ namespace ForLeaseEngine {
             public:
                 static const ComponentType Type = ComponentType::Light;
                 virtual ComponentType GetType() { return Type; }
-                Light(Entity& owner, float sweep = 1, unsigned rays = 100);
+                Light(Entity& owner, Vector direction = Vector(0,-1), Color drawColor = Color(1,1,1), float sweep = 1, unsigned rays = 100);
                 void Update();
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
                 Vector Direction;
+                Color DrawColor;
                 float Sweep;
                 unsigned Rays;
             private:

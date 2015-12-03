@@ -19,8 +19,8 @@ namespace ForLeaseEngine
         void Update();
         void Deinitialize();
         void Unload();
-        void SaveFiles(Serializer& root);
-        void LoadFiles(Serializer& root);
+        void SaveFiles();
+        void LoadFiles();
         void Input();
     };
 }
