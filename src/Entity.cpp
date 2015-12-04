@@ -127,20 +127,20 @@ namespace ForLeaseEngine {
             A pointer to the component to add.
 
     */
-    void Entity::AddComponent(Component* component) {
+    bool Entity::AddComponent(Component* component) {
         if (static_cast<bool>(ComponentMask & component->GetType())) {
             delete component;
-            component = 0;
-            return;
+            return false;
         }
         if ((ComponentMask & component->GetRequired()) != component->GetRequired()) {
             delete component;
-            component = 0;
-            return;
+            return false;
         }
 
         ComponentMask |= component->GetType();
         Components.push_back(component);
+
+        return true;
     }
 
     /*!
