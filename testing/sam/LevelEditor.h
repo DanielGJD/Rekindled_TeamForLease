@@ -1,3 +1,9 @@
+/*!
+    \author Sam Montanari
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef LEVELEDITOR_H
 #define LEVELEDITOR_H
 
