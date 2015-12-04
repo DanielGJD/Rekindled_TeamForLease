@@ -136,9 +136,11 @@ namespace ForLeaseEngine {
                 }
                 if(entity->HasComponent(ComponentType::Sprite)) {
                     Components::Sprite* sprite = entity->GetComponent<Components::Sprite>();
-                    Components::Transform* transform = entity->GetComponent<Components::Transform>();
-                    SetModelView(transform);
-                    DrawSprite(sprite);
+                    if(sprite->Visible) {
+                        Components::Transform* transform = entity->GetComponent<Components::Transform>();
+                        SetModelView(transform);
+                        DrawSprite(sprite);
+                    }
                 }
                 if(entity->HasComponent(ComponentType::Model)) {
                     Components::Model* model = entity->GetComponent<Components::Model>();

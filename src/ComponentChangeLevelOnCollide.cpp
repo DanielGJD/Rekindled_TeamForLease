@@ -14,14 +14,15 @@
 #include "LevelComponentRenderer.h"
 #include "ComponentCamera.h"
 #include "ComponentTransform.h"
+#include "ComponentSoundEmitter.h"
 
 namespace ForLeaseEngine {
     namespace Components {
         ChangeLevelOnCollide::ChangeLevelOnCollide(Entity& parent, bool active,
-                                                   std::string levelName, std::string triggerObjectName,
+                                                   std::string levelName, std::string triggerObjectName, std::string triggerSoundName,
                                                    float onSwitchTimeScale, float fadeOutTime)
                                                   : Component(parent, ComponentType::Transform | ComponentType::Collision),
-                                                    Active(active), LevelName(levelName), TriggerObjectName(triggerObjectName),
+                                                    Active(active), LevelName(levelName), TriggerObjectName(triggerObjectName), TriggerSoundName(triggerSoundName),
                                                     OnSwitchTimeScale(onSwitchTimeScale), FadeOutTime(fadeOutTime),
                                                     Switching(false), Timer(0) {}
 
@@ -38,19 +39,16 @@ namespace ForLeaseEngine {
                 }
                 LevelComponents::Renderer* render = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
                 render->SetOverlayColor(0, 0, 0, Timer / FadeOutTime);
-                //Entity* cameraEntity = ForLease->GameStateManager().CurrentState().GetEntityByID(render->GetCameraID());
-                //if(cameraEntity) {
-                    //Transform* cameraTrans = cameraEntity->GetComponent<Transform>();
-                    //Camera* camera = cameraEntity->GetComponent<Camera>();
-                    //float height = camera->Size;
-                    //float width = static_cast<float>(ForLease->GameWindow->GetXResolution()) / ForLease->GameWindow->GetYResolution() * camera->Size;
-                    //render->DrawRectangleFilled(cameraTrans->Position, width, height, 0, BlendMode::ALPHA);
-                //}
             }
             else {
                 Collision* collider = Parent.GetComponent<Collision>();
                 if(collider->CollidedWith && collider->CollidedWith->GetName().compare(TriggerObjectName) == 0) {
                     Switching = true;
+                    SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
+                    if(emitter) {
+                        emitter->Play(TriggerSoundName);
+                    }
+                    ForLease->FrameRateController().TimeScaling(OnSwitchTimeScale);
                 }
             }
         }

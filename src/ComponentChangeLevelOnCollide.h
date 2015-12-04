@@ -23,10 +23,11 @@ namespace ForLeaseEngine {
                 bool Active;
                 std::string LevelName;
                 std::string TriggerObjectName;
+                std::string TriggerSoundName;
                 float OnSwitchTimeScale;
                 float FadeOutTime;
 
-                ChangeLevelOnCollide(Entity& parent, bool active = true, std::string levelName = "", std::string TriggerObjectName = "", float onSwitchTimeScale = 0, float FadeOutTime = 3);
+                ChangeLevelOnCollide(Entity& parent, bool active = true, std::string levelName = "", std::string triggerObjectName = "", std::string triggerSoundName = "", float onSwitchTimeScale = 0, float FadeOutTime = 3);
                 ~ChangeLevelOnCollide();
 
                 virtual ComponentType GetType();
