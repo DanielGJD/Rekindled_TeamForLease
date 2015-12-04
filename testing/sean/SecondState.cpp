@@ -56,7 +56,7 @@ void SecondState::Load() {
     serial.WriteFile("BoxMesh.json");
 
     FLE::Entity* background = AddEntity("Background");
-    background->AddComponent(new Components::Transform(*background, Point(0,0), 0.025, 0.025, 0, -50));
+    background->AddComponent(new Components::Transform(*background, Point(0,30), 0.020, 0.020, 0, -50));
     background->AddComponent(new Components::Sprite(*background));
     background->GetComponent<Components::Sprite>(true)->SetSpriteSource("BG_Composite.png");
 
@@ -106,9 +106,6 @@ void SecondState::Load() {
     DeleteAllEntities();
     DeleteAllLevelComponents();
 
-    for (Entity* entity : Entities)
-        std::cout << "There's still an entity!" << std::endl;
-
 
 
     //    Entity* entity = AddEntity();
@@ -155,7 +152,6 @@ void SecondState::Update() {
     Entity* camera = GetEntityByName("Camera", true);
     Entity* player = GetEntityByName("Box", true);
     camera->GetComponent<Components::Transform>(true)->Position = player->GetComponent<Components::Transform>(true)->Position;
-    std::cout << static_cast<int>(player->GetComponent<Components::Collision>()->CollidedWithSide) << std::endl;
 
     //std::cout << player->GetComponent<Components::Physics>(true)->Acceleration << std::endl;
     //std::cout << player->GetComponent<Components::Physics>(true)->Velocity << std::endl;

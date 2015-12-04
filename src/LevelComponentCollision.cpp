@@ -242,31 +242,25 @@ namespace ForLeaseEngine {
             //toResolveBotRightRay.IsColliding(other);
             //toResolveBotLeftRay.IsColliding(other);
 
-            std::cout << "Resolving for " << toResolve->GetName() << " against " << other->GetName() << std::endl;
-
             Components::Collision::Side side;
             float dist = 9999;
 
             if (toResolveTopLeftRay.IsColliding(other) && toResolveTopLeftRay.GetLastDistance() < dist && toResolveTopLeftRay.GetLastDistance() > Epsilon) {
-                std::cout << "TopLeft" << std::endl;
                 side = toResolveTopLeftRay.GetLastSide();
                 dist = toResolveTopLeftRay.GetLastDistance();
             }
 
             if (toResolveTopRightRay.IsColliding(other) && toResolveTopRightRay.GetLastDistance() < dist && toResolveTopRightRay.GetLastDistance() > Epsilon) {
-                std::cout << "TopRight" << std::endl;
                 side = toResolveTopRightRay.GetLastSide();
                 dist = toResolveTopRightRay.GetLastDistance();
             }
 
             if (toResolveBotRightRay.IsColliding(other) && toResolveBotRightRay.GetLastDistance() < dist && toResolveBotRightRay.GetLastDistance() > Epsilon) {
-                std::cout << "BotRight" << std::endl;
                 side = toResolveBotRightRay.GetLastSide();
                 dist = toResolveBotRightRay.GetLastDistance();
             }
 
             if (toResolveBotLeftRay.IsColliding(other) && toResolveBotLeftRay.GetLastDistance() < dist && toResolveBotLeftRay.GetLastDistance() > Epsilon) {
-                std::cout << "BotLeft" << std::endl;
                 side = toResolveBotLeftRay.GetLastSide();
                 dist = toResolveBotLeftRay.GetLastDistance();
             }
@@ -283,8 +277,6 @@ namespace ForLeaseEngine {
             //toResolvePhysics->Acceleration[1] = 0;
             //toResolvePhysics->Velocity[0] = 0;
             //toResolvePhysics->Velocity[1] = 0;
-
-            std::cout << dist << std::endl;
 
             if (dist > 1) return;
 
