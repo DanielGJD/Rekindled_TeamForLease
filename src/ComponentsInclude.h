@@ -31,5 +31,6 @@
 #include "ComponentFadeWithDistance.h"
 #include "ComponentFollow.h"
 #include "ComponentChangeLevelOnCollide.h"
+#include "ComponentBackgroundMusic.h"
 
 #endif

@@ -96,6 +96,7 @@ namespace ForLeaseEngine {
                 Entity* entity = ForLease->GameStateManager().CurrentState().GetEntityByID(ActiveEntity);
 
                 if(entity) {
+                    //Model model = entity->
                     if(entity->HasComponent(ComponentType::DragWithMouse)) {
                         entity->GetComponent<Components::DragWithMouse>()->Active = false;
                     }

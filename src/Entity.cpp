@@ -270,6 +270,9 @@ namespace ForLeaseEngine {
             case ComponentType::ChangeLevelOnCollide:
                 component = new Components::ChangeLevelOnCollide(entity);
                 break;
+            case ComponentType::BackgroundMusic:
+                component = new Components::BackgroundMusic(entity);
+                break;
             default:
                 std::cout << "Unknown Type: " << type << std::endl;
                 return 0;
