@@ -39,10 +39,29 @@ namespace ForLeaseEngine {
         }
 
         void CharacterController::Update() {
+//            std::cout << "Animation: " << Parent.GetComponent<Components::Model>()->GetAnimation() << std::endl;
+            //std::cout << "Walk ani: " << WalkAnimation << std::endl;
             Collision* collider = Parent.GetComponent<Collision>();
+            bool couldJump = CanJump;
             CanJump = false;
-            if(collider->CollidedLastFrame)
+            if(collider->CollidedLastFrame && collider->CollidedWithSide == Components::Collision::Side::Top)
                 CanJump = true;
+
+            if(!couldJump && CanJump) {
+                SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
+                if(emitter)
+                    emitter->Play(JumpSound);
+            }
+
+            Model* model = Parent.GetComponent<Model>();
+            if(model && model->AnimationActive && model->GetAnimation().compare(WalkAnimation) == 0) {
+                unsigned int currentFrame = model->GetFrame();
+                if(currentFrame != LastAnimationFrame && (currentFrame == 1 || currentFrame == 5)) {
+                    SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
+                    if(emitter)
+                        emitter->Play(WalkSound);
+                }
+            }
         };
 
         void CharacterController::OnKeyDown(const Event* e) {
@@ -56,7 +75,7 @@ namespace ForLeaseEngine {
                 if(model)
                     model->FlipY = true;
                 if(collider->CollidedLastFrame && collider->CollidedWithSide == Collision::Side::Top) {
-                    if(emitter)
+                    //if(emitter)
                         //emitter->Looping = true;
                         //emitter->Play(WalkSound);
                     if(model)
@@ -67,9 +86,9 @@ namespace ForLeaseEngine {
                 Physics* rbody = Parent.GetComponent<Physics>();
                 rbody->Velocity += Vector(MoveSpeed, 0);
                 if(model)
-                    model->FlipY = true;
+                    model->FlipY = false;
                 if(collider->CollidedLastFrame && collider->CollidedWithSide == Collision::Side::Top) {
-                    if(emitter)
+                    //if(emitter)
                         //emitter->Play(WalkSound);
                     if(model)
                         model->SetAnimation(WalkAnimation);
@@ -80,6 +99,9 @@ namespace ForLeaseEngine {
                 Collision* collider = Parent.GetComponent<Collision>();
                 if(CanJump) {
                     rbody->Velocity += Vector(0, JumpSpeed);
+                    SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
+                    if(emitter)
+                        emitter->Play(JumpSound);
                     CanJump = false;
                 }
             }
@@ -100,13 +122,18 @@ namespace ForLeaseEngine {
 
         void CharacterController::OnKeyUp(const Event* e) {
             const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
+            Components::Model* model = Parent.GetComponent<Components::Model>();
             if(key_e->Key == LeftKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
                 rbody->Velocity[0] = 0;
+                if(model)
+                    model->SetAnimation("");
             }
             else if(key_e->Key == RightKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
                 rbody->Velocity[0] = 0;
+                if(model)
+                    model->SetAnimation("");
             }
         }
 
