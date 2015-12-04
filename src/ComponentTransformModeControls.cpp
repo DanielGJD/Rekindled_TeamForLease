@@ -81,6 +81,10 @@ namespace ForLeaseEngine {
                     }
                 }
             }
+            SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
+            if(emitter) {
+                emitter->Play(TransformModeSound);
+            }
 
             ForLease->FrameRateController().TimeScaling(SlowMotionSpeed);
         }
@@ -102,6 +106,10 @@ namespace ForLeaseEngine {
 
                 EntitySelected = false;
             }
+
+            SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
+            if(emitter)
+                emitter->Stop();
 
             ForLease->FrameRateController().TimeScaling(NormalSpeed);
         }

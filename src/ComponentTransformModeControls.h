@@ -45,6 +45,7 @@ namespace ForLeaseEngine {
                 bool Active;
                 bool EntitySelected;
                 unsigned long ActiveEntity;
+                std::string LastSound;
         };
     }
 }

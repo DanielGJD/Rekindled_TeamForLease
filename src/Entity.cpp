@@ -253,6 +253,7 @@ namespace ForLeaseEngine {
                 break;
             case ComponentType::TransformModeControls:
                 component = new Components::TransformModeControls(entity);
+                component->Initialize();
                 break;
             case ComponentType::VisionCone:
                 component = new Components::VisionCone(entity);
