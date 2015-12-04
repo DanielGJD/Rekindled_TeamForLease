@@ -14,6 +14,7 @@
 #include "MultiEntityEvent.h"
 #include "State.h"
 #include "GameStateManager.h"
+#include "ComponentSoundEmitter.h"
 #include <iostream>
 
 namespace ForLeaseEngine {
@@ -148,8 +149,11 @@ namespace ForLeaseEngine {
 
         void EnemyAI::OnEntitiesSeen(Event const* e) {
             MultiEntityEvent const* multi_e = static_cast<MultiEntityEvent const*>(e);
+            bool wasHappy = Happy;
+            bool wasAngry = Angry;
             Happy = false;
             Angry = false;
+            bool willBeAngry = false;
             for(unsigned int i = 0; i < multi_e->EntityIDs.size(); ++i) {
                 Entity* entity = ForLease->GameStateManager().CurrentState().GetEntityByID(multi_e->EntityIDs[i]);
                 std::string entityName = entity->GetName();
@@ -159,7 +163,20 @@ namespace ForLeaseEngine {
                     break; // Don't need to continue if happy since it overwrites angry
                 }
                 else if(entityName.compare(HatedEntityName) == 0) {
-                    Angry = true;
+                    willBeAngry = true;
+                }
+            }
+            if(!Happy) {
+                Angry = willBeAngry;
+            }
+
+            Components::SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
+            if(emitter) {
+                if(!wasHappy && Happy) {
+                    emitter->Play(LikedSeenSound);
+                }
+                else if(!wasAngry && Angry) {
+                    emitter->Play(HatedSeenSound);
                 }
             }
         }

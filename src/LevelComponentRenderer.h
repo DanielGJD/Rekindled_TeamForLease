@@ -40,6 +40,7 @@ namespace ForLeaseEngine {
                 void SetCamera(unsigned long camera);
                 long GetCameraID();
                 void SetClearColor(float r, float g, float b, float a);
+                void SetOverlayColor(float r, float g, float b, float a);
                 void SetClearColor(const Color& color);
                 void SetDrawingColor(float r, float g, float b, float a = 1);
                 void SetDrawingColor(const Color& color);
@@ -55,7 +56,7 @@ namespace ForLeaseEngine {
 
                 // Debug drawing
                 void DrawRectangle(const Point& position, float width, float height, float rotation = 0);
-                void DrawRectangleFilled(const Point& position, float width, float height, float rotation = 0);
+                void DrawRectangleFilled(const Point& position, float width, float height, float rotation = 0, BlendMode blendMode = BlendMode::NONE);
                 void DrawLine(const Point& start, const Point& end);
                 void DrawLine(const Point& start, const Vector& displacement);
                 void DrawArrow(const Point& start, const Point& end);
@@ -79,6 +80,7 @@ namespace ForLeaseEngine {
                 Matrix ModelView;
                 Color DrawColor;
                 Color ClearColor;
+                Color OverlayColor;
                 unsigned long CurrentCamera;
                 BlendMode BlendingMode;
                 GLuint CurrentTexture;

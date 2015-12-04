@@ -49,6 +49,7 @@ namespace ForLeaseEngine {
             RenderTime = 0;
             DebugPointSize = 1;
             DebugLineWidth = 1;
+            OverlayColor = Color(1, 1, 1, 0);
         }
 
         void Renderer::Serialize(Serializer& root) {
@@ -126,16 +127,20 @@ namespace ForLeaseEngine {
                 Entity* entity = (*it).second[i];
                 if(entity->HasComponent(ComponentType::VisionCone)) {
                     Components::VisionCone* visionCone = entity->GetComponent<Components::VisionCone>();
-                    Components::Transform* trans = entity->GetComponent<Components::Transform>();
-                    ModelView = Matrix::Translation(trans->Position);
-                    SetBlendMode(BlendMode::ALPHA);
-                    DrawMesh(visionCone->GetVisionMesh(), visionCone->DrawOutline, false);
+                    if(visionCone->Visible) {
+                        Components::Transform* trans = entity->GetComponent<Components::Transform>();
+                        ModelView = Matrix::Translation(trans->Position);
+                        SetBlendMode(BlendMode::ALPHA);
+                        DrawMesh(visionCone->GetVisionMesh(), visionCone->DrawOutline, false);
+                    }
                 }
                 if(entity->HasComponent(ComponentType::Sprite)) {
                     Components::Sprite* sprite = entity->GetComponent<Components::Sprite>();
-                    Components::Transform* transform = entity->GetComponent<Components::Transform>();
-                    SetModelView(transform);
-                    DrawSprite(sprite);
+                    if(sprite->Visible) {
+                        Components::Transform* transform = entity->GetComponent<Components::Transform>();
+                        SetModelView(transform);
+                        DrawSprite(sprite);
+                    }
                 }
                 if(entity->HasComponent(ComponentType::Model)) {
                     Components::Model* model = entity->GetComponent<Components::Model>();
@@ -162,7 +167,17 @@ namespace ForLeaseEngine {
                     DrawSpriteText(spriteText, transform->Position, transform->ScaleX, transform->ScaleY, 0);
                 }
                 }
+
+                // Draw overlay
+                Entity* cameraEntity = Owner.GetEntityByID(CurrentCamera);
+                Components::Transform* cameraTrans = cameraEntity->GetComponent<Components::Transform>();
+                Components::Camera* camera = cameraEntity->GetComponent<Components::Camera>();
+                float height = camera->Size;
+                float width = height * ForLease->GameWindow->GetXResolution() / ForLease->GameWindow->GetYResolution();
+                SetDrawingColor(OverlayColor);
+                DrawRectangleFilled(cameraTrans->Position, width, height, 0, BlendMode::ALPHA);
             }
+
             glFinish();
             SetBlendMode(BlendMode::NONE);
             SetTexture(NULL);
@@ -189,6 +204,10 @@ namespace ForLeaseEngine {
         void Renderer::SetClearColor(const Color& color) {
             ClearColor = color;
             glClearColor(color.GetR(), color.GetG(), color.GetB(), color.GetA());
+        }
+
+        void Renderer::SetOverlayColor(float r, float g, float b, float a) {
+            OverlayColor = Color(r, g, b, a);
         }
 
         void Renderer::SetDrawingColor(const Color& color) {
@@ -296,8 +315,8 @@ namespace ForLeaseEngine {
             glEnd();
         }
 
-        void Renderer::DrawRectangleFilled(const Point& position, float width, float height, float rotation) {
-            SetBlendMode(BlendMode::NONE);
+        void Renderer::DrawRectangleFilled(const Point& position, float width, float height, float rotation, BlendMode blendMode) {
+            SetBlendMode(blendMode);
             SetTexture(NULL);
             SetModelView(position, width / 2, height / 2, rotation);
             Point vertices[] = {Point(1, 1), Point(-1, 1), Point(-1, -1), Point(1, -1)};

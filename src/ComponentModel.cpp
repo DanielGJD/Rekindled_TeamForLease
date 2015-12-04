@@ -98,7 +98,7 @@ namespace ForLeaseEngine {
                 Updates model frame time
         */
         void Model::Update() {
-            if(AnimationActive) {
+            if(AnimationActive && CurrentAnimation.compare("") != 0) {
                 FrameTime += ForLease->FrameRateController().GetDt();
                 unsigned int frameCount = ForLease->Resources.GetMeshAnimation(CurrentAnimation)->GetFrameCount();
                 if(Looping) {

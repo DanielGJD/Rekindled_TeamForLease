@@ -13,6 +13,7 @@
 #include "Engine.h"
 #include "KeyboardEvent.h"
 #include "ComponentTransform.h"
+#include "ComponentSoundEmitter.h"
 #include "Entity.h"
 
 namespace ForLeaseEngine {
@@ -23,7 +24,7 @@ namespace ForLeaseEngine {
                                               ScaleYUpKey(Keys::W), ScaleYDownKey(Keys::S),
                                               MaxXScale(2), MinXScale(0.5f), MaxYScale(2), MinYScale(0.5f),
                                               ScaleXUp(false), ScaleXDown(false),
-                                              ScaleYUp(false), ScaleYDown(false) {}
+                                              ScaleYUp(false), ScaleYDown(false), ScaleSound("") {}
 
         ScaleWithKeyboard::~ScaleWithKeyboard() {
             ForLease->Dispatcher.Detach(this, "KeyDown");
@@ -86,6 +87,7 @@ namespace ForLeaseEngine {
             scaler.WriteFloat("MinXScale", MinXScale);
             scaler.WriteFloat("MaxYScale", MaxYScale);
             scaler.WriteFloat("MinYScale", MinYScale);
+            scaler.WriteString("ScaleSound", ScaleSound);
             root.Append(scaler, "ScaleWithKeyboard");
         }
 
@@ -101,6 +103,7 @@ namespace ForLeaseEngine {
             scaler.ReadFloat("MinXScale", MinXScale);
             scaler.ReadFloat("MaxYScale", MaxYScale);
             scaler.ReadFloat("MinYScale", MinYScale);
+            scaler.ReadString("ScaleSound", ScaleSound);
         }
 
         void ScaleWithKeyboard::Initialize() {
@@ -111,6 +114,12 @@ namespace ForLeaseEngine {
 
         void ScaleWithKeyboard::OnKeyDown(Event const* e) {
             KeyboardEvent const* key_e = static_cast<KeyboardEvent const*>(e);
+
+            SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
+            bool canPlaySound = false;
+            if(emitter && !ScaleXUp && !ScaleXDown && !ScaleYUp && !ScaleYDown && Active) {
+                canPlaySound = true;
+            }
             if(key_e->Key == ScaleXUpKey)
                 ScaleXUp = true;
             if(key_e->Key == ScaleXDownKey)
@@ -119,6 +128,9 @@ namespace ForLeaseEngine {
                 ScaleYUp = true;
             if(key_e->Key == ScaleYDownKey)
                 ScaleYDown = true;
+
+            if(canPlaySound && (ScaleXUp || ScaleXDown || ScaleYUp || ScaleYDown ))
+                emitter->Play(ScaleSound);
         }
 
         void ScaleWithKeyboard::OnKeyUp(Event const* e) {
@@ -131,6 +143,11 @@ namespace ForLeaseEngine {
                 ScaleYUp = false;
             if(key_e->Key == ScaleYDownKey)
                 ScaleYDown = false;
+
+            SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
+            if(emitter && !ScaleXUp && !ScaleXDown && !ScaleYUp && !ScaleYDown && Active) {
+                emitter->Stop();
+            }
         }
     }
 }

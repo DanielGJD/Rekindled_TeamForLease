@@ -175,6 +175,86 @@ namespace ForLeaseEngine {
             resume.ReadString("Image", Image);
         }
 
+        // ==================================================================================
+
+        ActivateAndDeactivateAndMakeInvisible::ActivateAndDeactivateAndMakeInvisible(std::string image, std::string toActivate, std::string toDeactivate, std::string toMakeInvisible)
+            : MenuItem(MenuItemType::ActDeactInvisible, image), ToDeactivate(toDeactivate), ToActivate(toActivate), ToMakeInvisible(toMakeInvisible) {}
+
+        void ActivateAndDeactivateAndMakeInvisible::Action() {
+            Entity* actEnt = ForLease->GameStateManager().CurrentState().GetEntityByName(ToActivate, true);
+            Components::Menu* activate = actEnt->GetComponent<Components::Menu>(true);
+
+            Entity* deactEnt = ForLease->GameStateManager().CurrentState().GetEntityByName(ToDeactivate, true);
+            Components::Menu* deactivate = deactEnt->GetComponent<Components::Menu>(true);
+
+            deactivate->Deactivate();
+            activate->Activate();
+
+            Entity* invisEnt = ForLease->GameStateManager().CurrentState().GetEntityByName(ToMakeInvisible, true);
+            Components::Sprite* invis = invisEnt->GetComponent<Components::Sprite>(true);
+
+            invis->Visible = false;
+        }
+
+        void ActivateAndDeactivateAndMakeInvisible::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned>(Type));
+            Serializer actAndDeact = root.GetChild("ActivateAndDeactivateAndMakeInvisible");
+            actAndDeact.WriteString("Image", Image);
+            actAndDeact.WriteString("ToDeactivate", ToDeactivate);
+            actAndDeact.WriteString("ToActivate", ToActivate);
+            actAndDeact.WriteString("ToMakeInvisible", ToMakeInvisible);
+            actAndDeact.WriteUint("Type", static_cast<unsigned>(Type));
+            root.Append(actAndDeact, "ActivateAndDeactivateAndMakeInvisible");
+        }
+
+        void ActivateAndDeactivateAndMakeInvisible::Deserialize(Serializer& root) {
+            Serializer activateOther = root.GetChild("ActivateAndDeactivateAndMakeInvisible");
+            activateOther.ReadString("Image", Image);
+            activateOther.ReadString("ToDeactivate", ToDeactivate);
+            activateOther.ReadString("ToActivate", ToActivate);
+            activateOther.ReadString("ToMakeInvisible", ToMakeInvisible);
+        }
+
+        // ==================================================================================
+
+        ActivateAndDeactivateAndMakeVisible::ActivateAndDeactivateAndMakeVisible(std::string image, std::string toActivate, std::string toDeactivate, std::string toMakeVisible)
+            : MenuItem(MenuItemType::ActDeactVisible, image), ToDeactivate(toDeactivate), ToActivate(toActivate), ToMakeVisible(toMakeVisible) {}
+
+        void ActivateAndDeactivateAndMakeVisible::Action() {
+            Entity* actEnt = ForLease->GameStateManager().CurrentState().GetEntityByName(ToActivate, true);
+            Components::Menu* activate = actEnt->GetComponent<Components::Menu>(true);
+
+            Entity* deactEnt = ForLease->GameStateManager().CurrentState().GetEntityByName(ToDeactivate, true);
+            Components::Menu* deactivate = deactEnt->GetComponent<Components::Menu>(true);
+
+            deactivate->Deactivate();
+            activate->Activate();
+
+            Entity* visEnt = ForLease->GameStateManager().CurrentState().GetEntityByName(ToMakeVisible, true);
+            Components::Sprite* vis = visEnt->GetComponent<Components::Sprite>(true);
+
+            vis->Visible = true;
+        }
+
+        void ActivateAndDeactivateAndMakeVisible::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned>(Type));
+            Serializer actAndDeact = root.GetChild("ActivateAndDeactivateAndMakeVisible");
+            actAndDeact.WriteString("Image", Image);
+            actAndDeact.WriteString("ToDeactivate", ToDeactivate);
+            actAndDeact.WriteString("ToActivate", ToActivate);
+            actAndDeact.WriteString("ToMakeVisible", ToMakeVisible);
+            actAndDeact.WriteUint("Type", static_cast<unsigned>(Type));
+            root.Append(actAndDeact, "ActivateAndDeactivateAndMakeVisible");
+        }
+
+        void ActivateAndDeactivateAndMakeVisible::Deserialize(Serializer& root) {
+            Serializer activateOther = root.GetChild("ActivateAndDeactivateAndMakeVisible");
+            activateOther.ReadString("Image", Image);
+            activateOther.ReadString("ToDeactivate", ToDeactivate);
+            activateOther.ReadString("ToActivate", ToActivate);
+            activateOther.ReadString("ToMakeVisible", ToMakeVisible);
+        }
+
     } // MenuItems
 
 } // ForLeaseEngine

@@ -7,6 +7,8 @@
         Implements a class for a collision event.
 
     \see CollisionEvent.h
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "CollisionEvent.h"

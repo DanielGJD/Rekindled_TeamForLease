@@ -4,7 +4,7 @@
     \date   12/2/15
 
     \brief
-        Implementation of serialization class
+        Implementation of level editor class
 
     \see LevelEditor.h
 

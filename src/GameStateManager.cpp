@@ -82,6 +82,7 @@ namespace ForLeaseEngine {
                 if (States[i]->GetName() == stateName) {
                     NextStateIndex = i;
                     SetAction(StateAction::Skip);
+                    std::cout << "Found state " << stateName << std::endl;
                     break;
                 }
             }
@@ -97,10 +98,10 @@ namespace ForLeaseEngine {
             NextStateIndex = stateIndex;
             SetAction(StateAction::Skip);
         }
-        
+
         /*!
             Get the currently loaded state.
-            
+
             \return
                 A reference to the current state.
         */

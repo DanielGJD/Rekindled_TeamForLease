@@ -10,15 +10,17 @@
 
 #include "ComponentCharacterController.h"
 #include "ComponentPhysics.h"
+#include "ComponentSoundEmitter.h"
 #include "Entity.h"
 #include "Engine.h"
 
 namespace ForLeaseEngine {
     namespace Components {
         CharacterController::CharacterController(Entity& owner)
-                                                : Component(owner, ComponentType::Physics),
+                                                : Component(owner, ComponentType::Physics | ComponentType::Collision),
                                                   RightKey(Keys::Right), LeftKey(Keys::Left), JumpKey(Keys::Space),
-                                                  MoveSpeed(0), JumpSpeed(0), CanJump(false) {};
+                                                  MoveSpeed(0), JumpSpeed(0), WalkSound(""), JumpSound(""), LandSound(""),
+                                                  WalkAnimation(""), JumpAnimation(""), CanJump(false) {};
 
         CharacterController* CharacterController::Create(Entity& owner) {
             CharacterController* controller = new CharacterController(owner);
@@ -37,27 +39,69 @@ namespace ForLeaseEngine {
         }
 
         void CharacterController::Update() {
+//            std::cout << "Animation: " << Parent.GetComponent<Components::Model>()->GetAnimation() << std::endl;
+            //std::cout << "Walk ani: " << WalkAnimation << std::endl;
             Collision* collider = Parent.GetComponent<Collision>();
+            bool couldJump = CanJump;
             CanJump = false;
-            if(collider->CollidedLastFrame)
+            if(collider->CollidedLastFrame && collider->CollidedWithSide == Components::Collision::Side::Top)
                 CanJump = true;
+
+            if(!couldJump && CanJump) {
+                SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
+                if(emitter)
+                    emitter->Play(JumpSound);
+            }
+
+            Model* model = Parent.GetComponent<Model>();
+            if(model && model->AnimationActive && model->GetAnimation().compare(WalkAnimation) == 0) {
+                unsigned int currentFrame = model->GetFrame();
+                if(currentFrame != LastAnimationFrame && (currentFrame == 1 || currentFrame == 5)) {
+                    SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
+                    if(emitter)
+                        emitter->Play(WalkSound);
+                }
+            }
         };
 
         void CharacterController::OnKeyDown(const Event* e) {
             const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
+            Components::SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
+            Components::Collision* collider = Parent.GetComponent<Components::Collision>();
+            Components::Model* model = Parent.GetComponent<Components::Model>();
             if(key_e->Key == LeftKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
                 rbody->Velocity += Vector(-MoveSpeed, 0);
+                if(model)
+                    model->FlipY = true;
+                if(collider->CollidedLastFrame && collider->CollidedWithSide == Collision::Side::Top) {
+                    //if(emitter)
+                        //emitter->Looping = true;
+                        //emitter->Play(WalkSound);
+                    if(model)
+                        model->SetAnimation(WalkAnimation);
+                }
             }
             else if(key_e->Key == RightKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
                 rbody->Velocity += Vector(MoveSpeed, 0);
+                if(model)
+                    model->FlipY = false;
+                if(collider->CollidedLastFrame && collider->CollidedWithSide == Collision::Side::Top) {
+                    //if(emitter)
+                        //emitter->Play(WalkSound);
+                    if(model)
+                        model->SetAnimation(WalkAnimation);
+                }
             }
             else if(key_e->Key == JumpKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
                 Collision* collider = Parent.GetComponent<Collision>();
                 if(CanJump) {
                     rbody->Velocity += Vector(0, JumpSpeed);
+                    SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
+                    if(emitter)
+                        emitter->Play(JumpSound);
                     CanJump = false;
                 }
             }
@@ -78,13 +122,18 @@ namespace ForLeaseEngine {
 
         void CharacterController::OnKeyUp(const Event* e) {
             const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
+            Components::Model* model = Parent.GetComponent<Components::Model>();
             if(key_e->Key == LeftKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
                 rbody->Velocity[0] = 0;
+                if(model)
+                    model->SetAnimation("");
             }
             else if(key_e->Key == RightKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
                 rbody->Velocity[0] = 0;
+                if(model)
+                    model->SetAnimation("");
             }
         }
 
@@ -96,6 +145,11 @@ namespace ForLeaseEngine {
             controller.WriteInt("JumpKey", JumpKey);
             controller.WriteFloat("MoveSpeed", MoveSpeed);
             controller.WriteFloat("JumpSpeed", JumpSpeed);
+            controller.WriteString("WalkSound", WalkSound);
+            controller.WriteString("JumpSound", JumpSound);
+            controller.WriteString("LandSound", LandSound);
+            controller.WriteString("WalkAnimation", WalkAnimation);
+            controller.WriteString("JumpAnimation", JumpAnimation);
             controller.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(controller, "CharacterController");
         }
@@ -107,6 +161,11 @@ namespace ForLeaseEngine {
             controller.ReadInt("JumpKey", JumpKey);
             controller.ReadFloat("MoveSpeed", MoveSpeed);
             controller.ReadFloat("JumpSpeed", JumpSpeed);
+            controller.ReadString("WalkSound", WalkSound);
+            controller.ReadString("JumpSound", JumpSound);
+            controller.ReadString("LandSound", LandSound);
+            controller.ReadString("WalkAnimation", WalkAnimation);
+            controller.ReadString("JumpAnimation", JumpAnimation);
         }
     }
 }

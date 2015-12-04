@@ -33,6 +33,13 @@ namespace ForLeaseEngine {
                 float MoveSpeed;
                 float JumpSpeed;
 
+                std::string WalkSound;
+                std::string JumpSound;
+                std::string LandSound;
+
+                std::string WalkAnimation;
+                std::string JumpAnimation;
+
                 void Initialize();
 
                 void Update();
@@ -45,6 +52,7 @@ namespace ForLeaseEngine {
 
             private:
                 bool CanJump;
+                unsigned int LastAnimationFrame;
         };
     }
 }

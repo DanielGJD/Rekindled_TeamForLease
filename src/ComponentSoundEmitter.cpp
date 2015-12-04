@@ -17,6 +17,10 @@ namespace ForLeaseEngine {
                                   : Component(owner, ComponentType::Transform),
                                     Channel(NULL), Pitch(1), Volume(1), Looping(false), LoopCount(-1) {}
 
+        SoundEmitter::~SoundEmitter() {
+            Stop();
+        }
+
         void SoundEmitter::Update() {
         }
 

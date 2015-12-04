@@ -27,7 +27,9 @@ namespace ForLeaseEngine {
         Quit                    = 3,
         ActivateOther           = 4,
         ActivateAndDeactivate   = 5,
-        ResumeGame              = 6
+        ResumeGame              = 6,
+        ActDeactVisible         = 7,
+        ActDeactInvisible       = 8
     };
 
     class MenuItem : public Serializable {
@@ -106,6 +108,34 @@ namespace ForLeaseEngine {
 
                 virtual void Serialize(Serializer& root);
                 virtual void Deserialize(Serializer& root);
+        };
+
+        class ActivateAndDeactivateAndMakeInvisible : public MenuItem {
+            public:
+                ActivateAndDeactivateAndMakeInvisible(std::string image, std::string toActivate, std::string toDeactivate, std::string toMakeInvisible);
+                
+                virtual void Action();
+                
+                virtual void Serialize(Serializer& root);
+                virtual void Deserialize(Serializer& root);
+
+                std::string ToDeactivate;
+                std::string ToActivate;
+                std::string ToMakeInvisible;
+        };
+
+        class ActivateAndDeactivateAndMakeVisible : public MenuItem {
+            public:
+                ActivateAndDeactivateAndMakeVisible(std::string image, std::string toActivate, std::string toDeactivate, std::string toMakeVisible);
+
+                virtual void Action();
+
+                virtual void Serialize(Serializer& root);
+                virtual void Deserialize(Serializer& root);
+
+                std::string ToDeactivate;
+                std::string ToActivate;
+                std::string ToMakeVisible;
         };
 
     } // MenuItems

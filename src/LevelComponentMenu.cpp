@@ -36,7 +36,7 @@ namespace ForLeaseEngine {
             Components::Menu* pauseMenuComp = new Components::Menu(*pauseMenu, Vector(0,-1), false, unfocusedScale, focusedScale);
             pauseMenu->AddComponent(pauseMenuComp);
             pauseMenuComp->AddItem(new MenuItems::ResumeGame("ButtonResume.png"));
-            pauseMenuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonHowTo.png", "HowToConfirm", "PauseMenu"));
+            pauseMenuComp->AddItem(new MenuItems::ActivateAndDeactivateAndMakeVisible("ButtonHowTo.png", "HowToConfirm", "PauseMenu", "HowToScreen"));
             pauseMenuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonQuit.png", "QuitConfirm", "PauseMenu"));
 
             Entity* quitConfirm = owner.AddEntity("QuitConfirm");
@@ -53,8 +53,14 @@ namespace ForLeaseEngine {
             howToConfirm->AddComponent(new Components::Transform(*howToConfirm));
             Components::Menu* howToConfirmComp = new Components::Menu(*howToConfirm, Vector(0, -1), false, unfocusedScale, focusedScale);
             howToConfirm->AddComponent(howToConfirmComp);
-            howToConfirmComp->AddItem(new MenuItems::LoadLevel("ButtonHowTo.png", "HowToPlay"));
-            howToConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonCancel.png", "PauseMenu", "HowToConfirm"));
+            howToConfirmComp->AddItem(new MenuItems::ActivateAndDeactivateAndMakeInvisible("ButtonCancel.png", "PauseMenu", "HowToConfirm", "HowToScreen"));
+
+            Entity* howToScreen = owner.AddEntity("HowToScreen");
+            howToScreen->IncludeInSerialize = false;
+            howToScreen->AddComponent(new Components::Transform(*howToScreen, camera->GetComponent<Components::Transform>(true)->Position[0], camera->GetComponent<Components::Transform>(true)->Position[1] + 12.5 * camScale, unfocusedScale / 4, unfocusedScale / 4, 0, 999));
+            howToScreen->AddComponent(new Components::Sprite(*howToScreen));
+            howToScreen->GetComponent<Components::Sprite>(true)->SetSpriteSource("ControlPage.png");
+            howToScreen->GetComponent<Components::Sprite>(true)->Visible = false;
             
             
             ForLease->Dispatcher.Attach(NULL, this, "KeyDown", &Menu::OnKeyDown);
@@ -116,7 +122,6 @@ namespace ForLeaseEngine {
         }
 
         void Menu::Pause() {
-            std::cout << std::endl << "HERE" << std::endl << std::endl;
             Entity* pauseMenu = ForLease->GameStateManager().CurrentState().GetEntityByName("PauseMenu");
             Components::Menu* pauseMenuComp = pauseMenu->GetComponent<Components::Menu>();
             pauseMenuComp->Activate();
@@ -139,6 +144,8 @@ namespace ForLeaseEngine {
             
             ForLease->FrameRateController().TimeScaling(1);
             Paused = false;
+
+            ForLease->GameStateManager().CurrentState().GetEntityByName("HowToScreen")->GetComponent<Components::Sprite>(true)->Visible = false;
         }
 
     } // LevelComponents

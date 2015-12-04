@@ -34,6 +34,7 @@ namespace ForLeaseEngine {
                 int LoopCount;
 
                 SoundEmitter(Entity& owner);
+                ~SoundEmitter();
 
                 void Update();
 
