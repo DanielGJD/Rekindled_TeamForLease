@@ -39,6 +39,8 @@ namespace ForLeaseEngine {
                 float SlowMotionSpeed;
                 float NormalSpeed;
                 int ModeToggleKey;
+
+                std::string TransformModeSound;
             private:
                 bool Active;
                 bool EntitySelected;

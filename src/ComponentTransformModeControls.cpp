@@ -19,7 +19,7 @@ namespace ForLeaseEngine {
     namespace Components {
         TransformModeControls::TransformModeControls(Entity& owner)
                                                     : Component(owner), SlowMotionSpeed(0.5f), NormalSpeed(1),
-                                                      ModeToggleKey(Keys::LeftAlt), Active(false), EntitySelected(false), ActiveEntity(0) {}
+                                                      ModeToggleKey(Keys::LeftAlt), TransformModeSound(""), Active(false), EntitySelected(false), ActiveEntity(0) {}
 
         TransformModeControls::~TransformModeControls() {
             ForLease->Dispatcher.Detach(this, "KeyUp");
@@ -53,6 +53,7 @@ namespace ForLeaseEngine {
             transModeCont.WriteFloat("SlowMotionSpeed", SlowMotionSpeed);
             transModeCont.WriteFloat("NormalSpeed", NormalSpeed);
             transModeCont.WriteInt("ModeToggleKey", ModeToggleKey);
+            transModeCont.WriteString("TransformModeSound", TransformModeSound);
             transModeCont.WriteUint("Type", static_cast<unsigned int>(Type));
             root.Append(transModeCont, "TransformModeControls");
         }
@@ -62,6 +63,7 @@ namespace ForLeaseEngine {
             transModeCont.ReadFloat("SlowMotionSpeed", SlowMotionSpeed);
             transModeCont.ReadFloat("NormalSpeed", NormalSpeed);
             transModeCont.ReadInt("ModeToggleKey", ModeToggleKey);
+            transModeCont.ReadString("TransformModeSound", TransformModeSound);
         }
 
         void TransformModeControls::Activate() {
