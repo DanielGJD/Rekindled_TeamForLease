@@ -39,6 +39,8 @@ namespace ForLeaseEngine {
                 float MinXScale;
                 float MaxYScale;
                 float MinYScale;
+
+                std::string ScaleSound;
             private:
                 ScaleWithKeyboard(Entity& owner);
                 void Initialize();
