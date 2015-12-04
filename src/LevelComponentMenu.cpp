@@ -54,7 +54,6 @@ namespace ForLeaseEngine {
             Components::Menu* howToConfirmComp = new Components::Menu(*howToConfirm, Vector(0, -1), false, unfocusedScale, focusedScale);
             howToConfirm->AddComponent(howToConfirmComp);
             howToConfirmComp->AddItem(new MenuItems::ActivateAndDeactivateAndMakeInvisible("ButtonCancel.png", "PauseMenu", "HowToConfirm", "HowToScreen"));
-            //howToConfirmComp->AddItem(new MenuItems::ActivateAndDeactivateAndMakeInvisible());
 
             Entity* howToScreen = owner.AddEntity("HowToScreen");
             howToScreen->IncludeInSerialize = false;
