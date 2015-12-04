@@ -453,9 +453,9 @@ namespace ForLeaseEngine {
         ArraySerializer jsonLevelComponents(state);
         jsonLevelComponents = state.GetChild("LevelComponents");
 
-        for (LevelComponent* lc : LevelComponents) {
+        for (unsigned i = 0; i < 4; ++i) {
             Serializer lcSerializer;
-            lc->Serialize(lcSerializer);
+            LevelComponents[i]->Serialize(lcSerializer);
             jsonLevelComponents.Append(lcSerializer);
         }
 
@@ -465,6 +465,9 @@ namespace ForLeaseEngine {
     }
 
     void State::Deserialize(Serializer& root) {
+        DeleteAllEntities();
+        DeleteAllLevelComponents();
+
         Serializer state = root.GetChild("State");
 
         state.ReadString("Name", Name);
