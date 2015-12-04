@@ -41,6 +41,7 @@ namespace ForLeaseEngine {
                 long GetCameraID();
                 void SetClearColor(float r, float g, float b, float a);
                 void SetOverlayColor(float r, float g, float b, float a);
+                void SetOutline(float r, float g, float b, float a, float width = 4);
                 void SetClearColor(const Color& color);
                 void SetDrawingColor(float r, float g, float b, float a = 1);
                 void SetDrawingColor(const Color& color);
@@ -81,6 +82,8 @@ namespace ForLeaseEngine {
                 Color DrawColor;
                 Color ClearColor;
                 Color OverlayColor;
+                Color OutlineColor;
+                float OutlineWidth;
                 unsigned long CurrentCamera;
                 BlendMode BlendingMode;
                 GLuint CurrentTexture;

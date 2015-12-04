@@ -75,9 +75,15 @@ namespace ForLeaseEngine {
                 if(entity) {
                     if(entity->HasComponent(ComponentType::DragWithMouse)) {
                         entity->GetComponent<Components::DragWithMouse>()->Active = true;
+                        Model* model = entity->GetComponent<Model>();
+                        if(model)
+                            model->DrawEdges = true;
                     }
                     if(entity->HasComponent(ComponentType::ScaleWithKeyboard)) {
                         entity->GetComponent<Components::ScaleWithKeyboard>()->Active = true;
+                        Model* model = entity->GetComponent<Model>();
+                        if(model)
+                            model->DrawEdges = true;
                     }
                 }
             }
@@ -86,6 +92,7 @@ namespace ForLeaseEngine {
                 emitter->Play(TransformModeSound);
             }
 
+            ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->SetOutline(1, 0, 0, 1, 0.5);
             ForLease->FrameRateController().TimeScaling(SlowMotionSpeed);
         }
 
@@ -96,7 +103,9 @@ namespace ForLeaseEngine {
                 Entity* entity = ForLease->GameStateManager().CurrentState().GetEntityByID(ActiveEntity);
 
                 if(entity) {
-                    //Model model = entity->
+                    Model* model = entity->GetComponent<Model>();
+                    if(model)
+                        model->DrawEdges = false;
                     if(entity->HasComponent(ComponentType::DragWithMouse)) {
                         entity->GetComponent<Components::DragWithMouse>()->Active = false;
                     }
@@ -112,6 +121,7 @@ namespace ForLeaseEngine {
             if(emitter)
                 emitter->Stop();
 
+            ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->SetOutline(1, 0, 0, 1, 0);
             ForLease->FrameRateController().TimeScaling(NormalSpeed);
         }
 
@@ -149,6 +159,9 @@ namespace ForLeaseEngine {
                         if(selected) {
                             ForLease->GameStateManager().CurrentState().GetEntityByID(ActiveEntity)->GetComponent<Components::DragWithMouse>()->Active = false;
                             ForLease->GameStateManager().CurrentState().GetEntityByID(ActiveEntity)->GetComponent<Components::ScaleWithKeyboard>()->Active = false;
+                            Model* model = ForLease->GameStateManager().CurrentState().GetEntityByID(ActiveEntity)->GetComponent<Model>();
+                            if(model)
+                                model->DrawEdges = false;
                         }
                     }
                     EntitySelected = false;
@@ -158,14 +171,23 @@ namespace ForLeaseEngine {
                     if(selected) {
                         ForLease->GameStateManager().CurrentState().GetEntityByID(ActiveEntity)->GetComponent<Components::DragWithMouse>()->Active = false;
                         ForLease->GameStateManager().CurrentState().GetEntityByID(ActiveEntity)->GetComponent<Components::ScaleWithKeyboard>()->Active = false;
+                        Model* model = ForLease->GameStateManager().CurrentState().GetEntityByID(ActiveEntity)->GetComponent<Model>();
+                            if(model)
+                                model->DrawEdges = false;
                     }
                     EntitySelected = true;
                     ActiveEntity = entity->GetID();
                     if(entity->HasComponent(ComponentType::DragWithMouse)) {
                         entity->GetComponent<Components::DragWithMouse>()->Active = true;
+                        Model* model = entity->GetComponent<Model>();
+                        if(model)
+                            model->DrawEdges = true;
                     }
                     if(entity->HasComponent(ComponentType::ScaleWithKeyboard)) {
                         entity->GetComponent<Components::ScaleWithKeyboard>()->Active = true;
+                        Model* model = entity->GetComponent<Model>();
+                        if(model)
+                            model->DrawEdges = true;
                     }
                 }
             }

@@ -50,6 +50,8 @@ namespace ForLeaseEngine {
             DebugPointSize = 1;
             DebugLineWidth = 1;
             OverlayColor = Color(1, 1, 1, 0);
+            OutlineColor = Color(1, 1, 1, 1);
+            OutlineWidth = 0;
         }
 
         void Renderer::Serialize(Serializer& root) {
@@ -168,13 +170,27 @@ namespace ForLeaseEngine {
                 }
                 }
 
-                // Draw overlay
+
                 Entity* cameraEntity = Owner.GetEntityByID(CurrentCamera);
                 Components::Transform* cameraTrans = cameraEntity->GetComponent<Components::Transform>();
                 Components::Camera* camera = cameraEntity->GetComponent<Components::Camera>();
+
                 float height = camera->Size;
                 float width = height * ForLease->GameWindow->GetXResolution() / ForLease->GameWindow->GetYResolution();
+                float halfwidth = width / 2;
+                float halfheight = height / 2;
+                Point pos = cameraTrans->Position;
+
+                // Draw outline
+                SetDrawingColor(OutlineColor);
+                DrawRectangleFilled(pos + Vector(0, halfheight), width, OutlineWidth);
+                DrawRectangleFilled(pos + Vector(0, -halfheight), width, OutlineWidth);
+                DrawRectangleFilled(pos + Vector(halfwidth, 0), OutlineWidth, height);
+                DrawRectangleFilled(pos + Vector(-halfwidth, 0), OutlineWidth, height);
+
+                // Draw overlay
                 SetDrawingColor(OverlayColor);
+
                 DrawRectangleFilled(cameraTrans->Position, width, height, 0, BlendMode::ALPHA);
             }
 
@@ -208,6 +224,11 @@ namespace ForLeaseEngine {
 
         void Renderer::SetOverlayColor(float r, float g, float b, float a) {
             OverlayColor = Color(r, g, b, a);
+        }
+
+        void Renderer::SetOutline(float r, float g, float b, float a, float width) {
+            OutlineColor = Color(r, g, b, a);
+            OutlineWidth = width;
         }
 
         void Renderer::SetDrawingColor(const Color& color) {
