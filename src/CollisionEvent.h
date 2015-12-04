@@ -7,6 +7,8 @@
         Defines a class for a collision event.
 
     \see CollisionEvent.cpp
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef COLLISIONEVENT_H

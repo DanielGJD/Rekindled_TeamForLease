@@ -1,3 +1,16 @@
+/*!
+    \file   LevelEditor.h
+    \author Sam Montanari
+    \date   12/2/15
+
+    \brief
+        Definition of level editor class
+
+    \see LevelEditor.cpp
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef LEVELEDITOR_H
 #define LEVELEDITOR_H
 
