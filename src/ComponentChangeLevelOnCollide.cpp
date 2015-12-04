@@ -31,6 +31,8 @@ namespace ForLeaseEngine {
         ComponentType ChangeLevelOnCollide::GetType() { return Type; }
 
         void ChangeLevelOnCollide::Update() {
+            if(!Active)
+                return;
             if(Switching) {
                 Timer += ForLease->FrameRateController().GetUnscaledDt();
                 if(Timer >= FadeOutTime) {
@@ -45,7 +47,7 @@ namespace ForLeaseEngine {
                 if(collider->CollidedWith && collider->CollidedWith->GetName().compare(TriggerObjectName) == 0) {
                     Switching = true;
                     SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
-                    if(emitter) {
+                    if(TriggerSoundName.compare("") && emitter) {
                         emitter->Play(TriggerSoundName);
                     }
                     ForLease->FrameRateController().TimeScaling(OnSwitchTimeScale);
@@ -54,9 +56,26 @@ namespace ForLeaseEngine {
         }
 
         void ChangeLevelOnCollide::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned int>(Type));
+            Serializer changeLevel = root.GetChild("ChangeLevelOnCollide");
+            changeLevel.WriteUint("Type", static_cast<unsigned int>(Type));
+            changeLevel.WriteBool("Active", Active);
+            changeLevel.WriteString("LevelName", LevelName);
+            changeLevel.WriteString("TriggerObjectName", TriggerObjectName);
+            changeLevel.WriteString("TriggerSoundName", TriggerSoundName);
+            changeLevel.WriteFloat("OnSwitchTimeScale", OnSwitchTimeScale);
+            changeLevel.WriteFloat("FadeOutTime", FadeOutTime);
+            root.Append(changeLevel, "ChangeLevelOnCollide");
         }
 
         void ChangeLevelOnCollide::Deserialize(Serializer& root) {
+            Serializer changeLevel = root.GetChild("ChangeLevelOnCollide");
+            changeLevel.ReadBool("Active", Active);
+            changeLevel.ReadString("LevelName", LevelName);
+            changeLevel.ReadString("TriggerObjectName", TriggerObjectName);
+            changeLevel.ReadString("TriggerSoundName", TriggerSoundName);
+            changeLevel.ReadFloat("OnSwitchTimeScale", OnSwitchTimeScale);
+            changeLevel.ReadFloat("FadeOutTime", FadeOutTime);
         }
     }
 }
