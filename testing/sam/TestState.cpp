@@ -1,3 +1,9 @@
+/*!
+    \author Sam Montanari
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "TestState.h"
 #include "Face.h"
 #include "Edge.h"
