@@ -130,10 +130,12 @@ namespace ForLeaseEngine {
     void Entity::AddComponent(Component* component) {
         if (static_cast<bool>(ComponentMask & component->GetType())) {
             delete component;
+            component = 0;
             return;
         }
         if ((ComponentMask & component->GetRequired()) != component->GetRequired()) {
             delete component;
+            component = 0;
             return;
         }
 
