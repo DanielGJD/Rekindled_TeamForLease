@@ -39,6 +39,7 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
+#include <algorithm>
 namespace ForLeaseEngine
 {
     namespace LevelEditorGlobals
@@ -48,8 +49,7 @@ namespace ForLeaseEngine
 
         LevelComponents::Renderer* render;
         LevelComponents::Physics*  levelPhysics;
-        LevelComponents::Menu*     levelMenu;
-        LevelComponents::Collision* levelCollision;
+        LevelComponents::Light*    levelLight;
         Vector gravity;
 
         Entity*                            selection;
@@ -119,8 +119,11 @@ namespace ForLeaseEngine
         float detectionColor[4] = { 0 };
         float noDetectionColor[4] = { 0 };
         float spriteColor[4] = { 0 };
+        float meshColor[4] = { 0 };
+        float lightColor[4] = { 0 };
 
         const char* archToSpawn = NULL;
+        int lightRays =100;
     }
 
     namespace leg = LevelEditorGlobals;
@@ -128,18 +131,20 @@ namespace ForLeaseEngine
     void LevelEditor::Load()
     {
         leg::render = new LevelComponents::Renderer(*this);
-        leg::levelPhysics = new LevelComponents::Physics(*this);
-        AddLevelComponent(leg::render);
-        AddLevelComponent(leg::levelPhysics);
-        AddLevelComponent(new LevelComponents::Menu(*this));
-        AddLevelComponent(new LevelComponents::Collision(*this));
-        leg::gravity = leg::levelPhysics->GetGravity();
         leg::camera = AddEntity("Level Camera");
         leg::camTrans = new Components::Transform(*leg::camera);
         leg::camCamera = new Components::Camera(*leg::camera, 0, 1, 50);
         leg::camera->AddComponent(leg::camTrans);
         leg::camera->AddComponent(leg::camCamera);
         leg::render->SetCamera(*leg::camera);
+        leg::levelPhysics = new LevelComponents::Physics(*this);
+        leg::levelLight = new LevelComponents::Light(*this);
+        AddLevelComponent(leg::render);
+        AddLevelComponent(leg::levelPhysics);
+        AddLevelComponent(new LevelComponents::Menu(*this));
+        AddLevelComponent(new LevelComponents::Collision(*this));
+        AddLevelComponent(leg::levelLight);
+        leg::gravity = leg::levelPhysics->GetGravity();
         leg::window = ForLease->GameWindow->DangerousGetRawWindow();
         strcpy(leg::statename, Name.c_str());
         LoadFiles();
@@ -148,7 +153,6 @@ namespace ForLeaseEngine
         leg::componentNames.push_back("Drag with Mouse");
         leg::componentNames.push_back("Enemy AI");
         leg::componentNames.push_back("Light");
-        //leg::componentNames.push_back("Menu");
         leg::componentNames.push_back("Model");
         leg::componentNames.push_back("Physics");
         leg::componentNames.push_back("Player Controller");
@@ -319,6 +323,16 @@ namespace ForLeaseEngine
                 }
             }
             ImGui::EndChild();
+
+            if (archFilter.IsActive() && ImGui::IsKeyPressed(Keys::Return))
+            {
+                std::string s = archFilter.InputBuf;
+                Serializer root;
+                if (std::find(leg::archetypeNames.begin(), leg::archetypeNames.end(), s) == leg::archetypeNames.end() && root.ReadFile(s))
+                {
+                    leg::archetypeNames.push_back(s);
+                }
+            }
         }
 
         ImGui::End();
@@ -348,6 +362,12 @@ namespace ForLeaseEngine
         {
             leg::selEnemyAI = Components::EnemyAI::Create(*leg::selection);
             leg::selection->AddComponent(leg::selEnemyAI);
+        }
+        if (!(component.compare("Light")) && !leg::selLight)
+        {
+            leg::selLight = new Components::Light(*leg::selection);
+            leg::selection->AddComponent(leg::selLight);
+            return;
         }
         if (!(component.compare("Menu")) && !leg::selMenu)
         {
@@ -423,8 +443,12 @@ namespace ForLeaseEngine
         ImGui::SameLine();
         if (ImGui::Button("Save Archetype"))
         {
+            std::string s = leg::archetypefile;
             leg::selection->CreateArchetype(leg::archetypefile);
-            leg::archetypeNames.push_back(leg::archetypefile);
+            if (std::find(leg::archetypeNames.begin(), leg::archetypeNames.end(), s) == leg::archetypeNames.end())
+            {
+                leg::archetypeNames.push_back(leg::archetypefile);
+            }
         }
 
 
@@ -523,7 +547,7 @@ namespace ForLeaseEngine
             }
             ImGui::Unindent();
 
-            if (ImGui::Button("Remove"))
+            if (ImGui::Button("Remove Model"))
             {
                 leg::selection->DeleteComponent(ComponentType::Model);
                 leg::selModel = NULL;
@@ -536,7 +560,7 @@ namespace ForLeaseEngine
             if (ImGui::Button("Set Camera"))
                 leg::render->SetCamera(*leg::selection);
 
-            if (ImGui::Button("Remove"))
+            if (ImGui::Button("Remove Camera"))
             {
                 leg::selection->DeleteComponent(ComponentType::Camera);
                 leg::selCamera = NULL;
@@ -546,14 +570,14 @@ namespace ForLeaseEngine
         if (leg::selCollision && ImGui::CollapsingHeader("Collision"))
         {
             ImGui::PushItemWidth(100);
-            ImGui::InputFloat("Width", &(leg::selCollision->Width));
+            ImGui::DragFloat("Width", &(leg::selCollision->Width), 0.05);
             ImGui::SameLine();
-            ImGui::InputFloat("Height", &(leg::selCollision->Height));
+            ImGui::DragFloat("Height", &(leg::selCollision->Height), 0.05);
             ImGui::PopItemWidth();
             leg::render->DrawRectangle(leg::selTran->Position, leg::selCollision->Width, leg::selCollision->Height, leg::selTran->Rotation);
             ImGui::Checkbox("Resolve Collision", &(leg::selCollision->ResolveCollisions));
 
-            if (ImGui::Button("Remove"))
+            if (ImGui::Button("Remove Collision"))
             {
                 leg::selection->DeleteComponent(ComponentType::Collision);
                 leg::selCollision = NULL;
@@ -563,7 +587,7 @@ namespace ForLeaseEngine
         if (leg::selDrag && ImGui::CollapsingHeader("Drag with Mouse"))
         {
             ImGui::Checkbox("Active", &(leg::selDrag->Active));
-            if (ImGui::Button("Remove"))
+            if (ImGui::Button("Remove Drag With Mouse"))
             {
                 leg::selection->DeleteComponent(ComponentType::DragWithMouse);
                 leg::selDrag = NULL;
@@ -579,18 +603,31 @@ namespace ForLeaseEngine
             ImGui::ColorEdit4("Detection Color", leg::detectionColor);
             ImGui::ColorEdit4("No Detection Color", leg::noDetectionColor);
             ImGui::PopItemWidth();
-            leg::selEnemyAI->HappyColor.SetAll(leg::happyColor[0],
-                                               leg::happyColor[1],
-                                               leg::happyColor[2],
-                                               leg::happyColor[3]);
-            leg::selEnemyAI->DetectionColor.SetAll(leg::detectionColor[0],
-                                                   leg::detectionColor[1],
-                                                   leg::detectionColor[2],
-                                                   leg::detectionColor[3]);
-            leg::selEnemyAI->NoDetectionColor.SetAll(leg::noDetectionColor[0],
-                                                     leg::noDetectionColor[1],
-                                                     leg::noDetectionColor[2],
-                                                     leg::noDetectionColor[3]);
+            if (ImGui::Button("Set Happy"))
+            {
+                leg::selEnemyAI->HappyColor.SetAll(leg::happyColor[0],
+                                                   leg::happyColor[1],
+                                                   leg::happyColor[2],
+                                                   leg::happyColor[3]);
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Set Detection"))
+            {
+                leg::selEnemyAI->DetectionColor.SetAll(leg::detectionColor[0],
+                                                       leg::detectionColor[1],
+                                                       leg::detectionColor[2],
+                                                       leg::detectionColor[3]);
+            }
+
+            ImGui::SameLine();
+            if (ImGui::Button("Set No Detection"))
+            {
+                leg::selEnemyAI->NoDetectionColor.SetAll(leg::noDetectionColor[0],
+                                                         leg::noDetectionColor[1],
+                                                         leg::noDetectionColor[2],
+                                                         leg::noDetectionColor[3]);
+            }
+
             if (ImGui::InputText("Hated Entity Name", leg::enemyHateN, 70, ImGuiInputTextFlags_EnterReturnsTrue))
                 leg::selEnemyAI->HatedEntityName = leg::enemyHateN;
 
@@ -637,13 +674,40 @@ namespace ForLeaseEngine
                 ForLease->Resources.LoadSound(sounds.InputBuf);
                 leg::soundNames = ForLease->Resources.GetLoadedSoundNames();
             }
-            if (ImGui::Button("Remove"))
+            if (ImGui::Button("Remove Enemy AI"))
             {
                 leg::selection->DeleteComponent(ComponentType::EnemyAI);
                 leg::selEnemyAI = NULL;
             }
         }
+        if (leg::selLight && ImGui::CollapsingHeader("Light"))
+        {
+            ImGui::InputInt("Rays", &leg::lightRays, 1, 5);
+            if (leg::lightRays >= 0)
+                leg::selLight->Rays = leg::lightRays;
+            ImGui::DragFloat("Sweep", &(leg::selLight->Sweep), 0.05);
+            ImGui::Text("Direction");
+            ImGui::SameLine();
+            ImGui::DragFloat("x", &(leg::selLight->Direction[0]), 0.05);
+            ImGui::SameLine();
+            ImGui::DragFloat("y", &(leg::selLight->Direction[1]), 0.05);
+            ImGui::PushItemWidth(250);
+            ImGui::ColorEdit4("Light Color", leg::lightColor);
+            if (ImGui::Button("Set Light Color"))
+            {
+                leg::selLight->DrawColor.SetAll(leg::lightColor[0],
+                                                leg::lightColor[1],
+                                                leg::lightColor[2],
+                                                leg::lightColor[3]);
+            }
 
+
+            if (ImGui::Button("Remove Light"))
+            {
+                leg::selection->DeleteComponent(ComponentType::Light);
+                leg::selLight = NULL;
+            }
+        }
         if (leg::selMenu && ImGui::CollapsingHeader("Menu"))
         {
             ImGui::InputFloat("Focused Scale", &(leg::selMenu->FocusedScale));
@@ -663,7 +727,7 @@ namespace ForLeaseEngine
         if (leg::selPhysics && ImGui::CollapsingHeader("Physics"))
         {
             ImGui::InputFloat("Mass", &(leg::selPhysics->Mass));
-            if (ImGui::Button("Remove"))
+            if (ImGui::Button("Remove Physics"))
             {
                 leg::selection->DeleteComponent(ComponentType::Physics);
                 leg::selPhysics = NULL;
@@ -702,7 +766,7 @@ namespace ForLeaseEngine
             ImGui::InputFloat("Min Y", &(leg::selScale->MinYScale));
             ImGui::SameLine();
             ImGui::InputFloat("Max Y", &(leg::selScale->MaxYScale));
-            if (ImGui::Button("Remove"))
+            if (ImGui::Button("Remove Scale with Keyboard"))
             {
                 leg::selection->DeleteComponent(ComponentType::ScaleWithKeyboard);
                 leg::selScale = NULL;
@@ -719,7 +783,7 @@ namespace ForLeaseEngine
             ImGui::SameLine();
             ImGui::InputFloat("Pitch", &(leg::selSound->Pitch));
             ImGui::PopItemWidth();
-            if (ImGui::Button("Remove"))
+            if (ImGui::Button("Remove Sound Emitter"))
             {
                 leg::selection->DeleteComponent(ComponentType::SoundEmitter);
                 leg::selSound = NULL;
@@ -734,6 +798,13 @@ namespace ForLeaseEngine
             ImGui::Checkbox("Flip Y", &(leg::selSprite->FlipY));
             ImGui::PushItemWidth(250);
             ImGui::ColorEdit4("Sprite Color", leg::spriteColor);
+            if (ImGui::Button("Set Sprite Color"))
+            {
+                leg::selSprite->SpriteColor.SetAll(leg::spriteColor[0],
+                                                   leg::spriteColor[1],
+                                                   leg::spriteColor[2],
+                                                   leg::spriteColor[3]);
+            }
             ImGui::Text("Current Sprite Source: %s", leg::selSprite->GetSourceName().c_str());
             static ImGuiTextFilter textures;
             textures.Draw("", 300);
@@ -756,11 +827,8 @@ namespace ForLeaseEngine
                 ForLease->Resources.LoadTexture(textures.InputBuf);
                 leg::textureNames = ForLease->Resources.GetLoadedTextureNames();
             }
-            leg::selSprite->SpriteColor.SetAll(leg::spriteColor[0],
-                                               leg::spriteColor[1],
-                                               leg::spriteColor[2],
-                                               leg::spriteColor[3]);
-            if (ImGui::Button("Remove"))
+
+            if (ImGui::Button("Remove Sprite"))
             {
                 leg::selection->DeleteComponent(ComponentType::Sprite);
                 leg::selSprite = NULL;
@@ -773,13 +841,17 @@ namespace ForLeaseEngine
             leg::selSprtxt->Text = leg::spriteTextBuf;
             ImGui::PushItemWidth(300);
             ImGui::ColorEdit4("Color", leg::spriteTextColor);
-            leg::selSprtxt->TextColor.SetAll(leg::spriteTextColor[0],
-                                             leg::spriteTextColor[1],
-                                             leg::spriteTextColor[2],
-                                             leg::spriteTextColor[3]);
+            if (ImGui::Button("Set Text Color"))
+            {
+                leg::selSprtxt->TextColor.SetAll(leg::spriteTextColor[0],
+                                                 leg::spriteTextColor[1],
+                                                 leg::spriteTextColor[2],
+                                                 leg::spriteTextColor[3]);
+            }
+
             ImGui::PopItemWidth();
 
-            if (ImGui::Button("Remove"))
+            if (ImGui::Button("Remove Sprite Text"))
             {
                 leg::selection->DeleteComponent(ComponentType::SpriteText);
                 leg::selSprtxt = NULL;
@@ -793,7 +865,7 @@ namespace ForLeaseEngine
             ImGui::InputFloat("Normal Speed", &(leg::selTMC->NormalSpeed));
             ImGui::InputFloat("Slow Motion Speed", &(leg::selTMC->SlowMotionSpeed));
             ImGui::PopItemWidth();
-            if (ImGui::Button("Remove"))
+            if (ImGui::Button("Remove Transform Control"))
             {
                 leg::selection->DeleteComponent(ComponentType::TransformModeControls);
                 leg::selTMC = NULL;
@@ -815,11 +887,15 @@ namespace ForLeaseEngine
             ImGui::PushItemWidth(250);
             ImGui::ColorEdit4("Indicator Color", leg::visionConeColor);
             ImGui::PopItemWidth();
-            leg::selVision->IndicatorColor.SetAll(leg::visionConeColor[0],
-                                                  leg::visionConeColor[1],
-                                                  leg::visionConeColor[2],
-                                                  leg::visionConeColor[3]);
-            if (ImGui::Button("Remove"))
+            if (ImGui::Button("Set Indicator Color"))
+            {
+                leg::selVision->IndicatorColor.SetAll(leg::visionConeColor[0],
+                                                      leg::visionConeColor[1],
+                                                      leg::visionConeColor[2],
+                                                      leg::visionConeColor[3]);
+            }
+
+            if (ImGui::Button("Remove Vision Cone"))
             {
                 leg::selection->DeleteComponent(ComponentType::VisionCone);
                 leg::selVision = NULL;
@@ -888,6 +964,7 @@ namespace ForLeaseEngine
                     leg::selSprtxt     = leg::selection->GetComponent<Components::SpriteText>();
                     leg::selController = leg::selection->GetComponent<Components::CharacterController>();
                     leg::selEnemyAI    = leg::selection->GetComponent<Components::EnemyAI>();
+                    leg::selLight      = leg::selection->GetComponent<Components::Light>();
                     if (leg::selSprtxt)
                     {
                         strcpy(leg::spriteTextBuf, leg::selSprtxt->Text.c_str());
@@ -921,6 +998,14 @@ namespace ForLeaseEngine
                         leg::happyColor[1]       = leg::selEnemyAI->HappyColor.GetG();
                         leg::happyColor[2]       = leg::selEnemyAI->HappyColor.GetB();
                         leg::happyColor[3]       = leg::selEnemyAI->HappyColor.GetA();
+                    }
+                    if (leg::selLight)
+                    {
+                        leg::lightRays = leg::selLight->Rays;
+                        leg::lightColor[0] = leg::selLight->DrawColor.GetR();
+                        leg::lightColor[1] = leg::selLight->DrawColor.GetG();
+                        leg::lightColor[2] = leg::selLight->DrawColor.GetB();
+                        leg::lightColor[3] = leg::selLight->DrawColor.GetA();
                     }
                     if (leg::selSprite)
                     {
@@ -1029,8 +1114,8 @@ namespace ForLeaseEngine
         }
 
         Input();
+        leg::levelLight->Update(Entities);
         leg::render->Update(Entities);
-
         for(Entity* it : Entities)
         {
             if (it->HasComponent(ComponentType::VisionCone))
@@ -1048,7 +1133,6 @@ namespace ForLeaseEngine
                 }
             }
         }
-
         ImGui::Render();
         ForLease->GameWindow->UpdateGameWindow();
     }
