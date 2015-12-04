@@ -27,6 +27,7 @@ namespace ForLeaseEngine {
         class SoundEmitter : public Component {
             public:
                 static const ComponentType Type = ComponentType::SoundEmitter;
+                virtual ComponentType GetType() { return Type; }
                 float Pitch;
                 float Volume;
                 bool Looping;
