@@ -4,9 +4,9 @@
     \date   12/2/15
 
     \brief
-        Implementation of serialization class
+        Implementation of level editor class
 
-    \see Serialize.h
+    \see LevelEditor.h
 
     \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */

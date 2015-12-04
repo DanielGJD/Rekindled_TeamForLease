@@ -227,6 +227,12 @@ namespace ForLeaseEngine {
                 case MenuItemType::ResumeGame:
                     item = new MenuItems::ResumeGame("");
                     break;
+                case MenuItemType::ActDeactVisible:
+                    item = new MenuItems::ActivateAndDeactivateAndMakeVisible("", "", "", "");
+                    break;
+                case MenuItemType::ActDeactInvisible:
+                    item = new MenuItems::ActivateAndDeactivateAndMakeInvisible("", "", "", "");
+                    break;
                 default:
                     break;
             }
