@@ -49,7 +49,8 @@ namespace ForLeaseEngine {
         EnemyAI               = 1 << 16,   //! Very basic ai, does not move, just detects player and signals loss condition
         FadeWithDistance      = 1 << 17,   //! Causes and object's sprite to fade out with distance from an entity
         Follow                = 1 << 18,   //! Entity will follow another entity
-        ChangeLevelOnCollide  = 1 << 19    //! Colliding with this entity will change the level
+        ChangeLevelOnCollide  = 1 << 19,   //! Colliding with this entity will change the level
+        BackgroundMusic       = 1 << 20    //! Controls the background music
     };
 
     ComponentType operator|(const ComponentType& lhs, const ComponentType& rhs);

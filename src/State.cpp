@@ -453,7 +453,7 @@ namespace ForLeaseEngine {
         ArraySerializer jsonLevelComponents(state);
         jsonLevelComponents = state.GetChild("LevelComponents");
 
-        for (unsigned i = 0; i < 4; ++i) {
+        for (unsigned i = 0; i < 5; ++i) {
             Serializer lcSerializer;
             LevelComponents[i]->Serialize(lcSerializer);
             jsonLevelComponents.Append(lcSerializer);

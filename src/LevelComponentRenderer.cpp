@@ -437,6 +437,8 @@ namespace ForLeaseEngine {
         }
 
         void Renderer::DrawMesh(Mesh* mesh, bool drawEdges, bool drawVertices, std::string animationName, unsigned int frame, float t) {
+            if(!mesh)
+                return;
             Point* transformed = new Point[mesh->GetVertexCount()];
             if(animationName.compare("") != 0) {
                 MeshAnimation* animation = ForLease->Resources.GetMeshAnimation(animationName);
