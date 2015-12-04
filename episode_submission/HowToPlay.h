@@ -1,16 +1,16 @@
 /*!
-    \file   MainMenu.h
+    \file   HowToPlay.h
     \author Sean McGeer
-    \date   11/22/15
+    \date   12/3/15
     \brief
-        Defines the main menu screen state.
+        Defines the how to play screen state.
     \see State.h
 
     \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
-#ifndef MAIN_MENU_H
-#define MAIN_MENU_H
+#ifndef HOW_TO_PLAY_H
+#define HOW_TO_PLAY_H
 
 #include "Engine.h"
 #include "Entity.h"
@@ -18,16 +18,14 @@
 #include "LevelComponentsInclude.h"
 #include "State.h"
 
-class MainMenu : public ForLeaseEngine::State {
+class HowToPlay : public ForLeaseEngine::State {
 public:
-    MainMenu();
+    HowToPlay();
     void Load();
     void Initialize();
     void Update();
     void Deinitialize();
     void Unload();
-private:
-    int Health;
 };
 
-#endif // MAIN_MENU_H
+#endif // HOW_TO_PLAY_H

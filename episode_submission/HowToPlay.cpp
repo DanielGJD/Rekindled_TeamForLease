@@ -1,12 +1,12 @@
 /*!
-    \file   MainMenu.cpp
+    \file   HowToPlay.cpp
     \author Sean McGeer
-    \date   11/23/15
+    \date   12/3/15
 
     \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 
-#include "MainMenu.h"
+#include "HowToPlay.h"
 #include "ComponentsInclude.h"
 #include "ResourceManager.h"
 #include "Vector.h"
@@ -22,9 +22,9 @@
 namespace FLE = ForLeaseEngine;
 using namespace ForLeaseEngine;
 
-MainMenu::MainMenu() : State("MainMenu") {}
+HowToPlay::HowToPlay() : State("HowToPlay") {}
 
-void MainMenu::Load() {
+void HowToPlay::Load() {
     FLE::LevelComponents::Renderer* renderer = new FLE::LevelComponents::Renderer(*this);
     FLE::Entity* camera = AddEntity("Camera");
     camera->AddComponent(new FLE::Components::Transform(*camera, FLE::Point(0, 0), 1, 1, 0));
@@ -36,7 +36,7 @@ void MainMenu::Load() {
 
 
     Entity* background = AddEntity("Background");
-    background->AddComponent(new Components::Transform(*background, 0,0,1,1,-50));
+    background->AddComponent(new Components::Transform(*background, 0, 0, 1, 1, -50));
     background->AddComponent(new Components::Sprite(*background));
     ForLease->Resources.LoadTexture("bg7.png");
     //Texture* texture = Texture::CreateTexture("bg7.png");
@@ -47,45 +47,36 @@ void MainMenu::Load() {
     background->GetComponent<Components::Transform>(true)->ScaleY = 0.05;
 
     Entity* logo = AddEntity("Logo");
-    logo->AddComponent(new Components::Transform(*logo, Point(0, 15)));
+    logo->AddComponent(new Components::Transform(*logo, Point(0, 5)));
     logo->AddComponent(new Components::Sprite(*logo));
-    logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
+    logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("ControlPage.png");
     logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
-    logo->GetComponent<Components::Transform>(true)->ScaleX = 0.03;
-    logo->GetComponent<Components::Transform>(true)->ScaleY = 0.03;
-    
+    logo->GetComponent<Components::Transform>(true)->ScaleX = 0.02;
+    logo->GetComponent<Components::Transform>(true)->ScaleY = 0.02;
+
 
     Entity* menu = AddEntity("Menu");
-    menu->AddComponent(new Components::Transform(*menu));
+    menu->AddComponent(new Components::Transform(*menu, Point(0,-15)));
     menu->AddComponent(new Components::Menu(*menu));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
-    menuComp->AddItem(new MenuItems::NextLevel("ButtonPlay.png"));
-    menuComp->AddItem(new MenuItems::LoadLevel("ButtonHowTo.png", "HowToPlay"));
-    menuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonQuit.png", "QuitConfirm", "Menu"));
+    menuComp->AddItem(new MenuItems::LoadLevel("ButtonMainMenu.png", "MainMenu"));
     menuComp->Activate();
-
-    Entity* quitConfirm = AddEntity("QuitConfirm");
-    quitConfirm->AddComponent(new Components::Transform(*quitConfirm));
-    quitConfirm->AddComponent(new Components::Menu(*quitConfirm));
-    Components::Menu* quitConfirmComp = quitConfirm->GetComponent<Components::Menu>();
-    quitConfirmComp->AddItem(new MenuItems::Quit("ButtonQuit.png"));
-    quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonCancel.png", "Menu", "QuitConfirm"));
 
     Serializer serializer;
     Serialize(serializer);
-    serializer.WriteFile("MainMenu.json");
+    serializer.WriteFile("HowToPlay.json");
 
     DeleteAllEntities();
     DeleteAllLevelComponents();
 }
 
-void MainMenu::Initialize() {
+void HowToPlay::Initialize() {
     Serializer serializer;
-    serializer.ReadFile("MainMenu.json");
+    serializer.ReadFile("HowToPlay.json");
     Deserialize(serializer);
 }
 
-void MainMenu::Update() {
+void HowToPlay::Update() {
 
     ForLease->OSInput.ProcessAllInput();
 
@@ -102,9 +93,9 @@ void MainMenu::Update() {
     ForLease->GameWindow->UpdateGameWindow();
 }
 
-void MainMenu::Deinitialize() {
+void HowToPlay::Deinitialize() {
     DeleteAllEntities();
     DeleteAllLevelComponents();
 }
 
-void MainMenu::Unload() {}
+void HowToPlay::Unload() {}
