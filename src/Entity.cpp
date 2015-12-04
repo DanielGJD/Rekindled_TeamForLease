@@ -263,6 +263,12 @@ namespace ForLeaseEngine {
             case ComponentType::FadeWithDistance:
                 component = new Components::FadeWithDistance(entity);
                 break;
+            case ComponentType::Follow:
+                component = new Components::Follow(entity);
+                break;
+            case ComponentType::ChangeLevelOnCollide:
+                component = new Components::ChangeLevelOnCollide(entity);
+                break;
             default:
                 std::cout << "Unknown Type: " << type << std::endl;
                 return 0;

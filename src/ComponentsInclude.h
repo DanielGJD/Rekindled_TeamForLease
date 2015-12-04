@@ -29,5 +29,7 @@
 #include "ComponentVisionCone.h"
 #include "ComponentEnemyAI.h"
 #include "ComponentFadeWithDistance.h"
+#include "ComponentFollow.h"
+#include "ComponentChangeLevelOnCollide.h"
 
 #endif

@@ -47,7 +47,9 @@ namespace ForLeaseEngine {
         Menu                  = 1 << 14,   //! Menu
         VisionCone            = 1 << 15,   //! Used for detecting objects in a radius within an angle
         EnemyAI               = 1 << 16,   //! Very basic ai, does not move, just detects player and signals loss condition
-        FadeWithDistance      = 1 << 17    //! Causes and object's sprite to fade out with distance from an entity
+        FadeWithDistance      = 1 << 17,   //! Causes and object's sprite to fade out with distance from an entity
+        Follow                = 1 << 18,   //! Entity will follow another entity
+        ChangeLevelOnCollide  = 1 << 19    //! Colliding with this entity will change the level
     };
 
     ComponentType operator|(const ComponentType& lhs, const ComponentType& rhs);

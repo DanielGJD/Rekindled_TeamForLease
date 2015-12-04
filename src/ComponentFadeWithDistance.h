@@ -1,3 +1,12 @@
+/*!
+    \file   ComponentFadeWithDistance.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a component that makes an entity fade out with a larger distance to another entity
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
 #ifndef COMPONENT_FADE_WITH_DISTANCE
 #define COMPONENT_FADE_WITH_DISTANCE
 
