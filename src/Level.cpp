@@ -17,7 +17,12 @@
 
 namespace ForLeaseEngine {
 
-    Level::Level(std::string file) : File(file) {}
+    Level::Level(std::string file) : File(file) {
+        Serializer serial;
+        serial.ReadFile(File);
+        serial = serial.GetChild("State");
+        serial.ReadString("Name", Name);
+    }
 
     Level::~Level() {}
 
