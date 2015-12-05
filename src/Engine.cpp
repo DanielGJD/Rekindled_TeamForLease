@@ -60,7 +60,7 @@ namespace ForLeaseEngine {
         Systems::WindowProperties properties = Systems::WindowProperties();
         properties.xResolution = ResolutionX;
         properties.yResolution = ResolutionY;
-        properties.fullscreen = false;
+        properties.fullscreen = true;
         GameWindow = Systems::Window::CreateGameWindow(properties);
         OSInput.dispatcher = &Dispatcher;
         OSInput.GameWindow = GameWindow;
