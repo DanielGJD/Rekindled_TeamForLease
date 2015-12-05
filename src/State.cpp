@@ -221,16 +221,19 @@ namespace ForLeaseEngine {
     std::vector<Entity *> State::GetEntitiesAtPosition(Point position, bool throwOnFail) {
         std::vector<Entity *> entities;
 
+        float minDist = 2;
+
         for (Entity * entity : Entities) {
             if (!entity->HasComponent(ComponentType::Transform)) continue;
 
             Components::Transform* transform = entity->GetComponent<Components::Transform>(true);
 
-            if (position[0] > transform->Position[0] - transform->ScaleX &&
-                position[0] < transform->Position[0] + transform->ScaleX &&
-                position[1] > transform->Position[1] - transform->ScaleY &&
-                position[1] < transform->Position[1] + transform->ScaleY)
+            Vector vec = position - transform->Position;
+
+            if (vec.Magnitude() < minDist) {
+                minDist = vec.Magnitude();
                 entities.push_back(entity);
+            }
         }
 
         if (throwOnFail && entities.size() == 0) {
