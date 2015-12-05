@@ -192,41 +192,49 @@ namespace ForLeaseEngine {
     }
 
     Entity* State::GetEntityAtPosition(Point position, bool throwOnFail) {
+        float minDist = 2;
+        Entity* found = 0;
+
         for (Entity* entity : Entities) {
             if (!entity->HasComponent(ComponentType::Transform)) continue;
+            if (entity->HasComponent(ComponentType::Camera)) continue;
 
             Components::Transform* transform = entity->GetComponent<Components::Transform>(true);
 
-            if (position[0] > transform->Position[0] - transform->ScaleX &&
-                position[0] < transform->Position[0] + transform->ScaleX &&
-                position[1] > transform->Position[1] - transform->ScaleY &&
-                position[1] < transform->Position[1] + transform->ScaleY)
-                return entity;
+            Vector vec = position - transform->Position;
+
+            if (vec.Magnitude() < minDist) {
+                minDist = vec.Magnitude();
+                found = entity;
+            }
         }
 
-        if (throwOnFail) {
+        if (throwOnFail && !found) {
             std::stringstream ss;
             ss << "No entity found at point " << position << ".";
 
             throw EntityNotFoundException(0, ss.str());
         }
 
-        else return 0;
+        else return found;
     }
 
     std::vector<Entity *> State::GetEntitiesAtPosition(Point position, bool throwOnFail) {
         std::vector<Entity *> entities;
+
+        float minDist = 2;
 
         for (Entity * entity : Entities) {
             if (!entity->HasComponent(ComponentType::Transform)) continue;
 
             Components::Transform* transform = entity->GetComponent<Components::Transform>(true);
 
-            if (position[0] > transform->Position[0] - transform->ScaleX &&
-                position[0] < transform->Position[0] + transform->ScaleX &&
-                position[1] > transform->Position[1] - transform->ScaleY &&
-                position[1] < transform->Position[1] + transform->ScaleY)
+            Vector vec = position - transform->Position;
+
+            if (vec.Magnitude() < minDist) {
+                minDist = vec.Magnitude();
                 entities.push_back(entity);
+            }
         }
 
         if (throwOnFail && entities.size() == 0) {
