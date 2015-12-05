@@ -107,6 +107,7 @@ namespace ForLeaseEngine
         bool landSound  = false;
         bool walkAni    = false;
         bool jumpAni    = false;
+        bool setName    = false;
 
         char entName[70];
         char spriteTextBuf[500];
@@ -162,6 +163,7 @@ namespace ForLeaseEngine
         LoadFiles();
         leg::componentNames.push_back("Background Music");
         leg::componentNames.push_back("Camera");
+        leg::componentNames.push_back("Change Level on Collide");
         leg::componentNames.push_back("Collision");
         leg::componentNames.push_back("Drag with Mouse");
         leg::componentNames.push_back("Fade with Distance");
@@ -296,7 +298,7 @@ namespace ForLeaseEngine
         ImGui::Begin("Level Editor");
 
         if (ImGui::InputText("Level Name", leg::statename, 70, ImGuiInputTextFlags_EnterReturnsTrue))
-            std::cout << leg::statename << std::endl;
+            leg::setName = true;
 
         if (ImGui::CollapsingHeader("Camera"))
         {
@@ -480,6 +482,7 @@ namespace ForLeaseEngine
 
     static void DrawObjectWindow()
     {
+        leg::render->SetDrawingColor(Color(1,1,1));
         leg::render->DrawRectangle(leg::selTran->Position, leg::selTran->ScaleX, leg::selTran->ScaleY, leg::selTran->Rotation);
         ImGui::Begin("Object Editor");
         ImGui::PushItemWidth(80);
@@ -648,10 +651,11 @@ namespace ForLeaseEngine
             ImGui::Checkbox("Active", &(leg::selChange->Active));
             ImGui::InputFloat("On Switch Time Scale", &(leg::selChange->OnSwitchTimeScale));
             ImGui::InputFloat("Fade Out Time", &(leg::selChange->FadeOutTime));
-            if (ImGui::InputText("Level Name", leg::changeLevel, 70, ImGuiInputTextFlags_EnterReturnsTrue))
+            ImGui::Text("Level Name: %s", leg::selChange->LevelName.c_str());
+            if (ImGui::InputText("", leg::changeLevel, 70, ImGuiInputTextFlags_EnterReturnsTrue))
                 leg::selChange->LevelName = leg::changeLevel;
             ImGui::Text("Trigger Object Name: %s", leg::selChange->TriggerObjectName.c_str());
-            if (ImGui::InputText("", leg::changeObject, 70, ImGuiInputTextFlags_EnterReturnsTrue))
+            if (ImGui::InputText(" ", leg::changeObject, 70, ImGuiInputTextFlags_EnterReturnsTrue))
                 leg::selChange->TriggerObjectName = leg::changeObject;
 
             ImGui::Text("Current Sound: %s", leg::selChange->TriggerSoundName.c_str());
@@ -1321,16 +1325,6 @@ namespace ForLeaseEngine
         if (leg::selection)
         {
             DrawObjectWindow();
-            if (leg::selFade)
-            {
-                Entity* ent = GetEntityByID(leg::selFade->TrackedEntityID);
-                if (ent != NULL)
-                {
-                    Components::Transform* trans = ent->GetComponent<Components::Transform>();
-                    leg::render->SetDrawingColor(Color(1, 0, 0));
-                    leg::render->DrawRectangle(trans->Position, leg::camCamera->Size / 25, leg::camCamera->Size / 25, trans->Rotation);
-                }
-            }
         }
 
         if (leg::toSave)
@@ -1346,12 +1340,41 @@ namespace ForLeaseEngine
             Serializer root;
             if (root.ReadFile(leg::statefile))
             {
-                DeleteAllEntities();
                 Deserialize(root);
+                LevelComponents::Menu* levelmenu = GetLevelComponent<LevelComponents::Menu>();
+                LevelComponents::Collision* levelcol = GetLevelComponent<LevelComponents::Collision>();
+                leg::levelPhysics = GetLevelComponent<LevelComponents::Physics>();
+                leg::levelLight = GetLevelComponent<LevelComponents::Light>();
+                leg::render = GetLevelComponent<LevelComponents::Renderer>();
+                if (!leg::levelLight)
+                {
+                    leg::levelLight = new LevelComponents::Light(*this);
+                    AddLevelComponent(leg::levelLight);
+                }
+                if (!leg::render)
+                {
+                    leg::render = new LevelComponents::Renderer(*this);
+                    AddLevelComponent(leg::render);
+                }
                 leg::camera = GetEntityByName("Level Camera", true);
-                leg::render->SetCamera(*leg::camera);
                 leg::camTrans = leg::camera->GetComponent<Components::Transform>();
                 leg::camCamera = leg::camera->GetComponent<Components::Camera>();
+                leg::render->SetCamera(*leg::camera);
+                if (!leg::levelPhysics)
+                {
+                    leg::levelPhysics = new LevelComponents::Physics(*this);
+                    AddLevelComponent(leg::levelPhysics);
+                }
+                if (!levelcol)
+                {
+                    levelcol = new LevelComponents::Collision(*this);
+                    AddLevelComponent(levelcol);
+                }
+                if (!levelmenu)
+                {
+                    levelmenu = new LevelComponents::Menu(*this);
+                    AddLevelComponent(levelmenu);
+                }
                 leg::selection = NULL;
                 Point moved(100000, 100000);
                 Entity* ent = GetEntityByName("PauseMenu");
@@ -1397,6 +1420,9 @@ namespace ForLeaseEngine
             leg::archToSpawn = NULL;
         }
 
+        if (leg::setName)
+            SetName(leg::statename);
+
         Input();
         leg::levelLight->Update(Entities);
         leg::render->Update(Entities);
@@ -1416,6 +1442,16 @@ namespace ForLeaseEngine
                 {
                     leg::render->DrawRectangle(tran->Position, 2, 2, tran->Rotation);
                 }
+            }
+        }
+        if (leg::selection && leg::selFade)
+        {
+            Entity* ent = GetEntityByID(leg::selFade->TrackedEntityID);
+            if (ent != NULL)
+            {
+                Components::Transform* trans = ent->GetComponent<Components::Transform>();
+                leg::render->SetDrawingColor(Color(1, 0, 0));
+                leg::render->DrawRectangle(trans->Position, leg::camCamera->Size / 25, leg::camCamera->Size / 25, trans->Rotation);
             }
         }
         ImGui::Render();
