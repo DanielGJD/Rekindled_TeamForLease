@@ -1,3 +1,12 @@
+/*!
+    \file   TestingState.h
+    \author Christopher Hudson
+
+    \brief
+        A state, used for testing right?
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
 #ifndef TESTINGSTATE_H
 #define TESTINGSTATE_H
 
