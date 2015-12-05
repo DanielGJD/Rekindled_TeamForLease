@@ -22,14 +22,14 @@ int Start(){
     std::vector<ForLeaseEngine::State *> states;
     //ForLeaseEngine::SegmentPrototypeState* state = new ForLeaseEngine::SegmentPrototypeState();
     //SeanState* state = new SeanState();
-    states.push_back(new SeanState());
-    states.push_back(new SecondState());
+    //states.push_back(new SeanState());
+    //states.push_back(new SecondState());
     //states.push_back(new SecondState());
     //states = LoadLevels("Game.json", states);
     //states = LoadLevels("Game.json", states);
     //states.push_back(new RaycastTest());
 
-    //states = LoadLevels("Game.json", states);
+    states = LoadLevels("Game.json", states);
 
     ForLeaseEngine::Engine engine(states, 1024, 768, 60);
     engine.Run();
