@@ -17,6 +17,7 @@
 #include "ComponentSpriteText.h"
 #include "ComponentSprite.h"
 #include "ComponentModel.h"
+#include "ComponentParticleSystem.h"
 #include "Mesh.h"
 #include "Texture.h"
 #include "TextureRegion.h"
@@ -52,8 +53,8 @@ namespace ForLeaseEngine {
                 void DrawSprite(Components::Sprite* sprite);
                 void DrawSpriteText(Components::SpriteText* spriteText, const Point& position, float scaleX, float scaleY, float rotation);
                 void DrawModel(Components::Model* model);
+                void DrawParticleSystem(Components::ParticleSystem* pSystem);
                 void SetModelView(Components::Transform* transform);
-                //void DrawParticleSystem(ParticleSystem* system); For later
 
                 // Debug drawing
                 void DrawRectangle(const Point& position, float width, float height, float rotation = 0);

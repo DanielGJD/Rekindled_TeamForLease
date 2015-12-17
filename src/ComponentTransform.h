@@ -14,6 +14,7 @@
 
 #include "Component.h"
 #include "Vector.h"
+#include "Matrix.h"
 
 namespace ForLeaseEngine {
 
@@ -43,6 +44,7 @@ namespace ForLeaseEngine {
                 void Update() {};
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
+                Matrix ToMatrix();
 
                 Point Position; //! The position of the object
                 float ScaleX;   //! Scale on the X axis

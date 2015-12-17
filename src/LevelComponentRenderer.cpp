@@ -32,6 +32,7 @@
 #include "MeshAnimation.h"
 #include <map>
 #include <vector>
+#include <list>
 
 namespace ForLeaseEngine {
     namespace LevelComponents {
@@ -126,48 +127,52 @@ namespace ForLeaseEngine {
 
             for(std::map<int, std::vector<Entity*>>::const_iterator it = sorted.begin(); it != sorted.end(); ++it) {
                 for(unsigned int i = 0; i < (*it).second.size(); ++i) {
-                Entity* entity = (*it).second[i];
-                if(entity->HasComponent(ComponentType::VisionCone)) {
-                    Components::VisionCone* visionCone = entity->GetComponent<Components::VisionCone>();
-                    if(visionCone->Visible) {
-                        Components::Transform* trans = entity->GetComponent<Components::Transform>();
-                        ModelView = Matrix::Translation(trans->Position);
-                        SetBlendMode(BlendMode::ALPHA);
-                        DrawMesh(visionCone->GetVisionMesh(), visionCone->DrawOutline, false);
-                    }
-                }
-                if(entity->HasComponent(ComponentType::Sprite)) {
-                    Components::Sprite* sprite = entity->GetComponent<Components::Sprite>();
-                    if(sprite->Visible) {
-                        Components::Transform* transform = entity->GetComponent<Components::Transform>();
-                        SetModelView(transform);
-                        DrawSprite(sprite);
-                    }
-                }
-                if(entity->HasComponent(ComponentType::Model)) {
-                    Components::Model* model = entity->GetComponent<Components::Model>();
-                    if(model->Visible) {
-                        Components::Transform* transform = entity->GetComponent<Components::Transform>();
-                        if(model->ModelMesh.compare("")) {
-                            Mesh* mesh = ForLease->Resources.GetMesh(model->ModelMesh);
-                            SetBlendMode(model->BlendingMode);
-                            SetTexture(NULL);
-                            Point o;
-                            ModelView = Matrix::Translation(transform->Position) *
-                                        Matrix::Translation(mesh->GetCenter()) *
-                                        Matrix::RotationRad(transform->Rotation) * Matrix::Scale(transform->ScaleX * (model->FlipY? -1 : 1), transform->ScaleY * (model->FlipX? -1 : 1)) *
-                                        Matrix::Translation(o - mesh->GetCenter());
-                            DrawMesh(mesh, model->DrawEdges, model->DrawVertices, model->GetAnimation(), model->GetFrame(), model->GetFrameTime() * model->FrameRate - model->GetFrame());
+                    Entity* entity = (*it).second[i];
+                    if(entity->HasComponent(ComponentType::VisionCone)) {
+                        Components::VisionCone* visionCone = entity->GetComponent<Components::VisionCone>();
+                        if(visionCone->Visible) {
+                            Components::Transform* trans = entity->GetComponent<Components::Transform>();
+                            ModelView = Matrix::Translation(trans->Position);
+                            SetBlendMode(BlendMode::ALPHA);
+                            DrawMesh(visionCone->GetVisionMesh(), visionCone->DrawOutline, false);
                         }
                     }
-                }
-                if(entity->HasComponent(ComponentType::SpriteText)) {
-                    Components::Transform* transform = entity->GetComponent<Components::Transform>();
-                    Components::SpriteText* spriteText = entity->GetComponent<Components::SpriteText>();
-                    SetBlendMode(BlendMode::ALPHA);
-                    SetDrawingColor(spriteText->TextColor);
-                    DrawSpriteText(spriteText, transform->Position, transform->ScaleX, transform->ScaleY, 0);
-                }
+                    if(entity->HasComponent(ComponentType::Sprite)) {
+                        Components::Sprite* sprite = entity->GetComponent<Components::Sprite>();
+                        if(sprite->Visible) {
+                            Components::Transform* transform = entity->GetComponent<Components::Transform>();
+                            SetModelView(transform);
+                            DrawSprite(sprite);
+                        }
+                    }
+                    if(entity->HasComponent(ComponentType::Model)) {
+                        Components::Model* model = entity->GetComponent<Components::Model>();
+                        if(model->Visible) {
+                            Components::Transform* transform = entity->GetComponent<Components::Transform>();
+                            if(model->ModelMesh.compare("")) {
+                                Mesh* mesh = ForLease->Resources.GetMesh(model->ModelMesh);
+                                SetBlendMode(model->BlendingMode);
+                                SetTexture(NULL);
+                                Point o;
+                                ModelView = Matrix::Translation(transform->Position) *
+                                            Matrix::Translation(mesh->GetCenter()) *
+                                            Matrix::RotationRad(transform->Rotation) * Matrix::Scale(transform->ScaleX * (model->FlipY? -1 : 1), transform->ScaleY * (model->FlipX? -1 : 1)) *
+                                            Matrix::Translation(o - mesh->GetCenter());
+                                DrawMesh(mesh, model->DrawEdges, model->DrawVertices, model->GetAnimation(), model->GetFrame(), model->GetFrameTime() * model->FrameRate - model->GetFrame());
+                            }
+                        }
+                    }
+                    if(entity->HasComponent(ComponentType::SpriteText)) {
+                        Components::Transform* transform = entity->GetComponent<Components::Transform>();
+                        Components::SpriteText* spriteText = entity->GetComponent<Components::SpriteText>();
+                        SetBlendMode(BlendMode::ALPHA);
+                        SetDrawingColor(spriteText->TextColor);
+                        DrawSpriteText(spriteText, transform->Position, transform->ScaleX, transform->ScaleY, 0);
+                    }
+                    if(entity->HasComponent(ComponentType::ParticleSystem)) {
+                        Components::ParticleSystem* pSystem = entity->GetComponent<Components::ParticleSystem>();
+                        DrawParticleSystem(pSystem);
+                    }
                 }
 
 
@@ -508,6 +513,28 @@ namespace ForLeaseEngine {
             }
 
 			delete[] transformed;
+        }
+
+        void Renderer::DrawParticleSystem(Components::ParticleSystem* pSystem) {
+            SetTexture(NULL);
+            SetBlendMode(pSystem->BlendingMode);
+            std::list<Particle*> const* particles = pSystem->GetActiveParticles();
+            std::cout << "Drawing " << particles->size() << " particles" << std::endl;
+            glBegin(GL_QUADS);
+                for(std::list<Particle*>::const_iterator i = particles->begin(); i != particles->end(); ++i) {
+                    SetDrawingColor((*i)->ParticleColor);
+                    SetModelView((*i)->Position, (*i)->Size, (*i)->Size, (*i)->Rotation);
+                    Point tl = Projection * ModelView * Point(-0.5, 0.5);
+                    Point bl = Projection * ModelView * Point(-0.5, -0.5);
+                    Point br = Projection * ModelView * Point(0.5, -0.5);
+                    Point tr = Projection * ModelView * Point(0.5, 0.5);
+
+                    glVertex2f(tl[0], tl[1]);
+                    glVertex2f(bl[0], bl[1]);
+                    glVertex2f(br[0], br[1]);
+                    glVertex2f(tr[0], tr[1]);
+                }
+            glEnd();
         }
 
         void Renderer::SetTexture(Texture* texture) {

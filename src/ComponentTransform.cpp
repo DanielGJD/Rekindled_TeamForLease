@@ -99,6 +99,9 @@ namespace ForLeaseEngine {
             transform.ReadInt("ZOrder", ZOrder);
         }
 
+        Matrix Transform::ToMatrix() {
+            return Matrix::Translation(Position) * Matrix::RotationRad(Rotation) * Matrix::Scale(ScaleX, ScaleY);
+        }
     } // Components
 
 } // ForLeaseEngine

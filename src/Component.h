@@ -50,7 +50,10 @@ namespace ForLeaseEngine {
         FadeWithDistance      = 1 << 17,   //! Causes and object's sprite to fade out with distance from an entity
         Follow                = 1 << 18,   //! Entity will follow another entity
         ChangeLevelOnCollide  = 1 << 19,   //! Colliding with this entity will change the level
-        BackgroundMusic       = 1 << 20    //! Controls the background music
+        BackgroundMusic       = 1 << 20,   //! Controls the background music
+        ParticleSystem        = 1 << 21,   //! Collection of particles
+        ParticleDynamics      = 1 << 22,   //! Adds dynamics to a particle system
+        ParticleColorAnimator = 1 << 23    //! Adds color animation to particles
     };
 
     ComponentType operator|(const ComponentType& lhs, const ComponentType& rhs);
