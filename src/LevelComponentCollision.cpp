@@ -97,14 +97,14 @@ namespace ForLeaseEngine {
 
             //if (entity1Collision->CollidedLastFrame || entity2Collision->CollidedLastFrame) return false;
 
-            LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true);
+            //LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true);
 
             float ent1HalfWidth = entity1Collision->ScaledHalfWidth();
             float ent1HalfHeight = entity1Collision->ScaledHalfHeight();
             float ent2HalfWidth = entity2Collision->ScaledHalfWidth();
             float ent2HalfHeight = entity2Collision->ScaledHalfHeight();
 
-            renderer->DrawRectangle(entity1Position, entity1Collision->Width * entity1Transform->ScaleX, entity1Collision->Height * entity1Transform->ScaleY);
+            //renderer->DrawRectangle(entity1Position, entity1Collision->Width * entity1Transform->ScaleX, entity1Collision->Height * entity1Transform->ScaleY);
 
             entity1Position[0] += entity1Collision->OffsetX;
             entity1Position[1] += entity1Collision->OffsetY;
@@ -235,7 +235,7 @@ namespace ForLeaseEngine {
             Ray toResolveBotRightRay(toResolveBotRight, velocity, velocity.Magnitude(), 1);
             Ray toResolveBotLeftRay(toResolveBotLeft, velocity, velocity.Magnitude(), 1);
 
-            LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true);
+            //LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true);
 
             //toResolveTopLeftRay.IsColliding(other);
             //toResolveTopRightRay.IsColliding(other);
@@ -265,10 +265,10 @@ namespace ForLeaseEngine {
                 dist = toResolveBotLeftRay.GetLastDistance();
             }
 
-            renderer->DrawArrow(toResolveTopLeft, toResolveTopLeftRay.GetScaledVector());
-            renderer->DrawArrow(toResolveTopRight, toResolveTopRightRay.GetScaledVector());
-            renderer->DrawArrow(toResolveBotRight, toResolveBotRightRay.GetScaledVector());
-            renderer->DrawArrow(toResolveBotLeft, toResolveBotLeftRay.GetScaledVector());
+            //renderer->DrawArrow(toResolveTopLeft, toResolveTopLeftRay.GetScaledVector());
+            //renderer->DrawArrow(toResolveTopRight, toResolveTopRightRay.GetScaledVector());
+            //renderer->DrawArrow(toResolveBotRight, toResolveBotRightRay.GetScaledVector());
+            //renderer->DrawArrow(toResolveBotLeft, toResolveBotLeftRay.GetScaledVector());
 
             //toResolvePhysics->Acceleration = Vector(0, 0);
             //toResolvePhysics->Velocity = Vector(0, 0);
