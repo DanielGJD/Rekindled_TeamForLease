@@ -52,8 +52,9 @@ namespace ForLeaseEngine {
         ChangeLevelOnCollide  = 1 << 19,   //! Colliding with this entity will change the level
         BackgroundMusic       = 1 << 20,   //! Controls the background music
         ParticleSystem        = 1 << 21,   //! Collection of particles
-        ParticleDynamics      = 1 << 22,   //! Adds dynamics to a particle system
-        ParticleColorAnimator = 1 << 23    //! Adds color animation to particles
+        ParticleEmitter       = 1 << 22,   //! Emits particles from a system
+        ParticleDynamics      = 1 << 23,   //! Adds dynamics to a particle system
+        ParticleColorAnimator = 1 << 24    //! Adds color animation to particles
     };
 
     ComponentType operator|(const ComponentType& lhs, const ComponentType& rhs);

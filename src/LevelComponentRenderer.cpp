@@ -519,7 +519,7 @@ namespace ForLeaseEngine {
             SetTexture(NULL);
             SetBlendMode(pSystem->BlendingMode);
             std::list<Particle*> const* particles = pSystem->GetActiveParticles();
-            std::cout << "Drawing " << particles->size() << " particles" << std::endl;
+            //std::cout << "Drawing " << particles->size() << " particles" << std::endl;
             glBegin(GL_QUADS);
                 for(std::list<Particle*>::const_iterator i = particles->begin(); i != particles->end(); ++i) {
                     SetDrawingColor((*i)->ParticleColor);

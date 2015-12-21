@@ -41,16 +41,16 @@ namespace ForLeaseEngine {
                         break;
                 }
                 else {
-                    (*i)->Position += (*i)->Velocity;
-                    (*i)->Rotation += (*i)->RotationalVelocity;
+                    (*i)->Position += Vector::Scale((*i)->Velocity, dt);
+                    (*i)->Rotation += (*i)->RotationalVelocity * dt;
                 }
             }
 
-            /*std::cout << "Particle System:" << std::endl
+            std::cout << "Particle System: " << 1 / dt << std::endl
                       << "  Total Particles: " << Particles.size() << std::endl
                       << "  Alive Particles: " << ActiveParticles.size() << std::endl
                       << "  Dead Particles:  " << InactiveParticles.size() << std::endl
-                      << std::endl;*/
+                      << std::endl;
         }
 
         void ParticleSystem::Serialize(Serializer& root) {

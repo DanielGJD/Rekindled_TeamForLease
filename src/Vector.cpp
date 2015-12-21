@@ -296,13 +296,43 @@ namespace ForLeaseEngine {
 	*/
 	Vector Vector::operator*(float rhs) const { return Scale(*this, rhs); }
 
+    /*!
+        \brief
+            Subtracts two vectors
+
+        \param rhs
+            Vector to subtract from this vector
+
+        \return
+            Difference of the vectors
+    */
 	Vector Vector::operator-(const Vector& rhs) {
         return Vector(x - rhs.x, y - rhs.y);
 	}
 
 	/*!
+        \brief
+            Adds two vectors
+
+        \param rhs
+            Vector to add to this vector
+
+        \return
+            Sum of the vectors
+    */
+    Vector Vector::operator+(Vector const& rhs) {
+        return Vector(x + rhs.x, y + rhs.y);
+    }
+
+	/*!
 	  \brief
-	    Generates an Identity matrix
+	    Subtracts two points, making a vector
+
+      \param rhs
+        Point to subtract from this point
+
+      \return
+        Vector representing the displacement from a point to this point
 	*/
 	Vector Point::operator-(const Point& rhs) const
 	{
