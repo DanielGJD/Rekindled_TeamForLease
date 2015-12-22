@@ -29,32 +29,32 @@ namespace ForLeaseEngine {
             loading game code.
     */
     enum class ComponentType : unsigned long {
-        None                  = 0,         //! No component
-        Transform             = 1 <<  0,   //! Transform
-        PlayerController      = 1 <<  1,   //! Player controls
-        Physics               = 1 <<  2,   //! Physics
-        Collision             = 1 <<  3,   //! Collision
-        Camera                = 1 <<  4,   //! Camera
-        Sprite                = 1 <<  5,   //! Sprite
-        Model                 = 1 <<  6,   //! Model
-        SpriteText            = 1 <<  7,   //! Sprite text
-        Renderer              = 1 <<  8,   //! Renderer
-        Light                 = 1 <<  9,   //! Light
-        SoundEmitter          = 1 << 10,   //! Sound Emitter
-        DragWithMouse         = 1 << 11,   //! Item that can be dragged by the mouse
-        ScaleWithKeyboard     = 1 << 12,   //! Item that can be scaled by the keyboard
-        TransformModeControls = 1 << 13,   //! Controls for the transform mode of the main character
-        Menu                  = 1 << 14,   //! Menu
-        VisionCone            = 1 << 15,   //! Used for detecting objects in a radius within an angle
-        EnemyAI               = 1 << 16,   //! Very basic ai, does not move, just detects player and signals loss condition
-        FadeWithDistance      = 1 << 17,   //! Causes and object's sprite to fade out with distance from an entity
-        Follow                = 1 << 18,   //! Entity will follow another entity
-        ChangeLevelOnCollide  = 1 << 19,   //! Colliding with this entity will change the level
-        BackgroundMusic       = 1 << 20,   //! Controls the background music
-        ParticleSystem        = 1 << 21,   //! Collection of particles
-        ParticleEmitter       = 1 << 22,   //! Emits particles from a system
-        ParticleDynamics      = 1 << 23,   //! Adds dynamics to a particle system
-        ParticleColorAnimator = 1 << 24    //! Adds color animation to particles
+        None                   = 0,         //! No component
+        Transform              = 1 <<  0,   //! Transform
+        PlayerController       = 1 <<  1,   //! Player controls
+        Physics                = 1 <<  2,   //! Physics
+        Collision              = 1 <<  3,   //! Collision
+        Camera                 = 1 <<  4,   //! Camera
+        Sprite                 = 1 <<  5,   //! Sprite
+        Model                  = 1 <<  6,   //! Model
+        SpriteText             = 1 <<  7,   //! Sprite text
+        Renderer               = 1 <<  8,   //! Renderer
+        Light                  = 1 <<  9,   //! Light
+        SoundEmitter           = 1 << 10,   //! Sound Emitter
+        DragWithMouse          = 1 << 11,   //! Item that can be dragged by the mouse
+        ScaleWithKeyboard      = 1 << 12,   //! Item that can be scaled by the keyboard
+        TransformModeControls  = 1 << 13,   //! Controls for the transform mode of the main character
+        Menu                   = 1 << 14,   //! Menu
+        VisionCone             = 1 << 15,   //! Used for detecting objects in a radius within an angle
+        EnemyAI                = 1 << 16,   //! Very basic ai, does not move, just detects player and signals loss condition
+        FadeWithDistance       = 1 << 17,   //! Causes and object's sprite to fade out with distance from an entity
+        Follow                 = 1 << 18,   //! Entity will follow another entity
+        ChangeLevelOnCollide   = 1 << 19,   //! Colliding with this entity will change the level
+        BackgroundMusic        = 1 << 20,   //! Controls the background music
+        ParticleSystem         = 1 << 21,   //! Collection of particles
+        ParticleEmitter        = 1 << 22,   //! Emits particles from a system
+        SimpleParticleDynamics = 1 << 23,   //! Adds dynamics to a particle system
+        ParticleColorAnimator  = 1 << 24    //! Adds color animation to particles
     };
 
     ComponentType operator|(const ComponentType& lhs, const ComponentType& rhs);
