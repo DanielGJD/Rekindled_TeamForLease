@@ -46,11 +46,11 @@ namespace ForLeaseEngine {
                 }
             }
 
-            std::cout << "Particle System: " << 1 / dt << std::endl
+            /*std::cout << "Particle System: " << 1 / dt << std::endl
                       << "  Total Particles: " << Particles.size() << std::endl
                       << "  Alive Particles: " << ActiveParticles.size() << std::endl
                       << "  Dead Particles:  " << InactiveParticles.size() << std::endl
-                      << std::endl;
+                      << std::endl;*/
         }
 
         void ParticleSystem::Serialize(Serializer& root) {

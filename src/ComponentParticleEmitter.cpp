@@ -23,7 +23,7 @@ namespace ForLeaseEngine {
 
         void ParticleEmitter::Update() {
             if(Active) {
-                std::cout << "ParticleSystem update" << std::endl;
+                //std::cout << "ParticleSystem update" << std::endl;
                 float dt = ForLease->FrameRateController().GetDt();
                 EmitTimer -= dt;
 

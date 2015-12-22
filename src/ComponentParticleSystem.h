@@ -17,6 +17,7 @@ namespace ForLeaseEngine {
         Color ParticleColor;
         Vector Velocity;
         float RotationalVelocity;
+        float StartingLife;
 
         Particle(float life = 0,
                 Point const& position = Point(0, 0),
@@ -25,7 +26,7 @@ namespace ForLeaseEngine {
                  Color const& particleColor = Color(1, 1, 1, 1),
                  Vector const& velocity = Vector(0, 0),
                  float rotationalVelocity = 0)
-                : Life(life), Position(position), Size(size), Rotation(rotation), ParticleColor(particleColor), Velocity(velocity), RotationalVelocity(rotationalVelocity) {}
+                : Life(life), Position(position), Size(size), Rotation(rotation), ParticleColor(particleColor), Velocity(velocity), RotationalVelocity(rotationalVelocity), StartingLife(life) {}
 
         bool operator<(Particle const& rhs) {
             if(Life < rhs.Life)
@@ -62,7 +63,7 @@ namespace ForLeaseEngine {
                 std::list<Particle*> const* GetInactiveParticles() const;
                 void CreateParticle(Particle const& newParticle);
                 void KillAllParticles();
-                //void SetMaxParticles(unsigned int maxParticles); // Used to reset system to use the new max
+                void SetMaxParticles(unsigned int maxParticles); // Used to reset system to use the new max
             private:
                 std::vector<Particle> Particles;
                 std::list<Particle*> ActiveParticles;
