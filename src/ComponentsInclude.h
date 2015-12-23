@@ -32,5 +32,9 @@
 #include "ComponentFollow.h"
 #include "ComponentChangeLevelOnCollide.h"
 #include "ComponentBackgroundMusic.h"
+#include "ComponentParticleSystem.h"
+#include "ComponentParticleEmitter.h"
+#include "ComponentParticleColorAnimator.h"
+#include "ComponentSimpleParticleDynamics.h"
 
 #endif

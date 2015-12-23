@@ -33,9 +33,23 @@ namespace ForLeaseEngine {
         }
 
         void SimpleParticleDynamics::Serialize(Serializer& root) {
+            Serializer dynamics = root.GetChild("SimpleParticleDynamics");
+            dynamics.WriteUint("Type", static_cast<unsigned int>(Type));
+            dynamics.WriteBool("Active", Active);
+            dynamics.WriteVec("Force", Force);
+            dynamics.WriteFloat("Torque", Torque);
+            dynamics.WriteFloat("Growth", Growth);
+            dynamics.WriteFloat("Drag", Drag);
+            root.Append(dynamics, "SimpleParticleDynamics");
         }
 
         void SimpleParticleDynamics::Deserialize(Serializer& root) {
+            Serializer dynamics = root.GetChild("SimpleParticleDynamics");
+            dynamics.ReadBool("Active", Active);
+            dynamics.ReadVec("Force", Force);
+            dynamics.ReadFloat("Torque", Torque);
+            dynamics.ReadFloat("Growth", Growth);
+            dynamics.ReadFloat("Drag", Drag);
         }
     }
 }

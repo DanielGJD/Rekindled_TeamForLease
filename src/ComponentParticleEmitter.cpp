@@ -35,9 +35,43 @@ namespace ForLeaseEngine {
         }
 
         void ParticleEmitter::Serialize(Serializer& root) {
+            Serializer emitter = root.GetChild("ParticleEmitter");
+            emitter.WriteUint("Type", static_cast<unsigned int>(Type));
+            emitter.WriteBool("Active", Active);
+            emitter.WriteVec("EmitterSize", EmitterSize);
+            emitter.WriteUint("EmitCount", EmitCount);
+            emitter.WriteFloat("EmitRate", EmitRate);
+            emitter.WriteFloat("EmitRandom", EmitRandom);
+            emitter.WriteFloat("Size", Size);
+            emitter.WriteFloat("SizeRandom", SizeRandom);
+            emitter.WriteFloat("Life", Life);
+            emitter.WriteFloat("LifeRandom", LifeRandom);
+            emitter.WriteFloat("Rotation", Rotation);
+            emitter.WriteFloat("RotationRandom", RotationRandom);
+            emitter.WriteVec("Velocity", Velocity);
+            emitter.WriteVec("VelocityRandom", VelocityRandom);
+            emitter.WriteFloat("RotationalVelocity", RotationalVelocity);
+            emitter.WriteFloat("RotationalVelocityRandom", RotationalVelocityRandom);
+            root.Append(emitter, "ParticleEmitter");
         }
 
         void ParticleEmitter::Deserialize(Serializer& root) {
+            Serializer emitter = root.GetChild("ParticleEmitter");
+            emitter.ReadBool("Active", Active);
+            emitter.ReadVec("EmitterSize", EmitterSize);
+            emitter.ReadUint("EmitCount", EmitCount);
+            emitter.ReadFloat("EmitRate", EmitRate);
+            emitter.ReadFloat("EmitRandom", EmitRandom);
+            emitter.ReadFloat("Size", Size);
+            emitter.ReadFloat("SizeRandom", SizeRandom);
+            emitter.ReadFloat("Life", Life);
+            emitter.ReadFloat("LifeRandom", LifeRandom);
+            emitter.ReadFloat("Rotation", Rotation);
+            emitter.ReadFloat("RotationRandom", RotationRandom);
+            emitter.ReadVec("Velocity", Velocity);
+            emitter.ReadVec("VelocityRandom", VelocityRandom);
+            emitter.ReadFloat("RotationalVelocity", RotationalVelocity);
+            emitter.ReadFloat("RotationalVelocityRandom", RotationalVelocityRandom);
         }
 
         void ParticleEmitter::EmitParticles(unsigned int count) {

@@ -275,6 +275,18 @@ namespace ForLeaseEngine {
             case ComponentType::BackgroundMusic:
                 component = new Components::BackgroundMusic(entity);
                 break;
+            case ComponentType::ParticleSystem:
+                component = new Components::ParticleSystem(entity);
+                break;
+            case ComponentType::ParticleEmitter:
+                component = new Components::ParticleEmitter(entity);
+                break;
+            case ComponentType::ParticleColorAnimator:
+                component = new Components::ParticleColorAnimator(entity);
+                break;
+            case ComponentType::SimpleParticleDynamics:
+                component = new Components::SimpleParticleDynamics(entity);
+                break;
             default:
                 std::cout << "Unknown Type: " << type << std::endl;
                 return 0;

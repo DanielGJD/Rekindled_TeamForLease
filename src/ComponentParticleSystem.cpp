@@ -54,9 +54,25 @@ namespace ForLeaseEngine {
         }
 
         void ParticleSystem::Serialize(Serializer& root) {
+            Serializer system = root.GetChild("ParticleSystem");
+            system.WriteUint("Type", static_cast<unsigned int>(Type));
+            system.WriteBool("Visible", Visible);
+            system.WriteInt("BlendingMode", BlendingMode);
+            StartingColor.Serialize(system);
+            system.WriteUint("MaxParticles", MaxParticles);
+            system.WriteVec("SystemSize", SystemSize);
+            root.Append(system, "ParticleSystem");
         }
 
         void ParticleSystem::Deserialize(Serializer& root) {
+            Serializer system = root.GetChild("ParticleSystem");
+            system.ReadBool("Visible", Visible);
+            int mode;
+            system.ReadInt("BlendingMode", mode);
+            BlendingMode = static_cast<BlendMode>(mode);
+            StartingColor.Deserialize(system);
+            system.ReadUint("MaxParticles", MaxParticles);
+            system.ReadVec("SystemSize", SystemSize);
         }
 
         std::vector<Particle> const* ParticleSystem::GetAllParticles() const{
@@ -83,11 +99,18 @@ namespace ForLeaseEngine {
         }
 
         void ParticleSystem::KillAllParticles() {
-            // Make all particles inactive
+            while(!ActiveParticles.empty()) {
+                InactiveParticles.push_back(ActiveParticles.front());
+                ActiveParticles.pop_front();
+            }
         }
 
-        /*void ParticleSystem::SetMaxParticles(unsigned int maxParticles) {
-            // Reset particle system to use new max particles
-        }*/
+        void ParticleSystem::SetMaxParticles(unsigned int maxParticles) {
+            ActiveParticles.clear();
+            InactiveParticles.clear();
+            Particles.reserve(maxParticles);
+            for(unsigned int i = 0; i < Particles.size(); ++i)
+                InactiveParticles.push_back(&Particles[i]);
+        }
     }
 }

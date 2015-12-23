@@ -3,6 +3,7 @@
 #include "Interpolation.h"
 #include <list>
 #include <iostream>
+#include <sstream>
 
 namespace ForLeaseEngine {
     namespace Components {
@@ -42,9 +43,35 @@ namespace ForLeaseEngine {
         }
 
         void ParticleColorAnimator::Serialize(Serializer& root) {
+            Serializer colorAnimator = root.GetChild("ParticleColorAnimator");
+            colorAnimator.WriteUint("Type", static_cast<unsigned int>(Type));
+            colorAnimator.WriteBool("Active", Active);
+            colorAnimator.WriteUint("ColorCount", Colors.size());
+            for(unsigned int i = 0; i < Colors.size(); ++i) {
+                std::stringstream colorLabel;
+                colorLabel << "Color" << i;
+                Serializer color = colorAnimator.GetChild(colorLabel.str());
+                Colors[i].Serialize(color);
+                colorAnimator.Append(color, colorLabel.str());
+            }
+            root.Append(colorAnimator, "ParticleColorAnimator");
         }
 
         void ParticleColorAnimator::Deserialize(Serializer& root) {
+            Serializer colorAnimator = root.GetChild("ParticleColorAnimator");
+            colorAnimator.ReadBool("Active", Active);
+            Colors.clear();
+            unsigned int count;
+            colorAnimator.ReadUint("ColorCount", count);
+            for(unsigned int i = 0; i < count; ++i) {
+                std::stringstream colorLabel;
+                colorLabel << "Color" << i;
+                Serializer color = colorAnimator.GetChild(colorLabel.str());
+                Color newColor;
+                newColor.Deserialize(color);
+                Colors.push_back(newColor);
+            }
+            std::cout << "Loaded color animator with " << Colors.size() << " colors" << std::endl;
         }
 
         void ParticleColorAnimator::AddColor(Color const& color) {
