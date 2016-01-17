@@ -34,6 +34,8 @@
 #include <vector>
 #include <list>
 
+GLuint index;
+
 namespace ForLeaseEngine {
     namespace LevelComponents {
         Renderer::Renderer(State& owner) : LevelComponent(owner) {
@@ -53,6 +55,8 @@ namespace ForLeaseEngine {
             OverlayColor = Color(1, 1, 1, 0);
             OutlineColor = Color(1, 1, 1, 1);
             OutlineWidth = 0;
+
+            index = glGenLists(1);
         }
 
         void Renderer::Serialize(Serializer& root) {
@@ -199,7 +203,9 @@ namespace ForLeaseEngine {
                 DrawRectangleFilled(cameraTrans->Position, width, height, 0, BlendMode::ALPHA);
             }
 
+            Timer finishTime;
             glFinish();
+            std::cout << "glFinish Time: " << finishTime.GetTime() << std::endl;
             SetBlendMode(BlendMode::NONE);
             SetTexture(NULL);
             RenderTime = renderTimer.GetTime();
@@ -516,25 +522,61 @@ namespace ForLeaseEngine {
         }
 
         void Renderer::DrawParticleSystem(Components::ParticleSystem* pSystem) {
+            float TransformTime = 0;
+            float CompileTime = 0;
+            float RasterTime = 0;
+            Timer timer;
             SetTexture(NULL);
             SetBlendMode(pSystem->BlendingMode);
             std::list<Particle*> const* particles = pSystem->GetActiveParticles();
+            std::vector<Point> transformed = std::vector<Point>(particles->size() * 4);
+            int p = 0;
+            for(std::list<Particle*>::const_iterator i = particles->begin(); i != particles->end(); ++i) {
+                SetModelView((*i)->Position, (*i)->Size, (*i)->Size, (*i)->Rotation);
+                Matrix combigned = Projection * ModelView;
+                transformed[p++] = combigned * Point(-0.5, 0.5);
+                transformed[p++] = combigned * Point(-0.5, -0.5);
+                transformed[p++] = combigned * Point(0.5, -0.5);
+                transformed[p++] = combigned * Point(0.5, 0.5);
+            }
             //std::cout << "Drawing " << particles->size() << " particles" << std::endl;
+//            GLuint index = glGenLists(1);
+            glNewList(index, GL_COMPILE);
             glBegin(GL_QUADS);
+                timer.Reset();
+                p = 0;
                 for(std::list<Particle*>::const_iterator i = particles->begin(); i != particles->end(); ++i) {
-                    SetDrawingColor((*i)->ParticleColor);
-                    SetModelView((*i)->Position, (*i)->Size, (*i)->Size, (*i)->Rotation);
-                    Point tl = Projection * ModelView * Point(-0.5, 0.5);
-                    Point bl = Projection * ModelView * Point(-0.5, -0.5);
-                    Point br = Projection * ModelView * Point(0.5, -0.5);
-                    Point tr = Projection * ModelView * Point(0.5, 0.5);
+                    //SetDrawingColor((*i)->ParticleColor);
+                    glColor4fv((*i)->ParticleColor.GetAll());
+//                    SetModelView((*i)->Position, (*i)->Size, (*i)->Size, (*i)->Rotation);
+//                    Matrix combigned = Projection * ModelView;
+//                    Point tl = combigned * Point(-0.5, 0.5);
+//                    Point bl = combigned * Point(-0.5, -0.5);
+//                    Point br = combigned * Point(0.5, -0.5);
+//                    Point tr = combigned * Point(0.5, 0.5);
 
-                    glVertex2f(tl[0], tl[1]);
-                    glVertex2f(bl[0], bl[1]);
-                    glVertex2f(br[0], br[1]);
-                    glVertex2f(tr[0], tr[1]);
+                    glVertex2f(transformed[p][0], transformed[p][1]);
+                    ++p;
+                    glVertex2f(transformed[p][0], transformed[p][1]);
+                    ++p;
+                    glVertex2f(transformed[p][0], transformed[p][1]);
+                    ++p;
+                    glVertex2f(transformed[p][0], transformed[p][1]);
+                    ++p;
                 }
             glEnd();
+            TransformTime = timer.GetTime();
+            timer.Reset();
+            glEndList();
+            CompileTime = timer.GetTime();
+            timer.Reset();
+            glCallList(index);
+            RasterTime = timer.GetTime();
+//            std::cout << std::endl << "FPS:       " << 1 / ForLease->FrameRateController().GetDt() << std::endl
+//                      << "Transform: " << TransformTime << std::endl
+//                      << "Compile:   " << CompileTime << std::endl
+//                      << "Raster:    " << RasterTime << std::endl;
+            //glDeleteLists(index, 1);
         }
 
         void Renderer::SetTexture(Texture* texture) {

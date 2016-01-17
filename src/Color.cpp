@@ -116,6 +116,15 @@ namespace ForLeaseEngine {
 
     /*!
         \brief
+            Gets all of the color components
+
+        \return
+            Const pointer to the internal array of color components
+    */
+    float const* Color::GetAll() const { return ColorComponents; };
+
+    /*!
+        \brief
             Sets the red component
 
         \param r

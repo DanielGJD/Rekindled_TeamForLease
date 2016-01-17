@@ -48,6 +48,7 @@ namespace ForLeaseEngine {
             float GetG() const;
             float GetB() const;
             float GetA() const;
+            float const* GetAll() const;
             void SetR(float r);
             void SetG(float g);
             void SetB(float b);
