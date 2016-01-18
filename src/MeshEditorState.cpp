@@ -87,6 +87,7 @@ namespace ForLeaseEngine {
     static Point CurrentMousePos;
     static Point TransformOrigin;
     static float ScaleOriginDist;
+    static Vector RotationOriginVector;
     static bool Moving;
     static bool Rotating;
     static bool RotationPointSet;
@@ -382,10 +383,12 @@ namespace ForLeaseEngine {
             render->DrawLine(mesh->GetVertex(edge.Indices[0]), mesh->GetVertex(edge.Indices[1]));
         }
 
-        render->SetDrawingColor(Color(1, 1, 1, 1));
-        render->SetDebugPointSize(8);
-        for(std::unordered_set<int>::iterator i = SelectedVertices.begin(); i != SelectedVertices.end(); ++i) {
-            render->DrawPoint(mesh->GetVertex(*i));
+        if(CurrentMode == Mode::Vertex) {
+            render->SetDrawingColor(Color(1, 1, 1, 1));
+            render->SetDebugPointSize(8);
+            for(std::unordered_set<int>::iterator i = SelectedVertices.begin(); i != SelectedVertices.end(); ++i) {
+                render->DrawPoint(mesh->GetVertex(*i));
+            }
         }
     }
 
@@ -467,6 +470,29 @@ namespace ForLeaseEngine {
             }
         }
 
+        if(Rotating) {
+            render->SetDrawingColor(1, 0, 0, 1);
+            render->DrawArrow(TransformOrigin, GetMousePosition());
+            render->DrawArrow(TransformOrigin, RotationOriginVector);
+            float angle = Vector::AngleBetween(RotationOriginVector, GetMousePosition() - TransformOrigin);
+
+            Matrix m = Matrix::Translation(TransformOrigin) * Matrix::RotationRad(angle) * Matrix::Translation(TransformOrigin * -1);
+            for(std::unordered_set<int>::iterator i = SelectedVertices.begin(); i != SelectedVertices.end(); ++i) {
+                mesh->SetVertex(m * (*ShadowVertices.find(*i)).second, *i);
+            }
+
+            if(ImGui::IsKeyPressed(Keys::Escape)) {
+                Rotating = false;
+                for(std::unordered_map<int, Point>::iterator i = ShadowVertices.begin(); i != ShadowVertices.end(); ++i) {
+                    mesh->SetVertex((*i).second, (*i).first);
+                }
+            }
+
+            if(ImGui::IsKeyPressed(Keys::Return)) {
+                Rotating = false;
+            }
+        }
+
         // Keyboard input
         if(!ImGui::IsAnyItemActive() && !Moving && !Scaling && !Rotating) {
             if(ImGui::IsKeyPressed(Keys::M)) {
@@ -490,6 +516,18 @@ namespace ForLeaseEngine {
                 TransformOrigin = TransformOrigin * (1.0 / SelectedVertices.size());
                 ScaleOriginDist = Point::Distance(GetMousePosition(), TransformOrigin);
                 //CurrentMousePos = GetMousePosition();
+            }
+
+            else if(ImGui::IsKeyPressed(Keys::R)) {
+                Rotating = true;
+                TransformOrigin = Point();
+                ShadowVertices.clear();
+                for(std::unordered_set<int>::iterator i = SelectedVertices.begin(); i != SelectedVertices.end(); ++i) {
+                    ShadowVertices.insert(std::make_pair(*i, mesh->GetVertex(*i)));
+                    TransformOrigin += mesh->GetVertex(*i);
+                }
+                TransformOrigin = TransformOrigin * (1.0 / SelectedVertices.size());
+                RotationOriginVector =  GetMousePosition() - TransformOrigin;
             }
 
             else if(ImGui::IsKeyPressed(Keys::Delete)) {
