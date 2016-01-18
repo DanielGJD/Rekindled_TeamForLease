@@ -86,8 +86,10 @@ namespace ForLeaseEngine {
     static Point LastMousePos;
     static Point CurrentMousePos;
     static Point TransformOrigin;
+    static float ScaleOriginDist;
     static bool Moving;
     static bool Rotating;
+    static bool RotationPointSet;
     static bool Scaling;
 
     static int LastFaceSelected;
@@ -445,6 +447,26 @@ namespace ForLeaseEngine {
             }
         }
 
+        if(Scaling) {
+            float currentDist = Point::Distance(GetMousePosition(), TransformOrigin);
+            float scaleVal = currentDist / ScaleOriginDist;
+            for(std::unordered_set<int>::iterator i = SelectedVertices.begin(); i != SelectedVertices.end(); ++i) {
+                Vector displacement = (*ShadowVertices.find(*i)).second - TransformOrigin;
+                mesh->SetVertex(TransformOrigin + displacement * scaleVal, *i);
+            }
+
+            if(ImGui::IsKeyPressed(Keys::Escape)) {
+                Scaling = false;
+                for(std::unordered_map<int, Point>::iterator i = ShadowVertices.begin(); i != ShadowVertices.end(); ++i) {
+                    mesh->SetVertex((*i).second, (*i).first);
+                }
+            }
+
+            if(ImGui::IsKeyPressed(Keys::Return)) {
+                Scaling = false;
+            }
+        }
+
         // Keyboard input
         if(!ImGui::IsAnyItemActive() && !Moving && !Scaling && !Rotating) {
             if(ImGui::IsKeyPressed(Keys::M)) {
@@ -456,13 +478,28 @@ namespace ForLeaseEngine {
                     ShadowVertices.insert(std::make_pair(*i, mesh->GetVertex(*i)));
                 }
             }
-            if(ImGui::IsKeyPressed(Keys::Delete)) {
+
+            else if(ImGui::IsKeyPressed(Keys::S)) {
+                Scaling = true;
+                TransformOrigin = Point();
+                ShadowVertices.clear();
+                for(std::unordered_set<int>::iterator i = SelectedVertices.begin(); i != SelectedVertices.end(); ++i) {
+                    ShadowVertices.insert(std::make_pair(*i, mesh->GetVertex(*i)));
+                    TransformOrigin += mesh->GetVertex(*i);
+                }
+                TransformOrigin = TransformOrigin * (1.0 / SelectedVertices.size());
+                ScaleOriginDist = Point::Distance(GetMousePosition(), TransformOrigin);
+                //CurrentMousePos = GetMousePosition();
+            }
+
+            else if(ImGui::IsKeyPressed(Keys::Delete)) {
                 for(std::unordered_set<int>::iterator i = SelectedVertices.begin(); i != SelectedVertices.end(); ++i) {
                     mesh->DeleteVertex(*i);
                 }
                 ClearAllSelections();
             }
-            if(ImGui::IsKeyPressed(Keys::V)) {
+
+            else if(ImGui::IsKeyPressed(Keys::V)) {
                 Point CurrentMousePos = GetMousePosition();
                 if(CurrentMousePos[0] > 1)
                     CurrentMousePos[0] = 1;
@@ -475,13 +512,13 @@ namespace ForLeaseEngine {
 
                 mesh->AddVertex(CurrentMousePos, CurrentMousePos);
             }
-            if(ImGui::IsKeyPressed(Keys::E) && SelectedVertices.size() == 2) {
+            else if(ImGui::IsKeyPressed(Keys::E) && SelectedVertices.size() == 2) {
                 std::unordered_set<int>::iterator i = SelectedVertices.begin();
                 int v1 = *(i++);
                 int v2 = *i;
                 mesh->AddEdge(v1, v2);
             }
-            if(ImGui::IsKeyPressed(Keys::F) && SelectedVertices.size() == 3) {
+            else if(ImGui::IsKeyPressed(Keys::F) && SelectedVertices.size() == 3) {
                 std::unordered_set<int>::iterator i = SelectedVertices.begin();
                 int v1 = *(i++);
                 int v2 = *(i++);

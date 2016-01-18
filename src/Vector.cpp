@@ -351,10 +351,17 @@ namespace ForLeaseEngine {
 	  \brief
 	    Displaces a point by a vector
 	*/
-	Point Point::operator+(const Vector& rhs) const
-	{
+	Point Point::operator+(const Vector& rhs) const {
 	    return Point(x + rhs[0], y + rhs[1]);
 	}
+
+	/*!
+        \brief
+          "Scales" a point
+    */
+    Point Point::operator*(float rhs) const {
+        return Point(rhs * x, rhs * y);
+    }
 
 	Point& Point::operator+=(const Vector& rhs) {
 		x += rhs[0];

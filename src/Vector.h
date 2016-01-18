@@ -83,6 +83,7 @@ namespace ForLeaseEngine {
 		Point(const Hcoord& v);
 		Vector operator-(const Point& rhs) const;
 		Point operator+(const Vector& rhs) const;
+		Point operator*(float rhs) const;
 		Point& operator+=(const Vector& rhs);
 		Point& operator-=(const Vector& rhs);
 		static float Distance(const Point& p1, const Point& p2);

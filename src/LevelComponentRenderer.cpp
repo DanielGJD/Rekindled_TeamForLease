@@ -205,7 +205,7 @@ namespace ForLeaseEngine {
 
             Timer finishTime;
             glFinish();
-            std::cout << "glFinish Time: " << finishTime.GetTime() << std::endl;
+            //std::cout << "glFinish Time: " << finishTime.GetTime() << std::endl;
             SetBlendMode(BlendMode::NONE);
             SetTexture(NULL);
             RenderTime = renderTimer.GetTime();
