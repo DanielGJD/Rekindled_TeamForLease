@@ -284,8 +284,7 @@ namespace ForLeaseEngine {
             if(HasEdgeOrderData)
                 edge.ReadUint("Order", EdgesDrawOrder[i]);
             else
-                //EdgesDrawOrder[i] = FaceCount;
-                EdgesDrawOrder[i] = 1;
+                EdgesDrawOrder[i] = FaceCount;
         }
 
         // read faces

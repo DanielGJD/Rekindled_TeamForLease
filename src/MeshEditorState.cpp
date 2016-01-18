@@ -31,6 +31,7 @@
 #include <iostream>
 #include <cmath>
 #include <unordered_set>
+#include <limits>
 
 namespace ForLeaseEngine {
     //static void LoadMesh();
@@ -317,6 +318,26 @@ namespace ForLeaseEngine {
     static void EdgeModeWindow() {
         ImGui::Spacing();
         ImGui::Text("Selected Edges: %d", SelectedEdges.size());
+        ImGui::Spacing();
+        if(SelectedEdges.size() > 0) {
+            ImGui::SameLine();
+            if(ImGui::Button("MoveBack")) {
+                for(std::unordered_set<int>::const_iterator i = SelectedEdges.begin(); i != SelectedEdges.end(); ++i) {
+                    unsigned int order = mesh->GetEdgeDrawOrder(*i);
+                    if(order > 0)
+                        mesh->SetEdgeDrawOrder(order - 1, *i);
+                }
+            }
+
+            ImGui::SameLine();
+            if(ImGui::Button("MoveForward")) {
+                for(std::unordered_set<int>::const_iterator i = SelectedEdges.begin(); i != SelectedEdges.end(); ++i) {
+                    unsigned int order = mesh->GetEdgeDrawOrder(*i);
+                    if(order < std::numeric_limits<unsigned int>::max())
+                        mesh->SetEdgeDrawOrder(order + 1, *i);
+                }
+            }
+        }
     }
 
     static void FaceModeWindow() {
