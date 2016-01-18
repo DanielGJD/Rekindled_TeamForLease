@@ -40,8 +40,8 @@ namespace ForLeaseEngine {
 
             void AddVertex(float x, float y, float u, float v);
             void AddVertex(const Point& vertex, const Point& uv);
-            void AddEdge(int v1, int v2);
-            void AddEdge(const IndexedEdge& edge);
+            void AddEdge(int v1, int v2, unsigned int order = 0);
+            void AddEdge(const IndexedEdge& edge, unsigned int order = 0);
             void AddFace(int v1, int v2, int v3, float r, float g, float b, float a);
             void AddFace(const IndexedFace& face, const Color& color);
 
@@ -62,6 +62,8 @@ namespace ForLeaseEngine {
             void SetEdge(const IndexedEdge& edge, int index);
             Edge GetEdge(int index) const;
             const IndexedEdge& GetIndexedEdge(int index) const;
+            void SetEdgeDrawOrder(unsigned int order, unsigned int index);
+            unsigned int GetEdgeDrawOrder(unsigned int index) const;
             int GetFaceCount() const;
             void SetFace(const IndexedFace& face, int index);
             Face GetFace(int index) const;
@@ -86,6 +88,8 @@ namespace ForLeaseEngine {
             std::vector<Point> UVs;
             //! Edge list using indexed edges
             std::vector<IndexedEdge> Edges;
+            //! Edge draw order
+            std::vector<unsigned int> EdgesDrawOrder;
             //! Face list using indexed faces
             std::vector<IndexedFace> Faces;
             //! List of colors for each face

@@ -26,6 +26,7 @@
 #include "imgui_impl_sdl.h"
 #include "Face.h"
 #include "Edge.h"
+#include "MeshAnimation.h"
 #include <vector>
 #include <iostream>
 #include <cmath>
@@ -66,11 +67,16 @@ namespace ForLeaseEngine {
     static LevelComponents::Renderer* render;
     static Entity* camera;
     static Mesh* mesh;
+    static MeshAnimation* animation;
     static Entity* model;
 
     static std::string FileName;
 
     static float timer;
+    static std::unordered_map<std::string, MeshAnimation> Animations;
+    static bool AnimationEditor = false;
+    static std::string CurrentAnimation;
+    static unsigned int CurrentFrame = 0;
 
     static bool ShowNewPopup = false;
     static bool ShowOpenPopup = false;
@@ -88,10 +94,9 @@ namespace ForLeaseEngine {
     static Point TransformOrigin;
     static float ScaleOriginDist;
     static Vector RotationOriginVector;
-    static bool Moving;
-    static bool Rotating;
-    static bool RotationPointSet;
-    static bool Scaling;
+    static bool Moving = false;
+    static bool Rotating = false;
+    static bool Scaling = false;
 
     static int LastFaceSelected;
 
@@ -713,5 +718,5 @@ namespace ForLeaseEngine {
             SelectedVertices.clear();
             SelectedEdges.clear();
             SelectedFaces.clear();
-        }
+    }
 }

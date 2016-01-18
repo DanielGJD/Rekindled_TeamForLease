@@ -78,12 +78,13 @@ namespace ForLeaseEngine {
         ++VertexCount;
     }
 
-    void Mesh::AddEdge(int v1, int v2) {
-        AddEdge(IndexedEdge(v1, v2));
+    void Mesh::AddEdge(int v1, int v2, unsigned int order) {
+        AddEdge(IndexedEdge(v1, v2), order);
     }
 
-    void Mesh::AddEdge(const IndexedEdge& edge) {
+    void Mesh::AddEdge(const IndexedEdge& edge, unsigned int order) {
         Edges.push_back(edge);
+        EdgesDrawOrder.push_back(order);
         ++EdgeCount;
     }
 
@@ -149,6 +150,7 @@ namespace ForLeaseEngine {
     void Mesh::DeleteEdge(int index) {
         if(index < Edges.size()) {
             Edges.erase(Edges.begin() + index);
+            EdgesDrawOrder.erase(EdgesDrawOrder.begin() + index);
             --EdgeCount;
         }
     }
@@ -165,6 +167,7 @@ namespace ForLeaseEngine {
         Vertices.clear();
         UVs.clear();
         Edges.clear();
+        EdgesDrawOrder.clear();
         Faces.clear();
         FaceColors.clear();
         VertexCount = 0;
@@ -204,6 +207,7 @@ namespace ForLeaseEngine {
             Serializer edge = root.GetChild(ss.str());
             edge.WriteInt("I1", Edges[i].Indices[0]);
             edge.WriteInt("I2", Edges[i].Indices[1]);
+            edge.WriteUint("Order", EdgesDrawOrder[i]);
             root.Append(edge, ss.str());
         }
 
@@ -236,16 +240,21 @@ namespace ForLeaseEngine {
         root.ReadInt("EdgeCount", EdgeCount);
         root.ReadInt("FaceCount", FaceCount);
 
-        /*Vertices = new Point[VertexCount];
-        UVs = new Point[VertexCount];
-        Edges = new IndexedEdge[EdgeCount];
-        Faces = new IndexedFace[FaceCount];
-        FaceColors = new Color[FaceCount];*/
         Vertices.resize(VertexCount);
         UVs.resize(VertexCount);
         Edges.resize(EdgeCount);
+        EdgesDrawOrder.resize(EdgeCount);
         Faces.resize(FaceCount);
         FaceColors.resize(FaceCount);
+
+        bool HasEdgeOrderData = false;
+        std::vector<std::string> members = root.GetChild("Edge0").GetMemberNames();
+        for(int i = 0; i < members.size(); ++i) {
+            if(members[i].compare("Order") == 0) {
+                HasEdgeOrderData = true;
+                break;
+            }
+        }
 
         // read verts
         for(int i = 0; i < VertexCount; ++i) {
@@ -272,6 +281,11 @@ namespace ForLeaseEngine {
             Serializer edge = root.GetChild(ss.str());
             edge.ReadInt("I1", Edges[i].Indices[0]);
             edge.ReadInt("I2", Edges[i].Indices[1]);
+            if(HasEdgeOrderData)
+                edge.ReadUint("Order", EdgesDrawOrder[i]);
+            else
+                //EdgesDrawOrder[i] = FaceCount;
+                EdgesDrawOrder[i] = 1;
         }
 
         // read faces
@@ -295,6 +309,11 @@ namespace ForLeaseEngine {
             faceColor.ReadFloat("B", b);
             faceColor.ReadFloat("A", a);
             FaceColors[i].SetAll(r, g, b, a);
+        }
+
+        // testing code
+        for(unsigned int i = 0; i < EdgesDrawOrder.size(); ++i) {
+            std::cout << "Edge " << i << " order: " << EdgesDrawOrder[i] << std::endl;
         }
     }
 
@@ -473,6 +492,14 @@ namespace ForLeaseEngine {
         }
 
         return Edges[index];
+    }
+
+    void Mesh::SetEdgeDrawOrder(unsigned int order, unsigned int index) {
+        EdgesDrawOrder[index] = order;
+    }
+
+    unsigned int Mesh::GetEdgeDrawOrder(unsigned int index) const {
+        return EdgesDrawOrder[index];
     }
 
     /*!

@@ -484,7 +484,7 @@ namespace ForLeaseEngine {
                 }
             }
 
-            glBegin(GL_TRIANGLES);
+            /*glBegin(GL_TRIANGLES);
                 for(int i = 0; i < mesh->GetFaceCount(); ++i) {
                     IndexedFace face = mesh->GetIndexedFace(i);
                     SetDrawingColor(mesh->GetFaceColor(i));
@@ -505,6 +505,53 @@ namespace ForLeaseEngine {
                         glVertex2f(transformed[edge.Indices[1]][0], transformed[edge.Indices[1]][1]);
                     }
                     ++LineCount;
+                glEnd();
+            }*/
+
+            if(drawEdges) {
+                glLineWidth(2);
+                std::multimap<unsigned int, IndexedEdge> SortedEdges;
+                for(unsigned int i = 0; i < mesh->GetEdgeCount(); ++i) {
+                    SortedEdges.insert(std::make_pair(mesh->GetEdgeDrawOrder(i), mesh->GetIndexedEdge(i)));
+                }
+
+                unsigned int i = 0;
+                std::multimap<unsigned int, IndexedEdge>::const_iterator it = SortedEdges.begin();
+
+                while(i < mesh->GetFaceCount() || it != SortedEdges.end()) {
+                    if(i < mesh->GetFaceCount() && (it == SortedEdges.end() || i <= (*it).first)) {
+                        SetDrawingColor(mesh->GetFaceColor(i));
+                        IndexedFace face = mesh->GetIndexedFace(i);
+                        glBegin(GL_TRIANGLES);
+                            glVertex2f(transformed[face.Indices[0]][0], transformed[face.Indices[0]][1]);
+                            glVertex2f(transformed[face.Indices[1]][0], transformed[face.Indices[1]][1]);
+                            glVertex2f(transformed[face.Indices[2]][0], transformed[face.Indices[2]][1]);
+                        glEnd();
+                        ++TriCount;
+                        ++i;
+                    }
+
+                    if(it != SortedEdges.end() && ((*it).first < i || i >= mesh->GetFaceCount())) {
+                        SetDrawingColor(Color(0, 0, 0, 1));
+                        glBegin(GL_LINES);
+                            glVertex2f(transformed[(*it).second.Indices[0]][0], transformed[(*it).second.Indices[0]][1]);
+                            glVertex2f(transformed[(*it).second.Indices[1]][0], transformed[(*it).second.Indices[1]][1]);
+                        glEnd();
+                        ++LineCount;
+                        ++it;
+                    }
+                }
+            }
+            else {
+                glBegin(GL_TRIANGLES);
+                    for(int i = 0; i < mesh->GetFaceCount(); ++i) {
+                        IndexedFace face = mesh->GetIndexedFace(i);
+                        SetDrawingColor(mesh->GetFaceColor(i));
+                        for(int j = 0; j < 3; ++j) {
+                            glVertex2f(transformed[face.Indices[j]][0], transformed[face.Indices[j]][1]);
+                        }
+                        ++TriCount;
+                    }
                 glEnd();
             }
 
