@@ -54,6 +54,23 @@ namespace ForLeaseEngine {
 
     };
 
+    /*!
+        \class OutOfIDsException
+
+        \brief
+            An exception to throw when we run out of IDs.
+    */
+    class OutOfIDsException : public Exception {
+        public:
+            OutOfIDsException();
+            OutOfIDsException(const long unsigned maxID);
+            OutOfIDsException(const long unsigned maxID, const std::string& message);
+            OutOfIDsException(const std::string& message);
+            long unsigned GetMaxID();
+        private:
+            const long unsigned MaxID;
+    };
+
 }
 
 #endif

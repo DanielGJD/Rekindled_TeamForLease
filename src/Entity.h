@@ -14,6 +14,8 @@
 
 #include <vector>
 #include <string>
+#include <set>
+#include <random>
 #include "ComponentsInclude.h"
 #include "EntityExceptions.h"
 #include "Serializable.h"
@@ -79,6 +81,14 @@ namespace ForLeaseEngine {
             std::vector<Component *> Components;
             //! A static ID of all Entities that have been created by the game.
             static long unsigned TotalEntities;
+
+            static std::set<unsigned long> IDs;
+            static const unsigned long MaxEntities;
+            static std::default_random_engine RandomEngine;
+            static std::uniform_int_distribution<unsigned long> Distribution;
+            static unsigned long GetNewID();
+            static FreeID();
+
 
     };
 

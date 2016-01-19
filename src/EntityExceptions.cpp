@@ -113,4 +113,16 @@ namespace ForLeaseEngine {
     */
     ComponentType AddComponentException::GetComponentType() { return Type; }
 
+
+
+    OutOfIDsException::OutOfIDsException() : Exception("Out of IDs."), MaxID(0) {}
+    OutOfIDsException::OutOfIDsException(const long unsigned maxID)
+        : Exception("Out of IDs."), MaxID(maxID) {}
+    OutOfIDsException::OutOfIDsException(const long unsigned maxID, const std::string& message)
+        : Exception(message), MaxID(maxID) {}
+    OutOfIDsException::OutOfIDsException(const std::string& message)
+        : Exception(message), MaxID(0) {}
+
+    long unsigned OutOfIDsException::GetMaxID() { return MaxID; }
+
 }

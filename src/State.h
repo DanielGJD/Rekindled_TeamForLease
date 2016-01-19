@@ -31,7 +31,7 @@ namespace ForLeaseEngine {
     class State : public Serializable {
 
         public:
-            State(std::string name = "Generic State Name");
+            State(std::string name = "Generic State Name", long unsigned maxElements = 9999);
             ~State();
             virtual void Load() = 0;
             virtual void Initialize() = 0;
@@ -88,7 +88,6 @@ namespace ForLeaseEngine {
             std::string Name;                               //! Name of the state
             std::vector<LevelComponent*> LevelComponents;   //! The level components in the state
             std::vector<Entity*> Entities;                  //! The entities in the state
-
     };
 
     LevelComponent* DeserializeLevelComponent(Serializer& root, State& state);

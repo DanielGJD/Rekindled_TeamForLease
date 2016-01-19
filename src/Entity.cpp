@@ -184,6 +184,23 @@ namespace ForLeaseEngine {
     }
 
     /*!
+    Returns a unique ID for a new object.
+
+    \return
+    An unsigned long integer to be used as the ID.
+    */
+    unsigned long Entity::GetNewID() {
+        if (IDs.size() >= MaxEntities)
+            throw OutOfIDsException(MaxEntities);
+
+        while (true) {
+            auto result = IDs.insert(Distribution(RandomEngine));
+
+            if (result.second) return *(result.first);
+        }
+    }
+
+    /*!
         Helper function to aid in adding multiple Components to an Entity at the
         same time.
 
