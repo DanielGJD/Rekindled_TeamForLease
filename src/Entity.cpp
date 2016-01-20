@@ -23,7 +23,7 @@ namespace ForLeaseEngine {
         to this entity to None.
     */
     Entity::Entity(std::string name, boolean serialize)
-    : ID(++TotalEntities), ComponentMask(ComponentType::None), IncludeInSerialize(serialize), Delete(false) {
+    : ID(GetNewID()), ComponentMask(ComponentType::None), IncludeInSerialize(serialize), Delete(false) {
         if (name != "")
             Name = name;
         else {
@@ -37,8 +37,9 @@ namespace ForLeaseEngine {
         Destructor for an Entity.  Destroys all components attached to it.
     */
     Entity::~Entity() {
-        for (Component* component : Components)
-            delete component;
+        for (Component* component : Components) delete component;
+
+        FreeID(ID);
     }
 
     void Entity::Serialize(Serializer& root) {
@@ -184,10 +185,10 @@ namespace ForLeaseEngine {
     }
 
     /*!
-    Returns a unique ID for a new object.
+        Returns a unique ID for a new object.
 
-    \return
-    An unsigned long integer to be used as the ID.
+        \return
+            An unsigned long integer to be used as the ID.
     */
     unsigned long Entity::GetNewID() {
         if (IDs.size() >= MaxEntities)
@@ -198,6 +199,16 @@ namespace ForLeaseEngine {
 
             if (result.second) return *(result.first);
         }
+    }
+
+    /*!
+        Frees up a given ID.
+
+        \param id
+            An unsigned long ID to free up.
+    */
+    void Entity::FreeID(unsigned long id) {
+        IDs.erase(id);
     }
 
     /*!
