@@ -31,7 +31,7 @@ namespace ForLeaseEngine {
     class State : public Serializable {
 
         public:
-            State(std::string name = "Generic State Name", long unsigned maxElements = 9999);
+            State(std::string name = "Generic State Name");
             ~State();
             virtual void Load() = 0;
             virtual void Initialize() = 0;

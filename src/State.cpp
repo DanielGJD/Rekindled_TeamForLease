@@ -27,8 +27,7 @@ namespace ForLeaseEngine {
         \param maxElements
             An unsigned long that determines the maximum number of elements we want this level to have.
     */
-    State::State(std::string name, long unsigned maxElements)
-        : Name(name), Entities(), MaxElements(maxElements), Distribution(1, maxElements) {}
+    State::State(std::string name) : Name(name), Entities() {}
 
     /*!
         Destructor for a State.  Deletes all entities.

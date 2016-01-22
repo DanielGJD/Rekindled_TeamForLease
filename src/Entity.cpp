@@ -16,6 +16,10 @@ namespace ForLeaseEngine {
 
     long unsigned Entity::TotalEntities = 0;
 
+    std::set<unsigned long> Entity::IDs = std::set<unsigned long>();
+    std::uniform_int_distribution<unsigned long> Entity::Distribution = std::uniform_int_distribution<unsigned long>(0, MaxEntities);
+    std::default_random_engine Entity::RandomEngine = std::default_random_engine();
+
     /*!
         Constructor for a new Entity.  Sets the ID of this Entity to a new,
         unique ID that is derived from the total number of entities created before
@@ -59,10 +63,23 @@ namespace ForLeaseEngine {
 
     void Entity::Deserialize(Serializer& root) {
         Serializer entity = root.GetChild("Entity");
+        FreeID(ID);
         unsigned id;
         entity.ReadUint("ID", id);
         entity.ReadString("Name", Name);
         ID = id;
+        IDs.insert(id);
+        ArraySerializer jsonComponents(entity);
+        jsonComponents = entity.GetChild("Components");
+        for (unsigned i = 0; i < jsonComponents.Size(); ++i) {
+            Serializer component = jsonComponents[i];
+            AddComponent(DeserializeComponent(component, *this));
+        }
+    }
+
+    void Entity::DeserializeWithoutID(Serializer& root) {
+        Serializer entity = root.GetChild("Entity");
+        entity.ReadString("Name", Name);
         ArraySerializer jsonComponents(entity);
         jsonComponents = entity.GetChild("Components");
         for (unsigned i = 0; i < jsonComponents.Size(); ++i) {
@@ -197,7 +214,12 @@ namespace ForLeaseEngine {
         while (true) {
             auto result = IDs.insert(Distribution(RandomEngine));
 
-            if (result.second) return *(result.first);
+            if (result.second) {
+                #ifdef FLE_DEBUG
+                    std::cout << "Issued ID: " << *(result.first) << std::endl;
+                #endif
+                return *(result.first);
+            }
         }
     }
 
@@ -208,6 +230,9 @@ namespace ForLeaseEngine {
             An unsigned long ID to free up.
     */
     void Entity::FreeID(unsigned long id) {
+        #ifdef FLE_DEBUG
+            std::cout << "Freeing ID: " << id << std::endl;
+        #endif
         IDs.erase(id);
     }
 
