@@ -11,6 +11,7 @@
     \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
 #include "Serialize.h"
+#include "Exception.h"
 #include <iostream>
 #include <fstream>
 
@@ -37,8 +38,7 @@ namespace ForLeaseEngine
 
         catch (std::exception& e)
         {
-            std::cout << e.what() << std::endl;
-            return false;
+            throw Exception(e.what());
         }
     }
 

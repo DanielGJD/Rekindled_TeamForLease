@@ -40,6 +40,7 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
+#include <map>
 namespace ForLeaseEngine
 {
     namespace LevelEditorGlobals
@@ -86,6 +87,7 @@ namespace ForLeaseEngine
         std::vector<std::string> animationNames;
         std::vector<std::string> textureNames;
 
+        std::map<std::string, ComponentType> reqMap;
         std::string copyfile = "copyentity.json";
 
         bool clickAdd   = false;
@@ -141,6 +143,34 @@ namespace ForLeaseEngine
 
     namespace leg = LevelEditorGlobals;
 
+//    void PopulateMap()
+//    {
+//        std::vector<Component*> comps;
+//        Entity dummy;
+//        comps.push_back(new Components::BackgroundMusic(dummy));
+//        comps.push_back(new Components::Camera(dummy));
+//        comps.push_back(new Components::ChangeLevelOnCollide(dummy));
+//        comps.push_back(new Components::Collision(dummy));
+//        comps.push_back(new Components::DragWithMouse(dummy));
+//        comps.push_back(new Components::FadeWithDistance(dummy));
+//        comps.push_back(new Components::EnemyAI(dummy));
+//        comps.push_back(new Components::Light(dummy));
+//        comps.push_back(new Components::Model(dummy));
+//        comps.push_back(new Components::Physics(dummy));
+//        comps.push_back(new Components::CharacterController(dummy));
+//        comps.push_back(new Components::ScaleWithKeyboard(dummy));
+//        comps.push_back(new Components::SoundEmitter(dummy));
+//        comps.push_back(new Components::Sprite(dummy));
+//        comps.push_back(new Components::SpriteText(dummy));
+//        comps.push_back(new Components::TransformModeControls(dummy));
+//        comps.push_back(new Components::VisionCone(dummy));
+//
+//        for (int i = 0; i < comps.size(); i++)
+//        {
+//            leg::reqMap[leg::componentNames[i]] = comps[i]->GetRequired;
+//        }
+//    }
+
     void LevelEditor::Load()
     {
         leg::render = new LevelComponents::Renderer(*this);
@@ -178,7 +208,7 @@ namespace ForLeaseEngine
         leg::componentNames.push_back("Sprite Text");
         leg::componentNames.push_back("Transform Control");
         leg::componentNames.push_back("Vision Cone");
-
+        //PopulateMap();
         Point moved(100000, 100000);
         Entity* ent = GetEntityByName("PauseMenu", true);
         Components::Transform* trans = ent->GetComponent<Components::Transform>();
@@ -886,10 +916,10 @@ namespace ForLeaseEngine
                 ImGui::Text(": %s", leg::selController->WalkSound.c_str());
                 ImGui::Checkbox("Jump Sound", &leg::jumpSound);
                 ImGui::SameLine();
-                ImGui::Text(": %s", leg::selController->WalkSound.c_str());
+                ImGui::Text(": %s", leg::selController->JumpSound.c_str());
                 ImGui::Checkbox("Land Sound", &leg::landSound);
                 ImGui::SameLine();
-                ImGui::Text(": %s", leg::selController->WalkSound.c_str());
+                ImGui::Text(": %s", leg::selController->LandSound.c_str());
 
                 static ImGuiTextFilter controllerSounds;
                 controllerSounds.Draw("Sound", 250);
@@ -1205,14 +1235,14 @@ namespace ForLeaseEngine
         else if (leg::selMode && ImGui::IsMouseClicked(0) && !ImGui::IsMouseHoveringAnyWindow())
         {
             GetMouse(leg::mousePos);
-            std::vector<Entity*> ents = GetEntitiesAtPosition(leg::mousePos);
-            leg::selection = NULL;
+            //std::vector<Entity*> ents = GetEntitiesAtPosition(leg::mousePos);
+            leg::selection = GetEntityAtPosition(leg::mousePos);
 
-            for (unsigned i = 0; i < ents.size(); i++)
-            {
-                if (ents[i] != leg::camera)
+            //for (unsigned i = 0; i < ents.size(); i++)
+            //{
+                if (leg::selection)
                 {
-                    leg::selection = ents[i];
+                    //leg::selection = ents[i];
                     std::string name = leg::selection->GetName();
                     strcpy(leg::entName, name.c_str());
                     leg::selCamera     = leg::selection->GetComponent<Components::Camera>();
@@ -1233,6 +1263,7 @@ namespace ForLeaseEngine
                     leg::selLight      = leg::selection->GetComponent<Components::Light>();
                     leg::selFade       = leg::selection->GetComponent<Components::FadeWithDistance>();
                     leg::selChange     = leg::selection->GetComponent<Components::ChangeLevelOnCollide>();
+                    leg::selMusic      = leg::selection->GetComponent<Components::BackgroundMusic>();
                     if (leg::selSprtxt)
                     {
                         strcpy(leg::spriteTextBuf, leg::selSprtxt->Text.c_str());
@@ -1288,9 +1319,9 @@ namespace ForLeaseEngine
                         strcpy(leg::changeObject, leg::selChange->TriggerObjectName.c_str());
                     }
                     leg::selMade = true;
-                    break;
+                    //break;
                 }
-            }
+            //}
         }
 
         if (leg::selMade && ImGui::IsMouseDown(0) && ImGui::IsMouseDragging(0))
@@ -1341,6 +1372,7 @@ namespace ForLeaseEngine
             if (root.ReadFile(leg::statefile))
             {
                 Deserialize(root);
+                strcpy(leg::statename, GetName().c_str());
                 LevelComponents::Menu* levelmenu = GetLevelComponent<LevelComponents::Menu>();
                 LevelComponents::Collision* levelcol = GetLevelComponent<LevelComponents::Collision>();
                 leg::levelPhysics = GetLevelComponent<LevelComponents::Physics>();
