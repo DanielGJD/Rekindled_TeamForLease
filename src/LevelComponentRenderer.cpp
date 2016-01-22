@@ -33,6 +33,8 @@
 #include <map>
 #include <vector>
 #include <list>
+#include <thread>
+#define PARTICLE_THREADS 2
 
 GLuint index;
 
@@ -204,7 +206,8 @@ namespace ForLeaseEngine {
             }
 
             Timer finishTime;
-            glFinish();
+            //glFinish();
+            //glFlush();
             //std::cout << "glFinish Time: " << finishTime.GetTime() << std::endl;
             SetBlendMode(BlendMode::NONE);
             SetTexture(NULL);
@@ -578,6 +581,7 @@ namespace ForLeaseEngine {
             std::list<Particle*> const* particles = pSystem->GetActiveParticles();
             std::vector<Point> transformed = std::vector<Point>(particles->size() * 4);
             int p = 0;
+            timer.Reset();
             for(std::list<Particle*>::const_iterator i = particles->begin(); i != particles->end(); ++i) {
                 SetModelView((*i)->Position, (*i)->Size, (*i)->Size, (*i)->Rotation);
                 Matrix combigned = Projection * ModelView;
@@ -586,11 +590,27 @@ namespace ForLeaseEngine {
                 transformed[p++] = combigned * Point(0.5, -0.5);
                 transformed[p++] = combigned * Point(0.5, 0.5);
             }
+            /*std::list<Particle*>::const_iterator sources[PARTICLE_THREADS];
+            std::vector<std::thread> threads;
+            unsigned int batchSize = particles->size() / PARTICLE_THREADS;
+            for(unsigned int i = 0; i < PARTICLE_THREADS; ++i) {
+                sources[i] = particles->begin();
+                for(unsigned int i = 0; i < batchSize; ++i)
+                    ++sources[i];
+                if(i < PARTICLE_THREADS - 1)
+                    threads.push_back(std::thread(CalcParticleVerts, sources[i], &transformed[i * batchSize], Projection, batchSize));
+                else
+                    threads.push_back(std::thread(CalcParticleVerts, sources[i], &transformed[i * batchSize], Projection, particles->size() - batchSize * (PARTICLE_THREADS - 1)));
+            }
+
+            for(unsigned int i = 0; i < PARTICLE_THREADS; ++i)
+                threads[i].join();
+
+            TransformTime = timer.GetTime();*/
             //std::cout << "Drawing " << particles->size() << " particles" << std::endl;
 //            GLuint index = glGenLists(1);
             glNewList(index, GL_COMPILE);
             glBegin(GL_QUADS);
-                timer.Reset();
                 p = 0;
                 for(std::list<Particle*>::const_iterator i = particles->begin(); i != particles->end(); ++i) {
                     //SetDrawingColor((*i)->ParticleColor);
@@ -612,18 +632,18 @@ namespace ForLeaseEngine {
                     ++p;
                 }
             glEnd();
-            TransformTime = timer.GetTime();
-            timer.Reset();
+//            TransformTime = timer.GetTime();
+//            timer.Reset();
             glEndList();
-            CompileTime = timer.GetTime();
-            timer.Reset();
+//            CompileTime = timer.GetTime();
+//            timer.Reset();
             glCallList(index);
-            RasterTime = timer.GetTime();
-//            std::cout << std::endl << "FPS:       " << 1 / ForLease->FrameRateController().GetDt() << std::endl
-//                      << "Transform: " << TransformTime << std::endl
+//            RasterTime = timer.GetTime();
+            std::cout << std::endl << "FPS:       " << 1 / ForLease->FrameRateController().GetDt() << std::endl
+                      << "Transform: " << TransformTime << std::endl;
 //                      << "Compile:   " << CompileTime << std::endl
 //                      << "Raster:    " << RasterTime << std::endl;
-            //glDeleteLists(index, 1);
+//            glDeleteLists(index, 1);
         }
 
         void Renderer::SetTexture(Texture* texture) {
@@ -666,6 +686,18 @@ namespace ForLeaseEngine {
         void Renderer::ModelToScreen(const Point* source, Point* dest, int count) {
             for(int i = 0; i < count; ++i) {
                 dest[i] = Point(Projection * ModelView * source[i]);
+            }
+        }
+
+        void CalcParticleVerts(std::list<Particle*>::const_iterator source, Point* dest, Matrix const& proj, unsigned int count) {
+            for(unsigned int i = 0; i < count; ++i) {
+                //SetModelView((*i)->Position, (*i)->Size, (*i)->Size, (*i)->Rotation);
+                Matrix combigned = proj * Matrix::Translation((*source)->Position) * Matrix::RotationRad((*source)->Rotation) * Matrix::Scale((*source)->Size, (*source)->Size);
+                *(dest++) = combigned * Point(-0.5, 0.5);
+                *(dest++) = combigned * Point(-0.5, -0.5);
+                *(dest++) = combigned * Point(0.5, -0.5);
+                *(dest++) = combigned * Point(0.5, 0.5);
+                ++source;
             }
         }
     }

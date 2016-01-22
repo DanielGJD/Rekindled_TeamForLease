@@ -79,6 +79,7 @@ namespace ForLeaseEngine {
             void AddAnimation(std::string const& name);
             void RemoveAnimation(std::string const& name);
             std::vector<std::string> GetAnimationNames();
+            std::vector<Point>* GetRawVertexData();
         private:
             //! Center used for transformations
             Point Center;

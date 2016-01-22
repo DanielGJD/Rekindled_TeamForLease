@@ -209,4 +209,16 @@ namespace ForLeaseEngine {
         SetB(b);
         SetA(a);
     }
+
+    /*!
+        \brief
+            Sets all the components
+
+        \param data
+            Array containing the color data
+    */
+    void Color::SetAll(float const* data) {
+        for(unsigned int i = 0; i < 4; ++i)
+            ColorComponents[i] = data[i];
+    }
 }

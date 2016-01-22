@@ -31,6 +31,7 @@
 #include <iostream>
 #include <cmath>
 #include <unordered_set>
+#include <limits>
 
 namespace ForLeaseEngine {
     //static void LoadMesh();
@@ -69,6 +70,7 @@ namespace ForLeaseEngine {
     static Mesh* mesh;
     static MeshAnimation* animation;
     static Entity* model;
+    static std::vector<Point>* vertexData;
 
     static std::string FileName;
 
@@ -121,7 +123,7 @@ namespace ForLeaseEngine {
 
         model = AddEntity();
         model->AddComponent(new Components::Transform(*model, Point(0, 0), 1, 1, 0));
-        model->AddComponent(new Components::Model(*model, true, false, false, "", "", Color(1, 1, 1, 1), BlendMode::NONE, true, true));
+        model->AddComponent(new Components::Model(*model, true, false, false, "", "", Color(1, 1, 1, 1), BlendMode::NONE, true, false));
 
 //        instructions = AddEntity();
 //        Components::Transform* trans = new Components::Transform(*instructions, Point(-ForLease->GameWindow->GetXResolution() / 2, ForLease->GameWindow->GetYResolution() / 2), 1, 1, 0, 0);
@@ -287,6 +289,8 @@ namespace ForLeaseEngine {
         case 0:
             if(CurrentMode != Mode::Vertex) {
                 CurrentMode = Mode::Vertex;
+                Components::Model* modelComp = model->GetComponent<Components::Model>();
+                modelComp->DrawVertices = true;
                 ClearAllSelections();
             }
             VertexModeWindow();
@@ -294,6 +298,8 @@ namespace ForLeaseEngine {
         case 1:
             if(CurrentMode != Mode::Edge) {
                 CurrentMode = Mode::Edge;
+                Components::Model* modelComp = model->GetComponent<Components::Model>();
+                modelComp->DrawVertices = false;
                 ClearAllSelections();
             }
             EdgeModeWindow();
@@ -301,6 +307,8 @@ namespace ForLeaseEngine {
         case 2:
             if(CurrentMode != Mode::Face) {
                 CurrentMode = Mode::Face;
+                Components::Model* modelComp = model->GetComponent<Components::Model>();
+                modelComp->DrawVertices = false;
                 ClearAllSelections();
             }
             FaceModeWindow();
@@ -317,6 +325,26 @@ namespace ForLeaseEngine {
     static void EdgeModeWindow() {
         ImGui::Spacing();
         ImGui::Text("Selected Edges: %d", SelectedEdges.size());
+        ImGui::Spacing();
+        if(SelectedEdges.size() > 0) {
+            ImGui::SameLine();
+            if(ImGui::Button("MoveBack")) {
+                for(std::unordered_set<int>::const_iterator i = SelectedEdges.begin(); i != SelectedEdges.end(); ++i) {
+                    unsigned int order = mesh->GetEdgeDrawOrder(*i);
+                    if(order > 0)
+                        mesh->SetEdgeDrawOrder(order - 1, *i);
+                }
+            }
+
+            ImGui::SameLine();
+            if(ImGui::Button("MoveForward")) {
+                for(std::unordered_set<int>::const_iterator i = SelectedEdges.begin(); i != SelectedEdges.end(); ++i) {
+                    unsigned int order = mesh->GetEdgeDrawOrder(*i);
+                    if(order < std::numeric_limits<unsigned int>::max())
+                        mesh->SetEdgeDrawOrder(order + 1, *i);
+                }
+            }
+        }
     }
 
     static void FaceModeWindow() {

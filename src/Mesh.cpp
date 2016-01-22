@@ -284,8 +284,7 @@ namespace ForLeaseEngine {
             if(HasEdgeOrderData)
                 edge.ReadUint("Order", EdgesDrawOrder[i]);
             else
-                //EdgesDrawOrder[i] = FaceCount;
-                EdgesDrawOrder[i] = 1;
+                EdgesDrawOrder[i] = FaceCount;
         }
 
         // read faces
@@ -789,5 +788,16 @@ namespace ForLeaseEngine {
         }
 
         return names;
+    }
+
+    /*!
+        \brief
+            Gets the underlying vertex data
+
+        \return
+            Vertex data of the mesh
+    */
+    std::vector<Point>* Mesh::GetRawVertexData() {
+        return &Vertices;
     }
 }
