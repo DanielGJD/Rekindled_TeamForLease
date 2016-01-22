@@ -14,6 +14,8 @@
 #include "HalfPlane.h"
 #include <sstream>
 
+#include <random>
+
 namespace ForLeaseEngine {
 
     /*!
@@ -21,6 +23,9 @@ namespace ForLeaseEngine {
 
         \param name
             A std::string name to give this state.
+
+        \param maxElements
+            An unsigned long that determines the maximum number of elements we want this level to have.
     */
     State::State(std::string name) : Name(name), Entities() {}
 
@@ -80,7 +85,7 @@ namespace ForLeaseEngine {
         archetype.ReadFile(filename);
         Entity* entity = new Entity();
         std::string name_backup = entity->GetName();
-        entity->Deserialize(archetype);
+        entity->DeserializeWithoutID(archetype);
 
         if (entity->HasComponent(ComponentType::Transform)) {
             Components::Transform* transform = entity->GetComponent<Components::Transform>();

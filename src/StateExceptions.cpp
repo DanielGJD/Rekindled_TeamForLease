@@ -45,4 +45,6 @@ namespace ForLeaseEngine {
     EntityNotFoundException::EntityNotFoundException(const long unsigned id,
         const std::string& message) : Exception(message), ID(id) {}
 
+    long unsigned EntityNotFoundException::GetID() { return ID; }
+
 }
