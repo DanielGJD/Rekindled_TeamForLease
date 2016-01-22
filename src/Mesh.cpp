@@ -789,4 +789,15 @@ namespace ForLeaseEngine {
 
         return names;
     }
+
+    /*!
+        \brief
+            Gets the underlying vertex data
+
+        \return
+            Vertex data of the mesh
+    */
+    std::vector<Point>* Mesh::GetRawVertexData() {
+        return &Vertices;
+    }
 }

@@ -171,4 +171,12 @@ namespace ForLeaseEngine {
         return Point(Interpolation::Linear(FrameVertexData[frame][index][0], FrameVertexData[(frame + 1) % GetFrameCount()][index][0], t),
                      Interpolation::Linear(FrameVertexData[frame][index][1], FrameVertexData[(frame + 1) % GetFrameCount()][index][1], t));
     }
+
+    std::vector<Point>* MeshAnimation::GetRawFrameData(unsigned int frame) {
+        if(frame >= FrameVertexData.size()) {
+            throw Exception("MeshAnimation: Accessed frame out of bounds");
+        }
+
+        return &FrameVertexData[frame];
+    }
 }
