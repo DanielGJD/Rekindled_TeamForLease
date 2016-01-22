@@ -461,9 +461,9 @@ namespace ForLeaseEngine {
         ArraySerializer jsonLevelComponents(state);
         jsonLevelComponents = state.GetChild("LevelComponents");
 
-        for (unsigned i = 0; i < 5; ++i) {
+        for (LevelComponent* lc : LevelComponents) {
             Serializer lcSerializer;
-            LevelComponents[i]->Serialize(lcSerializer);
+            lc->Serialize(lcSerializer);
             jsonLevelComponents.Append(lcSerializer);
         }
 
@@ -502,6 +502,8 @@ namespace ForLeaseEngine {
     LevelComponent* DeserializeLevelComponent(Serializer& root, State& state) {
         unsigned type;
         root.ReadUint("Type", type);
+
+        std::cout << "Deserializing " << type << std::endl;
 
         LevelComponent* lc = 0;
 
