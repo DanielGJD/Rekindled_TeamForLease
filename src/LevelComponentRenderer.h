@@ -118,6 +118,8 @@ namespace ForLeaseEngine {
                 void ModelToScreen(const Point& source, Point& dest);
                 void ModelToScreen(const Point* source, Point* dest, int count);
         };
+
+        void CalcParticleVerts(std::list<Particle*>::const_iterator source, Point* dest, Matrix const& proj, unsigned int count);
     }
 }
 

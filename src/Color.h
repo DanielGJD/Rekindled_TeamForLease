@@ -54,6 +54,7 @@ namespace ForLeaseEngine {
             void SetB(float b);
             void SetA(float a);
             void SetAll(float r, float g, float b, float a);
+            void SetAll(float const* data);
 
         private:
             float ColorComponents[4]; /**< Components of the color */

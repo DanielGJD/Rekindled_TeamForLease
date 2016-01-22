@@ -39,6 +39,7 @@ namespace ForLeaseEngine {
             unsigned int GetFrameVertexCount() const;
             Point const& GetVertex(unsigned int frame, unsigned int index) const;
             Point InterpolateVertex(unsigned int frame, unsigned int index, float t) const;
+            std::vector<Point>* GetRawFrameData(unsigned int frame);
         private:
             std::string AnimationName;
             //int FrameCount;
