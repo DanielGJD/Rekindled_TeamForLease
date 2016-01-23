@@ -49,6 +49,10 @@ namespace ForLeaseEngine {
                         States[StateIndex]->Update();         // Do all the game stuff
                         Parent.FrameRateController().End();   // End the current frame
 
+                        while (Action == StateAction::Pause) {
+                            Parent.FrameRateController().SleepFor(0.5);
+                        }
+
                     } while (Action == StateAction::Continue);
 
                     States[StateIndex]->Deinitialize(); // Deinitialize the state

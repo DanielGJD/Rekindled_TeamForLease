@@ -33,7 +33,8 @@ namespace ForLeaseEngine {
             Continue,
             Restart,
             Next,
-            Skip
+            Skip,
+            Pause
         };
 
         /*!

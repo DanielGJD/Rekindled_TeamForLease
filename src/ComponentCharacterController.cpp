@@ -115,9 +115,8 @@ namespace ForLeaseEngine {
                 ForLease->GameStateManager().SetAction(Modules::StateAction::Next);
             else if (key_e->Key == Keys::M)
                 ForLease->GameStateManager().SetAction(Modules::StateAction::Restart);
-            else if (key_e->Key == Keys::B) {
+            else if (key_e->Key == Keys::B)
                 ForLease->GameStateManager().SetState(ForLease->GameStateManager().NumLevels() - 3);
-            }
         }
 
         void CharacterController::OnKeyUp(const Event* e) {
