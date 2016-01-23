@@ -652,12 +652,18 @@ namespace ForLeaseEngine {
             Index of the closest vertex or -1 if no vertex near location
 
     */
-    int Mesh::GetVertexIndexNear(const Point& location, float distance) {
+    int Mesh::GetVertexIndexNear(const Point& location, std::vector<Point>* vertexData, float distance) {
+        std::vector<Point>* activeDataset = NULL;
+        if(vertexData)
+            activeDataset = vertexData;
+        else
+            activeDataset = &Vertices;
+
         if(Vertices.size() > 0) {
             int closestIndex = -1;
             float closestDistance = distance * distance;
             for(int i = 0; i < Vertices.size(); ++i) {
-                float currentDistance = Point::DistanceSquared(location, Vertices[i]);
+                float currentDistance = Point::DistanceSquared(location, (*activeDataset)[i]);
                 if(currentDistance < closestDistance) {
                     closestDistance = currentDistance;
                     closestIndex = i;
@@ -683,12 +689,19 @@ namespace ForLeaseEngine {
         \return
             Index of the closest edge or -1 if no edge near location
     */
-    int Mesh::GetEdgeIndexNear(const Point& location, float distance) {
-        if(Vertices.size() > 0) {
+    int Mesh::GetEdgeIndexNear(const Point& location, std::vector<Point>* vertexData, float distance) {
+        std::vector<Point>* activeDataset = NULL;
+        if(vertexData)
+            activeDataset = vertexData;
+        else
+            activeDataset = &Vertices;
+
+        if((*activeDataset).size() > 0) {
             int closestIndex = -1;
             float closestDistance = distance * distance;
             for(int i = 0; i < Edges.size(); ++i) {
-                Edge edge = GetEdge(i);
+                IndexedEdge indexedge = GetIndexedEdge(i);
+                Edge edge = Edge((*activeDataset)[indexedge.Indices[0]], (*activeDataset)[indexedge.Indices[1]]);
                 float edgeLength = Point::DistanceSquared(edge.Vertices[0], edge.Vertices[1]);
                 float currentDistance;
                 if(edgeLength == 0) {
@@ -731,10 +744,17 @@ namespace ForLeaseEngine {
         \return
             Index of the last top most face or -1 if not point not in the mesh
     */
-    int Mesh::GetFaceIndexAt(const Point& location) {
+    int Mesh::GetFaceIndexAt(const Point& location, std::vector<Point>* vertexData) {
+        std::vector<Point>* activeDataset = NULL;
+        if(vertexData)
+            activeDataset = vertexData;
+        else
+            activeDataset = &Vertices;
+
         int faceIndex = -1;
         for(int i = 0; i < Faces.size(); ++i) {
-            Face face = GetFace(i);
+            IndexedFace indexface = GetIndexedFace(i);
+            Face face = Face((*activeDataset)[indexface.Indices[0]], (*activeDataset)[indexface.Indices[1]], (*activeDataset)[indexface.Indices[2]]);
             HalfPlane hp1 = HalfPlane(face.Vertices[0], face.Vertices[1], face.Vertices[2]);
             if(hp1.Dot(location) < 0) {
                 HalfPlane hp2 = HalfPlane(face.Vertices[1], face.Vertices[2], face.Vertices[0]);

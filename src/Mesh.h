@@ -67,14 +67,15 @@ namespace ForLeaseEngine {
             int GetFaceCount() const;
             void SetFace(const IndexedFace& face, int index);
             Face GetFace(int index) const;
+
             const IndexedFace& GetIndexedFace(int index) const;
             void SetFaceColor(const Color& color, int index);
             void SetFaceColor(float r, float g, float b, float a, int index);
             Color GetFaceColor(int index) const;
 
-            int GetVertexIndexNear(const Point& location, float distance = 0.03);
-            int GetEdgeIndexNear(const Point& location, float distance = 0.03);
-            int GetFaceIndexAt(const Point& location);
+            int GetVertexIndexNear(const Point& location, std::vector<Point>* vertexData = NULL, float distance = 0.03);
+            int GetEdgeIndexNear(const Point& location, std::vector<Point>* vertexData = NULL, float distance = 0.03);
+            int GetFaceIndexAt(const Point& location, std::vector<Point>* vertexData = NULL);
 
             void AddAnimation(std::string const& name);
             void RemoveAnimation(std::string const& name);

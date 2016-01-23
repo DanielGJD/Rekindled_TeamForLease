@@ -39,8 +39,11 @@ namespace ForLeaseEngine {
     // ImGui Stuff
     static void DrawMainMenu();
     static void DrawFileMenu();
+    static void DrawAnimationMenu();
     static void NewMeshPopup();
     static void OpenMeshPopup();
+    static void NewAnimationPopup();
+    static void OpenAnimationPopup();
     static void MainWindow();
     static void VertexModeWindow();
     static void EdgeModeWindow();
@@ -76,12 +79,14 @@ namespace ForLeaseEngine {
 
     static float timer;
     static std::unordered_map<std::string, MeshAnimation> Animations;
-    static bool AnimationEditor = false;
+    //static bool AnimationEditor = false;
     static std::string CurrentAnimation;
-    static unsigned int CurrentFrame = 0;
+    //static unsigned int CurrentFrame = 0;
 
     static bool ShowNewPopup = false;
     static bool ShowOpenPopup = false;
+    static bool ShowNewAnimationPopup = false;
+    static bool ShowOpenAnimationPopup = false;
     static bool MeshLoaded = false;
     static Mode CurrentMode = Mode::None;
 
@@ -123,7 +128,7 @@ namespace ForLeaseEngine {
 
         model = AddEntity();
         model->AddComponent(new Components::Transform(*model, Point(0, 0), 1, 1, 0));
-        model->AddComponent(new Components::Model(*model, true, false, false, "", "", Color(1, 1, 1, 1), BlendMode::NONE, true, false));
+        model->AddComponent(new Components::Model(*model, true, false, false, "", "", Color(1, 1, 1, 1), BlendMode::NONE, true, false, false, true));
 
 //        instructions = AddEntity();
 //        Components::Transform* trans = new Components::Transform(*instructions, Point(-ForLease->GameWindow->GetXResolution() / 2, ForLease->GameWindow->GetYResolution() / 2), 1, 1, 0, 0);
@@ -160,6 +165,10 @@ namespace ForLeaseEngine {
             NewMeshPopup();
         if(ShowOpenPopup)
             OpenMeshPopup();
+        if(ShowNewAnimationPopup)
+            NewAnimationPopup();
+        if(ShowOpenAnimationPopup)
+            OpenAnimationPopup();
         if(MeshLoaded)
             MainWindow();
 
@@ -188,17 +197,19 @@ namespace ForLeaseEngine {
     static void DrawMainMenu() {
         if(ImGui::BeginMainMenuBar()) {
             DrawFileMenu();
+            if(MeshLoaded)
+                DrawAnimationMenu();
             ImGui::EndMainMenuBar();
         }
     }
 
     static void DrawFileMenu() {
         if(ImGui::BeginMenu("File")) {
-            if(ImGui::MenuItem("New")) {
+            if(ImGui::MenuItem("New...")) {
                 std::cout << "NEW SELECTED" << std::endl;
                 ShowNewPopup = true;
             }
-            if(ImGui::MenuItem("Open")) {
+            if(ImGui::MenuItem("Open...")) {
                 std::cout << "OPEN SELECTED" << std::endl;
                 ShowOpenPopup = true;
             }
@@ -211,6 +222,7 @@ namespace ForLeaseEngine {
                 CurrentMode = Mode::None;
                 MeshLoaded = false;
                 mesh = NULL;
+                animation = NULL;
                 Components::Model* workingModel = model->GetComponent<Components::Model>();
                 workingModel->ModelMesh = "";
                 workingModel->ModelTexture = "";
@@ -220,6 +232,18 @@ namespace ForLeaseEngine {
             }
             if(ImGui::MenuItem("Quit")) {
                 ForLease->GameStateManager().SetAction(Modules::StateAction::Quit);
+            }
+            ImGui::EndMenu();
+        }
+    }
+
+    static void DrawAnimationMenu() {
+        if(ImGui::BeginMenu("Animation")) {
+            if(ImGui::MenuItem("New...")) {
+                ShowNewAnimationPopup = true;
+            }
+            if(ImGui::MenuItem("Open...")) {
+                ShowOpenAnimationPopup = true;
             }
             ImGui::EndMenu();
         }
@@ -240,6 +264,7 @@ namespace ForLeaseEngine {
                 ForLease->Resources.LoadMesh(fileName);
                 mesh = ForLease->Resources.GetMesh(fileName);
                 model->GetComponent<Components::Model>()->ModelMesh = fileName;
+                vertexData = mesh->GetRawVertexData();
                 FileName = fileName;
                 fileName[0] = 0;
                 MeshLoaded = true;
@@ -248,8 +273,9 @@ namespace ForLeaseEngine {
             if(ImGui::Button("Cancel")) {
                 ShowNewPopup = false;
             }
-            ImGui::EndPopup();
+            //ImGui::EndPopup();
         }
+        ImGui::EndPopup();
     }
 
     static void OpenMeshPopup() {
@@ -265,19 +291,87 @@ namespace ForLeaseEngine {
                 model->GetComponent<Components::Model>()->ModelMesh = fileName;
                 FileName = fileName;
                 fileName[0] = 0;
+                vertexData = mesh->GetRawVertexData();
                 MeshLoaded = true;
             }
             ImGui::SameLine();
             if(ImGui::Button("Cancel")) {
                 ShowOpenPopup = false;
             }
-            ImGui::EndPopup();
+            //ImGui::EndPopup();
         }
+        ImGui::EndPopup();
+    }
+
+    static void NewAnimationPopup() {
+        ImGui::OpenPopup("NewAnimation");
+        if(ImGui::BeginPopup("NewAnimation")) {
+            static char fileName[32] = "";
+            ImGui::Text("New Animation");
+            ImGui::InputText("File Name", fileName, 32);
+            if(ImGui::Button("Create")) {
+                ShowNewAnimationPopup = false;
+                MeshAnimation tempAni = MeshAnimation(mesh, fileName);
+                Serializer aniSaver;
+                tempAni.Serialize(aniSaver);
+                aniSaver.WriteFile(fileName);
+                ForLease->Resources.LoadMeshAnimation(fileName);
+                animation = ForLease->Resources.GetMeshAnimation(fileName);
+                //model->GetComponent<Components::Model>()->SetAnimation(animation->GetAnimationName());
+                fileName[0] = 0;
+                std::cout << "Created animation:" << std::endl
+                          << "  Name: " << animation->GetAnimationName() << std::endl
+                          << "  Frames: " << animation->GetFrameCount() << std::endl
+                          << "  Verts Per Frame: " << animation->GetFrameVertexCount() << std::endl;
+            }
+            ImGui::SameLine();
+            if(ImGui::Button("Cancel")) {
+                ShowNewAnimationPopup = false;
+            }
+            //ImGui::EndPopup();
+        }
+        ImGui::EndPopup();
+    }
+
+    static void OpenAnimationPopup() {
+        ImGui::OpenPopup("OpenAnimation");
+        if(ImGui::BeginPopup("OpenAnimation")) {
+            static char fileName[32] = "";
+            ImGui::Text("Open Animation");
+            ImGui::InputText("File Name", fileName, 32);
+            if(ImGui::Button("Open")) {
+                ShowOpenAnimationPopup = false;
+                ForLease->Resources.LoadMeshAnimation(fileName);
+                animation = ForLease->Resources.GetMeshAnimation(fileName);
+                //model->GetComponent<Components::Model>()->ModelMesh = fileName;
+                //FileName = fileName;
+                fileName[0] = 0;
+                //vertexData = mesh->GetRawVertexData();
+                //MeshLoaded = true;
+                std::cout << "Loaded animation:" << std::endl
+                          << "  Name: " << animation->GetAnimationName() << std::endl
+                          << "  Frames: " << animation->GetFrameCount() << std::endl
+                          << "  Verts Per Frame: " << animation->GetFrameVertexCount() << std::endl;
+            }
+            ImGui::SameLine();
+            if(ImGui::Button("Cancel")) {
+                ShowOpenAnimationPopup = false;
+            }
+            //ImGui::EndPopup();
+        }
+        ImGui::EndPopup();
     }
 
     static void MainWindow() {
         ImGui::Begin(FileName.c_str());
         static int mode = 0;
+        static int resource = 0;
+
+        if(animation) {
+            ImGui::RadioButton("Mesh", &resource, 0); ImGui::SameLine();
+            ImGui::RadioButton("Animation", &resource, 1);
+        }
+
         ImGui::RadioButton("Vertex", &mode, 0); ImGui::SameLine();
         ImGui::RadioButton("Edge", &mode, 1); ImGui::SameLine();
         ImGui::RadioButton("Face", &mode, 2);
@@ -285,6 +379,29 @@ namespace ForLeaseEngine {
         ImGui::Text("Vertices: %d\nEdges: %d\nFaces: %d", mesh->GetVertexCount(),
                                                           mesh->GetEdgeCount(),
                                                           mesh->GetFaceCount());
+
+        if(resource == 0) {
+            vertexData = mesh->GetRawVertexData();
+            if(model->GetComponent<Components::Model>()->GetAnimation().compare("") != 0)
+                model->GetComponent<Components::Model>()->SetAnimation("");
+        }
+        if(resource == 1) {
+            unsigned int frame = model->GetComponent<Components::Model>()->GetFrame();
+            if(model->GetComponent<Components::Model>()->GetAnimation().compare("") == 0)
+                model->GetComponent<Components::Model>()->SetAnimation(animation->GetAnimationName());
+            vertexData = animation->GetRawFrameData(frame);
+            ImGui::Text("Current Frame: %d/%d", frame, animation->GetFrameCount() - 1);
+            if(ImGui::Button("Previous")) {
+                if(frame > 0)
+                    model->GetComponent<Components::Model>()->SetFrame(frame - 1);
+            }
+            ImGui::SameLine();
+            if(ImGui::Button("Next")) {
+                if(frame < animation->GetFrameCount() - 1)
+                    model->GetComponent<Components::Model>()->SetFrame(frame + 1);
+            }
+        }
+
         switch(mode) {
         case 0:
             if(CurrentMode != Mode::Vertex) {
@@ -401,9 +518,9 @@ namespace ForLeaseEngine {
         //render->SetDebugPointSize(16);
         for(std::unordered_set<int>::iterator i = SelectedFaces.begin(); i != SelectedVertices.end(); ++i) {
             IndexedFace face = mesh->GetIndexedFace(*i);
-            Point v1 = mesh->GetVertex(face.Indices[0]);
-            Point v2 = mesh->GetVertex(face.Indices[1]);
-            Point v3 = mesh->GetVertex(face.Indices[2]);
+            Point v1 = (*vertexData)[face.Indices[0]];
+            Point v2 = (*vertexData)[face.Indices[1]];
+            Point v3 = (*vertexData)[face.Indices[2]];
             float x = (v1[0] + v2[0] + v3[0]) / 3;
             float y = (v1[1] + v2[1] + v3[1]) / 3;
             render->DrawPoint(Point(x, y));
@@ -413,14 +530,15 @@ namespace ForLeaseEngine {
         render->SetDebugLineWidth(4);
         for(std::unordered_set<int>::iterator i = SelectedEdges.begin(); i != SelectedEdges.end(); ++i) {
             IndexedEdge edge = mesh->GetIndexedEdge(*i);
-            render->DrawLine(mesh->GetVertex(edge.Indices[0]), mesh->GetVertex(edge.Indices[1]));
+            render->DrawLine((*vertexData)[edge.Indices[0]], (*vertexData)[edge.Indices[1]]);
         }
 
         if(CurrentMode == Mode::Vertex) {
             render->SetDrawingColor(Color(1, 1, 1, 1));
             render->SetDebugPointSize(8);
             for(std::unordered_set<int>::iterator i = SelectedVertices.begin(); i != SelectedVertices.end(); ++i) {
-                render->DrawPoint(mesh->GetVertex(*i));
+                //render->DrawPoint(mesh->GetVertex(*i));
+                render->DrawPoint((*vertexData)[*i]);
             }
         }
     }
@@ -444,7 +562,7 @@ namespace ForLeaseEngine {
     static void VertexModeTasks() {
         // Mouse input
         if(ImGui::IsMouseClicked(0) && !ImGui::IsMouseHoveringAnyWindow() && !Moving && !Rotating && !Scaling) {
-            int index = mesh->GetVertexIndexNear(GetMousePosition());
+            int index = mesh->GetVertexIndexNear(GetMousePosition(), vertexData);
             if(ImGui::GetIO().KeyShift) {
                 if(index >= 0) {
                     std::unordered_set<int>::iterator i = SelectedVertices.find(index);
@@ -468,13 +586,15 @@ namespace ForLeaseEngine {
             CurrentMousePos = GetMousePosition();
             Vector displacement = CurrentMousePos - LastMousePos;
             for(std::unordered_set<int>::iterator i = SelectedVertices.begin(); i != SelectedVertices.end(); ++i) {
-                mesh->SetVertex(mesh->GetVertex(*i) + displacement, *i);
+                //mesh->SetVertex(mesh->GetVertex(*i) + displacement, *i);
+                (*vertexData)[*i] = (*vertexData)[*i] + displacement;
             }
 
             if(ImGui::IsKeyPressed(Keys::Escape)) {
                 Moving = false;
                 for(std::unordered_map<int, Point>::iterator i = ShadowVertices.begin(); i != ShadowVertices.end(); ++i) {
-                    mesh->SetVertex((*i).second, (*i).first);
+                    //mesh->SetVertex((*i).second, (*i).first);
+                    (*vertexData)[(*i).first] = (*i).second;
                 }
             }
 
@@ -488,13 +608,15 @@ namespace ForLeaseEngine {
             float scaleVal = currentDist / ScaleOriginDist;
             for(std::unordered_set<int>::iterator i = SelectedVertices.begin(); i != SelectedVertices.end(); ++i) {
                 Vector displacement = (*ShadowVertices.find(*i)).second - TransformOrigin;
-                mesh->SetVertex(TransformOrigin + displacement * scaleVal, *i);
+                //mesh->SetVertex(TransformOrigin + displacement * scaleVal, *i);
+                (*vertexData)[*i] = TransformOrigin + displacement * scaleVal;
             }
 
             if(ImGui::IsKeyPressed(Keys::Escape)) {
                 Scaling = false;
                 for(std::unordered_map<int, Point>::iterator i = ShadowVertices.begin(); i != ShadowVertices.end(); ++i) {
-                    mesh->SetVertex((*i).second, (*i).first);
+                    //mesh->SetVertex((*i).second, (*i).first);
+                    (*vertexData)[(*i).first] = (*i).second;
                 }
             }
 
@@ -511,13 +633,15 @@ namespace ForLeaseEngine {
 
             Matrix m = Matrix::Translation(TransformOrigin) * Matrix::RotationRad(angle) * Matrix::Translation(TransformOrigin * -1);
             for(std::unordered_set<int>::iterator i = SelectedVertices.begin(); i != SelectedVertices.end(); ++i) {
-                mesh->SetVertex(m * (*ShadowVertices.find(*i)).second, *i);
+                //mesh->SetVertex(m * (*ShadowVertices.find(*i)).second, *i);
+                (*vertexData)[*i] = m * (*ShadowVertices.find(*i)).second;
             }
 
             if(ImGui::IsKeyPressed(Keys::Escape)) {
                 Rotating = false;
                 for(std::unordered_map<int, Point>::iterator i = ShadowVertices.begin(); i != ShadowVertices.end(); ++i) {
-                    mesh->SetVertex((*i).second, (*i).first);
+                    //mesh->SetVertex((*i).second, (*i).first);
+                    (*vertexData)[(*i).first] = (*i).second;
                 }
             }
 
@@ -601,7 +725,7 @@ namespace ForLeaseEngine {
 
     static void EdgeModeTasks() {
         if(ImGui::IsMouseClicked(0) && !ImGui::IsMouseHoveringAnyWindow() && !Moving && !Rotating && !Scaling) {
-            int index = mesh->GetEdgeIndexNear(GetMousePosition());
+            int index = mesh->GetEdgeIndexNear(GetMousePosition(), vertexData);
             if(ImGui::GetIO().KeyShift) {
                 if(index >= 0) {
                     std::unordered_set<int>::iterator i = SelectedEdges.find(index);
@@ -668,7 +792,7 @@ namespace ForLeaseEngine {
 
     static void FaceModeTasks() {
         if(ImGui::IsMouseClicked(0) && !ImGui::IsMouseHoveringAnyWindow() && !Moving && !Rotating && !Scaling) {
-            int index = mesh->GetFaceIndexAt(GetMousePosition());
+            int index = mesh->GetFaceIndexAt(GetMousePosition(), vertexData);
             if(ImGui::GetIO().KeyShift) {
                 if(index >= 0) {
                     std::unordered_set<int>::iterator i = SelectedFaces.find(index);

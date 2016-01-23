@@ -69,6 +69,7 @@ namespace ForLeaseEngine {
     void MeshAnimation::Deserialize(Serializer& root) {
         Serializer animation = root.GetChild("MeshAnimation");
         animation.ReadString("AnimationName", AnimationName);
+        std::cout << "Deserializing " << AnimationName << std::endl;
         unsigned int frameCount;
         animation.ReadUint("FrameCount", frameCount);
         unsigned int vertexCount;
