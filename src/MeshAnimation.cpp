@@ -109,6 +109,7 @@ namespace ForLeaseEngine {
     }
 
     void MeshAnimation::DeleteFrame(unsigned int frame) {
+        FrameVertexData.erase(FrameVertexData.begin() + frame);
     }
 
     unsigned int MeshAnimation::GetFrameCount() const {

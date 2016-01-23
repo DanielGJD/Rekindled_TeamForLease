@@ -217,6 +217,12 @@ namespace ForLeaseEngine {
                 Serializer meshSaver;
                 mesh->Serialize(meshSaver);
                 meshSaver.WriteFile(FileName);
+
+                if(animation) {
+                    Serializer aniSaver;
+                    animation->Serialize(aniSaver);
+                    aniSaver.WriteFile(animation->GetAnimationName());
+                }
             }
             if(ImGui::MenuItem("Close", "", false, MeshLoaded)) {
                 CurrentMode = Mode::None;
@@ -367,30 +373,32 @@ namespace ForLeaseEngine {
         static int mode = 0;
         static int resource = 0;
 
-        if(animation) {
-            ImGui::RadioButton("Mesh", &resource, 0); ImGui::SameLine();
-            ImGui::RadioButton("Animation", &resource, 1);
-        }
-
-        ImGui::RadioButton("Vertex", &mode, 0); ImGui::SameLine();
-        ImGui::RadioButton("Edge", &mode, 1); ImGui::SameLine();
-        ImGui::RadioButton("Face", &mode, 2);
         ImGui::Text("Mesh Stats:");
         ImGui::Text("Vertices: %d\nEdges: %d\nFaces: %d", mesh->GetVertexCount(),
                                                           mesh->GetEdgeCount(),
                                                           mesh->GetFaceCount());
+        ImGui::Dummy(ImVec2(0, 10));
+
+        if(animation) {
+            ImGui::RadioButton("Mesh", &resource, 0); ImGui::SameLine();
+            ImGui::RadioButton("Animation", &resource, 1);
+
+            if(resource == 0)
+                ImGui::Dummy(ImVec2(0, 10));
+        }
 
         if(resource == 0) {
             vertexData = mesh->GetRawVertexData();
             if(model->GetComponent<Components::Model>()->GetAnimation().compare("") != 0)
                 model->GetComponent<Components::Model>()->SetAnimation("");
+
         }
         if(resource == 1) {
             unsigned int frame = model->GetComponent<Components::Model>()->GetFrame();
             if(model->GetComponent<Components::Model>()->GetAnimation().compare("") == 0)
                 model->GetComponent<Components::Model>()->SetAnimation(animation->GetAnimationName());
             vertexData = animation->GetRawFrameData(frame);
-            ImGui::Text("Current Frame: %d/%d", frame, animation->GetFrameCount() - 1);
+            ImGui::Text("Current Frame: %d/%d", frame + 1, animation->GetFrameCount());
             if(ImGui::Button("Previous")) {
                 if(frame > 0)
                     model->GetComponent<Components::Model>()->SetFrame(frame - 1);
@@ -400,7 +408,26 @@ namespace ForLeaseEngine {
                 if(frame < animation->GetFrameCount() - 1)
                     model->GetComponent<Components::Model>()->SetFrame(frame + 1);
             }
+
+            if(ImGui::Button("AddFrame")) {
+                animation->AddFrame();
+            }
+            ImGui::SameLine();
+            if(ImGui::Button("RemoveFrame")) {
+                if(animation->GetFrameCount() > 1) {
+                    animation->DeleteFrame(frame);
+
+                    if(frame == animation->GetFrameCount())
+                        model->GetComponent<Components::Model>()->SetFrame(frame - 1);
+                }
+            }
+            ImGui::Dummy(ImVec2(0, 10));
         }
+
+
+        ImGui::RadioButton("Vertex", &mode, 0); ImGui::SameLine();
+        ImGui::RadioButton("Edge", &mode, 1); ImGui::SameLine();
+        ImGui::RadioButton("Face", &mode, 2);
 
         switch(mode) {
         case 0:
@@ -431,6 +458,7 @@ namespace ForLeaseEngine {
             FaceModeWindow();
             break;
         }
+
         ImGui::End();
     }
 
