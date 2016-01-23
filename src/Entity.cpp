@@ -16,8 +16,9 @@ namespace ForLeaseEngine {
 
     long unsigned Entity::TotalEntities = 0;
 
+    unsigned long Entity::MaxEntities = 9999;
     std::set<unsigned long> Entity::IDs = std::set<unsigned long>();
-    std::uniform_int_distribution<unsigned long> Entity::Distribution = std::uniform_int_distribution<unsigned long>(0, MaxEntities);
+    std::uniform_int_distribution<unsigned long> Entity::Distribution = std::uniform_int_distribution<unsigned long>(1, MaxEntities);
     std::default_random_engine Entity::RandomEngine = std::default_random_engine();
 
     /*!
@@ -208,6 +209,10 @@ namespace ForLeaseEngine {
             An unsigned long integer to be used as the ID.
     */
     unsigned long Entity::GetNewID() {
+        if (IDs.size() > MaxEntities / 2) {
+            MaxEntities = MaxEntities * 10 + 9;
+            //Distribution.max(MaxEntities);
+        }
         if (IDs.size() >= MaxEntities)
             throw OutOfIDsException(MaxEntities);
 
