@@ -50,6 +50,7 @@ namespace ForLeaseEngine {
                         Parent.FrameRateController().End();   // End the current frame
 
                         while (Action == StateAction::Pause) {
+                            ForLease->OSInput.ProcessAllInput();
                             Parent.FrameRateController().SleepFor(0.5);
                         }
 
