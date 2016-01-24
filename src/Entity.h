@@ -86,7 +86,6 @@ namespace ForLeaseEngine {
             static std::set<unsigned long> IDs;
             static unsigned long MaxEntities;
             static std::default_random_engine RandomEngine;
-            static std::uniform_int_distribution<unsigned long> Distribution;
             static unsigned long GetNewID();
             static void FreeID(unsigned long id);
 
