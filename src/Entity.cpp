@@ -216,7 +216,7 @@ namespace ForLeaseEngine {
         while (true) {
             auto result = IDs.insert(distribution(RandomEngine));
 
-            if (result.second) {
+            if (result.second && *(result.first) != 0) {
                 #ifdef FLE_DEBUG
                     std::cout << "Issued ID: " << *(result.first) << std::endl;
                 #endif
