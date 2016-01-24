@@ -15,6 +15,7 @@
 #include "KeyboardEvent.h"
 #include "MouseButtonEvent.h"
 #include "MouseMotionEvent.h"
+#include "WindowEvent.h"
 #include "Mouse.h"
 #include "Input.h"
 #include "imgui.h"
@@ -86,6 +87,7 @@ namespace ForLeaseEngine {
 
             // Mouse Events
             case SDL_MOUSEBUTTONDOWN:
+            {
                 if(SDL_e.button.which != SDL_TOUCH_MOUSEID) {
                     MouseButtonEvent e = MouseButtonEvent("MouseButtonDown",
                                                           SDL_e.button.button,
@@ -95,8 +97,9 @@ namespace ForLeaseEngine {
                     dispatcher->Dispatch(&e, this);
                 }
                 break;
-
+            }
             case SDL_MOUSEBUTTONUP:
+            {
                 if(SDL_e.button.which != SDL_TOUCH_MOUSEID) {
                     MouseButtonEvent e = MouseButtonEvent("MouseButtonUp",
                                                           SDL_e.button.button,
@@ -106,8 +109,9 @@ namespace ForLeaseEngine {
                     dispatcher->Dispatch(&e, this);
                 }
                 break;
-
+            }
             case SDL_MOUSEMOTION:
+            {
                 MouseMotionEvent e = MouseMotionEvent("MouseMotion",
                                                       SDL_e.motion.x,
                                                       GameWindow->GetYResolution() - SDL_e.motion.y,
@@ -115,6 +119,62 @@ namespace ForLeaseEngine {
                                                       -SDL_e.motion.yrel);
                 dispatcher->Dispatch(&e, this);
                 break;
+            }
+            case SDL_WINDOWEVENT:
+            {
+                switch(SDL_e.window.event) {
+                    case SDL_WINDOWEVENT_SHOWN:
+                        std::cout << "Window " << SDL_e.window.windowID << " shown" << std::endl;
+                        break;
+                    case SDL_WINDOWEVENT_HIDDEN:
+                        std::cout << "Window " << SDL_e.window.windowID << " hidden" << std::endl;
+                        break;
+                    case SDL_WINDOWEVENT_EXPOSED:
+                        std::cout << "Window " << SDL_e.window.windowID << " exposed" << std::endl;
+                        break;
+                    case SDL_WINDOWEVENT_MOVED:
+                        std::cout << "Window " << SDL_e.window.windowID << " moved to (" << SDL_e.window.data1 << "," << SDL_e.window.data2 << ")" << std::endl;
+                        break;
+                    case SDL_WINDOWEVENT_RESIZED:
+                        std::cout << "Window " << SDL_e.window.windowID << " resized to (" << SDL_e.window.data1 << "," << SDL_e.window.data2 << ")" << std::endl;
+                        break;
+                    case SDL_WINDOWEVENT_SIZE_CHANGED:
+                        std::cout << "Window " << SDL_e.window.windowID << " size changed to (" << SDL_e.window.data1 << "," << SDL_e.window.data2 << ")" << std::endl;
+                        break;
+                    case SDL_WINDOWEVENT_MINIMIZED:
+                        std::cout << "Window " << SDL_e.window.windowID << " minimized" << std::endl;
+                        break;
+                    case SDL_WINDOWEVENT_MAXIMIZED:
+                        std::cout << "Window " << SDL_e.window.windowID << " maximized" << std::endl;
+                        break;
+                    case SDL_WINDOWEVENT_RESTORED:
+                        std::cout << "Window " << SDL_e.window.windowID << " restored" << std::endl;
+                        break;
+                    case SDL_WINDOWEVENT_ENTER:
+                        std::cout << "Window " << SDL_e.window.windowID << " gained mouse focus" << std::endl;
+                        break;
+                    case SDL_WINDOWEVENT_LEAVE:
+                        std::cout << "Window " << SDL_e.window.windowID << " lost mouse focus" << std::endl;
+                        break;
+                    case SDL_WINDOWEVENT_FOCUS_GAINED:
+                    {
+                        std::cout << "Window " << SDL_e.window.windowID << " gained keyboard focus" << std::endl;
+                        WindowEvent e = WindowEvent(WindowEvent::FocusGained);
+                        ForLease->Dispatcher.Dispatch(&e, this);
+                        break;
+                    }
+                    case SDL_WINDOWEVENT_FOCUS_LOST:
+                    {
+                        std::cout << "Window " << SDL_e.window.windowID << " lost keyboard focus" << std::endl;
+                        WindowEvent e = WindowEvent(WindowEvent::FocusLost);
+                        ForLease->Dispatcher.Dispatch(&e, this);
+                        break;
+                    }
+                    case SDL_WINDOWEVENT_CLOSE:
+                        std::cout << "Window " << SDL_e.window.windowID << " closed" << std::endl;
+                        break;
+                }
+            }
 
         }
     }

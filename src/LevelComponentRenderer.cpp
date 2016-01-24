@@ -97,7 +97,7 @@ namespace ForLeaseEngine {
             BlendModeSwapCount = 0;
             RenderTime = 0;
 
-            if(CurrentCamera != 0) {
+            if(/*CurrentCamera != 0*/ true) {
                 float aspectRatio = static_cast<float>(ForLease->GameWindow->GetXResolution()) / ForLease->GameWindow->GetYResolution();
                 try{
                     Entity* cameraEntity = Owner.GetEntityByID(CurrentCamera, true);
@@ -115,7 +115,7 @@ namespace ForLeaseEngine {
             }
             else {
                 Projection = Matrix();
-                //std::cout << "No camera, setting to default" << std::cout;
+                //std::cout << "No camera, setting to default" << std::endl;
             }
 
             std::map<int, std::vector<Entity*>> sorted;
@@ -216,10 +216,12 @@ namespace ForLeaseEngine {
 
         void Renderer::SetCamera(const Entity& camera) {
             CurrentCamera = camera.GetID();
+            std::cout << "Set camera to " << CurrentCamera << std::endl;
         }
 
         void Renderer::SetCamera(unsigned long camera) {
             CurrentCamera = camera;
+            std::cout << "Set Camera to " << CurrentCamera << std::endl;
         }
 
         long Renderer::GetCameraID() {
@@ -639,8 +641,8 @@ namespace ForLeaseEngine {
 //            timer.Reset();
             glCallList(index);
 //            RasterTime = timer.GetTime();
-            std::cout << std::endl << "FPS:       " << 1 / ForLease->FrameRateController().GetDt() << std::endl
-                      << "Transform: " << TransformTime << std::endl;
+            //std::cout << std::endl << "FPS:       " << 1 / ForLease->FrameRateController().GetDt() << std::endl
+              //        << "Transform: " << TransformTime << std::endl;
 //                      << "Compile:   " << CompileTime << std::endl
 //                      << "Raster:    " << RasterTime << std::endl;
 //            glDeleteLists(index, 1);
