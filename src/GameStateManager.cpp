@@ -30,6 +30,11 @@ namespace ForLeaseEngine {
             : Parent(parent), States(states), StateIndex(0),
               Action(StateAction::Continue) {}
 
+        void GameStateManager::Initialize() {
+            //ForLease->Dispatcher.Attach(NULL, this, "FocusGained", &GameStateManager::FocusUnpause);
+            //ForLease->Dispatcher.Attach(NULL, this, "FocusLost", &GameStateManager::UnfocusPause);
+        }
+
         /*!
             Handles the main game loop.  Calls the current state's Update function.
         */
@@ -102,6 +107,14 @@ namespace ForLeaseEngine {
         void GameStateManager::SetState(unsigned stateIndex) {
             NextStateIndex = stateIndex;
             SetAction(StateAction::Skip);
+        }
+
+        void GameStateManager::UnfocusPause() {
+            Action = StateAction::Pause;
+        }
+
+        void GameStateManager::FocusUnpause() {
+            Action = StateAction::Continue;
         }
 
         /*!

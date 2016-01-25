@@ -48,10 +48,13 @@ namespace ForLeaseEngine {
                 // GameStateManager();
                 GameStateManager(Engine& parent);
                 GameStateManager(Engine& parent, std::vector<State *> states);
+                void Initialize();
                 void Run();
                 void SetAction(StateAction action);
                 void SetState(std::string stateName);
                 void SetState(unsigned stateIndex);
+                void UnfocusPause();
+                void FocusUnpause();
                 State& CurrentState();
                 unsigned NumLevels();
             private:
