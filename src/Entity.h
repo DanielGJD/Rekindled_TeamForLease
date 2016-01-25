@@ -14,6 +14,8 @@
 
 #include <vector>
 #include <string>
+#include <set>
+#include <random>
 #include "ComponentsInclude.h"
 #include "EntityExceptions.h"
 #include "Serializable.h"
@@ -34,6 +36,7 @@ namespace ForLeaseEngine {
             void Update();
             void Serialize(Serializer& root);
             void Deserialize(Serializer& root);
+            void DeserializeWithoutID(Serializer& root);
             void CreateArchetype(std::string filename);
             long unsigned GetID() const;
             std::string GetName() const;
@@ -79,6 +82,13 @@ namespace ForLeaseEngine {
             std::vector<Component *> Components;
             //! A static ID of all Entities that have been created by the game.
             static long unsigned TotalEntities;
+
+            static std::set<unsigned long> IDs;
+            static unsigned long MaxEntities;
+            static std::default_random_engine RandomEngine;
+            static unsigned long GetNewID();
+            static void FreeID(unsigned long id);
+
 
     };
 

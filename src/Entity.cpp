@@ -16,6 +16,10 @@ namespace ForLeaseEngine {
 
     long unsigned Entity::TotalEntities = 0;
 
+    unsigned long Entity::MaxEntities = 9999;
+    std::set<unsigned long> Entity::IDs = std::set<unsigned long>();
+    std::default_random_engine Entity::RandomEngine = std::default_random_engine();
+
     /*!
         Constructor for a new Entity.  Sets the ID of this Entity to a new,
         unique ID that is derived from the total number of entities created before
@@ -23,7 +27,7 @@ namespace ForLeaseEngine {
         to this entity to None.
     */
     Entity::Entity(std::string name, boolean serialize)
-    : ID(++TotalEntities), ComponentMask(ComponentType::None), IncludeInSerialize(serialize), Delete(false) {
+    : ID(GetNewID()), ComponentMask(ComponentType::None), IncludeInSerialize(serialize), Delete(false) {
         if (name != "")
             Name = name;
         else {
@@ -37,8 +41,9 @@ namespace ForLeaseEngine {
         Destructor for an Entity.  Destroys all components attached to it.
     */
     Entity::~Entity() {
-        for (Component* component : Components)
-            delete component;
+        for (Component* component : Components) delete component;
+
+        FreeID(ID);
     }
 
     void Entity::Serialize(Serializer& root) {
@@ -58,10 +63,23 @@ namespace ForLeaseEngine {
 
     void Entity::Deserialize(Serializer& root) {
         Serializer entity = root.GetChild("Entity");
+        FreeID(ID);
         unsigned id;
         entity.ReadUint("ID", id);
         entity.ReadString("Name", Name);
         ID = id;
+        IDs.insert(id);
+        ArraySerializer jsonComponents(entity);
+        jsonComponents = entity.GetChild("Components");
+        for (unsigned i = 0; i < jsonComponents.Size(); ++i) {
+            Serializer component = jsonComponents[i];
+            AddComponent(DeserializeComponent(component, *this));
+        }
+    }
+
+    void Entity::DeserializeWithoutID(Serializer& root) {
+        Serializer entity = root.GetChild("Entity");
+        entity.ReadString("Name", Name);
         ArraySerializer jsonComponents(entity);
         jsonComponents = entity.GetChild("Components");
         for (unsigned i = 0; i < jsonComponents.Size(); ++i) {
@@ -181,6 +199,43 @@ namespace ForLeaseEngine {
     bool Entity::HasComponent(ComponentType type) {
         if ((type & ComponentMask) == type) return true;
         else return false;
+    }
+
+    /*!
+        Returns a unique ID for a new object.
+
+        \return
+            An unsigned long integer to be used as the ID.
+    */
+    unsigned long Entity::GetNewID() {
+        if (IDs.size() > MaxEntities / 2) MaxEntities = MaxEntities * 10 + 9;
+        if (IDs.size() >= MaxEntities)    throw OutOfIDsException(MaxEntities); // This should never happen
+
+        std::uniform_int_distribution<unsigned long> distribution(1, MaxEntities);
+
+        while (true) {
+            auto result = IDs.insert(distribution(RandomEngine));
+
+            if (result.second && *(result.first) != 0) {
+                #ifdef FLE_DEBUG
+                    std::cout << "Issued ID: " << *(result.first) << std::endl;
+                #endif
+                return *(result.first);
+            }
+        }
+    }
+
+    /*!
+        Frees up a given ID.
+
+        \param id
+            An unsigned long ID to free up.
+    */
+    void Entity::FreeID(unsigned long id) {
+        #ifdef FLE_DEBUG
+            std::cout << "Freeing ID: " << id << std::endl;
+        #endif
+        IDs.erase(id);
     }
 
     /*!

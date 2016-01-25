@@ -88,7 +88,6 @@ namespace ForLeaseEngine {
             std::string Name;                               //! Name of the state
             std::vector<LevelComponent*> LevelComponents;   //! The level components in the state
             std::vector<Entity*> Entities;                  //! The entities in the state
-
     };
 
     LevelComponent* DeserializeLevelComponent(Serializer& root, State& state);

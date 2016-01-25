@@ -14,6 +14,8 @@
 #include "HalfPlane.h"
 #include <sstream>
 
+#include <random>
+
 namespace ForLeaseEngine {
 
     /*!
@@ -21,6 +23,9 @@ namespace ForLeaseEngine {
 
         \param name
             A std::string name to give this state.
+
+        \param maxElements
+            An unsigned long that determines the maximum number of elements we want this level to have.
     */
     State::State(std::string name) : Name(name), Entities() {}
 
@@ -80,7 +85,7 @@ namespace ForLeaseEngine {
         archetype.ReadFile(filename);
         Entity* entity = new Entity();
         std::string name_backup = entity->GetName();
-        entity->Deserialize(archetype);
+        entity->DeserializeWithoutID(archetype);
 
         if (entity->HasComponent(ComponentType::Transform)) {
             Components::Transform* transform = entity->GetComponent<Components::Transform>();
@@ -461,9 +466,9 @@ namespace ForLeaseEngine {
         ArraySerializer jsonLevelComponents(state);
         jsonLevelComponents = state.GetChild("LevelComponents");
 
-        for (unsigned i = 0; i < 5; ++i) {
+        for (LevelComponent* lc : LevelComponents) {
             Serializer lcSerializer;
-            LevelComponents[i]->Serialize(lcSerializer);
+            lc->Serialize(lcSerializer);
             jsonLevelComponents.Append(lcSerializer);
         }
 
@@ -502,6 +507,8 @@ namespace ForLeaseEngine {
     LevelComponent* DeserializeLevelComponent(Serializer& root, State& state) {
         unsigned type;
         root.ReadUint("Type", type);
+
+        std::cout << "Deserializing " << type << std::endl;
 
         LevelComponent* lc = 0;
 

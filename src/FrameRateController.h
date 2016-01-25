@@ -44,6 +44,8 @@ namespace ForLeaseEngine {
                 void Start();
                 void End();
 
+                void SleepFor(double time);
+
                 double GetDt();
                 double GetUnscaledDt();
 

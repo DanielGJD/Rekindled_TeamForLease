@@ -15,6 +15,7 @@
 #include <windows.h>
 #else
 #include <chrono>
+#include <thread>
 #endif
 #include "Timer.h"
 #include <iostream>
@@ -81,7 +82,6 @@ namespace ForLeaseEngine {
             #ifdef FLE_WINDOWS
             LARGE_INTEGER currentTime;
             QueryPerformanceCounter(&currentTime);
-
             while (currentTime.QuadPart < EndTime.QuadPart)
                 QueryPerformanceCounter(&currentTime);
 
@@ -95,6 +95,17 @@ namespace ForLeaseEngine {
             LastFrameTime = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - StartTime);
             #endif
             //std::cout << muhTimer.GetTime() << std::endl;
+        }
+
+        /*!
+            Sleeps for a while.
+        */
+        void FrameRateController::SleepFor(double time) {
+            #ifdef FLE_WINDOWS
+            Sleep(time * 1000);
+            #else
+            std::this_thread::sleep_for(std::chrono::seconds(time));
+            #endif
         }
 
         /*!

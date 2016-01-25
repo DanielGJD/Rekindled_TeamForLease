@@ -32,29 +32,30 @@ void SeanState::Load() {
     AddLevelComponent(renderer);
     AddLevelComponent(new LevelComponents::Physics(*this, Vector(0,-10)));
     AddLevelComponent(new LevelComponents::Collision(*this));
+    AddLevelComponent(new LevelComponents::Menu(*this));
 
 
     // BOX
-    FLE::Mesh* box = new FLE::Mesh(4, 4, 2);
-    box->SetVertex(Point(-1,-1), 0);
-    box->SetVertex(Point(-1,1), 1);
-    box->SetVertex(Point(1,1), 2);
-    box->SetVertex(Point(1,-1), 3);
+    //FLE::Mesh* box = new FLE::Mesh(4, 4, 2);
+    //box->SetVertex(Point(-1,-1), 0);
+    //box->SetVertex(Point(-1,1), 1);
+    //box->SetVertex(Point(1,1), 2);
+    //box->SetVertex(Point(1,-1), 3);
 
-    box->SetEdge(IndexedEdge(0,1), 0);
-    box->SetEdge(IndexedEdge(1,2), 1);
-    box->SetEdge(IndexedEdge(2,3), 2);
-    box->SetEdge(IndexedEdge(3,0), 3);
+    //box->SetEdge(IndexedEdge(0,1), 0);
+    //box->SetEdge(IndexedEdge(1,2), 1);
+    //box->SetEdge(IndexedEdge(2,3), 2);
+    //box->SetEdge(IndexedEdge(3,0), 3);
 
-    box->SetFace(IndexedFace(0,1,2), 0);
-    box->SetFace(IndexedFace(0,2,3), 1);
+    //box->SetFace(IndexedFace(0,1,2), 0);
+    //box->SetFace(IndexedFace(0,2,3), 1);
 
-    box->SetFaceColor(Color(1,0,0), 0);
-    box->SetFaceColor(Color(1,0,0), 1);
+    //box->SetFaceColor(Color(1,0,0), 0);
+    //box->SetFaceColor(Color(1,0,0), 1);
 
-    Serializer serial;
-    box->Serialize(serial);
-    serial.WriteFile("BoxMesh.json");
+    //Serializer serial;
+    //box->Serialize(serial);
+    //serial.WriteFile("BoxMesh.json");
 
     // TRIANGLE
     //FLE::Mesh* triangle = new FLE::Mesh(3, 3, 1);
@@ -114,10 +115,10 @@ void SeanState::Load() {
     serial2.WriteFile("StateTest.json");
 
 
-    ForLease->Resources.LoadMesh("BoxMesh.json");
+    //ForLease->Resources.LoadMesh("BoxMesh.json");
 
-    DeleteAllEntities();
-    DeleteAllLevelComponents();
+    //DeleteAllEntities();
+    //DeleteAllLevelComponents();
 
 
 
@@ -145,20 +146,20 @@ void SeanState::Initialize() {
     background->GetComponent<Components::Transform>(true)->ScaleX = 0.05;
     background->GetComponent<Components::Transform>(true)->ScaleY = 0.05;
 
-    Entity* menu = AddEntity("MainMenu");
-    menu->AddComponent(new Components::Transform(*menu));
-    menu->AddComponent(new Components::Menu(*menu));
-    Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
-    menuComp->AddItem(new MenuItems::NextLevel("ButtonPlay.png"));
-    menuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonQuit.png", "QuitConfirm", "MainMenu"));
-    menuComp->Activate();
+    //Entity* menu = AddEntity("MainMenu");
+    //menu->AddComponent(new Components::Transform(*menu));
+    //menu->AddComponent(new Components::Menu(*menu));
+    //Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
+    //menuComp->AddItem(new MenuItems::NextLevel("ButtonPlay.png"));
+    //menuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonQuit.png", "QuitConfirm", "MainMenu"));
+    //menuComp->Activate();
 
-    Entity* quitConfirm = AddEntity("QuitConfirm");
-    quitConfirm->AddComponent(new Components::Transform(*quitConfirm));
-    quitConfirm->AddComponent(new Components::Menu(*quitConfirm));
-    Components::Menu* quitConfirmComp = quitConfirm->GetComponent<Components::Menu>();
-    quitConfirmComp->AddItem(new MenuItems::Quit("ButtonQuit.png"));
-    quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonCancel.png", "MainMenu", "QuitConfirm"));
+    //Entity* quitConfirm = AddEntity("QuitConfirm");
+    //quitConfirm->AddComponent(new Components::Transform(*quitConfirm));
+    //quitConfirm->AddComponent(new Components::Menu(*quitConfirm));
+    //Components::Menu* quitConfirmComp = quitConfirm->GetComponent<Components::Menu>();
+    //quitConfirmComp->AddItem(new MenuItems::Quit("ButtonQuit.png"));
+    //quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonCancel.png", "MainMenu", "QuitConfirm"));
 
     //AddLevelComponent(new LevelComponents::Menu(*this));
 
