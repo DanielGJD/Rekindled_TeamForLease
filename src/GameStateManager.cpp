@@ -60,7 +60,7 @@ namespace ForLeaseEngine {
 
                         while (Action == StateAction::Freeze) {
                             ForLease->OSInput.ProcessAllInput();
-                            Parent.FrameRateController().SleepFor(0.5);
+                            Parent.FrameRateController().SleepFor(0.1);
                         }
 
                         if (Action == StateAction::Pause) {
@@ -130,7 +130,7 @@ namespace ForLeaseEngine {
         }
 
         void GameStateManager::FocusUnfreeze(const Event* e) {
-            Action = StateAction::Pause;
+            Action = StateAction::Continue;
         }
 
         /*!
