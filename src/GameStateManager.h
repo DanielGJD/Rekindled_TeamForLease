@@ -14,6 +14,7 @@
 
 #include <vector>
 #include <string>
+#include "Event.h"
 
 namespace ForLeaseEngine {
 
@@ -54,8 +55,8 @@ namespace ForLeaseEngine {
                 void SetAction(StateAction action);
                 void SetState(std::string stateName);
                 void SetState(unsigned stateIndex);
-                void UnfocusPause();
-                void FocusUnpause();
+                void UnfocusFreeze(const Event* e);
+                void FocusUnfreeze(const Event* e);
                 State& CurrentState();
                 unsigned NumLevels();
             private:

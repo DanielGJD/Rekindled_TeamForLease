@@ -32,8 +32,8 @@ namespace ForLeaseEngine {
               Action(StateAction::Continue) {}
 
         void GameStateManager::Initialize() {
-            //ForLease->Dispatcher.Attach(NULL, this, "FocusGained", &GameStateManager::FocusUnpause);
-            //ForLease->Dispatcher.Attach(NULL, this, "FocusLost", &GameStateManager::UnfocusPause);
+            ForLease->Dispatcher.Attach(NULL, this, "FocusGained", &GameStateManager::FocusUnfreeze);
+            ForLease->Dispatcher.Attach(NULL, this, "FocusLost", &GameStateManager::UnfocusFreeze);
             PauseScreen = new PauseMenu();
             //PauseScreen->Load();
             //PauseScreen->Initialize();
@@ -58,6 +58,11 @@ namespace ForLeaseEngine {
                         States[StateIndex]->Update();         // Do all the game stuff
                         Parent.FrameRateController().End();   // End the current frame
 
+                        while (Action == StateAction::Freeze) {
+                            ForLease->OSInput.ProcessAllInput();
+                            Parent.FrameRateController().SleepFor(0.5);
+                        }
+
                         if (Action == StateAction::Pause) {
                             PauseScreen->Load();
                             PauseScreen->Initialize();
@@ -68,11 +73,6 @@ namespace ForLeaseEngine {
 
                             PauseScreen->Deinitialize();
                             PauseScreen->Unload();
-                        }
-
-                        while (Action == StateAction::Freeze) {
-                            ForLease->OSInput.ProcessAllInput();
-                            Parent.FrameRateController().SleepFor(0.5);
                         }
 
                     } while (Action == StateAction::Continue);
@@ -125,12 +125,12 @@ namespace ForLeaseEngine {
             SetAction(StateAction::Skip);
         }
 
-        void GameStateManager::UnfocusPause() {
-            Action = StateAction::Pause;
+        void GameStateManager::UnfocusFreeze(const Event* e) {
+            Action = StateAction::Freeze;
         }
 
-        void GameStateManager::FocusUnpause() {
-            Action = StateAction::Continue;
+        void GameStateManager::FocusUnfreeze(const Event* e) {
+            Action = StateAction::Pause;
         }
 
         /*!
