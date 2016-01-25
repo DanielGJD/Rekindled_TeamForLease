@@ -26,7 +26,7 @@ namespace ForLeaseEngine {
             Exception(const std::string& exceptionMessage);
 
             void SetInfo(const std::string& exceptionMessage);
-            std::string const& GetInfo();
+            std::string const& GetInfo() const;
 
         private:
             //! Error message

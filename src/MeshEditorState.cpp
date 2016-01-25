@@ -27,6 +27,7 @@
 #include "Face.h"
 #include "Edge.h"
 #include "MeshAnimation.h"
+#include "Exception.h"
 #include <vector>
 #include <iostream>
 #include <cmath>
@@ -89,6 +90,7 @@ namespace ForLeaseEngine {
     static bool ShowOpenAnimationPopup = false;
     static bool MeshLoaded = false;
     static Mode CurrentMode = Mode::None;
+    static int AnimationEdit = 0;
 
     static std::unordered_set<int> SelectedVertices;
     static std::unordered_set<int> SelectedEdges;
@@ -173,6 +175,9 @@ namespace ForLeaseEngine {
             MainWindow();
 
         timer += ForLease->FrameRateController().GetDt();
+        for(unsigned int i = 0; i < Entities.size(); ++i) {
+            Entities[i]->Update();
+        }
         RenderGrid();
         render->Update(Entities);
         RenderSelections();
@@ -229,6 +234,7 @@ namespace ForLeaseEngine {
                 MeshLoaded = false;
                 mesh = NULL;
                 animation = NULL;
+                AnimationEdit = 0;
                 Components::Model* workingModel = model->GetComponent<Components::Model>();
                 workingModel->ModelMesh = "";
                 workingModel->ModelTexture = "";
@@ -262,18 +268,23 @@ namespace ForLeaseEngine {
             ImGui::Text("New Mesh");
             ImGui::InputText("File Name", fileName, 32);
             if(ImGui::Button("Create")) {
-                ShowNewPopup = false;
-                Mesh tempmesh;
-                Serializer meshSaver;
-                tempmesh.Serialize(meshSaver);
-                meshSaver.WriteFile(fileName);
-                ForLease->Resources.LoadMesh(fileName);
-                mesh = ForLease->Resources.GetMesh(fileName);
-                model->GetComponent<Components::Model>()->ModelMesh = fileName;
-                vertexData = mesh->GetRawVertexData();
-                FileName = fileName;
-                fileName[0] = 0;
-                MeshLoaded = true;
+                try {
+                    ShowNewPopup = false;
+                    Mesh tempmesh;
+                    Serializer meshSaver;
+                    tempmesh.Serialize(meshSaver);
+                    meshSaver.WriteFile(fileName);
+                    ForLease->Resources.LoadMesh(fileName);
+                    mesh = ForLease->Resources.GetMesh(fileName);
+                    model->GetComponent<Components::Model>()->ModelMesh = fileName;
+                    vertexData = mesh->GetRawVertexData();
+                    FileName = fileName;
+                    fileName[0] = 0;
+                    MeshLoaded = true;
+                }
+                catch (Exception const& e) {
+                    std::cout << e.GetInfo() << std::endl;
+                }
             }
             ImGui::SameLine();
             if(ImGui::Button("Cancel")) {
@@ -291,14 +302,19 @@ namespace ForLeaseEngine {
             ImGui::Text("Open Mesh");
             ImGui::InputText("File Name", fileName, 32);
             if(ImGui::Button("Open")) {
-                ShowOpenPopup = false;
-                ForLease->Resources.LoadMesh(fileName);
-                mesh = ForLease->Resources.GetMesh(fileName);
-                model->GetComponent<Components::Model>()->ModelMesh = fileName;
-                FileName = fileName;
-                fileName[0] = 0;
-                vertexData = mesh->GetRawVertexData();
-                MeshLoaded = true;
+                try {
+                    ShowOpenPopup = false;
+                    ForLease->Resources.LoadMesh(fileName);
+                    mesh = ForLease->Resources.GetMesh(fileName);
+                    model->GetComponent<Components::Model>()->ModelMesh = fileName;
+                    FileName = fileName;
+                    fileName[0] = 0;
+                    vertexData = mesh->GetRawVertexData();
+                    MeshLoaded = true;
+                }
+                catch(Exception const& e) {
+                    std::cout << e.GetInfo() << std::endl;
+                }
             }
             ImGui::SameLine();
             if(ImGui::Button("Cancel")) {
@@ -316,19 +332,24 @@ namespace ForLeaseEngine {
             ImGui::Text("New Animation");
             ImGui::InputText("File Name", fileName, 32);
             if(ImGui::Button("Create")) {
-                ShowNewAnimationPopup = false;
-                MeshAnimation tempAni = MeshAnimation(mesh, fileName);
-                Serializer aniSaver;
-                tempAni.Serialize(aniSaver);
-                aniSaver.WriteFile(fileName);
-                ForLease->Resources.LoadMeshAnimation(fileName);
-                animation = ForLease->Resources.GetMeshAnimation(fileName);
-                //model->GetComponent<Components::Model>()->SetAnimation(animation->GetAnimationName());
-                fileName[0] = 0;
-                std::cout << "Created animation:" << std::endl
-                          << "  Name: " << animation->GetAnimationName() << std::endl
-                          << "  Frames: " << animation->GetFrameCount() << std::endl
-                          << "  Verts Per Frame: " << animation->GetFrameVertexCount() << std::endl;
+                try {
+                    ShowNewAnimationPopup = false;
+                    MeshAnimation tempAni = MeshAnimation(mesh, fileName);
+                    Serializer aniSaver;
+                    tempAni.Serialize(aniSaver);
+                    aniSaver.WriteFile(fileName);
+                    ForLease->Resources.LoadMeshAnimation(fileName);
+                    animation = ForLease->Resources.GetMeshAnimation(fileName);
+                    //model->GetComponent<Components::Model>()->SetAnimation(animation->GetAnimationName());
+                    fileName[0] = 0;
+                    std::cout << "Created animation:" << std::endl
+                              << "  Name: " << animation->GetAnimationName() << std::endl
+                              << "  Frames: " << animation->GetFrameCount() << std::endl
+                              << "  Verts Per Frame: " << animation->GetFrameVertexCount() << std::endl;
+                }
+                catch(Exception const& e) {
+                    std::cout << e.GetInfo() << std::endl;
+                }
             }
             ImGui::SameLine();
             if(ImGui::Button("Cancel")) {
@@ -346,18 +367,23 @@ namespace ForLeaseEngine {
             ImGui::Text("Open Animation");
             ImGui::InputText("File Name", fileName, 32);
             if(ImGui::Button("Open")) {
-                ShowOpenAnimationPopup = false;
-                ForLease->Resources.LoadMeshAnimation(fileName);
-                animation = ForLease->Resources.GetMeshAnimation(fileName);
-                //model->GetComponent<Components::Model>()->ModelMesh = fileName;
-                //FileName = fileName;
-                fileName[0] = 0;
-                //vertexData = mesh->GetRawVertexData();
-                //MeshLoaded = true;
-                std::cout << "Loaded animation:" << std::endl
-                          << "  Name: " << animation->GetAnimationName() << std::endl
-                          << "  Frames: " << animation->GetFrameCount() << std::endl
-                          << "  Verts Per Frame: " << animation->GetFrameVertexCount() << std::endl;
+                try {
+                    ShowOpenAnimationPopup = false;
+                    ForLease->Resources.LoadMeshAnimation(fileName);
+                    animation = ForLease->Resources.GetMeshAnimation(fileName);
+                    //model->GetComponent<Components::Model>()->ModelMesh = fileName;
+                    //FileName = fileName;
+                    fileName[0] = 0;
+                    //vertexData = mesh->GetRawVertexData();
+                    //MeshLoaded = true;
+                    std::cout << "Loaded animation:" << std::endl
+                              << "  Name: " << animation->GetAnimationName() << std::endl
+                              << "  Frames: " << animation->GetFrameCount() << std::endl
+                              << "  Verts Per Frame: " << animation->GetFrameVertexCount() << std::endl;
+                }
+                catch(Exception const& e) {
+                    std::cout << e.GetInfo() << std::endl;
+                }
             }
             ImGui::SameLine();
             if(ImGui::Button("Cancel")) {
@@ -371,7 +397,6 @@ namespace ForLeaseEngine {
     static void MainWindow() {
         ImGui::Begin(FileName.c_str());
         static int mode = 0;
-        static int resource = 0;
 
         ImGui::Text("Mesh Stats:");
         ImGui::Text("Vertices: %d\nEdges: %d\nFaces: %d", mesh->GetVertexCount(),
@@ -380,20 +405,20 @@ namespace ForLeaseEngine {
         ImGui::Dummy(ImVec2(0, 10));
 
         if(animation) {
-            ImGui::RadioButton("Mesh", &resource, 0); ImGui::SameLine();
-            ImGui::RadioButton("Animation", &resource, 1);
+            ImGui::RadioButton("Mesh", &AnimationEdit, 0); ImGui::SameLine();
+            ImGui::RadioButton("Animation", &AnimationEdit, 1);
 
-            if(resource == 0)
+            if(AnimationEdit == 0)
                 ImGui::Dummy(ImVec2(0, 10));
         }
 
-        if(resource == 0) {
+        if(AnimationEdit == 0) {
             vertexData = mesh->GetRawVertexData();
             if(model->GetComponent<Components::Model>()->GetAnimation().compare("") != 0)
                 model->GetComponent<Components::Model>()->SetAnimation("");
 
         }
-        if(resource == 1) {
+        if(AnimationEdit == 1) {
             unsigned int frame = model->GetComponent<Components::Model>()->GetFrame();
             if(model->GetComponent<Components::Model>()->GetAnimation().compare("") == 0)
                 model->GetComponent<Components::Model>()->SetAnimation(animation->GetAnimationName());
@@ -420,6 +445,15 @@ namespace ForLeaseEngine {
                     if(frame == animation->GetFrameCount())
                         model->GetComponent<Components::Model>()->SetFrame(frame - 1);
                 }
+            }
+            if(ImGui::Button("Play")) {
+                model->GetComponent<Components::Model>()->AnimationActive = true;
+            }
+            ImGui::SameLine();
+            if(ImGui::Button("Stop")) {
+                Components::Model* modelComp = model->GetComponent<Components::Model>();
+                modelComp->AnimationActive = false;
+                modelComp->SetFrame(modelComp->GetFrame());
             }
             ImGui::Dummy(ImVec2(0, 10));
         }
@@ -686,7 +720,7 @@ namespace ForLeaseEngine {
                 CurrentMousePos = TransformOrigin;
                 ShadowVertices.clear();
                 for(std::unordered_set<int>::iterator i = SelectedVertices.begin(); i != SelectedVertices.end(); ++i) {
-                    ShadowVertices.insert(std::make_pair(*i, mesh->GetVertex(*i)));
+                    ShadowVertices.insert(std::make_pair(*i, (*vertexData)[*i]));
                 }
             }
 
@@ -695,8 +729,8 @@ namespace ForLeaseEngine {
                 TransformOrigin = Point();
                 ShadowVertices.clear();
                 for(std::unordered_set<int>::iterator i = SelectedVertices.begin(); i != SelectedVertices.end(); ++i) {
-                    ShadowVertices.insert(std::make_pair(*i, mesh->GetVertex(*i)));
-                    TransformOrigin += mesh->GetVertex(*i);
+                    ShadowVertices.insert(std::make_pair(*i, (*vertexData)[*i]));
+                    TransformOrigin += (*vertexData)[*i];
                 }
                 TransformOrigin = TransformOrigin * (1.0 / SelectedVertices.size());
                 ScaleOriginDist = Point::Distance(GetMousePosition(), TransformOrigin);
@@ -708,8 +742,8 @@ namespace ForLeaseEngine {
                 TransformOrigin = Point();
                 ShadowVertices.clear();
                 for(std::unordered_set<int>::iterator i = SelectedVertices.begin(); i != SelectedVertices.end(); ++i) {
-                    ShadowVertices.insert(std::make_pair(*i, mesh->GetVertex(*i)));
-                    TransformOrigin += mesh->GetVertex(*i);
+                    ShadowVertices.insert(std::make_pair(*i, (*vertexData)[*i]));
+                    TransformOrigin += (*vertexData)[*i];
                 }
                 TransformOrigin = TransformOrigin * (1.0 / SelectedVertices.size());
                 RotationOriginVector =  GetMousePosition() - TransformOrigin;

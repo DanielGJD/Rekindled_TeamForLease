@@ -46,7 +46,7 @@ namespace ForLeaseEngine {
         \return
             The exception message
     */
-    std::string const& Exception::GetInfo() {
+    std::string const& Exception::GetInfo() const {
         return message;
     }
 }
