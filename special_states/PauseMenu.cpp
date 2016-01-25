@@ -62,7 +62,7 @@ void PauseMenu::Load() {
     menu->AddComponent(new Components::Transform(*menu));
     menu->AddComponent(new Components::Menu(*menu));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
-    menuComp->AddItem(new MenuItems::NextLevel("ButtonPlay.png"));
+    menuComp->AddItem(new MenuItems::ResumeGame("ButtonResume.png"));
     menuComp->AddItem(new MenuItems::LoadLevel("ButtonHowTo.png", "HowToPlay"));
     menuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonQuit.png", "QuitConfirm", "Menu"));
     menuComp->Activate();
@@ -86,6 +86,8 @@ void PauseMenu::Initialize() {
     Serializer serializer;
     serializer.ReadFile("PauseMenu.json");
     Deserialize(serializer);
+
+    ForLease->Dispatcher.Attach(NULL, this, "KeyDown", &PauseMenu::OnKeyDown);
 }
 
 void PauseMenu::Update() {
@@ -108,6 +110,13 @@ void PauseMenu::Update() {
 void PauseMenu::Deinitialize() {
     DeleteAllEntities();
     DeleteAllLevelComponents();
+    ForLease->Dispatcher.Detach(this, "KeyDown");
 }
 
 void PauseMenu::Unload() {}
+
+void PauseMenu::OnKeyDown(const Event* e) {
+    const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
+    if (key_e->Key == Keys::Escape)
+        ForLease->GameStateManager().SetAction(Modules::StateAction::Continue);
+}

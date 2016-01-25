@@ -158,8 +158,9 @@ namespace ForLeaseEngine {
         ResumeGame::ResumeGame(std::string image) : MenuItem(MenuItemType::ResumeGame, image) {}
 
         void ResumeGame::Action() {
-            LevelComponents::Menu* pauseMenu = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Menu>(true);
-            pauseMenu->Unpause();
+            //LevelComponents::Menu* pauseMenu = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Menu>(true);
+            //pauseMenu->Unpause();
+            ForLease->GameStateManager().SetAction(Modules::StateAction::Continue);
         }
 
         void ResumeGame::Serialize(Serializer& root) {

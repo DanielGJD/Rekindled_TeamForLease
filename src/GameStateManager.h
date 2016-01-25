@@ -60,6 +60,7 @@ namespace ForLeaseEngine {
                 State& CurrentState();
                 unsigned NumLevels();
             private:
+                State* StateCurrentlyExecuting;
                 //! A reference to the engine
                 Engine& Parent;
                 //! The vector of all possible states

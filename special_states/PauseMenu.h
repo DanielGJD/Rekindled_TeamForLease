@@ -26,6 +26,8 @@ class PauseMenu : public ForLeaseEngine::State {
         void Update();
         void Deinitialize();
         void Unload();
+
+        void OnKeyDown(const ForLeaseEngine::Event* e);
 };
 
 #endif // PAUSE_MENU_H

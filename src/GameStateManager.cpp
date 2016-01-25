@@ -35,7 +35,6 @@ namespace ForLeaseEngine {
             ForLease->Dispatcher.Attach(NULL, this, "FocusGained", &GameStateManager::FocusUnfreeze);
             ForLease->Dispatcher.Attach(NULL, this, "FocusLost", &GameStateManager::UnfocusFreeze);
             PauseScreen = new PauseMenu();
-            //PauseScreen->Load();
             //PauseScreen->Initialize();
         }
 
@@ -47,6 +46,8 @@ namespace ForLeaseEngine {
                 States[StateIndex]->Load(); // Load the next state
 
                 do {
+
+                    StateCurrentlyExecuting = States[StateIndex];
 
                     States[StateIndex]->Initialize(); // Initialize the current state
 
@@ -64,15 +65,23 @@ namespace ForLeaseEngine {
                         }
 
                         if (Action == StateAction::Pause) {
+                            
+                            StateCurrentlyExecuting = PauseScreen;
+
                             PauseScreen->Load();
                             PauseScreen->Initialize();
 
                             while (Action == StateAction::Pause) {
+                                Parent.FrameRateController().Start();
                                 PauseScreen->Update();
+                                Parent.FrameRateController().End();
                             }
 
                             PauseScreen->Deinitialize();
                             PauseScreen->Unload();
+
+                            StateCurrentlyExecuting = States[StateIndex];
+
                         }
 
                     } while (Action == StateAction::Continue);
@@ -140,7 +149,7 @@ namespace ForLeaseEngine {
                 A reference to the current state.
         */
         State& GameStateManager::CurrentState() {
-            return *States[StateIndex];
+            return *StateCurrentlyExecuting;
         }
 
         unsigned GameStateManager::NumLevels() {
