@@ -130,7 +130,7 @@ namespace ForLeaseEngine {
 
         model = AddEntity();
         model->AddComponent(new Components::Transform(*model, Point(0, 0), 1, 1, 0));
-        model->AddComponent(new Components::Model(*model, true, false, false, "", "", Color(1, 1, 1, 1), BlendMode::NONE, true, false, false, true));
+        model->AddComponent(new Components::Model(*model, true, false, false, "", "", Color(1, 1, 1, 1), BlendMode::ALPHA, true, false, false, true));
 
 //        instructions = AddEntity();
 //        Components::Transform* trans = new Components::Transform(*instructions, Point(-ForLease->GameWindow->GetXResolution() / 2, ForLease->GameWindow->GetYResolution() / 2), 1, 1, 0, 0);
