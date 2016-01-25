@@ -12,6 +12,7 @@
 #include "GameStateManager.h"
 #include "Engine.h"
 #include "State.h"
+#include "PauseMenu.h"
 
 namespace ForLeaseEngine {
 
@@ -33,6 +34,9 @@ namespace ForLeaseEngine {
         void GameStateManager::Initialize() {
             //ForLease->Dispatcher.Attach(NULL, this, "FocusGained", &GameStateManager::FocusUnpause);
             //ForLease->Dispatcher.Attach(NULL, this, "FocusLost", &GameStateManager::UnfocusPause);
+            PauseScreen = new PauseMenu();
+            //PauseScreen->Load();
+            //PauseScreen->Initialize();
         }
 
         /*!
@@ -54,7 +58,19 @@ namespace ForLeaseEngine {
                         States[StateIndex]->Update();         // Do all the game stuff
                         Parent.FrameRateController().End();   // End the current frame
 
-                        while (Action == StateAction::Pause) {
+                        if (Action == StateAction::Pause) {
+                            PauseScreen->Load();
+                            PauseScreen->Initialize();
+
+                            while (Action == StateAction::Pause) {
+                                PauseScreen->Update();
+                            }
+
+                            PauseScreen->Deinitialize();
+                            PauseScreen->Unload();
+                        }
+
+                        while (Action == StateAction::Freeze) {
                             ForLease->OSInput.ProcessAllInput();
                             Parent.FrameRateController().SleepFor(0.5);
                         }

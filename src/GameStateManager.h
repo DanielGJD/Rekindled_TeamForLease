@@ -34,7 +34,8 @@ namespace ForLeaseEngine {
             Restart,
             Next,
             Skip,
-            Pause
+            Pause,
+            Freeze
         };
 
         /*!
@@ -69,9 +70,10 @@ namespace ForLeaseEngine {
                 //! The current action of the GameStateManager
                 StateAction Action;
 
+                State* PauseScreen;
+
                 //! Made private and deactivated, since we NEED Parent
                 GameStateManager() = delete;
-
         };
     }
 

@@ -116,7 +116,8 @@ namespace ForLeaseEngine {
                 PauseTimer.Reset();
                 const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
                 if (key_e->Key == Keys::Escape) {
-                    Paused ? Unpause() : Pause();
+                    //Paused ? Unpause() : Pause();
+                    ForLease->GameStateManager().SetAction(Modules::StateAction::Pause);
                 }
             }
         }
