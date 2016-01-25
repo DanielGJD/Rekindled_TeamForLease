@@ -164,7 +164,7 @@ namespace ForLeaseEngine {
                                             Matrix::Translation(mesh->GetCenter()) *
                                             Matrix::RotationRad(transform->Rotation) * Matrix::Scale(transform->ScaleX * (model->FlipY? -1 : 1), transform->ScaleY * (model->FlipX? -1 : 1)) *
                                             Matrix::Translation(o - mesh->GetCenter());
-                                DrawMesh(mesh, model->DrawEdges, model->DrawVertices, model->GetAnimation(), model->GetFrame(), model->GetFrameTime() * model->FrameRate - model->GetFrame());
+                                DrawMesh(mesh, model->DrawEdges, model->DrawVertices, model->GetAnimation(), model->GetFrame(), model->GetFrameTime() * model->FrameRate - model->GetFrame(), model->ModelColor);
                             }
                         }
                     }
@@ -473,10 +473,13 @@ namespace ForLeaseEngine {
             TriCount += 2;
         }
 
-        void Renderer::DrawMesh(Mesh* mesh, bool drawEdges, bool drawVertices, std::string animationName, unsigned int frame, float t) {
+        void Renderer::DrawMesh(Mesh* mesh, bool drawEdges, bool drawVertices, std::string animationName, unsigned int frame, float t, Color const& color) {
             if(!mesh)
                 return;
             Point* transformed = new Point[mesh->GetVertexCount()];
+            Color* faceColors = new Color[mesh->GetFaceCount()];
+
+            // Transform vertices to screen space
             if(animationName.compare("") != 0) {
                 MeshAnimation* animation = ForLease->Resources.GetMeshAnimation(animationName);
                 for(int i = 0; i < mesh->GetVertexCount(); ++i) {
@@ -487,6 +490,11 @@ namespace ForLeaseEngine {
                 for(int i = 0; i < mesh->GetVertexCount(); ++i) {
                     ModelToScreen(mesh->GetVertex(i), transformed[i]);
                 }
+            }
+
+            // Calculate face colors
+            for(unsigned int i = 0; i < mesh->GetFaceCount(); ++i) {
+                faceColors[i] = mesh->GetFaceColor(i) * color;
             }
 
             /*glBegin(GL_TRIANGLES);
@@ -525,7 +533,7 @@ namespace ForLeaseEngine {
 
                 while(i < mesh->GetFaceCount() || it != SortedEdges.end()) {
                     if(i < mesh->GetFaceCount() && (it == SortedEdges.end() || i <= (*it).first)) {
-                        SetDrawingColor(mesh->GetFaceColor(i));
+                        SetDrawingColor(faceColors[i]);
                         IndexedFace face = mesh->GetIndexedFace(i);
                         glBegin(GL_TRIANGLES);
                             glVertex2f(transformed[face.Indices[0]][0], transformed[face.Indices[0]][1]);

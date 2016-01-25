@@ -221,4 +221,55 @@ namespace ForLeaseEngine {
         for(unsigned int i = 0; i < 4; ++i)
             ColorComponents[i] = data[i];
     }
+
+    /*!
+        \brief
+            Add two colors together clamping to 0-1
+
+        \param rhs
+            Color to add to this color
+
+        \return
+            Sum of the two colors
+    */
+    Color Color::operator+(Color const& rhs) {
+        return Color(ColorComponents[0] + rhs.GetR(),
+                     ColorComponents[1] + rhs.GetG(),
+                     ColorComponents[2] + rhs.GetB(),
+                     ColorComponents[3] + rhs.GetA());
+    }
+
+    /*!
+        \brief
+            Subtracts two colors clamping to 0-1
+
+        \param rhs
+            Color to subtract from this color
+
+        \return
+            Difference of the two colors
+    */
+    Color Color::operator-(Color const& rhs) {
+        return Color(ColorComponents[0] - rhs.GetR(),
+                     ColorComponents[1] - rhs.GetG(),
+                     ColorComponents[2] - rhs.GetB(),
+                     ColorComponents[3] - rhs.GetA());
+    }
+
+    /*!
+        \brief
+            Multiplies two colors together clamping to 0-1
+
+        \param rhs
+            Color to multiply with this color
+
+        \return
+            Product of the two colors
+    */
+    Color Color::operator*(Color const& rhs) {
+        return Color(ColorComponents[0] * rhs.GetR(),
+                     ColorComponents[1] * rhs.GetG(),
+                     ColorComponents[2] * rhs.GetB(),
+                     ColorComponents[3] * rhs.GetA());
+    }
 }
