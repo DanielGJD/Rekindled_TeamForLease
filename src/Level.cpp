@@ -36,7 +36,7 @@ namespace ForLeaseEngine {
     }
 
     void Level::Update() {
-        ForLease->AudioSystem->Update();
+        ForLease->sound->Update(dt);
         ForLease->OSInput.ProcessAllInput();
 
         for (Entity* entity : Entities) {

@@ -10,7 +10,7 @@
 
 #include "ComponentCharacterController.h"
 #include "ComponentPhysics.h"
-#include "ComponentSoundEmitter.h"
+#include "SoundEmitter.h"
 #include "Entity.h"
 #include "Engine.h"
 
@@ -50,7 +50,7 @@ namespace ForLeaseEngine {
             if(!couldJump && CanJump) {
                 SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
                 if(emitter)
-                    emitter->Play(JumpSound);
+                    emitter->PlayEvent(JumpSound);
             }
 
             Model* model = Parent.GetComponent<Model>();
@@ -59,7 +59,7 @@ namespace ForLeaseEngine {
                 if(currentFrame != LastAnimationFrame && (currentFrame == 1 || currentFrame == 5)) {
                     SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
                     if(emitter)
-                        emitter->Play(WalkSound);
+                        emitter->PlayEvent(WalkSound);
                 }
             }
         };
@@ -101,7 +101,7 @@ namespace ForLeaseEngine {
                     rbody->Velocity += Vector(0, JumpSpeed);
                     SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
                     if(emitter)
-                        emitter->Play(JumpSound);
+                        emitter->PlayEvent(JumpSound);
                     CanJump = false;
                 }
             }
@@ -115,8 +115,9 @@ namespace ForLeaseEngine {
                 ForLease->GameStateManager().SetAction(Modules::StateAction::Next);
             else if (key_e->Key == Keys::M)
                 ForLease->GameStateManager().SetAction(Modules::StateAction::Restart);
-            else if (key_e->Key == Keys::B)
+            else if (key_e->Key == Keys::B) {
                 ForLease->GameStateManager().SetState(ForLease->GameStateManager().NumLevels() - 3);
+            }
         }
 
         void CharacterController::OnKeyUp(const Event* e) {

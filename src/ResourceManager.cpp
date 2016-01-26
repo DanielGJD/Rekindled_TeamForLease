@@ -155,44 +155,44 @@ namespace ForLeaseEngine {
             }
         }
 
-        void ResourceManager::LoadSound(std::string fileName) {
-            UnloadSound(fileName);
-            Sound* sound = ForLease->AudioSystem->CreateSound(fileName);
+        // void ResourceManager::LoadSound(std::string fileName) {
+            // UnloadSound(fileName);
+            // Sound* sound = ForLease->AudioSystem->CreateSound(fileName);
 
-            if(!sound) {
-                //throw(new Exception(std::string("Failed to load sound: ").append(fileName)));
-                std::cout << "Failed to load sound: " << fileName << std::endl;
-                return;
-            }
+            // if(!sound) {
+                // //throw(new Exception(std::string("Failed to load sound: ").append(fileName)));
+                // std::cout << "Failed to load sound: " << fileName << std::endl;
+                // return;
+            // }
 
-            Sounds.insert(std::make_pair(fileName.c_str(), sound));
-            ++LoadedSounds;
-        }
+            // Sounds.insert(std::make_pair(fileName.c_str(), sound));
+            // ++LoadedSounds;
+        // }
 
-        Sound* ResourceManager::GetSound(std::string fileName) {
-            std::unordered_map<std::string, Sound*>::iterator i = Sounds.find(fileName);
-            if(i != Sounds.end()) {
-                return std::get<1>(*i);
-            }
+        // Sound* ResourceManager::GetSound(std::string fileName) {
+            // std::unordered_map<std::string, Sound*>::iterator i = Sounds.find(fileName);
+            // if(i != Sounds.end()) {
+                // return std::get<1>(*i);
+            // }
 
-            LoadSound(fileName);
-            i = Sounds.find(fileName);
-            if(i != Sounds.end()) {
-                return std::get<1>(*i);
-            }
+            // LoadSound(fileName);
+            // i = Sounds.find(fileName);
+            // if(i != Sounds.end()) {
+                // return std::get<1>(*i);
+            // }
 
-            return NULL;
-        }
+            // return NULL;
+        // }
 
-        void ResourceManager::UnloadSound(std::string fileName) {
-            std::unordered_map<std::string, Sound*>::iterator i = Sounds.find(fileName);
-            if(i != Sounds.end()) {
-                Sound* sound = std::get<1>(*i);
-                Sounds.erase(i);
-                --LoadedSounds;
-                delete sound;
-            }
-        }
+        // void ResourceManager::UnloadSound(std::string fileName) {
+            // std::unordered_map<std::string, Sound*>::iterator i = Sounds.find(fileName);
+            // if(i != Sounds.end()) {
+                // Sound* sound = std::get<1>(*i);
+                // Sounds.erase(i);
+                // --LoadedSounds;
+                // delete sound;
+            // }
+        // }
 
         void ResourceManager::LoadMeshAnimation(std::string fileName) {
             UnloadMeshAnimation(fileName);
@@ -255,9 +255,9 @@ namespace ForLeaseEngine {
 
         std::vector<std::string> ResourceManager::GetLoadedSoundNames() {
             std::vector<std::string> soundNames;
-            for(std::unordered_map<std::string, Sound*>::iterator i = Sounds.begin(); i != Sounds.end(); ++i) {
-                soundNames.push_back(std::get<0>(*i));
-            }
+            // for(std::unordered_map<std::string, Sound*>::iterator i = Sounds.begin(); i != Sounds.end(); ++i) {
+                // soundNames.push_back(std::get<0>(*i));
+            // }
             return soundNames;
         }
 

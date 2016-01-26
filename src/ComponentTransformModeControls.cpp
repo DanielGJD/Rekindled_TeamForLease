@@ -119,7 +119,7 @@ namespace ForLeaseEngine {
 
             SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
             if(emitter)
-                emitter->Stop();
+                emitter->StopEvent(TransformModeSound);
 
             ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->SetOutline(1, 0, 0, 1, 0);
             ForLease->FrameRateController().TimeScaling(NormalSpeed);

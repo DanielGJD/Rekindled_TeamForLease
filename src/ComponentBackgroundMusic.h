@@ -12,7 +12,7 @@
 #define COMPONENT_BACKGROUND_MUSIC_H
 
 #include "Component.h"
-#include "ComponentSoundEmitter.h"
+#include "SoundEmitter.h"
 #include "Entity.h"
 #include <string>
 
