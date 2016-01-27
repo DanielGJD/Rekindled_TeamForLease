@@ -89,7 +89,7 @@ namespace ForLeaseEngine {
             }
             SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
             if(emitter) {
-                emitter->Play(TransformModeSound);
+                emitter->PlayEvent(TransformModeSound);
             }
 
             ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->SetOutline(1, 0, 0, 1, 0.5);

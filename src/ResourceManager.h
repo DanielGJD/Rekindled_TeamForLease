@@ -38,7 +38,7 @@ namespace ForLeaseEngine {
                 Texture* GetTexture(std::string fileName);
                 Mesh* GetMesh(std::string fileName);
                 Font* GetFont(std::string fileName);
-                Sound* GetSound(std::string fileName);
+                //Sound* GetSound(std::string fileName);
                 MeshAnimation* GetMeshAnimation(std::string fileName);
 
                 unsigned int GetNumTextures();
@@ -61,7 +61,7 @@ namespace ForLeaseEngine {
                 std::unordered_map<std::string, Texture*> Textures;
                 std::unordered_map<std::string, Mesh*> Meshes;
                 std::unordered_map<std::string, Font*> Fonts;
-                std::unordered_map<std::string, Sound*> Sounds;
+                //std::unordered_map<std::string, Sound*> Sounds;
                 std::unordered_map<std::string, MeshAnimation*> MeshAnimations;
 
                 unsigned int LoadedTextures;

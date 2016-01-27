@@ -13,7 +13,7 @@
 #include "Engine.h"
 #include "KeyboardEvent.h"
 #include "ComponentTransform.h"
-#include "ComponentSoundEmitter.h"
+#include "SoundEmitter.h"
 #include "Entity.h"
 
 namespace ForLeaseEngine {
@@ -130,7 +130,7 @@ namespace ForLeaseEngine {
                 ScaleYDown = true;
 
             if(canPlaySound && (ScaleXUp || ScaleXDown || ScaleYUp || ScaleYDown ))
-                emitter->Play(ScaleSound);
+                emitter->PlayEvent(ScaleSound);
         }
 
         void ScaleWithKeyboard::OnKeyUp(Event const* e) {
@@ -146,7 +146,7 @@ namespace ForLeaseEngine {
 
             SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
             if(emitter && !ScaleXUp && !ScaleXDown && !ScaleYUp && !ScaleYDown && Active) {
-                emitter->Stop();
+                emitter->StopEvent(ScaleSound);
             }
         }
     }

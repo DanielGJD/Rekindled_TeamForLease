@@ -68,7 +68,7 @@ namespace ForLeaseEngine {
 		sound = new Systems::SoundManager();
         GSM.Run();
         Systems::Window::DestroyGameWindow(GameWindow);
-        delete AudioSystem;
+        delete sound;
         SDL_Quit();
     }
 
