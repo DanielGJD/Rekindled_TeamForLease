@@ -19,9 +19,9 @@
 
 namespace ForLeaseEngine {
     namespace Components {
-        Camera::Camera(Entity& parent, float near, float far, float size)
+        Camera::Camera(Entity& parent, float near, float far, float size, float parallaxScale)
                       : Component(parent, ComponentType::Transform),
-                      Near(near), Far(far), Size(size) {}
+                      Near(near), Far(far), Size(size), ParallaxScale(parallaxScale) {}
 
         Camera::~Camera() {
             //std::cout << "CAMERA DELETED" << std::endl;

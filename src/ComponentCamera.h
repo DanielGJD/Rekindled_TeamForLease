@@ -25,8 +25,9 @@ namespace ForLeaseEngine {
                 float Near;
                 float Far;
                 float Size;
+                float ParallaxScale;
 
-                Camera(Entity& parent, float near, float far, float size);
+                Camera(Entity& parent, float near, float far, float size, float parallaxScale = 1);
                 ~Camera();
                 void Update();
 

@@ -26,7 +26,8 @@ namespace ForLeaseEngine {
             public:
                 static const ComponentType Type = ComponentType::Sprite;
                 virtual ComponentType GetType() { return Type; }
-                Sprite(Entity& parent);
+                Sprite(Entity& parent, std::string textureName = "", bool visible = true, Color const& spriteColor = Color(1, 1, 1, 1), BlendMode blendingMode = BlendMode::ALPHA,
+                       bool flipX = false, bool flipY = false, bool animationActive = false, float frameRate = 24, float animationSpeed = 1, int startFrame = 0);
                 ~Sprite();
 
                 void Serialize(Serializer& root);
