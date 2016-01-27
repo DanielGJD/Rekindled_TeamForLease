@@ -15,18 +15,13 @@
 
 namespace ForLeaseEngine {
     namespace Components {
-        Sprite::Sprite(Entity& parent) : Component(parent, ComponentType::Transform) {
-            Visible = true;
-            SpriteColor = Color(1, 1, 1);
-            BlendingMode = BlendMode::ALPHA;
-            FlipX = false;
-            FlipY = false;
-            AnimationActive = true;
-            FrameRate = 24;
-            AnimationSpeed = 1;
-            StartFrame = 0;
-            FrameTime = 0;
-            CurrentFrame = 0;
+        Sprite::Sprite(Entity& parent, std::string textureName, bool visible, Color const& spriteColor, BlendMode blendingMode,
+                       bool flipX, bool flipY, bool animationActive, float frameRate, float animationSpeed, int startFrame) :
+                       Component(parent, ComponentType::Transform),
+                       Visible(visible), SpriteColor(spriteColor), BlendingMode(blendingMode),
+                       SpriteSource(TextureRegion()), FlipX(flipX), FlipY(flipY),
+                       AnimationActive(animationActive), FrameRate(FrameRate), AnimationSpeed(AnimationSpeed), StartFrame(startFrame) {
+            SetSpriteSource(textureName);
         }
 
         Sprite::~Sprite() {}
@@ -110,7 +105,8 @@ namespace ForLeaseEngine {
 
         void Sprite::SetSpriteSource(std::string const& textureName) {
             Texture* texture = ForLease->Resources.GetTexture(textureName);
-            SpriteSource = TextureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
+            if(texture)
+                SpriteSource = TextureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
         }
 
         std::string Sprite::GetSourceName() {

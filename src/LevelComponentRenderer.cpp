@@ -21,6 +21,7 @@
 #include "ComponentSprite.h"
 #include "ComponentModel.h"
 #include "ComponentSpriteText.h"
+#include "ComponentParallax.h"
 #include "Color.h"
 #include "Component.h"
 #include "Timer.h"
@@ -34,6 +35,7 @@
 #include <vector>
 #include <list>
 #include <thread>
+#include <cmath>
 #define PARTICLE_THREADS 2
 
 GLuint index;
@@ -131,13 +133,31 @@ namespace ForLeaseEngine {
                 (*it).second.push_back(entities[i]);
             }
 
+            Vector cameraShift;
+            int cameraZ = 0;
+            if(CurrentCamera != 0) {
+                Components::Transform* cameraTrans = Owner.GetEntityByID(CurrentCamera, true)->GetComponent<Components::Transform>();
+                cameraShift = cameraTrans->Position - Point();
+                cameraZ = cameraTrans->ZOrder;
+            }
             for(std::map<int, std::vector<Entity*>>::const_iterator it = sorted.begin(); it != sorted.end(); ++it) {
                 for(unsigned int i = 0; i < (*it).second.size(); ++i) {
                     Entity* entity = (*it).second[i];
+
+                    float parallaxAmount = 0;
+                    Components::Parallax* parallax = entity->GetComponent<Components::Parallax>();
+                    Components::Transform* trans = entity->GetComponent<Components::Transform>();
+
+                    if(parallax && parallax->Active && trans->ZOrder != cameraZ) {
+                        parallaxAmount = 1.0 - 1.0 / abs(trans->ZOrder - cameraZ);
+                        std::cout << parallaxAmount << std::endl;
+                    }
+
+
                     if(entity->HasComponent(ComponentType::VisionCone)) {
                         Components::VisionCone* visionCone = entity->GetComponent<Components::VisionCone>();
                         if(visionCone->Visible) {
-                            Components::Transform* trans = entity->GetComponent<Components::Transform>();
+                            //Components::Transform* trans = entity->GetComponent<Components::Transform>();
                             ModelView = Matrix::Translation(trans->Position);
                             SetBlendMode(BlendMode::ALPHA);
                             DrawMesh(visionCone->GetVisionMesh(), visionCone->DrawOutline, false);
@@ -146,8 +166,8 @@ namespace ForLeaseEngine {
                     if(entity->HasComponent(ComponentType::Sprite)) {
                         Components::Sprite* sprite = entity->GetComponent<Components::Sprite>();
                         if(sprite->Visible) {
-                            Components::Transform* transform = entity->GetComponent<Components::Transform>();
-                            SetModelView(transform);
+                            //Components::Transform* transform = entity->GetComponent<Components::Transform>();
+                            SetModelView(trans->Position - cameraShift + cameraShift * parallaxAmount, trans->ScaleX, trans->ScaleY, trans->Rotation);
                             DrawSprite(sprite);
                         }
                     }

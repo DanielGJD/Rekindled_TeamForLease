@@ -54,7 +54,9 @@ namespace ForLeaseEngine {
         ParticleSystem         = 1 << 21,   //! Collection of particles
         ParticleEmitter        = 1 << 22,   //! Emits particles from a system
         SimpleParticleDynamics = 1 << 23,   //! Adds dynamics to a particle system
-        ParticleColorAnimator  = 1 << 24    //! Adds color animation to particles
+        ParticleColorAnimator  = 1 << 24,   //! Adds color animation to particles
+        Parallax               = 1 << 25,   //! Parallax scrolls the object
+        Occluder               = 1 << 26    //! Blocks light or vision
     };
 
     ComponentType operator|(const ComponentType& lhs, const ComponentType& rhs);
