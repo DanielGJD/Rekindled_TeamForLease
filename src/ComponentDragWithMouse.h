@@ -35,6 +35,7 @@ namespace ForLeaseEngine {
                 DragWithMouse(Entity& owner);
                 void Initialize();
                 bool MouseDown;
+                Point Target;
         };
     }
 }

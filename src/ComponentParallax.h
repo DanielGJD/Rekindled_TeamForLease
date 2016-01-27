@@ -13,7 +13,7 @@ namespace ForLeaseEngine {
                 bool Active;
                 bool Repeating;  // Unimplemented
 
-                Parallax(Entity& parent, bool active = true);
+                Parallax(Entity& parent, bool active = true, bool repeating = false);
                 ~Parallax();
                 void Update();
                 void Serialize(Serializer& root);

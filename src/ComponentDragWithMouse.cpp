@@ -42,6 +42,11 @@ namespace ForLeaseEngine {
         }
 
         void DragWithMouse::Update() {
+            if(MouseDown && Active) {
+                Components::Physics* phy = Parent.GetComponent<Components::Physics>();
+                Components::Transform* trans = Parent.GetComponent<Components::Transform>();
+                phy->Velocity = (Target - trans->Position) * (1 / ForLease->FrameRateController().GetDt() / 2); // This is wildly unstable with fluctuating frame rate!
+            }
         }
 
         void DragWithMouse::Serialize(Serializer& root) {
@@ -74,13 +79,18 @@ namespace ForLeaseEngine {
                 if(location[0] >= trans->Position[0] - collider->Width * trans->ScaleX / 2 &&
                    location[0] <= trans->Position[0] + collider->Width * trans->ScaleX / 2 &&
                    location[1] >= trans->Position[1] - collider->Height * trans->ScaleY / 2 &&
-                   location[1] <= trans->Position[1] + collider->Height * trans->ScaleY / 2)
+                   location[1] <= trans->Position[1] + collider->Height * trans->ScaleY / 2) {
                     MouseDown = true;
+                }
             }
         }
 
         void DragWithMouse::OnMouseUp(Event const*) {
             //MouseButtonEvent const* mouse_e = static_cast<MouseButtonEvent const*>(e);
+            if(MouseDown) {
+                Parent.GetComponent<Components::Physics>()->Velocity = Vector();
+                Target = Parent.GetComponent<Components::Transform>()->Position;
+            }
             MouseDown = false;
         }
 
@@ -89,10 +99,17 @@ namespace ForLeaseEngine {
                 MouseMotionEvent const* mouse_e = static_cast<MouseMotionEvent const*>(e);
 
                 if(MouseDown) {
-                    Components::Transform* trans = Parent.GetComponent<Components::Transform>();
-                    Point old = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->ScreenToWorld(Point(mouse_e->X - mouse_e->RelativeX, mouse_e->Y - mouse_e->RelativeY));
-                    Point current = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->ScreenToWorld(Point(mouse_e->X, mouse_e->Y));
-                    trans->Position += current - old;
+                    std::cout << "MOVING OBJECT" << std::endl;
+                    //Components::Transform* trans = Parent.GetComponent<Components::Transform>();
+                    //Components::Physics* phy = Parent.GetComponent<Components::Physics>();
+                    //Point old = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->ScreenToWorld(Point(mouse_e->X - mouse_e->RelativeX, mouse_e->Y - mouse_e->RelativeY));
+                    //Point current = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->ScreenToWorld(Point(mouse_e->X, mouse_e->Y));
+                    //trans->Position += current - old;
+                    //phy->Velocity = current - trans->Position;
+                    Target = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->ScreenToWorld(Point(mouse_e->X, mouse_e->Y));
+                }
+                else {
+                    //Parent.GetComponent<Components::Physics>()->Velocity = Vector();
                 }
             }
         }

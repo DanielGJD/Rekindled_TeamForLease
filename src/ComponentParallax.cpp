@@ -2,7 +2,8 @@
 
 namespace ForLeaseEngine {
     namespace Components {
-        Parallax::Parallax(Entity& parent, bool active) : Component(parent, ComponentType::Transform), Active(active) {}
+        Parallax::Parallax(Entity& parent, bool active, bool repeating) :
+                           Component(parent, ComponentType::Transform), Active(active), Repeating(repeating) {}
 
         Parallax::~Parallax() {}
 
