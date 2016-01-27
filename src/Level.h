@@ -28,7 +28,7 @@ namespace ForLeaseEngine {
             ~Level();
             virtual void Load();
             virtual void Initialize();
-            virtual void Update(float dt);
+            virtual void Update();
             virtual void Deinitialize();
             virtual void Unload();
 
