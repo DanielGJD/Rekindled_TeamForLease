@@ -10,8 +10,9 @@
 #include "State.h"
 #include "Engine.h"
 #include "Level.h"
-#include "MainMenu.h"
+//#include "MainMenu.h"
 #include "HowToPlay.h"
+//#include "PauseMenu.h"
 #include "Utilities.h"
 #include "Platforms.h"
 

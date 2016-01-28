@@ -173,10 +173,10 @@ namespace ForLeaseEngine {
             Components::SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
             if(emitter) {
                 if(!wasHappy && Happy) {
-                    emitter->Play(LikedSeenSound);
+                    emitter->PlayEvent(LikedSeenSound);
                 }
                 else if(!wasAngry && Angry) {
-                    emitter->Play(HatedSeenSound);
+                    emitter->PlayEvent(HatedSeenSound);
                 }
             }
         }

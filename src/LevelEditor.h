@@ -35,6 +35,13 @@ namespace ForLeaseEngine
         void SaveFiles();
         void LoadFiles();
         void Input();
+
+    private:
+        void DrawMainMenu();
+        void DrawMainWindow();
+        void DrawObjectWindow();
+        void GetMouse(Point& v);
+        void AddComponent(const std::string& component);
     };
 }
 

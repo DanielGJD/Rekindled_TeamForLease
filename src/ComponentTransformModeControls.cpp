@@ -67,6 +67,7 @@ namespace ForLeaseEngine {
         }
 
         void TransformModeControls::Activate() {
+            std::cout << "TRANSFORM MODE CONTROLS ACTIVATE" << std::endl;
             Active = true;
 
             if(EntitySelected) {
@@ -89,7 +90,7 @@ namespace ForLeaseEngine {
             }
             SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
             if(emitter) {
-                emitter->Play(TransformModeSound);
+                emitter->PlayEvent(TransformModeSound);
             }
 
             ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->SetOutline(1, 0, 0, 1, 0.5);
@@ -97,6 +98,7 @@ namespace ForLeaseEngine {
         }
 
         void TransformModeControls::Deactivate() {
+            std::cout << "TRANSFORM MODE CONTROLS DEACTIVATE" << std::endl;
             Active = false;
 
             if(EntitySelected) {
@@ -119,7 +121,7 @@ namespace ForLeaseEngine {
 
             SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
             if(emitter)
-                emitter->Stop();
+                emitter->StopEvent(TransformModeSound);
 
             ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->SetOutline(1, 0, 0, 1, 0);
             ForLease->FrameRateController().TimeScaling(NormalSpeed);
@@ -136,6 +138,8 @@ namespace ForLeaseEngine {
 
         void TransformModeControls::OnKeyUp(Event const* e) {
             KeyboardEvent const* key_e = static_cast<KeyboardEvent const*>(e);
+
+            std::cout << "TRANSFORM MODE CONTROLS GOT KEY UP" << std::endl;
 
             if(key_e->Key == Keys::LeftAlt) {
                 Toggle();
@@ -188,6 +192,7 @@ namespace ForLeaseEngine {
                     EntitySelected = true;
                     ActiveEntity = entity->GetID();
                     if(entity->HasComponent(ComponentType::DragWithMouse)) {
+                        std::cout << "TRANSFORM MODE CONTROLS ACTIVATING DRAG" << std::endl;
                         entity->GetComponent<Components::DragWithMouse>()->Active = true;
                         Model* model = entity->GetComponent<Model>();
                         if(model)

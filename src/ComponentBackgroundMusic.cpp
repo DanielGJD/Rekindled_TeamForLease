@@ -9,7 +9,7 @@
 */
 
 #include "ComponentBackgroundMusic.h"
-#include "ComponentSoundEmitter.h"
+#include "SoundEmitter.h"
 
 namespace ForLeaseEngine {
     namespace Components {
@@ -22,7 +22,7 @@ namespace ForLeaseEngine {
 
         void BackgroundMusic::Update() {
             if(Active) {
-                Parent.GetComponent<Components::SoundEmitter>()->Play(MusicName);
+                Parent.GetComponent<Components::SoundEmitter>()->PlayEvent(MusicName);
                 Active = false;
             }
         }

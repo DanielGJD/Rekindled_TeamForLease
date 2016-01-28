@@ -21,7 +21,7 @@
 #include "ComponentSpriteText.h"
 #include "ComponentCharacterController.h"
 #include "ComponentLight.h"
-#include "ComponentSoundEmitter.h"
+#include "SoundEmitter.h"
 #include "ComponentMenu.h"
 #include "ComponentDragWithMouse.h"
 #include "ComponentScaleWithKeyboard.h"
