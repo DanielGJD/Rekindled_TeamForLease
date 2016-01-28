@@ -22,14 +22,14 @@ namespace ForLeaseEngine {
             Constructor for GameStateManager.  Creates a new instance of GameStateManager using a provided Engine as its parent.
         */
         GameStateManager::GameStateManager(Engine& parent)
-            : Parent(parent), StateIndex(0), Action(StateAction::Continue) {}
+            : Parent(parent), StateIndex(0), Action(StateAction::Continue), UnfreezeAction(StateAction::Continue) {}
 
         /*!
             Constructor for GameStateManager.  Creates a new instance of GameStateManager using a provided State list.
         */
         GameStateManager::GameStateManager(Engine& parent, std::vector<State *> states)
             : Parent(parent), States(states), StateIndex(0),
-              Action(StateAction::Continue) {}
+              Action(StateAction::Continue), UnfreezeAction(StateAction::Continue) {}
 
         void GameStateManager::Initialize() {
             ForLease->Dispatcher.Attach(NULL, this, "FocusGained", &GameStateManager::FocusUnfreeze);
@@ -75,6 +75,11 @@ namespace ForLeaseEngine {
                                 Parent.FrameRateController().Start();
                                 PauseScreen->Update();
                                 Parent.FrameRateController().End();
+
+                                while (Action == StateAction::Freeze) {
+                                    ForLease->OSInput.ProcessAllInput();
+                                    Parent.FrameRateController().SleepFor(0.1);
+                                }
                             }
 
                             PauseScreen->Deinitialize();
@@ -135,11 +140,12 @@ namespace ForLeaseEngine {
         }
 
         void GameStateManager::UnfocusFreeze(const Event* e) {
+            UnfreezeAction = Action;
             Action = StateAction::Freeze;
         }
 
         void GameStateManager::FocusUnfreeze(const Event* e) {
-            Action = StateAction::Continue;
+            Action = UnfreezeAction;
         }
 
         /*!

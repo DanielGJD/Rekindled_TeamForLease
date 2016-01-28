@@ -63,7 +63,8 @@ void PauseMenu::Load() {
     menu->AddComponent(new Components::Menu(*menu));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
     menuComp->AddItem(new MenuItems::ResumeGame("ButtonResume.png"));
-    menuComp->AddItem(new MenuItems::LoadLevel("ButtonHowTo.png", "HowToPlay"));
+    //menuComp->AddItem(new MenuItems::LoadLevel("ButtonHowTo.png", "HowToPlay"));
+    menuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonMainMenu.png", "MainMenuConfirm", "Menu"));
     menuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonQuit.png", "QuitConfirm", "Menu"));
     menuComp->Activate();
 
@@ -73,6 +74,13 @@ void PauseMenu::Load() {
     Components::Menu* quitConfirmComp = quitConfirm->GetComponent<Components::Menu>();
     quitConfirmComp->AddItem(new MenuItems::Quit("ButtonQuit.png"));
     quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonCancel.png", "Menu", "QuitConfirm"));
+
+    Entity* mainMenuConfirm = AddEntity("MainMenuConfirm");
+    mainMenuConfirm->AddComponent(new Components::Transform(*mainMenuConfirm));
+    mainMenuConfirm->AddComponent(new Components::Menu(*mainMenuConfirm));
+    Components::Menu* mainMenuConfirmComp = mainMenuConfirm->GetComponent<Components::Menu>();
+    mainMenuConfirmComp->AddItem(new MenuItems::LoadLevel("ButtonMainMenu.png", "MainMenu"));
+    mainMenuConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonCancel.png", "Menu", "MainMenuConfirm"));
 
     Serializer serializer;
     Serialize(serializer);

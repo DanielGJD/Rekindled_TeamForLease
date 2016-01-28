@@ -72,6 +72,8 @@ namespace ForLeaseEngine {
                 //! The current action of the GameStateManager
                 StateAction Action;
 
+                StateAction UnfreezeAction;
+
                 State* PauseScreen;
 
                 //! Made private and deactivated, since we NEED Parent
