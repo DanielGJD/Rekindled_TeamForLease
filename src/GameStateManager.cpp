@@ -12,6 +12,7 @@
 #include "GameStateManager.h"
 #include "Engine.h"
 #include "State.h"
+#include "PauseMenu.h"
 
 namespace ForLeaseEngine {
 
@@ -21,14 +22,21 @@ namespace ForLeaseEngine {
             Constructor for GameStateManager.  Creates a new instance of GameStateManager using a provided Engine as its parent.
         */
         GameStateManager::GameStateManager(Engine& parent)
-            : Parent(parent), StateIndex(0), Action(StateAction::Continue) {}
+            : Parent(parent), StateIndex(0), Action(StateAction::Continue), UnfreezeAction(StateAction::Continue) {}
 
         /*!
             Constructor for GameStateManager.  Creates a new instance of GameStateManager using a provided State list.
         */
         GameStateManager::GameStateManager(Engine& parent, std::vector<State *> states)
             : Parent(parent), States(states), StateIndex(0),
-              Action(StateAction::Continue) {}
+              Action(StateAction::Continue), UnfreezeAction(StateAction::Continue) {}
+
+        void GameStateManager::Initialize() {
+            ForLease->Dispatcher.Attach(NULL, this, "FocusGained", &GameStateManager::FocusUnfreeze);
+            ForLease->Dispatcher.Attach(NULL, this, "FocusLost", &GameStateManager::UnfocusFreeze);
+            PauseScreen = new PauseMenu();
+            //PauseScreen->Initialize();
+        }
 
         /*!
             Handles the main game loop.  Calls the current state's Update function.
@@ -38,6 +46,8 @@ namespace ForLeaseEngine {
                 States[StateIndex]->Load(); // Load the next state
 
                 do {
+
+                    StateCurrentlyExecuting = States[StateIndex];
 
                     States[StateIndex]->Initialize(); // Initialize the current state
 
@@ -49,9 +59,34 @@ namespace ForLeaseEngine {
                         States[StateIndex]->Update();         // Do all the game stuff
                         Parent.FrameRateController().End();   // End the current frame
 
-                        while (Action == StateAction::Pause) {
+                        while (Action == StateAction::Freeze) {
                             ForLease->OSInput.ProcessAllInput();
-                            Parent.FrameRateController().SleepFor(0.5);
+                            Parent.FrameRateController().SleepFor(0.1);
+                        }
+
+                        if (Action == StateAction::Pause) {
+                            
+                            StateCurrentlyExecuting = PauseScreen;
+
+                            PauseScreen->Load();
+                            PauseScreen->Initialize();
+
+                            while (Action == StateAction::Pause) {
+                                Parent.FrameRateController().Start();
+                                PauseScreen->Update();
+                                Parent.FrameRateController().End();
+
+                                while (Action == StateAction::Freeze) {
+                                    ForLease->OSInput.ProcessAllInput();
+                                    Parent.FrameRateController().SleepFor(0.1);
+                                }
+                            }
+
+                            PauseScreen->Deinitialize();
+                            PauseScreen->Unload();
+
+                            StateCurrentlyExecuting = States[StateIndex];
+
                         }
 
                     } while (Action == StateAction::Continue);
@@ -104,6 +139,15 @@ namespace ForLeaseEngine {
             SetAction(StateAction::Skip);
         }
 
+        void GameStateManager::UnfocusFreeze(const Event* e) {
+            UnfreezeAction = Action;
+            Action = StateAction::Freeze;
+        }
+
+        void GameStateManager::FocusUnfreeze(const Event* e) {
+            Action = UnfreezeAction;
+        }
+
         /*!
             Get the currently loaded state.
 
@@ -111,7 +155,7 @@ namespace ForLeaseEngine {
                 A reference to the current state.
         */
         State& GameStateManager::CurrentState() {
-            return *States[StateIndex];
+            return *StateCurrentlyExecuting;
         }
 
         unsigned GameStateManager::NumLevels() {
