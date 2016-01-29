@@ -1,6 +1,6 @@
 /*****************************************************************************/
 /*!
-\file    Sound.h
+\file    SoundFS.h
 \author  Jiangdi Gou
 \par     contact: jiangdi.g@digipen.edu
 \brief
@@ -12,8 +12,8 @@ All content 2015 DigiPen (USA) Corporation, all rights reserved.
 */
 /*****************************************************************************/
 
-#ifndef SOUND_H
-#define SOUND_H
+#ifndef SOUNDFS_H
+#define SOUNDFS_H
 
 #include"fmod_studio.hpp"
 #include"fmod_common.h"
