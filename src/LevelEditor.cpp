@@ -193,19 +193,19 @@ namespace ForLeaseEngine
         leg::componentNames.push_back("Transform Control");
         leg::componentNames.push_back("Vision Cone");
         //PopulateMap();
-        Point moved(100000, 100000);
-        Entity* ent = GetEntityByName("PauseMenu", true);
-        Components::Transform* trans = ent->GetComponent<Components::Transform>();
-        trans->Position = moved;
-        ent = GetEntityByName("QuitConfirm", true);
-        trans = ent->GetComponent<Components::Transform>();
-        trans->Position = moved;
-        ent = GetEntityByName("HowToConfirm", true);
-        trans = ent->GetComponent<Components::Transform>();
-        trans->Position = moved;
-        ent = GetEntityByName("HowToScreen", true);
-        trans = ent->GetComponent<Components::Transform>();
-        trans->Position = moved;
+//        Point moved(100000, 100000);
+//        Entity* ent = GetEntityByName("PauseMenu", true);
+//        Components::Transform* trans = ent->GetComponent<Components::Transform>();
+//        trans->Position = moved;
+//        ent = GetEntityByName("QuitConfirm", true);
+//        trans = ent->GetComponent<Components::Transform>();
+//        trans->Position = moved;
+//        ent = GetEntityByName("HowToConfirm", true);
+//        trans = ent->GetComponent<Components::Transform>();
+//        trans->Position = moved;
+//        ent = GetEntityByName("HowToScreen", true);
+//        trans = ent->GetComponent<Components::Transform>();
+//        trans->Position = moved;
     }
 
     void LevelEditor::Initialize()
@@ -301,8 +301,8 @@ namespace ForLeaseEngine
                         strcpy(leg::enemyLikeS, leg::selEnemyAI->LikedSeenSound.c_str());
                     }
 
-                    if (leg::selLight)
-                        leg::lightRays = leg::selLight->Rays;
+//                    if (leg::selLight)
+//                        leg::lightRays = leg::selLight->Rays;
 
                     if (leg::selChange)
                     {

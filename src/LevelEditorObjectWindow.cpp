@@ -325,26 +325,26 @@ namespace ForLeaseEngine
                 leg::selFade = NULL;
             }
         }
-        if (leg::selLight && ImGui::CollapsingHeader("Light"))
-        {
-            ImGui::InputInt("Rays", &leg::lightRays, 1, 5);
-            if (leg::lightRays >= 0)
-                leg::selLight->Rays = leg::lightRays;
-            ImGui::DragFloat("Sweep", &(leg::selLight->Sweep), 0.05);
-            ImGui::Text("Direction");
-            ImGui::SameLine();
-            ImGui::DragFloat("x", &(leg::selLight->Direction[0]), 0.05);
-            ImGui::SameLine();
-            ImGui::DragFloat("y", &(leg::selLight->Direction[1]), 0.05);
-            ImGui::PushItemWidth(250);
-            ImGui::ColorEdit4("Light Color", const_cast<float*>(leg::selLight->DrawColor.GetAll()));
-
-            if (ImGui::Button("Remove Light"))
-            {
-                leg::selection->DeleteComponent(ComponentType::Light);
-                leg::selLight = NULL;
-            }
-        }
+//        if (leg::selLight && ImGui::CollapsingHeader("Light"))
+//        {
+//            ImGui::InputInt("Rays", &leg::lightRays, 1, 5);
+//            if (leg::lightRays >= 0)
+//                leg::selLight->Rays = leg::lightRays;
+//            ImGui::DragFloat("Sweep", &(leg::selLight->Sweep), 0.05);
+//            ImGui::Text("Direction");
+//            ImGui::SameLine();
+//            ImGui::DragFloat("x", &(leg::selLight->Direction[0]), 0.05);
+//            ImGui::SameLine();
+//            ImGui::DragFloat("y", &(leg::selLight->Direction[1]), 0.05);
+//            ImGui::PushItemWidth(250);
+//            ImGui::ColorEdit4("Light Color", const_cast<float*>(leg::selLight->DrawColor.GetAll()));
+//
+//            if (ImGui::Button("Remove Light"))
+//            {
+//                leg::selection->DeleteComponent(ComponentType::Light);
+//                leg::selLight = NULL;
+//            }
+//        }
 
         if (leg::selPartColor && ImGui::CollapsingHeader("Particle Color"))
         {
