@@ -1,10 +1,8 @@
 /*!
     \file   ComponentLight.h
-    \author Sean McGeer
-    \date   10/30/15
+    \author Christopher Hudson
     \brief
         Defines the Light component.
-    \see ComponentLight.cpp
 
     \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
 */
@@ -14,41 +12,47 @@
 #define COMPONENT_LIGHT_H
 
 #include "Component.h"
-#include "ComponentTransform.h"
 #include "Vector.h"
 #include "Color.h"
+#include "Mesh.h"
+
+#ifndef PI
+#define PI 3.14159265358979323846
+#endif
 
 namespace ForLeaseEngine {
-
-    class Entity;
-
     namespace Components {
 
         /*!
             \class Light
 
             \brief
-                A basic Light component that stores the Mass, Velocity, Acceleration,
-                and net Force on the owning entity.
+                A class that ray casts from a point to create a light mesh
         */
         class Light : public Component {
             public:
                 static const ComponentType Type = ComponentType::Light;
                 virtual ComponentType GetType() { return Type; }
-                Light(Entity& owner, Vector direction = Vector(0,-1), Color drawColor = Color(1,1,1), float sweep = 1, unsigned rays = 100);
+
+                bool Active;
+                bool Visible;
+                bool DrawOutline;
+                Vector Offset;
+                Vector Direction;
+                float Angle;
+                Color LightColor;
+
+                Light(Entity& owner, bool active = true, bool visible = true, bool drawOutline = false,
+                      Vector offset = Vector(), Vector direction = Vector(0, -1), float angle = PI / 2 , Color lightColor = Color(1, 1, 1, 1));
+                ~Light();
                 void Update();
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
-                Vector Direction;
-                Color DrawColor;
-                float Sweep;
-                unsigned Rays;
+                Mesh* GetLightMesh();
             private:
-                Light() = delete;
+                Mesh LightMesh;
         };
-
-    } // Components
-
-} // ForLeaseEngine
+    }
+}
 
 #endif

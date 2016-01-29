@@ -392,10 +392,10 @@ namespace ForLeaseEngine {
                     closest[1] = posy;
                 }
 
-                if(Point::DistanceSquared(closest, position) <= radius2) {
-                    Point mid = position + direction * radius;
-                    Point top = position + Vector::Rotate(direction, angle / 2) * radius;
-                    Point bot = position + Vector::Rotate(direction, -angle / 2) * radius;
+                if(radius2 == 0 || Point::DistanceSquared(closest, position) <= radius2) {
+                    Point mid = position + direction;
+                    Point top = position + Vector::Rotate(direction, angle / 2);
+                    Point bot = position + Vector::Rotate(direction, -angle / 2);
                     HalfPlane hp1 = HalfPlane(position, top, mid);
                     HalfPlane hp2 = HalfPlane(position, bot, mid);
                     float bbtop = entityy + halfheight;
