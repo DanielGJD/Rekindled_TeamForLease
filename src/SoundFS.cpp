@@ -39,11 +39,11 @@ SoundManager::SoundManager() : /*ISystem(),*/ m_Sys(nullptr), m_MasterBank(nullp
 	if ( result_ != FMOD_OK)
 	{
 	    std::cout<< result_ << std::endl;
-		printf("Bank creation initialized\n");
+		printf("Bank creation NOT initialized\n");
 		//return;
 	}
 
-	result_ = FMOD_Studio_System_LoadBankFile(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),"resources/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, reinterpret_cast<FMOD_STUDIO_BANK**>(&m_MasterBank));
+	result_ = FMOD_Studio_System_LoadBankFile(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),"bin/Debug/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, reinterpret_cast<FMOD_STUDIO_BANK**>(&m_MasterBank));
 	if (result_ != FMOD_OK)
 	{
 		std::cout << result_ << std::endl;
@@ -64,7 +64,7 @@ SoundManager::SoundManager() : /*ISystem(),*/ m_Sys(nullptr), m_MasterBank(nullp
 //		printf("bankfile3 is not loaded\n");
 //	}
 
-	result_ = FMOD_Studio_System_LoadBankFile(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),"resources/Master Bank.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, reinterpret_cast<FMOD_STUDIO_BANK**>(&m_StringsBank));
+	result_ = FMOD_Studio_System_LoadBankFile(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),"bin/debug/Master Bank.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, reinterpret_cast<FMOD_STUDIO_BANK**>(&m_StringsBank));
 	if (result_ != FMOD_OK)
 	{
 		std::cout << result_ << std::endl;
@@ -123,6 +123,7 @@ bool SoundManager::PlayEvent(std::string name)
 	FMOD::Studio::EventInstance * SoundInstance = nullptr;
 
 	std::string temptext = "event:/" + name;
+
 
 	FMOD_RESULT SoundResult = FMOD_Studio_System_GetEvent(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),temptext.c_str(), reinterpret_cast<FMOD_STUDIO_EVENTDESCRIPTION**>(&SoundDescription));
 
