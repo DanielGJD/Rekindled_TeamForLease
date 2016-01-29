@@ -28,7 +28,7 @@ int Start(){
     //states.push_back(new SecondState());
     //states = LoadLevels("Game.json", states);
     //states.push_back(new RaycastTest());
-
+    //states.push_back(new HowToPlay());
     states = LoadLevels("Game.json", states);
     states.push_back(new HowToPlay());
     //states.push_back(new SeanState());
