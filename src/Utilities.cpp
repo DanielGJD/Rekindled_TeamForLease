@@ -16,6 +16,7 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <string>
 
 namespace FLE = ForLeaseEngine;
 
@@ -69,11 +70,11 @@ namespace CommandLine {
         StringArgument result = GetStringArgument(start, end, argument);
 
         if (result.first) {
-            try {
-                return IntArgument(true, stoi(result.second));
-            } catch (std::invalid_argument) {
-                return IntArgument(false, -1);
-            }
+//            try {
+//                return IntArgument(true, std::stoi(result.second));
+//            } catch (std::invalid_argument) {
+//                return IntArgument(false, -1);
+//            }
         }
 
         return IntArgument(false, -1);
