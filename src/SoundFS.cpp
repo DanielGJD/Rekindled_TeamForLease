@@ -1,6 +1,6 @@
 /*****************************************************************************/
 /*!
-\file    Sound.cpp
+\file    SoundFS.cpp
 \author  Jiangdi Gou
 \par     contact: jiangdi.g@digipen.edu
 \brief
@@ -22,23 +22,7 @@ namespace ForLeaseEngine{
 SoundManager::SoundManager() : /*ISystem(),*/ m_Sys(nullptr), m_MasterBank(nullptr), m_StringsBank(nullptr)
 {
 	//sound = this;
-}
-
-SoundManager::~SoundManager()
-{
-
-}
-
-
-//    MessageBox(NULL, "ERROR: Could not create Sound System",
-//      strcpy(text, strcat("Error: ", system_name)), NULL);
-//
-//    return false;
-//  }
-
-void SoundManager::Initialize()
-{
-	FMOD_RESULT result_;
+		FMOD_RESULT result_;
 	// here we create our sound system
 	char text[200];
 
@@ -51,14 +35,15 @@ void SoundManager::Initialize()
 	}
   //For later... check for errors
 
-
-	if ((FMOD_Studio_System_Initialize(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),1024, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, 0)))
+    result_ = FMOD_Studio_System_Initialize(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),1024, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, 0);
+	if ( result_ != FMOD_OK)
 	{
-		printf("Bank creation initialized\n");
+	    std::cout<< result_ << std::endl;
+		printf("Bank creation NOT initialized\n");
 		//return;
 	}
 
-	result_ = FMOD_Studio_System_LoadBankFile(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),"Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, reinterpret_cast<FMOD_STUDIO_BANK**>(&m_MasterBank));
+	result_ = FMOD_Studio_System_LoadBankFile(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),"bin/Debug/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, reinterpret_cast<FMOD_STUDIO_BANK**>(&m_MasterBank));
 	if (result_ != FMOD_OK)
 	{
 		std::cout << result_ << std::endl;
@@ -79,7 +64,7 @@ void SoundManager::Initialize()
 //		printf("bankfile3 is not loaded\n");
 //	}
 
-	result_ = FMOD_Studio_System_LoadBankFile(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),"Master Bank.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, reinterpret_cast<FMOD_STUDIO_BANK**>(&m_StringsBank));
+	result_ = FMOD_Studio_System_LoadBankFile(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),"bin/debug/Master Bank.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, reinterpret_cast<FMOD_STUDIO_BANK**>(&m_StringsBank));
 	if (result_ != FMOD_OK)
 	{
 		std::cout << result_ << std::endl;
@@ -87,6 +72,23 @@ void SoundManager::Initialize()
 	}
 
 	return;
+}
+
+SoundManager::~SoundManager()
+{
+
+}
+
+
+//    MessageBox(NULL, "ERROR: Could not create Sound System",
+//      strcpy(text, strcat("Error: ", system_name)), NULL);
+//
+//    return false;
+//  }
+
+void SoundManager::Initialize()
+{
+
 }
 
 
@@ -121,6 +123,7 @@ bool SoundManager::PlayEvent(std::string name)
 	FMOD::Studio::EventInstance * SoundInstance = nullptr;
 
 	std::string temptext = "event:/" + name;
+
 
 	FMOD_RESULT SoundResult = FMOD_Studio_System_GetEvent(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),temptext.c_str(), reinterpret_cast<FMOD_STUDIO_EVENTDESCRIPTION**>(&SoundDescription));
 

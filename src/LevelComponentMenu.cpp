@@ -21,7 +21,7 @@ namespace ForLeaseEngine {
 
         Menu::Menu(State& owner, double pauseCD)
         : LevelComponent(owner), Paused(false), PauseTimer("Pause Timer"), PauseCooldown(pauseCD) {
-            PauseTimer.Reset();
+            /*PauseTimer.Reset();
 
             long cameraID = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true)->GetCameraID();
             Entity* camera = ForLease->GameStateManager().CurrentState().GetEntityByID(cameraID, true);
@@ -60,29 +60,29 @@ namespace ForLeaseEngine {
             howToScreen->AddComponent(new Components::Transform(*howToScreen, camera->GetComponent<Components::Transform>(true)->Position[0], camera->GetComponent<Components::Transform>(true)->Position[1] + 12.5 * camScale, unfocusedScale / 4, unfocusedScale / 4, 0, 999));
             howToScreen->AddComponent(new Components::Sprite(*howToScreen));
             howToScreen->GetComponent<Components::Sprite>(true)->SetSpriteSource("ControlPage.png");
-            howToScreen->GetComponent<Components::Sprite>(true)->Visible = false;
+            howToScreen->GetComponent<Components::Sprite>(true)->Visible = false;*/
             
             
             ForLease->Dispatcher.Attach(NULL, this, "KeyDown", &Menu::OnKeyDown);
         }
 
         Menu::~Menu() {
-            std::vector<Entity *> menus;
+            //std::vector<Entity *> menus;
 
-            menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("PauseMenu"));
-            menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("QuitConfirm"));
-            menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("HowToConfirm"));
+            //menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("PauseMenu"));
+            //menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("QuitConfirm"));
+            //menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("HowToConfirm"));
 
-            for (Entity* menu : menus) {
-                if (menu)
-                    menu->GetComponent<Components::Menu>(true)->Deactivate();
-            }
+            //for (Entity* menu : menus) {
+            //    if (menu)
+            //        menu->GetComponent<Components::Menu>(true)->Deactivate();
+            //}
 
             ForLease->Dispatcher.Detach(this, "KeyDown");
         }
 
         void Menu::Update(std::vector<Entity *>& entities) {
-            std::vector<Entity *> menus;
+            /*std::vector<Entity *> menus;
 
             menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("PauseMenu"));
             menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("QuitConfirm"));
@@ -97,7 +97,7 @@ namespace ForLeaseEngine {
             for (Entity* menu : menus) {
                 Components::Transform* transform = menu->GetComponent<Components::Transform>();
                 if (transform) transform->Position = camTransform->Position;
-            }
+            }*/
         }
 
         void Menu::Serialize(Serializer& root) {
@@ -112,40 +112,41 @@ namespace ForLeaseEngine {
         }
 
         void Menu::OnKeyDown(const Event* e) {
-            if (PauseTimer.GetTime() > PauseCooldown) {
-                PauseTimer.Reset();
+            //if (PauseTimer.GetTime() > PauseCooldown) {
+                //PauseTimer.Reset();
                 const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
                 if (key_e->Key == Keys::Escape) {
-                    Paused ? Unpause() : Pause();
+                    //Paused ? Unpause() : Pause();
+                    ForLease->GameStateManager().SetAction(Modules::StateAction::Pause);
                 }
-            }
+            //}
         }
 
         void Menu::Pause() {
-            Entity* pauseMenu = ForLease->GameStateManager().CurrentState().GetEntityByName("PauseMenu");
-            Components::Menu* pauseMenuComp = pauseMenu->GetComponent<Components::Menu>();
-            pauseMenuComp->Activate();
-            LastTimeScale = ForLease->FrameRateController().TimeScaling();
-            ForLease->FrameRateController().TimeScaling(0);
-            Paused = true;
+            //Entity* pauseMenu = ForLease->GameStateManager().CurrentState().GetEntityByName("PauseMenu");
+            //Components::Menu* pauseMenuComp = pauseMenu->GetComponent<Components::Menu>();
+            //pauseMenuComp->Activate();
+            //LastTimeScale = ForLease->FrameRateController().TimeScaling();
+            //ForLease->FrameRateController().TimeScaling(0);
+            //Paused = true;
         }
 
         void Menu::Unpause() {
-            std::vector<Entity *> menus;
+            //std::vector<Entity *> menus;
 
-            menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("PauseMenu"));
-            menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("QuitConfirm"));
-            menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("HowToConfirm"));
+            //menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("PauseMenu"));
+            //menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("QuitConfirm"));
+            //menus.push_back(ForLease->GameStateManager().CurrentState().GetEntityByName("HowToConfirm"));
 
-            for (Entity* menu : menus) {
-                Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
-                if (menuComp) menuComp->Deactivate();
-            }
-            
-            ForLease->FrameRateController().TimeScaling(1);
-            Paused = false;
+            //for (Entity* menu : menus) {
+            //    Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
+            //    if (menuComp) menuComp->Deactivate();
+            //}
+            //
+            //ForLease->FrameRateController().TimeScaling(1);
+            //Paused = false;
 
-            ForLease->GameStateManager().CurrentState().GetEntityByName("HowToScreen")->GetComponent<Components::Sprite>(true)->Visible = false;
+            //ForLease->GameStateManager().CurrentState().GetEntityByName("HowToScreen")->GetComponent<Components::Sprite>(true)->Visible = false;
         }
 
     } // LevelComponents

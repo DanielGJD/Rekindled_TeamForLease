@@ -19,15 +19,15 @@ namespace ForLeaseEngine{
 	namespace Components{
 SoundEmitter::SoundEmitter(Entity& Owner) : playSoundOnStart(true),Component(Owner, ComponentType::Transform)
 {
-
+	m_manager = ForLease->sound;
+	if (playSoundOnStart)
+		PlayEvent(startSound);
 }
 
 void SoundEmitter::Initialize()
 {
 	// * engine;
-	m_manager = ForLease->sound;
-	if (playSoundOnStart)
-		PlayEvent(startSound);
+
 
 }
 

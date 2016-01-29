@@ -14,6 +14,7 @@
 
 #include <vector>
 #include <string>
+#include "Event.h"
 
 namespace ForLeaseEngine {
 
@@ -34,7 +35,8 @@ namespace ForLeaseEngine {
             Restart,
             Next,
             Skip,
-            Pause
+            Pause,
+            Freeze
         };
 
         /*!
@@ -48,13 +50,17 @@ namespace ForLeaseEngine {
                 // GameStateManager();
                 GameStateManager(Engine& parent);
                 GameStateManager(Engine& parent, std::vector<State *> states);
+                void Initialize();
                 void Run();
                 void SetAction(StateAction action);
                 void SetState(std::string stateName);
                 void SetState(unsigned stateIndex);
+                void UnfocusFreeze(const Event* e);
+                void FocusUnfreeze(const Event* e);
                 State& CurrentState();
                 unsigned NumLevels();
             private:
+                State* StateCurrentlyExecuting;
                 //! A reference to the engine
                 Engine& Parent;
                 //! The vector of all possible states
@@ -66,9 +72,12 @@ namespace ForLeaseEngine {
                 //! The current action of the GameStateManager
                 StateAction Action;
 
+                StateAction UnfreezeAction;
+
+                State* PauseScreen;
+
                 //! Made private and deactivated, since we NEED Parent
                 GameStateManager() = delete;
-
         };
     }
 
