@@ -134,7 +134,7 @@ bool SoundManager::PlayEvent(std::string name)
 
 	//SoundDescription->createInstance(&SoundInstance);
 	FMOD_Studio_EventDescription_CreateInstance(reinterpret_cast<FMOD_STUDIO_EVENTDESCRIPTION*>(SoundDescription), reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE**>(&SoundInstance));
-	bool OneShot;
+	bool OneShot = false;
 	//properties access
 	//SoundDescription->isOneshot(&OneShot);
 	FMOD_Studio_EventDescription_IsOneshot(reinterpret_cast<FMOD_STUDIO_EVENTDESCRIPTION *>(SoundDescription),reinterpret_cast<FMOD_BOOL*>(OneShot));
@@ -167,7 +167,7 @@ bool SoundManager::StopSound(std::string name)
 	//if(FMOD_Studio_CueInstance_IsValid(reinterpret_cast<FMOD_STUDIO_CUEINSTANCE*>(m_LoopSounds[name])))
 	if(FMOD_Studio_EventInstance_IsValid(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*>(m_LoopSounds[name])))
 	{
-		FMOD_STUDIO_PLAYBACK_STATE rock;
+		FMOD_STUDIO_PLAYBACK_STATE rock = FMOD_STUDIO_PLAYBACK_PLAYING;
 		//m_LoopSounds[name]->getPlaybackState(&rock);
 		FMOD_Studio_EventInstance_GetPlaybackState(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE *>(m_LoopSounds[name]),reinterpret_cast<FMOD_STUDIO_PLAYBACK_STATE *>(rock));
 
