@@ -71,8 +71,15 @@ namespace ForLeaseEngine {
             Components::Physics* physicsComponent = entity->GetComponent<Components::Physics>();
             Components::Transform* transformComponent = entity->GetComponent<Components::Transform>();
 
-            physicsComponent->Velocity += physicsComponent->Acceleration * ForLease->FrameRateController().GetDt();
-            transformComponent->Position += physicsComponent->Velocity * ForLease->FrameRateController().GetDt();
+            float dt;
+
+            if (physicsComponent->AffectedByTimeScaling)
+                dt = ForLease->FrameRateController().GetDt();
+            else
+                dt = ForLease->FrameRateController().GetUnscaledDt();
+
+            physicsComponent->Velocity += physicsComponent->Acceleration * dt;
+            transformComponent->Position += physicsComponent->Velocity * dt;
         }
 
         /*!
