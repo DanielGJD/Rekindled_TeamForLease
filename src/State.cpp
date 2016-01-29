@@ -279,6 +279,19 @@ namespace ForLeaseEngine {
         return entity;
     }
 
+    /*!
+        \brief
+            Gets all entities within a radius of a point
+
+        \param position
+            Position to search from
+
+        \param radius
+            Radius to search in
+
+        \return
+            All entities within the radius of the point
+    */
     std::vector<Entity*> State::GetEntitiesInRadius(Point const& position, float radius) {
         std::vector<Entity*> detected;
         float radius2 = radius * radius;
@@ -322,6 +335,25 @@ namespace ForLeaseEngine {
         return detected;
     }
 
+    /*!
+        \brief
+            Gets all entities within a cone of a certain radius
+
+        \param position
+            Start of the cone
+
+        \param radius
+            Radius of the cone
+
+        \param direction
+            Direction the cone is pointed
+
+        \param angle
+            Angle of the cone
+
+        \return
+            All entities within the cone
+    */
     // This function is ugly and slow, but it works, will not make better unless really causing problems
     std::vector<Entity*> State::GetEntitiesInCone(Point const& position, float radius, Vector const& direction, float angle) {
         LevelComponents::Renderer* render = GetLevelComponent<LevelComponents::Renderer>();
@@ -360,10 +392,10 @@ namespace ForLeaseEngine {
                     closest[1] = posy;
                 }
 
-                if(Point::DistanceSquared(closest, position) <= radius2) {
-                    Point mid = position + direction * radius;
-                    Point top = position + Vector::Rotate(direction, angle / 2) * radius;
-                    Point bot = position + Vector::Rotate(direction, -angle / 2) * radius;
+                if(radius2 == 0 || Point::DistanceSquared(closest, position) <= radius2) {
+                    Point mid = position + direction;
+                    Point top = position + Vector::Rotate(direction, angle / 2);
+                    Point bot = position + Vector::Rotate(direction, -angle / 2);
                     HalfPlane hp1 = HalfPlane(position, top, mid);
                     HalfPlane hp2 = HalfPlane(position, bot, mid);
                     float bbtop = entityy + halfheight;
@@ -418,6 +450,63 @@ namespace ForLeaseEngine {
                 }
             }
         }
+        return detected;
+    }
+
+    /*!
+        \brief
+            Gets all entities within a box
+
+        \param position
+            Center of the box
+
+        \param width
+            Width of the box
+
+        \param height
+            Height of the box
+
+        \return
+            All entities within the box
+    */
+    std::vector<Entity*> State::GetEntitiesInBox(Point const& position, float width, float height) {
+        std::vector<Entity*> detected;
+        float halfWidth = width / 2;
+        float halfHeight = height / 2;
+        float left = position[0] - halfWidth;
+        float right = position[0] + halfWidth;
+        float top = position[1] + halfHeight;
+        float bottom = position[1] - halfHeight;
+        //std::cout << "POSITION: (" << position[0] << "," << position[1] << ")" << std::endl;
+        //std::cout << "DIMENSIONS: " << width << "x" << height << std::endl;
+
+        for(unsigned int i = 0; i < Entities.size(); ++i) {
+            Components::Collision* collider = Entities[i]->GetComponent<Components::Collision>();
+            //std::cout << "CHECKING ENTITY " << i << std::endl;
+
+            if(collider) {
+                //std::cout << "ENTITY " << i << " HAS COLLIDER" << std::endl;
+                Components::Transform* trans = Entities[i]->GetComponent<Components::Transform>();
+
+                float objHalfWidth = collider->Width / 2 * trans->ScaleX;
+                float objHalfHeight = collider->Height / 2 * trans->ScaleY;
+                float objLeft = trans->Position[0] - objHalfWidth;
+                float objRight = trans->Position[0] + objHalfWidth;
+                float objTop = trans->Position[1] + objHalfHeight;
+                float objBottom = trans->Position[1] - objHalfHeight;
+//                std::cout << std::endl << "ENTITY " << i << std::endl;
+//                std::cout << objLeft << "|" << right << std::endl;
+//                std::cout << objRight << "|" << left << std::endl;
+//                std::cout << objTop << "|" << bottom << std::endl;
+//                std::cout << objBottom << "|" << top << std::endl;
+
+                if(objLeft < right && objRight > left && objTop > bottom && objBottom < top) {
+//                    std::cout << "DETECTED ENTITY " << i << std::endl;
+                    detected.push_back(Entities[i]);
+                }
+            }
+        }
+
         return detected;
     }
 

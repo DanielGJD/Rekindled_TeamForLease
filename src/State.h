@@ -54,6 +54,7 @@ namespace ForLeaseEngine {
             Entity* GetEntityCollidingAtPoint(Point position, bool throwOnFail = false);
             std::vector<Entity*> GetEntitiesInRadius(Point const& position, float radius);
             std::vector<Entity*> GetEntitiesInCone(Point const& position, float radius, Vector const& direction, float angle);
+            std::vector<Entity*> GetEntitiesInBox(Point const& position, float width, float height);
             std::vector<Entity *>& GetAllEntities();
 
             void DeleteAllLevelComponents();

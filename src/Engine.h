@@ -31,8 +31,8 @@ namespace ForLeaseEngine {
     class Engine {
 
         public:
-            Engine(std::vector<State *> states);
-            Engine(std::vector<State *> states, int resolutionX, int resolutionY, int frameRate);
+            //Engine(std::vector<State *> states);
+            Engine(std::vector<State *> states, int resolutionX = 1280, int resolutionY = 720, int frameRate = 60, bool fullscreen = false);
             void Run();
             Modules::GameStateManager& GameStateManager();
             Modules::FrameRateController& FrameRateController();
@@ -48,6 +48,8 @@ namespace ForLeaseEngine {
             int ResolutionY;
             //! Frame rate of the game
             int FrameRate;
+            //! Whether it's fullscreen
+            bool Fullscreen;
             //! Game state manager--handles levels and switching between them
             Modules::GameStateManager GSM;
             //! Frame rate controller--handles timing

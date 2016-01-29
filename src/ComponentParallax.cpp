@@ -9,8 +9,18 @@ namespace ForLeaseEngine {
 
         void Parallax::Update() {}
 
-        void Parallax::Serialize(Serializer& root) {}
+        void Parallax::Serialize(Serializer& root) {
+            Serializer parallax = root.GetChild("Parallax");
+            parallax.WriteUint("Type", static_cast<unsigned int>(Type));
+            parallax.WriteBool("Active", Active);
+            parallax.WriteBool("Repeating", Repeating);
+            root.Append(parallax, "Parallax");
+        }
 
-        void Parallax::Deserialize(Serializer& root) {}
+        void Parallax::Deserialize(Serializer& root) {
+            Serializer parallax = root.GetChild("Parallax");
+            parallax.ReadBool("Active", Active);
+            parallax.ReadBool("Repeating", Repeating);
+        }
     }
 }

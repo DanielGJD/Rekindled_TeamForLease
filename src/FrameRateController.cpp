@@ -104,7 +104,7 @@ namespace ForLeaseEngine {
             #ifdef FLE_WINDOWS
             Sleep(time * 1000);
             #else
-            std::this_thread::sleep_for(std::chrono::seconds(time));
+            std::this_thread::sleep_for(std::chrono::duration<double>(time));
             #endif
         }
 

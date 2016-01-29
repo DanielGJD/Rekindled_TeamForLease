@@ -18,7 +18,7 @@ namespace ForLeaseEngine {
     namespace Components {
         CharacterController::CharacterController(Entity& owner)
                                                 : Component(owner, ComponentType::Physics | ComponentType::Collision),
-                                                  RightKey(Keys::Right), LeftKey(Keys::Left), JumpKey(Keys::Space),
+                                                  RightKey(Keys::D), LeftKey(Keys::A), JumpKey(Keys::Space),
                                                   MoveSpeed(0), JumpSpeed(0), WalkSound(""), JumpSound(""), LandSound(""),
                                                   WalkAnimation(""), JumpAnimation(""), CanJump(false) {};
 

@@ -1,0 +1,15 @@
+{ab8d1cba-8a6d-4119-bacc-9e455ec029e0} event:/BalloonDetection
+{4811f9bd-94b6-4831-871c-67ac80111107} event:/Detected
+{713fb627-7bc1-413f-ae47-cafc634c48a6} event:/FlickerOff
+{108d87a7-b931-4cc5-ac9d-a06eca863ea4} event:/Footstep
+{8937ab54-7880-4d31-a5bc-57503c5eb8e5} event:/Jumping
+{373f61ae-314a-4857-a799-fb7c26cb91b0} event:/Landing
+{7c6a7589-9f0a-4a31-b498-059da6f352af} event:/LoseLevel
+{d78d0c43-d49b-41cc-ae7a-8f9c642de990} event:/Menu2
+{3262e782-9e7c-4207-a812-68c005d98627} event:/Scaling
+{06c0541b-5949-4a57-990e-d8f0476f91d7} event:/SlowMotion
+{87c2b541-f5b1-46ce-b036-1dd524217ce1} event:/sneaky spook in the dark
+{17b1fdb8-f7a0-4cdd-ad75-8f0da1fa49bc} event:/WinLevel
+{7f0bd014-f710-43fd-be7c-3dd7c3425493} bus:/
+{534b902c-d652-4085-8869-0d133432f7b8} bus:/Reverb
+{3da7080c-d107-419d-90d0-18c34182b3dd} bank:/Master Bank

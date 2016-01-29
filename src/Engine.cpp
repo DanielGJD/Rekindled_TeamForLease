@@ -26,14 +26,15 @@ namespace ForLeaseEngine {
     /*!
         Constructor for Engine.  Creates a new instance of Engine using default values.
     */
-    Engine::Engine(std::vector<State *> states) : GSM(*this, states), FRC(60) {
-        // Default values
-        ResolutionX = 1280;
-        ResolutionY = 720;
-        FrameRate   = 60;
+    //Engine::Engine(std::vector<State *> states) : GSM(*this, states), FRC(60) {
+    //    // Default values
+    //    ResolutionX = 1280;
+    //    ResolutionY = 720;
+    //    FrameRate   = 60;
+    //    Fullscreen  = false;
 
-        ForLease = this;
-    }
+    //    ForLease = this;
+    //}
 
     /*!
         Constructor for Engine.  Creates a new instance of Engine using given values.
@@ -49,8 +50,8 @@ namespace ForLeaseEngine {
             The frame rate, or at which to refresh the window.
     */
     Engine::Engine(std::vector<State *> states, int resolutionX, int resolutionY,
-        int frameRate) : ResolutionX(resolutionX), ResolutionY(resolutionY),
-        FrameRate(frameRate), GSM(*this, states), FRC(frameRate) { ForLease = this; }
+        int frameRate, bool fullscreen) : ResolutionX(resolutionX), ResolutionY(resolutionY),
+        FrameRate(frameRate), Fullscreen(fullscreen), GSM(*this, states), FRC(frameRate) { ForLease = this; }
 
     /*!
         Handles the main game loop.  Essentially calls FrameRateController and GameStateManager.
@@ -60,12 +61,12 @@ namespace ForLeaseEngine {
         Systems::WindowProperties properties = Systems::WindowProperties();
         properties.xResolution = ResolutionX;
         properties.yResolution = ResolutionY;
-        properties.fullscreen = false;
+        properties.fullscreen = Fullscreen;
         GameWindow = Systems::Window::CreateGameWindow(properties);
         OSInput.dispatcher = &Dispatcher;
         OSInput.GameWindow = GameWindow;
-        //AudioSystem = new Systems::Audio();
-		sound = new Systems::SoundManager();
+        sound = new Systems::SoundManager();
+        GSM.Initialize();
         GSM.Run();
         Systems::Window::DestroyGameWindow(GameWindow);
         delete sound;
