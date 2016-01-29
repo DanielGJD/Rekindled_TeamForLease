@@ -22,7 +22,7 @@ namespace ForLeaseEngine {
         Light::Light(State& owner) : LevelComponent(owner) { }
 
         void Light::Update(std::vector<Entity *>& entities) {
-            for (Entity* entity : entities) {
+            /*for (Entity* entity : entities) {
                 if (!entity->HasComponent(ComponentType::Light)) continue;
 
                 Components::Light* light = entity->GetComponent<Components::Light>(true);
@@ -53,7 +53,7 @@ namespace ForLeaseEngine {
 
                     rayVec = Vector::Rotate(rayVec, rotStep);
                 }
-            }
+            }*/
         }
 
         void Light::Serialize(Serializer& root) {

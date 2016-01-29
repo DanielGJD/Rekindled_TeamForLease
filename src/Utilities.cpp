@@ -15,6 +15,8 @@
 #include "Level.h"
 #include <iostream>
 #include <fstream>
+#include <algorithm>
+#include <string>
 
 namespace FLE = ForLeaseEngine;
 
@@ -37,4 +39,44 @@ std::vector<ForLeaseEngine::State *> LoadLevels(std::string levelList, std::vect
     }
 
     return appendTo;
+}
+
+std::vector<ForLeaseEngine::State *> LoadSingleLevel(std::string levelFileName, std::vector<ForLeaseEngine::State *> appendTo) {
+    FLE::Level* level = new FLE::Level(levelFileName);
+    appendTo.push_back(level);
+    return appendTo;
+}
+
+namespace CommandLine {
+    bool ArgumentExists(char** start, char** end, const std::string argument) {
+        char** result = std::find(start, end, argument);
+
+        if (result == end)
+            return false;
+        else
+            return true;
+    }
+
+    StringArgument GetStringArgument(char** start, char** end, const std::string argument) {
+        char ** result = std::find(start, end, argument);
+
+        if (result != end && ++result != end)
+            return std::pair<bool, std::string>(true, *result);
+
+        return StringArgument(false, "Argument not found.");
+    }
+
+    IntArgument GetIntArgument(char** start, char** end, const std::string argument) {
+        StringArgument result = GetStringArgument(start, end, argument);
+
+        if (result.first) {
+//            try {
+//                return IntArgument(true, std::stoi(result.second));
+//            } catch (std::invalid_argument) {
+//                return IntArgument(false, -1);
+//            }
+        }
+
+        return IntArgument(false, -1);
+    }
 }
