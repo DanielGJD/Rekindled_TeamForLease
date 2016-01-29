@@ -15,6 +15,7 @@
 #include "Vector.h"
 #include "Color.h"
 #include "Mesh.h"
+#include "Ray.h"
 
 #ifndef PI
 #define PI 3.14159265358979323846
@@ -50,6 +51,7 @@ namespace ForLeaseEngine {
                 void Deserialize(Serializer& root);
                 Mesh* GetLightMesh();
             private:
+                Point CheckRayAgainstWindow(Ray& ray, Point& tl, Point& tr, Point& br, Point& bl, Point& position);
                 Mesh LightMesh;
         };
     }
