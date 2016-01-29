@@ -15,6 +15,7 @@ namespace ForLeaseEngine
 
     void LevelEditor::DrawObjectWindow()
     {
+        std::string activeString = "Active";
         leg::render->SetDrawingColor(Color(1,1,1));
         leg::render->DrawRectangle(leg::selTran->Position, leg::selTran->ScaleX, leg::selTran->ScaleY, leg::selTran->Rotation);
         ImGui::Begin("Object Editor");
@@ -105,7 +106,8 @@ namespace ForLeaseEngine
 
             if (ImGui::CollapsingHeader("Edit Animation"))
             {
-                ImGui::Checkbox("Active", &(leg::selModel->AnimationActive));
+                ImGui::Checkbox(activeString.c_str(), &(leg::selModel->AnimationActive));
+                activeString.append(" ");
                 ImGui::Checkbox("Looping", &(leg::selModel->Looping));
                 ImGui::InputFloat("Frame Rate", &(leg::selModel->FrameRate));
                 ImGui::Text("Current Animation: %s", leg::selModel->GetAnimation().c_str());
@@ -121,11 +123,6 @@ namespace ForLeaseEngine
                         if (ImGui::MenuItem(s.c_str()))
                             leg::selModel->SetAnimation(s);
                     }
-                }
-                if (animations.IsActive() && ImGui::IsKeyPressed(Keys::Return))
-                {
-                    ForLease->Resources.LoadMeshAnimation(animations.InputBuf);
-                    leg::animationNames = ForLease->Resources.GetLoadedMeshAnimationNames();
                 }
                 ImGui::EndChild();
             }
@@ -181,7 +178,8 @@ namespace ForLeaseEngine
         }
         if (leg::selChange && ImGui::CollapsingHeader("Change Level on Collide"))
         {
-            ImGui::Checkbox("Active", &(leg::selChange->Active));
+            ImGui::Checkbox(activeString.c_str(), &(leg::selChange->Active));
+            activeString.append(" ");
             ImGui::InputFloat("On Switch Time Scale", &(leg::selChange->OnSwitchTimeScale));
             ImGui::InputFloat("Fade Out Time", &(leg::selChange->FadeOutTime));
             ImGui::Text("Level Name: %s", leg::selChange->LevelName.c_str());
@@ -238,7 +236,8 @@ namespace ForLeaseEngine
 
         if (leg::selDrag && ImGui::CollapsingHeader("Drag with Mouse"))
         {
-            ImGui::Checkbox("Active", &(leg::selDrag->Active));
+            ImGui::Checkbox(activeString.c_str(), &(leg::selDrag->Active));
+            activeString.append(" ");
             if (ImGui::Button("Remove Drag With Mouse"))
             {
                 leg::selection->DeleteComponent(ComponentType::DragWithMouse);
@@ -248,7 +247,8 @@ namespace ForLeaseEngine
 
         if (leg::selEnemyAI && ImGui::CollapsingHeader("Enemy AI"))
         {
-            ImGui::Checkbox("Active", &(leg::selEnemyAI->Active));
+            ImGui::Checkbox(activeString.c_str(), &(leg::selEnemyAI->Active));
+            activeString.append(" ");
             ImGui::InputFloat("Detection Delay", &(leg::selEnemyAI->DetectionDelay));
             ImGui::PushItemWidth(250);
             ImGui::ColorEdit4("Happy Color", const_cast<float*>(leg::selEnemyAI->HappyColor.GetAll()));
@@ -310,7 +310,8 @@ namespace ForLeaseEngine
         }
         if (leg::selFade && ImGui::CollapsingHeader("Fade with Distance"))
         {
-            ImGui::Checkbox("Active", &(leg::selFade->Active));
+            ImGui::Checkbox(activeString.c_str(), &(leg::selFade->Active));
+            activeString.append(" ");
             ImGui::Checkbox("X Direction", &(leg::selFade->XDirection));
             ImGui::Checkbox("Y Direction", &(leg::selFade->YDirection));
             ImGui::DragFloat("Begin Distance", &(leg::selFade->FadeBeginDistance), 0.05, 0);
@@ -343,6 +344,88 @@ namespace ForLeaseEngine
                 leg::selection->DeleteComponent(ComponentType::Light);
                 leg::selLight = NULL;
             }
+        }
+
+        if (leg::selPartColor && ImGui::CollapsingHeader("Particle Color"))
+        {
+            ImGui::Checkbox(activeString.c_str(), &(leg::selPartColor->Active));
+            activeString.append(" ");
+            ImGui::Text("Colors");
+            ImGui::Separator();
+            ImGui::PushItemWidth(250);
+            ImGui::BeginChild("Color List", ImVec2(0, 100));
+            for(unsigned i = 0; i < leg::selPartColor->GetColorCount(); i++)
+            {
+                char s[32];
+                float * col = const_cast<float*>(leg::selPartColor->GetColor(i).GetAll());
+                ImVec4 col2(col[0], col[1], col[2], col[3]);
+                sprintf(s, "Remove %u", i+1);
+                ImGui::ColorButton(col2);
+                ImGui::SameLine();
+                if (ImGui::Button(s))
+                    leg::selPartColor->RemoveColor(i);
+            }
+            ImGui::EndChild();
+
+            static float newColor[4] = {1, 1, 1, 1};
+            Color c;
+            ImGui::ColorEdit4("Active", newColor);
+            if (ImGui::Button("Add Color"))
+            {
+                c.SetAll(newColor/*[0], newColor[1], newColor[2], newColor[3]*/);
+                leg::selPartColor->AddColor(c);
+            }
+
+        }
+        if (leg::selPartDynamics && ImGui::CollapsingHeader("Particle Dynamics"))
+        {
+            ImGui::Checkbox(activeString.c_str(), &(leg::selPartDynamics->Active));
+            activeString.append(" ");
+            ImGui::InputFloat("Force X ", &(leg::selPartDynamics->Force[0]));
+            ImGui::SameLine();
+            ImGui::InputFloat("Force Y ", &(leg::selPartDynamics->Force[1]));
+            ImGui::DragFloat("Torque", &(leg::selPartDynamics->Torque), 0.05);
+            ImGui::DragFloat("Growth", &(leg::selPartDynamics->Growth), 0.05);
+            ImGui::DragFloat("Drag", &(leg::selPartDynamics->Drag), 0.05);
+        }
+
+        if (leg::selPartEmitter && ImGui::CollapsingHeader("Particle Emitter"))
+        {
+            ImGui::Checkbox(activeString.c_str(), &(leg::selPartEmitter->Active));
+            activeString.append(" ");
+            if (ImGui::InputInt("Emit Count", &leg::eCount, 1, 1, ImGuiInputTextFlags_EnterReturnsTrue) && leg::eCount > 0)
+                leg::selPartEmitter->EmitCount = leg::eCount;
+
+            ImGui::DragFloat("Emit Rate", &(leg::selPartEmitter->EmitRate), 0.05);
+            ImGui::DragFloat("Emit Random", &(leg::selPartEmitter->EmitRandom), 0.05);
+            ImGui::DragFloat("Size ", &(leg::selPartEmitter->Size), 0.05);
+            ImGui::DragFloat("Size Random", &(leg::selPartEmitter->SizeRandom), 0.05);
+            ImGui::DragFloat("Life  ", &(leg::selPartEmitter->Life), 0.05);
+            ImGui::DragFloat("Life Random", &(leg::selPartEmitter->LifeRandom), 0.05);
+            ImGui::DragFloat("Rotation ", &(leg::selPartEmitter->Rotation), 0.05);
+            ImGui::DragFloat("Rotation Random", &(leg::selPartEmitter->RotationRandom), 0.05);
+            ImGui::DragFloat("Velocity X  ", &(leg::selPartEmitter->Velocity[0]), 0.05);
+            ImGui::SameLine();
+            ImGui::DragFloat("Velocity Y  ", &(leg::selPartEmitter->Velocity[1]), 0.05);
+            ImGui::DragFloat("Velocity Random X", &(leg::selPartEmitter->VelocityRandom[0]), 0.05);
+            ImGui::SameLine();
+            ImGui::DragFloat("Velocity Random Y", &(leg::selPartEmitter->VelocityRandom[1]), 0.05);
+            ImGui::DragFloat("Rotational Velocity", &(leg::selPartEmitter->RotationalVelocity), 0.05);
+            ImGui::DragFloat("Rotational Velocity Random", &(leg::selPartEmitter->RotationalVelocityRandom), 0.05);
+        }
+
+        if (leg::selPartSystem && ImGui::CollapsingHeader("Particle System"))
+        {
+            ImGui::Checkbox("Visible   ", &(leg::selPartSystem->Visible));
+            ImGui::PushItemWidth(250);
+            ImGui::ColorEdit4("Color", const_cast<float*>(leg::selPartSystem->StartingColor.GetAll()));
+            ImGui::PopItemWidth();
+
+            if (ImGui::InputInt("Max Number of Particles", &leg::maxParticles, 1, 1, ImGuiInputTextFlags_EnterReturnsTrue) && leg::maxParticles > 0)
+                leg::selPartSystem->MaxParticles = leg::maxParticles;
+            ImGui::InputFloat("System Size X", &(leg::selPartSystem->SystemSize[0]));
+            ImGui::SameLine();
+            ImGui::InputFloat("System Size Y", &(leg::selPartSystem->SystemSize[1]));
         }
 
         if (leg::selPhysics && ImGui::CollapsingHeader("Physics"))
@@ -431,11 +514,6 @@ namespace ForLeaseEngine
                     }
                 }
                 ImGui::EndChild();
-                if (controllerAni.IsActive() && ImGui::IsKeyPressed(Keys::Return))
-                {
-                    ForLease->Resources.LoadMeshAnimation(controllerAni.InputBuf);
-                    leg::animationNames = ForLease->Resources.GetLoadedMeshAnimationNames();
-                }
             }
             ImGui::Unindent();
             if (ImGui::Button("Remove Controller"))
@@ -447,7 +525,8 @@ namespace ForLeaseEngine
 
         if (leg::selScale && ImGui::CollapsingHeader("Scale with Keyboard"))
         {
-            ImGui::Checkbox("Active", &(leg::selScale->Active));
+            ImGui::Checkbox(activeString.c_str(), &(leg::selScale->Active));
+            activeString.append(" ");
             ImGui::InputFloat("Scale Speed", &(leg::selScale->ScaleSpeed));
             ImGui::InputInt("X up Key", &(leg::selScale->ScaleXUpKey));
             ImGui::SameLine();
@@ -598,26 +677,20 @@ namespace ForLeaseEngine
 
         if (leg::selVision && ImGui::CollapsingHeader("Vision Cone"))
         {
-            ImGui::Checkbox("Active", &(leg::selVision->Active));
+            ImGui::Checkbox(activeString.c_str(), &(leg::selVision->Active));
+            activeString.append(" ");
             ImGui::SameLine();
             ImGui::Checkbox("Draw Outline", &(leg::selVision->DrawOutline));
             ImGui::SameLine();
-            ImGui::Checkbox("Visible", &(leg::selVision->Visible));
+            ImGui::Checkbox("Visible ", &(leg::selVision->Visible));
             ImGui::DragFloat("Angle", &(leg::selVision->Angle), 0.05);
             ImGui::DragFloat("Direction X", &(leg::selVision->Direction[0]), 0.01);
             ImGui::SameLine();
             ImGui::DragFloat("Direction Y", &(leg::selVision->Direction[1]), 0.01);
             ImGui::DragFloat("Radius", &(leg::selVision->Radius), 0.25);
             ImGui::PushItemWidth(250);
-            ImGui::ColorEdit4("Indicator Color", leg::visionConeColor);
+            ImGui::ColorEdit4("Indicator Color", const_cast<float*>(leg::selVision->IndicatorColor.GetAll()));
             ImGui::PopItemWidth();
-            if (ImGui::Button("Set Indicator Color"))
-            {
-                leg::selVision->IndicatorColor.SetAll(leg::visionConeColor[0],
-                                                      leg::visionConeColor[1],
-                                                      leg::visionConeColor[2],
-                                                      leg::visionConeColor[3]);
-            }
 
             if (ImGui::Button("Remove Vision Cone"))
             {

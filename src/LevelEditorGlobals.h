@@ -10,29 +10,30 @@ namespace ForLeaseEngine
         extern LevelComponents::Light*    levelLight;
         extern Vector gravity;
 
-        extern Entity*                            selection;
-        extern Components::Transform*             selTran;
-        extern Components::Model*                 selModel;
-        extern Components::Camera*                selCamera;
-        extern Components::Light*                 selLight;
-        extern Components::Collision*             selCollision;
-        extern Components::Physics*               selPhysics;
+        extern Entity*                             selection;
+        extern Components::Transform*              selTran;
+        extern Components::Model*                  selModel;
+        extern Components::Camera*                 selCamera;
+        extern Components::Light*                  selLight;
+        extern Components::Collision*              selCollision;
+        extern Components::Physics*                selPhysics;
         //extern Components::SoundEmitter*          selSound;
-        extern Components::Sprite*                selSprite;
-        extern Components::SpriteText*            selSprtxt;
-        extern Components::CharacterController*   selController;
-        extern Components::VisionCone*            selVision;
-        extern Components::Menu*                  selMenu;
-        extern Components::DragWithMouse*         selDrag;
-        extern Components::ScaleWithKeyboard*     selScale;
-        extern Components::TransformModeControls* selTMC;
-        extern Components::EnemyAI*               selEnemyAI;
-        extern Components::FadeWithDistance*      selFade;
-        extern Components::ChangeLevelOnCollide*  selChange;
-        extern Components::BackgroundMusic*       selMusic;
-        extern Components::ParticleColorAnimator* selPartColor;
-        extern Components::ParticleEmitter*       selPartEmitter;
-        extern Components::ParticleSystem*        selPartSystem;
+        extern Components::Sprite*                 selSprite;
+        extern Components::SpriteText*             selSprtxt;
+        extern Components::CharacterController*    selController;
+        extern Components::VisionCone*             selVision;
+        extern Components::Menu*                   selMenu;
+        extern Components::DragWithMouse*          selDrag;
+        extern Components::ScaleWithKeyboard*      selScale;
+        extern Components::TransformModeControls*  selTMC;
+        extern Components::EnemyAI*                selEnemyAI;
+        extern Components::FadeWithDistance*       selFade;
+        extern Components::ChangeLevelOnCollide*   selChange;
+        extern Components::BackgroundMusic*        selMusic;
+        extern Components::ParticleColorAnimator*  selPartColor;
+        extern Components::ParticleEmitter*        selPartEmitter;
+        extern Components::ParticleSystem*         selPartSystem;
+        extern Components::SimpleParticleDynamics* selPartDynamics;
 
 
         extern Entity*                camera;
@@ -88,16 +89,10 @@ namespace ForLeaseEngine
         extern char changeLevel[70];
         extern char changeObject[70];
 
-        extern float spriteTextColor[4];
-        extern float visionConeColor[4];
-        extern float happyColor[4];
-        extern float detectionColor[4];
-        extern float noDetectionColor[4];
-        extern float spriteColor[4];
-        extern float meshColor[4];
-        extern float lightColor[4];
-
         extern const char* archToSpawn;
         extern int lightRays;
+        extern int eCount;
+        extern int maxParticles;
+        extern float timeScale;
     }
 }
