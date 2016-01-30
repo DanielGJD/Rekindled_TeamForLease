@@ -13,6 +13,7 @@
 #include "Serialize.h"
 #include "State.h"
 #include "Level.h"
+#include "Platforms.h"
 #include <iostream>
 #include <fstream>
 #include <algorithm>
@@ -88,14 +89,6 @@ namespace CommandLine {
         StringArgument result = GetStringArgument(start, end, argument);
 
         if (result.first) {
-//            try {
-//                return IntArgument(true, std::stoi(result.second));
-//            } catch (std::invalid_argument) {
-//                return IntArgument(false, -1);
-//            }
-
-            // Changed due to MinGW stoi incompatibility
-
             try {
                 return IntArgument(true, convert<int>(result.second.c_str()));
             }
@@ -106,4 +99,48 @@ namespace CommandLine {
 
         return IntArgument(false, -1);
     }
+}
+
+void SpawnProcess(const std::string process, std::string arguments) {
+    #ifdef FLE_WINDOWS
+
+        // Shamelessly stolen from Mead's CS180 notes--I'm going to modify it later.
+        STARTUPINFO startInfo;
+        PROCESS_INFORMATION processInfo;
+
+        DWORD pid = GetCurrentProcessId();
+        std::cout << "parent pid = " << pid << std::endl;
+
+        // allocate memory and set to 0
+        ZeroMemory(&startInfo, sizeof(STARTUPINFO));
+        ZeroMemory(&processInfo, sizeof(PROCESS_INFORMATION));
+
+        std::cout << "creating child process" << std::endl;
+        const char *program = "..\\blisstopia\\Blisstopia.exe";
+        BOOL err = CreateProcess(program,     // program to run
+            0,           // command line
+            0,           // security attributes
+            0,           // thread attributes
+            FALSE,       // don't inherit handles
+            CREATE_UNICODE_ENVIRONMENT,           // creation flags (none)
+            0,           // use parent's environment
+            "..\\blisstopia",           // use parent's directory
+            &startInfo, // start up info
+            &processInfo   // process info
+            );
+
+        if (!err)
+        {
+            std::cout << "Error creating process" << std::endl;
+            return;
+        }
+
+        std::cout << "waiting for child to terminate" << std::endl;
+        WaitForSingleObject(processInfo.hProcess, INFINITE);
+        std::cout << "parent terminating" << std::endl;
+
+        CloseHandle(processInfo.hProcess);
+        CloseHandle(processInfo.hThread);
+
+    #endif
 }
