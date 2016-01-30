@@ -36,7 +36,7 @@ namespace ForLeaseEngine
             return true;
         }
 
-        catch (std::exception& e)
+        catch (Json::RuntimeError& e)
         {
             throw Exception(e.what());
         }
@@ -144,6 +144,11 @@ namespace ForLeaseEngine
     {
         node[path]["X"] = v[0];
         node[path]["Y"] = v[1];
+    }
+
+    void Serializer::WriteUlonglong(const std::string& path, const unsigned long long ull)
+    {
+        node[path] = ull;
     }
 
     /*!
@@ -350,6 +355,11 @@ namespace ForLeaseEngine
     {
         v[0] = node[path]["X"].asFloat();
         v[1] = node[path]["Y"].asFloat();
+    }
+
+    void Serializer::ReadUlonglong(const std::string& path, unsigned long long& ull)
+    {
+        ull = node[path].asUInt64();
     }
 
     /*!

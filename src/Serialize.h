@@ -41,6 +41,7 @@ namespace ForLeaseEngine
         void WriteString(const std::string& path, const std::string& s);
         void WriteBool(const std::string& path, const bool b);
         void WriteVec(const std::string& path, const Hcoord& v);
+        void WriteUlonglong(const std::string& path, const unsigned long long ull);
 
         void WriteIntArray(const std::string& path, const int* a, const int size);
         void WriteUintArray(const std::string& path, const unsigned* a, const int size);
@@ -54,6 +55,7 @@ namespace ForLeaseEngine
         void ReadString(const std::string& path, std::string& s) const;
         void ReadBool(const std::string& path, bool& b) const;
         void ReadVec(const std::string& path, Hcoord& v) const;
+        void ReadUlonglong(const std::string& path, unsigned long long& ull);
 
         void ReadIntArray(const std::string& path, int* a) const;
         void ReadUintArray(const std::string& path, unsigned* a) const;
