@@ -22,6 +22,10 @@
 #undef main
 
 int Start(int argc = 0, char** argv = 0) {
+    for (int i = 0; i < argc; ++i) {
+        std::cout << argv[i] << std::endl;
+    }
+
     std::vector<ForLeaseEngine::State *> states;
 
     // Used for parsing command line

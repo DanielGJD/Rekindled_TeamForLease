@@ -28,7 +28,6 @@ namespace CommandLine {
     IntArgument GetIntArgument(char** start, char** end, const std::string argument);
 }
 
-void SpawnProcess(const std::string process, std::string arguments);
-void SpawnNewLevelProcess(const std::string level);
+void SpawnNewLevelProcess(const std::string& level);
 
 #endif // UTILITIES_H

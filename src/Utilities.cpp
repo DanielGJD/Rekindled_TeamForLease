@@ -19,6 +19,15 @@
 #include <algorithm>
 #include <string>
 #include <sstream>
+#include "Exception.h"
+
+#ifndef FLE_WINDOWS // Platform-specific crap used in SpawnProcess
+    #include <stdio.h>    /* printf         */
+    #include <stdlib.h>   /* exit           */
+    #include <unistd.h>   /* fork, getpid   */
+    #include <sys/wait.h> /* wait           */
+    #include <cstring>
+#endif
 
 namespace FLE = ForLeaseEngine;
 
@@ -101,46 +110,132 @@ namespace CommandLine {
     }
 }
 
-void SpawnProcess(const std::string process, std::string arguments) {
-    #ifdef FLE_WINDOWS
+namespace {
+    /*!
+        Helper function for spawning a new process.  This is designed to be
+        cross-platform; if anyone has issues on any system with it, please let me
+        know on Slack.
 
-        // Shamelessly stolen from Mead's CS180 notes--I'm going to modify it later.
+        It's ugly.  It's gross.  But according to my testing, it works across platforms.
+
+        I really hate platform-dependent code.
+
+        Usage follows:
+
+            process:      A relative position of the thing we want to launch.  This is
+                          relative to execLocation (discussed below).  Since this requires
+                          nasty string parsing to work, don't include any normal relative
+                          links (like ./, ..\, etc.).
+
+            arguments:    A space-delimited string of the arguments to pass to the thing
+                          being launched.
+
+            execLocation: The directory to execute in.  This is necessary if the thing
+                          being launched requires dlls, resources, etc.
+    */
+    void SpawnProcess(const std::string& process, const std::string& arguments, const std::string& execLocation) {
+#ifdef FLE_WINDOWS
+
+        std::stringstream ss;
+
+        ss << execLocation << "/" << process;
+
         STARTUPINFO startInfo;
         PROCESS_INFORMATION processInfo;
 
         DWORD pid = GetCurrentProcessId();
-        std::cout << "parent pid = " << pid << std::endl;
 
-        // allocate memory and set to 0
+        // Zero out relevant memory
         ZeroMemory(&startInfo, sizeof(STARTUPINFO));
         ZeroMemory(&processInfo, sizeof(PROCESS_INFORMATION));
 
-        std::cout << "creating child process" << std::endl;
-        const char *program = "..\\blisstopia\\Blisstopia.exe";
-        BOOL err = CreateProcess(program,     // program to run
-            0,           // command line
-            0,           // security attributes
-            0,           // thread attributes
-            FALSE,       // don't inherit handles
-            CREATE_UNICODE_ENVIRONMENT,           // creation flags (none)
-            0,           // use parent's environment
-            "..\\blisstopia",           // use parent's directory
-            &startInfo, // start up info
-            &processInfo   // process info
-            );
+        // Copy the string to a vector of characters
+        std::vector<char> command_line(arguments.c_str(), arguments.c_str() + arguments.size() + 1);
 
-        if (!err)
-        {
-            std::cout << "Error creating process" << std::endl;
-            return;
-        }
+        BOOL err = CreateProcess(ss.str().c_str(), &command_line[0], 0, 0, FALSE,
+            CREATE_UNICODE_ENVIRONMENT, 0, execLocation.c_str(),
+            &startInfo, &processInfo);
 
-        std::cout << "waiting for child to terminate" << std::endl;
+        if (!err) throw FLE::Exception("Could not create process.");
+
         WaitForSingleObject(processInfo.hProcess, INFINITE);
-        std::cout << "parent terminating" << std::endl;
 
         CloseHandle(processInfo.hProcess);
         CloseHandle(processInfo.hThread);
 
-    #endif
+
+#else
+
+        int pid;
+
+        pid = fork();
+
+        if (pid == 0) /* child */
+        {
+            std::vector<char*> command_line;
+
+            char *procCString = new char[process.size() + 1];
+            strcpy(procCString, process.c_str());
+            command_line.push_back(procCString);
+
+            const char* argCharacter = arguments.c_str();
+            int words = 0;
+
+            while (*argCharacter != 0) {
+                if (*argCharacter == ' ')
+                    ++words;
+                ++argCharacter;
+            }
+            ++words;
+
+            argCharacter = arguments.c_str();
+
+            for (int i = 1; i <= words; ++i) {
+                const char* first = argCharacter;
+                while (*argCharacter != ' ' && *argCharacter != 0) ++argCharacter;
+
+                command_line.push_back(new char[(argCharacter - first) + 1]);
+                char* copy = command_line.back();
+                while (first < argCharacter) {
+                    *copy = *first;
+                    ++first;
+                    ++copy;
+                }
+
+                *copy = 0;
+                ++argCharacter;
+            }
+
+            // Enter correct directory
+            chdir(execLocation.c_str());
+            // Finally get to make the process
+            execv(process.c_str(), &command_line[0]);
+
+            for (char* toDelete : command_line)
+                delete[] toDelete;
+
+            delete[] procCString;
+
+            exit(10);
+        }
+        else { /* parent */
+            int code, status;
+            wait(&status);
+            code = WEXITSTATUS(status);
+        }
+
+#endif
+    }
+}
+
+
+/*!
+    This is highly dependent on knowing exactly where Blisstopia.exe is in relation
+    to the level editor.  I would highly recommend placing both the editor and
+    the game binary in the same directory in the repo.
+*/
+void SpawnNewLevelProcess(const std::string& level) {
+    std::stringstream args;
+    args << "-level " << level;
+    SpawnProcess("Blisstopia.exe", args.str(), "");
 }
