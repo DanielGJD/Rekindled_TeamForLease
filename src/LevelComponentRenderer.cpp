@@ -312,6 +312,9 @@ namespace ForLeaseEngine {
                     case BlendMode::MULTIPLY:
                         glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
                         break;
+                    case BlendMode::LIGHT:
+                        glBlendFunc(GL_DST_COLOR, GL_SRC_ALPHA);
+                        break;
                 }
                 ++BlendModeSwapCount;
             }
@@ -507,8 +510,10 @@ namespace ForLeaseEngine {
         void Renderer::DrawMesh(Mesh* mesh, bool drawEdges, bool drawVertices, std::string animationName, unsigned int frame, float t, Color const& color) {
             if(!mesh)
                 return;
-            Point* transformed = new Point[mesh->GetVertexCount()];
-            Color* faceColors = new Color[mesh->GetFaceCount()];
+            //Point* transformed = new Point[mesh->GetVertexCount()];
+            //Color* faceColors = new Color[mesh->GetFaceCount()];
+            std::vector<Point> transformed = std::vector<Point>(mesh->GetVertexCount());
+            std::vector<Color> faceColors = std::vector<Color>(mesh->GetFaceCount());
 
             // Transform vertices to screen space
             if(animationName.compare("") != 0) {
@@ -609,7 +614,8 @@ namespace ForLeaseEngine {
                 glEnd();
             }
 
-			delete[] transformed;
+			//delete[] transformed;
+			//delete[] faceColors;
         }
 
         void Renderer::DrawParticleSystem(Components::ParticleSystem* pSystem) {

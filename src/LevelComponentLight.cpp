@@ -22,38 +22,6 @@ namespace ForLeaseEngine {
         Light::Light(State& owner) : LevelComponent(owner) { }
 
         void Light::Update(std::vector<Entity *>& entities) {
-            /*for (Entity* entity : entities) {
-                if (!entity->HasComponent(ComponentType::Light)) continue;
-
-                Components::Light* light = entity->GetComponent<Components::Light>(true);
-
-                // Raycasting stuff
-                Vector start = Vector::Rotate(light->Direction, -light->Sweep / 2);
-
-                float rotStep = light->Sweep / light->Rays;
-
-                Vector rayVec = start;
-
-                LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
-
-
-                renderer->SetDrawingColor(light->DrawColor);
-
-                // The Andrew Method
-                for (unsigned i = 0; i <= light->Rays; ++i) {
-                    Ray ray(entity->GetComponent<Components::Transform>()->Position, rayVec, 666);
-                    for (Entity* toCheck : entities) {
-                        if (!toCheck->HasComponent(ComponentType::Collision)) continue;
-
-                        ray.IsColliding(toCheck);
-                    }
-
-                    renderer->DrawLine(ray.GetStart(), ray.GetScaledVector());
-
-
-                    rayVec = Vector::Rotate(rayVec, rotStep);
-                }
-            }*/
         }
 
         void Light::Serialize(Serializer& root) {
