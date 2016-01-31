@@ -101,7 +101,7 @@ namespace ForLeaseEngine {
             BlendModeSwapCount = 0;
             RenderTime = 0;
 
-            if(/*CurrentCamera != 0*/ true) {
+            if(CurrentCamera != 0) {
                 float aspectRatio = static_cast<float>(ForLease->GameWindow->GetXResolution()) / ForLease->GameWindow->GetYResolution();
                 try{
                     Entity* cameraEntity = Owner.GetEntityByID(CurrentCamera, true);
@@ -152,7 +152,10 @@ namespace ForLeaseEngine {
 
                     if(parallax && parallax->Active && trans->ZOrder != cameraZ) {
                         parallaxAmount = 1.0 - 1.0 / abs(trans->ZOrder - cameraZ);
-                        std::cout << parallaxAmount << std::endl;
+                        //std::cout << parallaxAmount << std::endl;
+                    }
+                    else {
+                        parallaxAmount = 1;
                     }
 
 
@@ -169,7 +172,7 @@ namespace ForLeaseEngine {
                         Components::Sprite* sprite = entity->GetComponent<Components::Sprite>();
                         if(sprite->Visible) {
                             //Components::Transform* transform = entity->GetComponent<Components::Transform>();
-                            SetModelView(trans->Position - cameraShift + cameraShift * parallaxAmount, trans->ScaleX, trans->ScaleY, trans->Rotation);
+                            SetModelView(trans->Position + cameraShift * parallaxAmount, trans->ScaleX, trans->ScaleY, trans->Rotation);
                             DrawSprite(sprite);
                         }
                     }
