@@ -33,26 +33,31 @@ namespace ForLeaseEngine
          LevelComponents::Light*    levelLight;
          Vector gravity;
 
-         Entity*                            selection;
-         Components::Transform*             selTran;
-         Components::Model*                 selModel;
-         Components::Camera*                selCamera;
-         Components::Light*                 selLight;
-         Components::Collision*             selCollision;
-         Components::Physics*               selPhysics;
+         Entity*                             selection;
+         Components::Transform*              selTran;
+         Components::Model*                  selModel;
+         Components::Camera*                 selCamera;
+         Components::Light*                  selLight;
+         Components::Collision*              selCollision;
+         Components::Physics*                selPhysics;
          //Components::SoundEmitter*          selSound;
-         Components::Sprite*                selSprite;
-         Components::SpriteText*            selSprtxt;
-         Components::CharacterController*   selController;
-         Components::VisionCone*            selVision;
-         Components::Menu*                  selMenu;
-         Components::DragWithMouse*         selDrag;
-         Components::ScaleWithKeyboard*     selScale;
-         Components::TransformModeControls* selTMC;
-         Components::EnemyAI*               selEnemyAI;
-         Components::FadeWithDistance*      selFade;
-         Components::ChangeLevelOnCollide*  selChange;
-         Components::BackgroundMusic*       selMusic;
+         Components::Sprite*                 selSprite;
+         Components::SpriteText*             selSprtxt;
+         Components::CharacterController*    selController;
+         Components::VisionCone*             selVision;
+         Components::Menu*                   selMenu;
+         Components::DragWithMouse*          selDrag;
+         Components::ScaleWithKeyboard*      selScale;
+         Components::TransformModeControls*  selTMC;
+         Components::EnemyAI*                selEnemyAI;
+         Components::FadeWithDistance*       selFade;
+         Components::ChangeLevelOnCollide*   selChange;
+         Components::BackgroundMusic*        selMusic;
+         Components::ParticleColorAnimator*  selPartColor;
+         Components::ParticleEmitter*        selPartEmitter;
+         Components::ParticleSystem*         selPartSystem;
+         Components::SimpleParticleDynamics* selPartDynamics;
+
 
 
          Entity*                camera;
@@ -108,17 +113,11 @@ namespace ForLeaseEngine
          char changeLevel[70];
          char changeObject[70];
 
-         float spriteTextColor[4] = { 0 };
-         float visionConeColor[4] = { 0 };
-         float happyColor[4] = { 0 };
-         float detectionColor[4] = { 0 };
-         float noDetectionColor[4] = { 0 };
-         float spriteColor[4] = { 0 };
-         float meshColor[4] = { 0 };
-         float lightColor[4] = { 0 };
-
          const char* archToSpawn = NULL;
          int lightRays = 100;
+         int eCount = 0;
+         int maxParticles = 0;
+         float timeScale = 0;
     }
 
     namespace leg = LevelEditorGlobals;
@@ -153,6 +152,7 @@ namespace ForLeaseEngine
 
     void LevelEditor::Load()
     {
+        leg::timeScale = ForLease->FrameRateController().TimeScaling();
         leg::render = new LevelComponents::Renderer(*this);
         leg::camera = AddEntity("Level Camera");
         leg::camTrans = new Components::Transform(*leg::camera);
@@ -171,37 +171,41 @@ namespace ForLeaseEngine
         leg::window = ForLease->GameWindow->DangerousGetRawWindow();
         strcpy(leg::statename, Name.c_str());
         LoadFiles();
-        leg::componentNames.push_back("Background Music");
+        //leg::componentNames.push_back("Background Music");
         leg::componentNames.push_back("Camera");
         leg::componentNames.push_back("Change Level on Collide");
         leg::componentNames.push_back("Collision");
         leg::componentNames.push_back("Drag with Mouse");
         leg::componentNames.push_back("Fade with Distance");
         leg::componentNames.push_back("Enemy AI");
-        leg::componentNames.push_back("Light");
+        //leg::componentNames.push_back("Light");
         leg::componentNames.push_back("Model");
+        leg::componentNames.push_back("Particle Color");
+        leg::componentNames.push_back("Particle Dynamics");
+        leg::componentNames.push_back("Particle Emitter");
+        leg::componentNames.push_back("Particle System");
         leg::componentNames.push_back("Physics");
         leg::componentNames.push_back("Player Controller");
         leg::componentNames.push_back("Scale with Keyboard");
-        leg::componentNames.push_back("Sound");
+        //leg::componentNames.push_back("Sound");
         leg::componentNames.push_back("Sprite");
         leg::componentNames.push_back("Sprite Text");
         leg::componentNames.push_back("Transform Control");
         leg::componentNames.push_back("Vision Cone");
         //PopulateMap();
-        Point moved(100000, 100000);
-        Entity* ent = GetEntityByName("PauseMenu", true);
-        Components::Transform* trans = ent->GetComponent<Components::Transform>();
-        trans->Position = moved;
-        ent = GetEntityByName("QuitConfirm", true);
-        trans = ent->GetComponent<Components::Transform>();
-        trans->Position = moved;
-        ent = GetEntityByName("HowToConfirm", true);
-        trans = ent->GetComponent<Components::Transform>();
-        trans->Position = moved;
-        ent = GetEntityByName("HowToScreen", true);
-        trans = ent->GetComponent<Components::Transform>();
-        trans->Position = moved;
+//        Point moved(100000, 100000);
+//        Entity* ent = GetEntityByName("PauseMenu", true);
+//        Components::Transform* trans = ent->GetComponent<Components::Transform>();
+//        trans->Position = moved;
+//        ent = GetEntityByName("QuitConfirm", true);
+//        trans = ent->GetComponent<Components::Transform>();
+//        trans->Position = moved;
+//        ent = GetEntityByName("HowToConfirm", true);
+//        trans = ent->GetComponent<Components::Transform>();
+//        trans->Position = moved;
+//        ent = GetEntityByName("HowToScreen", true);
+//        trans = ent->GetComponent<Components::Transform>();
+//        trans->Position = moved;
     }
 
     void LevelEditor::Initialize()
@@ -262,79 +266,56 @@ namespace ForLeaseEngine
                     //leg::selection = ents[i];
                     std::string name = leg::selection->GetName();
                     strcpy(leg::entName, name.c_str());
-                    leg::selCamera     = leg::selection->GetComponent<Components::Camera>();
-                    leg::selTran       = leg::selection->GetComponent<Components::Transform>();
-                    leg::selMenu       = leg::selection->GetComponent<Components::Menu>();
-                    leg::selVision     = leg::selection->GetComponent<Components::VisionCone>();
-                    leg::selDrag       = leg::selection->GetComponent<Components::DragWithMouse>();
-                    leg::selScale      = leg::selection->GetComponent<Components::ScaleWithKeyboard>();
-                    leg::selTMC        = leg::selection->GetComponent<Components::TransformModeControls>();
-                    leg::selModel      = leg::selection->GetComponent<Components::Model>();
-                    leg::selCollision  = leg::selection->GetComponent<Components::Collision>();
-                    leg::selPhysics    = leg::selection->GetComponent<Components::Physics>();
+                    leg::selCamera       = leg::selection->GetComponent<Components::Camera>();
+                    leg::selTran         = leg::selection->GetComponent<Components::Transform>();
+                    leg::selMenu         = leg::selection->GetComponent<Components::Menu>();
+                    leg::selVision       = leg::selection->GetComponent<Components::VisionCone>();
+                    leg::selDrag         = leg::selection->GetComponent<Components::DragWithMouse>();
+                    leg::selScale        = leg::selection->GetComponent<Components::ScaleWithKeyboard>();
+                    leg::selTMC          = leg::selection->GetComponent<Components::TransformModeControls>();
+                    leg::selModel        = leg::selection->GetComponent<Components::Model>();
+                    leg::selCollision    = leg::selection->GetComponent<Components::Collision>();
+                    leg::selPhysics      = leg::selection->GetComponent<Components::Physics>();
 //                    leg::selSound      = leg::selection->GetComponent<Components::SoundEmitter>();
-                    leg::selSprite     = leg::selection->GetComponent<Components::Sprite>();
-                    leg::selSprtxt     = leg::selection->GetComponent<Components::SpriteText>();
-                    leg::selController = leg::selection->GetComponent<Components::CharacterController>();
-                    leg::selEnemyAI    = leg::selection->GetComponent<Components::EnemyAI>();
-                    leg::selLight      = leg::selection->GetComponent<Components::Light>();
-                    leg::selFade       = leg::selection->GetComponent<Components::FadeWithDistance>();
-                    leg::selChange     = leg::selection->GetComponent<Components::ChangeLevelOnCollide>();
-                    leg::selMusic      = leg::selection->GetComponent<Components::BackgroundMusic>();
+                    leg::selSprite       = leg::selection->GetComponent<Components::Sprite>();
+                    leg::selSprtxt       = leg::selection->GetComponent<Components::SpriteText>();
+                    leg::selController   = leg::selection->GetComponent<Components::CharacterController>();
+                    leg::selEnemyAI      = leg::selection->GetComponent<Components::EnemyAI>();
+                    leg::selLight        = leg::selection->GetComponent<Components::Light>();
+                    leg::selFade         = leg::selection->GetComponent<Components::FadeWithDistance>();
+                    leg::selChange       = leg::selection->GetComponent<Components::ChangeLevelOnCollide>();
+                    leg::selMusic        = leg::selection->GetComponent<Components::BackgroundMusic>();
+                    leg::selPartColor    = leg::selection->GetComponent<Components::ParticleColorAnimator>();
+                    leg::selPartEmitter  = leg::selection->GetComponent<Components::ParticleEmitter>();
+                    leg::selPartSystem   = leg::selection->GetComponent<Components::ParticleSystem>();
+                    leg::selPartDynamics = leg::selection->GetComponent<Components::SimpleParticleDynamics>();
+
                     if (leg::selSprtxt)
-                    {
                         strcpy(leg::spriteTextBuf, leg::selSprtxt->Text.c_str());
-                        leg::spriteTextColor[0] =  leg::selSprtxt->TextColor.GetR();
-                        leg::spriteTextColor[1] =  leg::selSprtxt->TextColor.GetG();
-                        leg::spriteTextColor[2] =  leg::selSprtxt->TextColor.GetB();
-                        leg::spriteTextColor[3] =  leg::selSprtxt->TextColor.GetA();
-                    }
-                    if (leg::selVision)
-                    {
-                        leg::visionConeColor[0] = leg::selVision->IndicatorColor.GetR();
-                        leg::visionConeColor[1] = leg::selVision->IndicatorColor.GetG();
-                        leg::visionConeColor[2] = leg::selVision->IndicatorColor.GetB();
-                        leg::visionConeColor[3] = leg::selVision->IndicatorColor.GetA();
-                    }
+
                     if (leg::selEnemyAI)
                     {
                         strcpy(leg::enemyHateN, leg::selEnemyAI->HatedEntityName.c_str());
                         strcpy(leg::enemyLikeN, leg::selEnemyAI->LikedEntityName.c_str());
                         strcpy(leg::enemyHateS, leg::selEnemyAI->HatedSeenSound.c_str());
                         strcpy(leg::enemyLikeS, leg::selEnemyAI->LikedSeenSound.c_str());
-                        leg::noDetectionColor[0] = leg::selEnemyAI->NoDetectionColor.GetR();
-                        leg::noDetectionColor[1] = leg::selEnemyAI->NoDetectionColor.GetG();
-                        leg::noDetectionColor[2] = leg::selEnemyAI->NoDetectionColor.GetB();
-                        leg::noDetectionColor[3] = leg::selEnemyAI->NoDetectionColor.GetA();
-                        leg::detectionColor[0]   = leg::selEnemyAI->DetectionColor.GetR();
-                        leg::detectionColor[1]   = leg::selEnemyAI->DetectionColor.GetG();
-                        leg::detectionColor[2]   = leg::selEnemyAI->DetectionColor.GetB();
-                        leg::detectionColor[3]   = leg::selEnemyAI->DetectionColor.GetA();
-                        leg::happyColor[0]       = leg::selEnemyAI->HappyColor.GetR();
-                        leg::happyColor[1]       = leg::selEnemyAI->HappyColor.GetG();
-                        leg::happyColor[2]       = leg::selEnemyAI->HappyColor.GetB();
-                        leg::happyColor[3]       = leg::selEnemyAI->HappyColor.GetA();
                     }
-                    if (leg::selLight)
-                    {
-                        leg::lightRays = leg::selLight->Rays;
-                        leg::lightColor[0] = leg::selLight->DrawColor.GetR();
-                        leg::lightColor[1] = leg::selLight->DrawColor.GetG();
-                        leg::lightColor[2] = leg::selLight->DrawColor.GetB();
-                        leg::lightColor[3] = leg::selLight->DrawColor.GetA();
-                    }
-                    if (leg::selSprite)
-                    {
-                        leg::spriteColor[0] = leg::selSprite->SpriteColor.GetR();
-                        leg::spriteColor[1] = leg::selSprite->SpriteColor.GetG();
-                        leg::spriteColor[2] = leg::selSprite->SpriteColor.GetB();
-                        leg::spriteColor[3] = leg::selSprite->SpriteColor.GetA();
-                    }
+
+//                    if (leg::selLight)
+//                        leg::lightRays = leg::selLight->Rays;
+
                     if (leg::selChange)
                     {
                         strcpy(leg::changeLevel, leg::selChange->LevelName.c_str());
                         strcpy(leg::changeObject, leg::selChange->TriggerObjectName.c_str());
                     }
+
+                    if (leg::selPartEmitter)
+                        leg::eCount = leg::selPartEmitter->EmitCount;
+
+                    if (leg::selPartSystem)
+                        leg::maxParticles = leg::selPartSystem->MaxParticles;
+
                     leg::selMade = true;
                     //break;
                 }
@@ -505,6 +486,14 @@ namespace ForLeaseEngine
                 leg::render->SetDrawingColor(Color(1, 0, 0));
                 leg::render->DrawRectangle(trans->Position, leg::camCamera->Size / 25, leg::camCamera->Size / 25, trans->Rotation);
             }
+        }
+
+        if (leg::selection && leg::selPartEmitter && leg::selPartColor && leg::selPartDynamics && leg::selPartSystem)
+        {
+            leg::selPartEmitter->Update();
+            leg::selPartColor->Update();
+            leg::selPartSystem->Update();
+            leg::selPartDynamics->Update();
         }
         ImGui::Render();
         ForLease->GameWindow->UpdateGameWindow();

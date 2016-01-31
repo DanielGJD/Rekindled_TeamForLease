@@ -63,18 +63,24 @@ int Start(int argc = 0, char** argv = 0) {
 
 #ifdef FLE_WINDOWS
 
-#ifndef FLE_DEBUG
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine, int iCmdShow) {
-    return Start(__argc, __argv);
-}
-#else
-int main(int argc, char**argv) {
-    return Start(argc, argv);
-}
-#endif
+    #ifdef _MSC_VER
+        #ifndef FLE_DEBUG
+        int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine, int iCmdShow) {
+            return Start(__argc, __argv);
+        }
+        #else
+        int main(int argc, char**argv) {
+            return Start(argc, argv);
+        }
+        #endif //FLE_DEBUG
+    #else
+    int main(int argc, char** argv) {
+        return Start(argc, argv);
+    }
+    #endif // _MSC_VER
 
 #else
-int main(int argc, char** argv) {
-    return Start(argc, argv);
-}
-#endif
+    int main(int argc, char** argv) {
+        return Start(argc, argv);
+    }
+#endif // FLE_WINDOWS

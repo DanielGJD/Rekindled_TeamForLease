@@ -17,6 +17,7 @@
 #include <fstream>
 #include <algorithm>
 #include <string>
+#include <sstream>
 
 namespace FLE = ForLeaseEngine;
 
@@ -66,6 +67,23 @@ namespace CommandLine {
         return StringArgument(false, "Argument not found.");
     }
 
+    namespace {
+
+        template<typename T>
+        T convert(const std::string& input) {
+            std::istringstream inputStream(input);
+            T converted;
+
+            inputStream >> converted;
+
+            if (!inputStream.eof())
+                throw std::invalid_argument("Not integral.");
+
+            return converted;
+        }
+
+    }
+
     IntArgument GetIntArgument(char** start, char** end, const std::string argument) {
         StringArgument result = GetStringArgument(start, end, argument);
 
@@ -75,6 +93,15 @@ namespace CommandLine {
 //            } catch (std::invalid_argument) {
 //                return IntArgument(false, -1);
 //            }
+
+            // Changed due to MinGW stoi incompatibility
+
+            try {
+                return IntArgument(true, convert<int>(result.second.c_str()));
+            }
+            catch (std::invalid_argument) {
+                return IntArgument(false, -1);
+            }
         }
 
         return IntArgument(false, -1);
