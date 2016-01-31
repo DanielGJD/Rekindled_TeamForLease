@@ -27,10 +27,10 @@ namespace ForLeaseEngine {
     namespace Components {
 
         Light::Light(Entity& parent, bool active, bool visible, bool drawOutline, Vector offset,
-                     Vector direction, float angle, Color lightColor) :
+                     Vector direction, float angle, Color lightColor, BlendMode lightMode) :
                      Component(parent),
                      Active(active), Visible(visible), DrawOutline(drawOutline), Offset(offset),
-                     Direction(direction), Angle(angle), LightColor(lightColor) {}
+                     Direction(direction), Angle(angle), LightColor(lightColor), LightMode(lightMode) {}
 
         Light::~Light() {}
 
@@ -251,8 +251,8 @@ namespace ForLeaseEngine {
                 }
                 LightMesh.AddEdge(LightMesh.GetVertexCount() - 1, 0);
 
-                render->SetModelView(trans);
-                render->DrawMesh(&LightMesh, false, false);
+                //render->SetModelView(trans);
+                //render->DrawMesh(&LightMesh, false, false);
 
                 //multi_e.EntityIDs = std::vector<unsigned long>(visibleEntityIDs.begin(), visibleEntityIDs.end());
 

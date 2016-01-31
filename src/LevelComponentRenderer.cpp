@@ -61,6 +61,8 @@ namespace ForLeaseEngine {
             OutlineWidth = 0;
 
             index = glGenLists(1);
+            //GLuint framebuffer;
+            //glGenFramebuffers(1, &framebuffer);
         }
 
         void Renderer::Serialize(Serializer& root) {
@@ -198,6 +200,12 @@ namespace ForLeaseEngine {
                     if(entity->HasComponent(ComponentType::ParticleSystem)) {
                         Components::ParticleSystem* pSystem = entity->GetComponent<Components::ParticleSystem>();
                         DrawParticleSystem(pSystem);
+                    }
+                    if(entity->HasComponent(ComponentType::Light)) {
+                        Components::Light* light = entity->GetComponent<Components::Light>();
+                        SetBlendMode(light->LightMode);
+                        ModelView = Matrix::Translation(trans->Position);
+                        DrawMesh(light->GetLightMesh(), light->DrawOutline, false);
                     }
                 }
 
