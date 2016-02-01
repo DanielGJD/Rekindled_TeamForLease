@@ -34,10 +34,12 @@ namespace ForLeaseEngine {
 
         Light::~Light() {}
 
-        void Light::Update() {
-            if(!Active) {
-                return;
-            }
+        void Light::Update() {}
+
+        std::unordered_set<unsigned long> Light::ComputeLighting() {
+            //if(!Active) {
+            //    return std::unordered_set;
+            //}
 
             LevelComponents::Renderer* render = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
             Entity* cameraObject = ForLease->GameStateManager().CurrentState().GetEntityByID(render->GetCameraID());
@@ -258,6 +260,7 @@ namespace ForLeaseEngine {
 
                 //std::cout << "I see " << multi_e.EntityIDs.size() << " entities" << std::endl;
                 //ForLease->Dispatcher.DispatchToParent(&multi_e, &Parent);
+                return litEntitiyIDs;
             }
         }
 

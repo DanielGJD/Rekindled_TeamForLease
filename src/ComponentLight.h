@@ -16,6 +16,7 @@
 #include "Color.h"
 #include "Mesh.h"
 #include "Ray.h"
+#include <unordered_set>
 
 #ifndef PI
 #define PI 3.14159265358979323846
@@ -51,6 +52,7 @@ namespace ForLeaseEngine {
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
                 Mesh* GetLightMesh();
+                std::unordered_set<unsigned long> ComputeLighting();
             private:
                 Point CheckRayAgainstWindow(Ray& ray, Point& tl, Point& tr, Point& br, Point& bl, Point& position);
                 Mesh LightMesh;

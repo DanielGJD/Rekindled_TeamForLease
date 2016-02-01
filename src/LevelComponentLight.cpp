@@ -22,10 +22,23 @@ namespace ForLeaseEngine {
         Light::Light(State& owner) : LevelComponent(owner) { }
 
         void Light::Update(std::vector<Entity *>& entities) {
+            LitEntities.clear();
+
+            for(unsigned int i = 0; i < entities.size(); ++i) {
+                if(entities[i]->HasComponent(ComponentType::Light)) {
+                    Components::Light* light = entities[i]->GetComponent<Components::Light>();
+                    if(light->Active) {
+                        std::unordered_set<unsigned long> lit = light->ComputeLighting();
+
+                        for(std::unordered_set<unsigned long>::const_iterator i = lit.begin(); i != lit.end(); ++i) {
+                            LitEntities.insert(*i);
+                        }
+                    }
+                }
+            }
         }
 
         void Light::Serialize(Serializer& root) {
-            root.WriteUint("Type", static_cast<unsigned>(ComponentType::Light));
             Serializer light = root.GetChild("Light");
             light.WriteUint("Type", static_cast<unsigned>(ComponentType::Light));
             root.Append(light, "Light");
