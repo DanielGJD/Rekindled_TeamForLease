@@ -114,6 +114,10 @@ namespace ForLeaseEngine
         if (ImGui::InputText("Level Name", leg::statename, 70, ImGuiInputTextFlags_EnterReturnsTrue))
             leg::setName = true;
 
+        ImGui::InputFloat("Time Scale", &leg::timeScale);
+        if (leg::timeScale > 0)
+            ForLease->FrameRateController().TimeScaling(leg::timeScale);
+
         if (ImGui::CollapsingHeader("Camera"))
         {
             ImGui::Text("Position");
@@ -234,6 +238,34 @@ namespace ForLeaseEngine
             leg::selModel = new Components::Model(*leg::selection);
             if (!leg::selection->AddComponent(leg::selModel))
                 leg::selModel = NULL;
+            return;
+        }
+        if (!(component.compare("Particle Color")) && !leg::selPartColor)
+        {
+            leg::selPartColor = new Components::ParticleColorAnimator(*leg::selection);
+            if (!leg::selection->AddComponent(leg::selPartColor))
+                leg::selPartColor = NULL;
+            return;
+        }
+        if (!(component.compare("Particle Dynamics")) && !leg::selPartDynamics)
+        {
+            leg::selPartDynamics = new Components::SimpleParticleDynamics(*leg::selection);
+            if (!leg::selection->AddComponent(leg::selPartDynamics))
+                leg::selPartDynamics = NULL;
+            return;
+        }
+        if (!(component.compare("Particle Emitter")) && !leg::selPartEmitter)
+        {
+            leg::selPartEmitter = new Components::ParticleEmitter(*leg::selection);
+            if (!leg::selection->AddComponent(leg::selPartEmitter))
+                leg::selPartEmitter = NULL;
+            return;
+        }
+        if (!(component.compare("Particle System")) && !leg::selPartSystem)
+        {
+            leg::selPartSystem = new Components::ParticleSystem(*leg::selection);
+            if (!leg::selection->AddComponent(leg::selPartSystem))
+                leg::selPartSystem = NULL;
             return;
         }
         if (!(component.compare("Physics")) && !leg::selPhysics)

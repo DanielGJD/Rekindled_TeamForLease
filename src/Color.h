@@ -68,7 +68,8 @@ namespace ForLeaseEngine {
         NONE,
         ALPHA,
         ADDITIVE,
-        MULTIPLY
+        MULTIPLY,
+        LIGHT
     };
 }
 

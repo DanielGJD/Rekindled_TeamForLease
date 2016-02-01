@@ -22,42 +22,23 @@ namespace ForLeaseEngine {
         Light::Light(State& owner) : LevelComponent(owner) { }
 
         void Light::Update(std::vector<Entity *>& entities) {
-            /*for (Entity* entity : entities) {
-                if (!entity->HasComponent(ComponentType::Light)) continue;
+            LitEntities.clear();
 
-                Components::Light* light = entity->GetComponent<Components::Light>(true);
+            for(unsigned int i = 0; i < entities.size(); ++i) {
+                if(entities[i]->HasComponent(ComponentType::Light)) {
+                    Components::Light* light = entities[i]->GetComponent<Components::Light>();
+                    if(light->Active) {
+                        std::unordered_set<unsigned long> lit = light->ComputeLighting();
 
-                // Raycasting stuff
-                Vector start = Vector::Rotate(light->Direction, -light->Sweep / 2);
-
-                float rotStep = light->Sweep / light->Rays;
-
-                Vector rayVec = start;
-
-                LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
-
-
-                renderer->SetDrawingColor(light->DrawColor);
-
-                // The Andrew Method
-                for (unsigned i = 0; i <= light->Rays; ++i) {
-                    Ray ray(entity->GetComponent<Components::Transform>()->Position, rayVec, 666);
-                    for (Entity* toCheck : entities) {
-                        if (!toCheck->HasComponent(ComponentType::Collision)) continue;
-
-                        ray.IsColliding(toCheck);
+                        for(std::unordered_set<unsigned long>::const_iterator i = lit.begin(); i != lit.end(); ++i) {
+                            LitEntities.insert(*i);
+                        }
                     }
-
-                    renderer->DrawLine(ray.GetStart(), ray.GetScaledVector());
-
-
-                    rayVec = Vector::Rotate(rayVec, rotStep);
                 }
-            }*/
+            }
         }
 
         void Light::Serialize(Serializer& root) {
-            root.WriteUint("Type", static_cast<unsigned>(ComponentType::Light));
             Serializer light = root.GetChild("Light");
             light.WriteUint("Type", static_cast<unsigned>(ComponentType::Light));
             root.Append(light, "Light");
@@ -67,6 +48,12 @@ namespace ForLeaseEngine {
             Serializer light = root.GetChild("Light");
         }
 
+        bool Light::CheckIfLit(unsigned long id) {
+            if(LitEntities.find(id) != LitEntities.end())
+                return true;
+
+            return false;
+        }
     }
 
 }
