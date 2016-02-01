@@ -74,6 +74,7 @@ namespace ForLeaseEngine {
     static Mesh* mesh;
     static MeshAnimation* animation;
     static Entity* model;
+    static Entity* onion;
     static std::vector<Point>* vertexData;
 
     static std::string FileName;
@@ -132,6 +133,10 @@ namespace ForLeaseEngine {
         model->AddComponent(new Components::Transform(*model, Point(0, 0), 1, 1, 0));
         model->AddComponent(new Components::Model(*model, true, false, false, "", "", Color(1, 1, 1, 1), BlendMode::ALPHA, true, false, false, true));
 
+        onion = AddEntity();
+        onion->AddComponent(new Components::Transform(*onion, Point(0, 0), 1, 1, 0, 1));
+        onion->AddComponent(new Components::Model(*onion, true, false, false, "", "", Color(1, 1, 1, 0.75), BlendMode::ALPHA, false, false, false, false));
+
 //        instructions = AddEntity();
 //        Components::Transform* trans = new Components::Transform(*instructions, Point(-ForLease->GameWindow->GetXResolution() / 2, ForLease->GameWindow->GetYResolution() / 2), 1, 1, 0, 0);
 //        Components::SpriteText* text = new Components::SpriteText(*instructions, "Arial.fnt", "DUMMY TEXT", Color(1, 0, 0, 1));
@@ -179,6 +184,24 @@ namespace ForLeaseEngine {
             Entities[i]->Update();
         }
         RenderGrid();
+        if(AnimationEdit == 1) {
+            Components::Model* modelModel = model->GetComponent<Components::Model>();
+            Components::Model* onionModel = onion->GetComponent<Components::Model>();
+
+            onionModel->Visible = true;
+            onionModel->ModelMesh = modelModel->ModelMesh;
+            onionModel->SetAnimation(modelModel->GetAnimation());
+            if(modelModel->GetFrame() > 0) {
+                onionModel->SetFrame(modelModel->GetFrame() - 1);
+            }
+            else {
+                onionModel->SetFrame(0);
+            }
+        }
+        else {
+            onion->GetComponent<Components::Model>()->Visible = false;
+        }
+
         render->Update(Entities);
         RenderSelections();
         //if(Moving || Rotating || Scaling)

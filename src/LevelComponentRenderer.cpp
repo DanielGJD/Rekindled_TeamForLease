@@ -189,6 +189,7 @@ namespace ForLeaseEngine {
                                             Matrix::Translation(mesh->GetCenter()) *
                                             Matrix::RotationRad(transform->Rotation) * Matrix::Scale(transform->ScaleX * (model->FlipY? -1 : 1), transform->ScaleY * (model->FlipX? -1 : 1)) *
                                             Matrix::Translation(o - mesh->GetCenter());
+                                //std::cout << "Model Color (" << model->ModelColor.GetR() << "," << model->ModelColor.GetG() << "," << model->ModelColor.GetB() << "," << model->ModelColor.GetA() << ")" << std::endl;
                                 DrawMesh(mesh, model->DrawEdges, model->DrawVertices, model->GetAnimation(), model->GetFrame(), model->GetFrameTime() * model->FrameRate - model->GetFrame(), model->ModelColor);
                             }
                         }
@@ -247,12 +248,12 @@ namespace ForLeaseEngine {
 
         void Renderer::SetCamera(const Entity& camera) {
             CurrentCamera = camera.GetID();
-            std::cout << "Set camera to " << CurrentCamera << std::endl;
+            //std::cout << "Set camera to " << CurrentCamera << std::endl;
         }
 
         void Renderer::SetCamera(unsigned long camera) {
             CurrentCamera = camera;
-            std::cout << "Set Camera to " << CurrentCamera << std::endl;
+            //std::cout << "Set Camera to " << CurrentCamera << std::endl;
         }
 
         long Renderer::GetCameraID() {
@@ -595,7 +596,7 @@ namespace ForLeaseEngine {
                 glBegin(GL_TRIANGLES);
                     for(int i = 0; i < mesh->GetFaceCount(); ++i) {
                         IndexedFace face = mesh->GetIndexedFace(i);
-                        SetDrawingColor(mesh->GetFaceColor(i));
+                        SetDrawingColor(faceColors[i]);
                         for(int j = 0; j < 3; ++j) {
                             glVertex2f(transformed[face.Indices[j]][0], transformed[face.Indices[j]][1]);
                         }
