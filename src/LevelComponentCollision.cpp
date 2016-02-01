@@ -199,6 +199,8 @@ namespace ForLeaseEngine {
             ResolveCollisionOneEntityOnly(entity2, entity1);
         }
 
+        
+
         /*!
             Resolves collisions on one entity.
 
@@ -209,8 +211,12 @@ namespace ForLeaseEngine {
                 A pointer that toResolve is colliding with.
         */
         void Collision::ResolveCollisionOneEntityOnly(Entity* toResolve, Entity* other) {
+            ResolveCollisionBoundingBox(toResolve, other);
+        }
+
+        void Collision::ResolveCollisionBoundingBox(Entity* toResolve, Entity* other) {
             Components::Transform* toResolveTransform = toResolve->GetComponent<Components::Transform>(true);
-            Components::Physics*   toResolvePhysics   = toResolve->GetComponent<Components::Physics>(true);
+            Components::Physics*   toResolvePhysics = toResolve->GetComponent<Components::Physics>(true);
             Components::Collision* toResolveCollision = toResolve->GetComponent<Components::Collision>(true);
 
             Components::Transform* otherTransform = other->GetComponent<Components::Transform>(true);
@@ -288,7 +294,8 @@ namespace ForLeaseEngine {
             if (side == Components::Collision::Side::Bottom || side == Components::Collision::Side::Top) {
                 velocity[1] = 0.0f;
                 toResolvePhysics->Velocity[1] = 0.0f;
-            } else {
+            }
+            else {
                 velocity[0] = 0.0f;
                 toResolvePhysics->Velocity[0] = 0.0f;
             }
@@ -308,6 +315,10 @@ namespace ForLeaseEngine {
             //toResolveTransform->Position[1] -= toResolvePhysics->Velocity[1] * 2 * ForLease->FrameRateController().GetDt();
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //toResolvePhysics->Velocity[1] = 0;
+        }
+
+        void Collision::ResolveCollisionMesh(Entity* toResolve, Entity* other) {
+
         }
 
         /*!
