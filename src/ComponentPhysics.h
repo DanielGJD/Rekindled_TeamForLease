@@ -35,7 +35,7 @@ namespace ForLeaseEngine {
                 virtual ComponentType GetType() { return Type; }
                 Physics(Entity& owner, float mass = 1, Vector velocity = Vector(0,0),
                     Vector acceleration = Vector(0,0), Vector force = Vector(0,0),
-                    bool unaffectedByTimeScaling = false);
+                    bool unaffectedByTimeScaling = false, bool unaffectedByGravity = false);
                 void Update() {}
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
@@ -44,6 +44,7 @@ namespace ForLeaseEngine {
                 Vector Acceleration;            //! The current (instantaneous) acceleration.
                 Vector Force;                   //! The net forces on the object.
                 bool   UnaffectedByTimeScaling; //! Whether or not this physics component is affected by time scaling.
+                bool   UnaffectedByGravity;     //! Whether or not this physics component is affected by gravity.
             private:
                 Physics() = delete;
         };

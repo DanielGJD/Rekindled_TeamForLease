@@ -57,7 +57,8 @@ namespace ForLeaseEngine {
         void Physics::ApplyGravity(Entity* entity) {
             Components::Physics* physicsComponent = entity->GetComponent<Components::Physics>();
 
-            physicsComponent->Acceleration += Gravity * physicsComponent->Mass;
+            if (!physicsComponent->UnaffectedByGravity)
+                physicsComponent->Acceleration += Gravity * physicsComponent->Mass;
         }
 
         /*!
