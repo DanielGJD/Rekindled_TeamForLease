@@ -73,10 +73,10 @@ namespace ForLeaseEngine {
 
             float dt;
 
-            if (physicsComponent->AffectedByTimeScaling)
-                dt = ForLease->FrameRateController().GetDt();
-            else
+            if (physicsComponent->UnaffectedByTimeScaling) // This moves the same amount, no matter what time scaling is at
                 dt = ForLease->FrameRateController().GetUnscaledDt();
+            else                                           // This slows down as the world does
+                dt = ForLease->FrameRateController().GetDt();
 
             physicsComponent->Velocity += physicsComponent->Acceleration * dt;
             transformComponent->Position += physicsComponent->Velocity * dt;
