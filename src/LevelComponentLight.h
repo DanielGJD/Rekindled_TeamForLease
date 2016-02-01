@@ -32,6 +32,7 @@ namespace ForLeaseEngine {
                 virtual void Serialize(Serializer& root);
                 virtual void Deserialize(Serializer& root);
 
+                bool CheckIfLit(unsigned long id);
             private:
                 std::unordered_set<unsigned long> LitEntities;
         };

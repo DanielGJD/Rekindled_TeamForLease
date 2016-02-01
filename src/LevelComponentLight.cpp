@@ -48,6 +48,12 @@ namespace ForLeaseEngine {
             Serializer light = root.GetChild("Light");
         }
 
+        bool Light::CheckIfLit(unsigned long id) {
+            if(LitEntities.find(id) != LitEntities.end())
+                return true;
+
+            return false;
+        }
     }
 
 }
