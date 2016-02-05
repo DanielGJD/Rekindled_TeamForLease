@@ -22,7 +22,23 @@ namespace ForLeaseEngine
             {
                 if (ImGui::InputText("File Name", leg::statefile, 70, ImGuiInputTextFlags_EnterReturnsTrue))
                 {
-                    leg::toSave = true;
+                    ImGui::OpenPopup("Are you sure");
+                }
+
+                if (ImGui::BeginPopupModal("Are you sure", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+                {
+                    ImGui::Text("Are you sure you want to overwrite %s?\n", leg::statefile);
+                    if (ImGui::Button("Yes"))
+                    {
+                        leg::toSave = true;
+                        ImGui::CloseCurrentPopup();
+                    }
+                    ImGui::SameLine();
+                    if (ImGui::Button("Cancel"))
+                    {
+                        ImGui::CloseCurrentPopup();
+                    }
+                    ImGui::EndPopup();
                 }
 
                 ImGui::EndMenu();

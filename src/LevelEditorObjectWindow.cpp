@@ -16,8 +16,6 @@ namespace ForLeaseEngine
     void LevelEditor::DrawObjectWindow()
     {
         std::string activeString = "Active";
-        leg::render->SetDrawingColor(Color(1,1,1));
-        leg::render->DrawRectangle(leg::selTran->Position, leg::selTran->ScaleX, leg::selTran->ScaleY, leg::selTran->Rotation);
         ImGui::Begin("Object Editor");
         ImGui::PushItemWidth(80);
 

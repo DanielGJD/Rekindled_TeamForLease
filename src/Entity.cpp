@@ -263,8 +263,8 @@ namespace ForLeaseEngine {
     }
 
     Component* DeserializeComponent(Serializer& root, Entity& entity) {
-        unsigned type;
-        root.ReadUint("Type", type);
+        unsigned long long type;
+        root.ReadUlonglong("Type", type);
 
         Component* component = 0;
 
