@@ -75,9 +75,9 @@ namespace ForLeaseEngine {
                 if(model)
                     model->FlipY = true;
                 if(collider->CollidedLastFrame && collider->CollidedWithSide == Collision::Side::Top) {
-                    //if(emitter)
+                    if(emitter)
                         //emitter->Looping = true;
-                        //emitter->Play(WalkSound);
+                        emitter->PlayEvent(WalkSound);
                     if(model)
                         model->SetAnimation(WalkAnimation);
                 }
@@ -88,8 +88,10 @@ namespace ForLeaseEngine {
                 if(model)
                     model->FlipY = false;
                 if(collider->CollidedLastFrame && collider->CollidedWithSide == Collision::Side::Top) {
-                    //if(emitter)
-                        //emitter->Play(WalkSound);
+                    if(emitter)
+                        emitter->SetVolume(1.0f, WalkSound);
+                        emitter->StopEvent(WalkSound);
+                        emitter->PlayEvent(WalkSound);
                     if(model)
                         model->SetAnimation(WalkAnimation);
                 }
@@ -101,7 +103,10 @@ namespace ForLeaseEngine {
                     rbody->Velocity += Vector(0, JumpSpeed);
                     SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
                     if(emitter)
+                        emitter->SetVolume(1.0f, JumpSound);
+                        emitter->StopEvent(JumpSound);
                         emitter->PlayEvent(JumpSound);
+
                     CanJump = false;
                 }
             }
