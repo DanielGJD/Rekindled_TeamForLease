@@ -22,7 +22,7 @@
 
 namespace ForLeaseEngine {
     namespace Components {
-        DragWithMouse::DragWithMouse(Entity& owner) : Component(owner, ComponentType::Transform | ComponentType::Collision), Active(false), MouseDown(false) {
+        DragWithMouse::DragWithMouse(Entity& owner) : Component(owner, ComponentType::Transform | ComponentType::Collision | ComponentType::Physics), Active(false), MouseDown(false) {
         }
 
         DragWithMouse::~DragWithMouse() {
