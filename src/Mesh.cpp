@@ -311,9 +311,9 @@ namespace ForLeaseEngine {
         }
 
         // testing code
-        for(unsigned int i = 0; i < EdgesDrawOrder.size(); ++i) {
-            std::cout << "Edge " << i << " order: " << EdgesDrawOrder[i] << std::endl;
-        }
+//        for(unsigned int i = 0; i < EdgesDrawOrder.size(); ++i) {
+//            std::cout << "Edge " << i << " order: " << EdgesDrawOrder[i] << std::endl;
+//        }
     }
 
     /*!
