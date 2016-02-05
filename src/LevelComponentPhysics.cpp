@@ -57,7 +57,8 @@ namespace ForLeaseEngine {
         void Physics::ApplyGravity(Entity* entity) {
             Components::Physics* physicsComponent = entity->GetComponent<Components::Physics>();
 
-            physicsComponent->Acceleration += Gravity * physicsComponent->Mass;
+            if (!physicsComponent->UnaffectedByGravity)
+                physicsComponent->Acceleration += Gravity * physicsComponent->Mass;
         }
 
         /*!
@@ -71,8 +72,15 @@ namespace ForLeaseEngine {
             Components::Physics* physicsComponent = entity->GetComponent<Components::Physics>();
             Components::Transform* transformComponent = entity->GetComponent<Components::Transform>();
 
-            physicsComponent->Velocity += physicsComponent->Acceleration * ForLease->FrameRateController().GetDt();
-            transformComponent->Position += physicsComponent->Velocity * ForLease->FrameRateController().GetDt();
+            float dt;
+
+            if (physicsComponent->UnaffectedByTimeScaling) // This moves the same amount, no matter what time scaling is at
+                dt = ForLease->FrameRateController().GetUnscaledDt();
+            else                                           // This slows down as the world does
+                dt = ForLease->FrameRateController().GetDt();
+
+            physicsComponent->Velocity += physicsComponent->Acceleration * dt;
+            transformComponent->Position += physicsComponent->Velocity * dt;
         }
 
         /*!
