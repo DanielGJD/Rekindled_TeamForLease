@@ -15,6 +15,7 @@
 
 #include "LevelComponent.h"
 #include "Color.h"
+#include <unordered_set>
 
 namespace ForLeaseEngine {
 
@@ -24,11 +25,16 @@ namespace ForLeaseEngine {
             public:
                 static const ComponentType Type = ComponentType::Light;
                 virtual ComponentType GetType() { return Type; }
+
                 Light(State& owner);
                 void Update(std::vector<Entity *>& entities);
 
                 virtual void Serialize(Serializer& root);
                 virtual void Deserialize(Serializer& root);
+
+                bool CheckIfLit(unsigned long id);
+            private:
+                std::unordered_set<unsigned long> LitEntities;
         };
 
     } // LevelComponents

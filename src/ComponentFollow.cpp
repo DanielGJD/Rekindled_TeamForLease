@@ -35,19 +35,21 @@ namespace ForLeaseEngine {
             if(entity) {
                 Transform* followTrans = entity->GetComponent<Components::Transform>();
                 Transform* myTrans = Parent.GetComponent<Components::Transform>();
-                float distance = Point::Distance(followTrans->Position, myTrans->Position);
-                float t;
-                if(distance < FollowBeginDistance)
-                    t = 0;
-                else if(distance > FollowEndDistance)
-                    t = 1;
-                else
-                    t = (distance - FollowBeginDistance) / (FollowEndDistance - FollowBeginDistance);
-
-                Vector fullMovement = followTrans->Position - myTrans->Position;
-                float moveScale = Interpolation::PowerIn(2, 0, 1, t);
-                Vector scaledMovement = Vector::Scale(fullMovement, moveScale * ForLease->FrameRateController().GetDt());
-                myTrans->Position += scaledMovement;
+//                float distance = Point::Distance(followTrans->Position, myTrans->Position);
+//                float t;
+//                if(distance < FollowBeginDistance)
+//                    t = 0;
+//                else if(distance > FollowEndDistance)
+//                    t = 1;
+//                else
+//                    t = (distance - FollowBeginDistance) / (FollowEndDistance - FollowBeginDistance);
+//
+//                Vector fullMovement = followTrans->Position - myTrans->Position;
+//                float moveScale = Interpolation::PowerIn(2, 0, 1, t);
+//                Vector scaledMovement = Vector::Scale(fullMovement, moveScale * ForLease->FrameRateController().GetDt());
+//                myTrans->Position += scaledMovement;
+                Vector direction = followTrans->Position - myTrans->Position;
+                myTrans->Position += direction * ForLease->FrameRateController().GetDt();
             }
         }
 

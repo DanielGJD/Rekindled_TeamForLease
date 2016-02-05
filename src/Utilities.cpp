@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <string>
 #include <sstream>
+#include <stdexcept>
 
 namespace FLE = ForLeaseEngine;
 

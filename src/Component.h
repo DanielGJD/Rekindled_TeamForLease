@@ -28,7 +28,7 @@ namespace ForLeaseEngine {
             scale unless we implement scripting or some other solution for
             loading game code.
     */
-    enum class ComponentType : unsigned long {
+    enum class ComponentType : unsigned long long {
         None                   = 0,         //! No component
         Transform              = 1 <<  0,   //! Transform
         PlayerController       = 1 <<  1,   //! Player controls

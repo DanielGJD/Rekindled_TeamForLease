@@ -16,6 +16,7 @@
 #include "Color.h"
 #include "Mesh.h"
 #include "Ray.h"
+#include <unordered_set>
 
 #ifndef PI
 #define PI 3.14159265358979323846
@@ -42,14 +43,16 @@ namespace ForLeaseEngine {
                 Vector Direction;
                 float Angle;
                 Color LightColor;
+                BlendMode LightMode;
 
                 Light(Entity& owner, bool active = true, bool visible = true, bool drawOutline = false,
-                      Vector offset = Vector(), Vector direction = Vector(0, -1), float angle = PI / 2 , Color lightColor = Color(1, 1, 1, 1));
+                      Vector offset = Vector(), Vector direction = Vector(0, -1), float angle = PI / 2 , Color lightColor = Color(1, 1, 1, 1), BlendMode lightMode = BlendMode::ADDITIVE);
                 ~Light();
                 void Update();
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
                 Mesh* GetLightMesh();
+                std::unordered_set<unsigned long> ComputeLighting();
             private:
                 Point CheckRayAgainstWindow(Ray& ray, Point& tl, Point& tr, Point& br, Point& bl, Point& position);
                 Mesh LightMesh;

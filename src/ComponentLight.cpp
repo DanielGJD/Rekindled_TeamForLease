@@ -27,17 +27,19 @@ namespace ForLeaseEngine {
     namespace Components {
 
         Light::Light(Entity& parent, bool active, bool visible, bool drawOutline, Vector offset,
-                     Vector direction, float angle, Color lightColor) :
+                     Vector direction, float angle, Color lightColor, BlendMode lightMode) :
                      Component(parent),
                      Active(active), Visible(visible), DrawOutline(drawOutline), Offset(offset),
-                     Direction(direction), Angle(angle), LightColor(lightColor) {}
+                     Direction(direction), Angle(angle), LightColor(lightColor), LightMode(lightMode) {}
 
         Light::~Light() {}
 
-        void Light::Update() {
-            if(!Active) {
-                return;
-            }
+        void Light::Update() {}
+
+        std::unordered_set<unsigned long> Light::ComputeLighting() {
+            //if(!Active) {
+            //    return std::unordered_set;
+            //}
 
             LevelComponents::Renderer* render = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
             Entity* cameraObject = ForLease->GameStateManager().CurrentState().GetEntityByID(render->GetCameraID());
@@ -251,13 +253,14 @@ namespace ForLeaseEngine {
                 }
                 LightMesh.AddEdge(LightMesh.GetVertexCount() - 1, 0);
 
-                render->SetModelView(trans);
-                render->DrawMesh(&LightMesh, false, false);
+                //render->SetModelView(trans);
+                //render->DrawMesh(&LightMesh, false, false);
 
                 //multi_e.EntityIDs = std::vector<unsigned long>(visibleEntityIDs.begin(), visibleEntityIDs.end());
 
                 //std::cout << "I see " << multi_e.EntityIDs.size() << " entities" << std::endl;
                 //ForLease->Dispatcher.DispatchToParent(&multi_e, &Parent);
+                return litEntitiyIDs;
             }
         }
 

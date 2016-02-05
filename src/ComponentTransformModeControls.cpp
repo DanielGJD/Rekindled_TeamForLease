@@ -67,7 +67,7 @@ namespace ForLeaseEngine {
         }
 
         void TransformModeControls::Activate() {
-            std::cout << "TRANSFORM MODE CONTROLS ACTIVATE" << std::endl;
+            //std::cout << "TRANSFORM MODE CONTROLS ACTIVATE" << std::endl;
             Active = true;
 
             if(EntitySelected) {
@@ -98,7 +98,7 @@ namespace ForLeaseEngine {
         }
 
         void TransformModeControls::Deactivate() {
-            std::cout << "TRANSFORM MODE CONTROLS DEACTIVATE" << std::endl;
+            //std::cout << "TRANSFORM MODE CONTROLS DEACTIVATE" << std::endl;
             Active = false;
 
             if(EntitySelected) {
@@ -139,7 +139,7 @@ namespace ForLeaseEngine {
         void TransformModeControls::OnKeyUp(Event const* e) {
             KeyboardEvent const* key_e = static_cast<KeyboardEvent const*>(e);
 
-            std::cout << "TRANSFORM MODE CONTROLS GOT KEY UP" << std::endl;
+            //std::cout << "TRANSFORM MODE CONTROLS GOT KEY UP" << std::endl;
 
             if(key_e->Key == Keys::LeftAlt) {
                 Toggle();
@@ -192,7 +192,7 @@ namespace ForLeaseEngine {
                     EntitySelected = true;
                     ActiveEntity = entity->GetID();
                     if(entity->HasComponent(ComponentType::DragWithMouse)) {
-                        std::cout << "TRANSFORM MODE CONTROLS ACTIVATING DRAG" << std::endl;
+                        //std::cout << "TRANSFORM MODE CONTROLS ACTIVATING DRAG" << std::endl;
                         entity->GetComponent<Components::DragWithMouse>()->Active = true;
                         Model* model = entity->GetComponent<Model>();
                         if(model)
