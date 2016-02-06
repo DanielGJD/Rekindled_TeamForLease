@@ -120,6 +120,10 @@ namespace ForLeaseEngine
         ImGui::Checkbox("Move Camera", &leg::moveMode);
         ImGui::SameLine();
         ImGui::Checkbox("Place Objects", &leg::clickAdd);
+        if (ImGui::Button("Test Level"))
+        {
+
+        }
         ImGui::EndMainMenuBar();
     }
 
@@ -130,9 +134,22 @@ namespace ForLeaseEngine
         if (ImGui::InputText("Level Name", leg::statename, 70, ImGuiInputTextFlags_EnterReturnsTrue))
             leg::setName = true;
 
-        ImGui::InputFloat("Time Scale", &leg::timeScale);
-        if (leg::timeScale > 0)
-            ForLease->FrameRateController().TimeScaling(leg::timeScale);
+        if (leg::levelLight)
+        {
+            if (ImGui::Button("Remove Light Component"))
+            {
+                DeleteLevelComponent(leg::levelLight);
+                leg::levelLight = 0;
+            }
+        }
+        else
+        {
+            if (ImGui::Button("Add Light Component"))
+            {
+                leg::levelLight = new LevelComponents::Light(*this);
+                AddLevelComponent(leg::levelLight);
+            }
+        }
 
         if (ImGui::CollapsingHeader("Camera"))
         {

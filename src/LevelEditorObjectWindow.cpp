@@ -350,7 +350,6 @@ namespace ForLeaseEngine
             activeString.append(" ");
             ImGui::Text("Colors");
             ImGui::Separator();
-            ImGui::PushItemWidth(250);
             ImGui::BeginChild("Color List", ImVec2(0, 100));
             for(unsigned i = 0; i < leg::selPartColor->GetColorCount(); i++)
             {
@@ -367,13 +366,21 @@ namespace ForLeaseEngine
 
             static float newColor[4] = {1, 1, 1, 1};
             Color c;
-            ImGui::ColorEdit4("Active", newColor);
+            ImGui::PushItemWidth(250);
+            ImGui::ColorEdit4("New Color", newColor);
+            ImGui::SameLine();
+            ImGui::PopItemWidth();
             if (ImGui::Button("Add Color"))
             {
-                c.SetAll(newColor/*[0], newColor[1], newColor[2], newColor[3]*/);
+                c.SetAll(newColor);
                 leg::selPartColor->AddColor(c);
             }
 
+            if (ImGui::Button("Remove Particle Color"))
+            {
+                leg::selection->DeleteComponent(ComponentType::ParticleColorAnimator);
+                leg::selPartColor = NULL;
+            }
         }
         if (leg::selPartDynamics && ImGui::CollapsingHeader("Particle Dynamics"))
         {
@@ -385,6 +392,11 @@ namespace ForLeaseEngine
             ImGui::DragFloat("Torque", &(leg::selPartDynamics->Torque), 0.05);
             ImGui::DragFloat("Growth", &(leg::selPartDynamics->Growth), 0.05);
             ImGui::DragFloat("Drag", &(leg::selPartDynamics->Drag), 0.05);
+            if (ImGui::Button("Remove Particle Dynamics"))
+            {
+                leg::selection->DeleteComponent(ComponentType::SimpleParticleDynamics);
+                leg::selPartDynamics = NULL;
+            }
         }
 
         if (leg::selPartEmitter && ImGui::CollapsingHeader("Particle Emitter"))
@@ -410,6 +422,12 @@ namespace ForLeaseEngine
             ImGui::DragFloat("Velocity Random Y", &(leg::selPartEmitter->VelocityRandom[1]), 0.05);
             ImGui::DragFloat("Rotational Velocity", &(leg::selPartEmitter->RotationalVelocity), 0.05);
             ImGui::DragFloat("Rotational Velocity Random", &(leg::selPartEmitter->RotationalVelocityRandom), 0.05);
+
+            if (ImGui::Button("Remove Particle Emitter"))
+            {
+                leg::selection->DeleteComponent(ComponentType::ParticleEmitter);
+                leg::selPartEmitter = NULL;
+            }
         }
 
         if (leg::selPartSystem && ImGui::CollapsingHeader("Particle System"))
@@ -424,10 +442,18 @@ namespace ForLeaseEngine
             ImGui::InputFloat("System Size X", &(leg::selPartSystem->SystemSize[0]));
             ImGui::SameLine();
             ImGui::InputFloat("System Size Y", &(leg::selPartSystem->SystemSize[1]));
+
+            if (ImGui::Button("Remove Particle System"))
+            {
+                leg::selection->DeleteComponent(ComponentType::ParticleSystem);
+                leg::selPartSystem = NULL;
+            }
         }
 
         if (leg::selPhysics && ImGui::CollapsingHeader("Physics"))
         {
+            ImGui::Checkbox("Unaffected by Time Scale", &(leg::selPhysics->UnaffectedByTimeScaling));
+            ImGui::Checkbox("Unaffected by Gravity", &(leg::selPhysics->UnaffectedByGravity));
             ImGui::InputFloat("Mass", &(leg::selPhysics->Mass));
             if (ImGui::Button("Remove Physics"))
             {

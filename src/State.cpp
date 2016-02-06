@@ -55,6 +55,16 @@ namespace ForLeaseEngine {
         LevelComponents.push_back(levelComponent);
     }
 
+    void State::DeleteLevelComponent(LevelComponent* levelComponent) {
+        for (unsigned i = 0; i < LevelComponents.size(); i++) {
+            if (LevelComponents[i] == levelComponent) {
+                delete LevelComponents[i];
+                LevelComponents.erase(LevelComponents.begin() + i);
+                break;
+            }
+        }
+    }
+
     /*!
         Adds an entity to the Entities vector in the state.
 

@@ -417,7 +417,10 @@ namespace ForLeaseEngine
             SetName(leg::statename);
 
         Input();
-        leg::levelLight->Update(Entities);
+
+        if (leg::levelLight)
+            leg::levelLight->Update(Entities);
+
         leg::render->Update(Entities);
         for(Entity* it : Entities)
         {
