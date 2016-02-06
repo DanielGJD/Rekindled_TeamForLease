@@ -77,7 +77,10 @@ namespace ForLeaseEngine {
                 if(collider->CollidedLastFrame && collider->CollidedWithSide == Collision::Side::Top) {
                     if(emitter)
                         //emitter->Looping = true;
+                        emitter->SetVolume(1.0f,WalkSound);
+                        emitter->StopEvent(WalkSound);
                         emitter->PlayEvent(WalkSound);
+
                     if(model)
                         model->SetAnimation(WalkAnimation);
                 }
@@ -127,16 +130,22 @@ namespace ForLeaseEngine {
 
         void CharacterController::OnKeyUp(const Event* e) {
             const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
+            Components::SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
             Components::Model* model = Parent.GetComponent<Components::Model>();
             if(key_e->Key == LeftKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
                 rbody->Velocity[0] = 0;
+                if(emitter)
+                    emitter->SetPause(true, WalkSound);
+
                 if(model)
                     model->SetAnimation("");
             }
             else if(key_e->Key == RightKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
                 rbody->Velocity[0] = 0;
+                if(emitter)
+                    emitter->SetPause(true, WalkSound);
                 if(model)
                     model->SetAnimation("");
             }
