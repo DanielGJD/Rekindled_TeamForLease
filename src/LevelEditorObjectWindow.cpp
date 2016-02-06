@@ -368,7 +368,6 @@ namespace ForLeaseEngine
             Color c;
             ImGui::PushItemWidth(250);
             ImGui::ColorEdit4("New Color", newColor);
-            ImGui::SameLine();
             ImGui::PopItemWidth();
             if (ImGui::Button("Add Color"))
             {

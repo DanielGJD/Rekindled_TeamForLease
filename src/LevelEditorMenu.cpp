@@ -120,10 +120,6 @@ namespace ForLeaseEngine
         ImGui::Checkbox("Move Camera", &leg::moveMode);
         ImGui::SameLine();
         ImGui::Checkbox("Place Objects", &leg::clickAdd);
-        if (ImGui::Button("Test Level"))
-        {
-
-        }
         ImGui::EndMainMenuBar();
     }
 
