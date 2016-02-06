@@ -54,13 +54,14 @@ namespace ForLeaseEngine {
         }
 
         void ParticleSystem::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer system = root.GetChild("ParticleSystem");
-            system.WriteUint("Type", static_cast<unsigned int>(Type));
             system.WriteBool("Visible", Visible);
             system.WriteInt("BlendingMode", BlendingMode);
             StartingColor.Serialize(system);
             system.WriteUint("MaxParticles", MaxParticles);
             system.WriteVec("SystemSize", SystemSize);
+            system.WriteUint("Type", static_cast<unsigned int>(Type));
             root.Append(system, "ParticleSystem");
         }
 

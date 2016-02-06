@@ -38,10 +38,11 @@ namespace ForLeaseEngine {
                 Defaults to <0,0>.
         */
         Physics::Physics(Entity& owner, float mass, Vector velocity,
-            Vector acceleration, Vector force)
-            : Component(owner, ComponentType::Transform),
+            Vector acceleration, Vector force, bool unaffectedByTimeScaling,
+            bool unaffectedByGravity) : Component(owner, ComponentType::Transform),
               Mass(mass), Velocity(velocity), Acceleration(acceleration),
-              Force(force) {}
+              Force(force), UnaffectedByTimeScaling(unaffectedByTimeScaling),
+              UnaffectedByGravity(unaffectedByGravity) {}
 
         void Physics::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
@@ -50,6 +51,8 @@ namespace ForLeaseEngine {
             physics.WriteVec("Velocity", Velocity);
             physics.WriteVec("Acceleration", Acceleration);
             physics.WriteVec("Force", Force);
+            physics.WriteBool("UnaffectedByTimeScaling", UnaffectedByTimeScaling);
+            physics.WriteBool("UnaffectedByGravity", UnaffectedByGravity);
             physics.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(physics, "Physics");
         }
@@ -60,6 +63,8 @@ namespace ForLeaseEngine {
             physics.ReadVec("Velocity", Velocity);
             physics.ReadVec("Acceleration", Acceleration);
             physics.ReadVec("Force", Force);
+            physics.ReadBool("UnaffectedByTimeScaling", UnaffectedByTimeScaling);
+            physics.ReadBool("UnaffectedByGravity", UnaffectedByGravity);
         }
     } // Components
 

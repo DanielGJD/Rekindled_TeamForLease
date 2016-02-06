@@ -61,6 +61,8 @@ namespace ForLeaseEngine {
             OutlineWidth = 0;
 
             index = glGenLists(1);
+            //GLuint framebuffer;
+            //glGenFramebuffers(1, &framebuffer);
         }
 
         void Renderer::Serialize(Serializer& root) {
@@ -99,7 +101,7 @@ namespace ForLeaseEngine {
             BlendModeSwapCount = 0;
             RenderTime = 0;
 
-            if(/*CurrentCamera != 0*/ true) {
+            if(CurrentCamera != 0) {
                 float aspectRatio = static_cast<float>(ForLease->GameWindow->GetXResolution()) / ForLease->GameWindow->GetYResolution();
                 try{
                     Entity* cameraEntity = Owner.GetEntityByID(CurrentCamera, true);
@@ -150,7 +152,10 @@ namespace ForLeaseEngine {
 
                     if(parallax && parallax->Active && trans->ZOrder != cameraZ) {
                         parallaxAmount = 1.0 - 1.0 / abs(trans->ZOrder - cameraZ);
-                        std::cout << parallaxAmount << std::endl;
+                        //std::cout << parallaxAmount << std::endl;
+                    }
+                    else {
+                        parallaxAmount = 1;
                     }
 
 
@@ -167,7 +172,7 @@ namespace ForLeaseEngine {
                         Components::Sprite* sprite = entity->GetComponent<Components::Sprite>();
                         if(sprite->Visible) {
                             //Components::Transform* transform = entity->GetComponent<Components::Transform>();
-                            SetModelView(trans->Position - cameraShift + cameraShift * parallaxAmount, trans->ScaleX, trans->ScaleY, trans->Rotation);
+                            SetModelView(trans->Position + cameraShift * parallaxAmount, trans->ScaleX, trans->ScaleY, trans->Rotation);
                             DrawSprite(sprite);
                         }
                     }
@@ -184,6 +189,7 @@ namespace ForLeaseEngine {
                                             Matrix::Translation(mesh->GetCenter()) *
                                             Matrix::RotationRad(transform->Rotation) * Matrix::Scale(transform->ScaleX * (model->FlipY? -1 : 1), transform->ScaleY * (model->FlipX? -1 : 1)) *
                                             Matrix::Translation(o - mesh->GetCenter());
+                                //std::cout << "Model Color (" << model->ModelColor.GetR() << "," << model->ModelColor.GetG() << "," << model->ModelColor.GetB() << "," << model->ModelColor.GetA() << ")" << std::endl;
                                 DrawMesh(mesh, model->DrawEdges, model->DrawVertices, model->GetAnimation(), model->GetFrame(), model->GetFrameTime() * model->FrameRate - model->GetFrame(), model->ModelColor);
                             }
                         }
@@ -198,6 +204,12 @@ namespace ForLeaseEngine {
                     if(entity->HasComponent(ComponentType::ParticleSystem)) {
                         Components::ParticleSystem* pSystem = entity->GetComponent<Components::ParticleSystem>();
                         DrawParticleSystem(pSystem);
+                    }
+                    if(entity->HasComponent(ComponentType::Light)) {
+                        Components::Light* light = entity->GetComponent<Components::Light>();
+                        SetBlendMode(light->LightMode);
+                        ModelView = Matrix::Translation(trans->Position);
+                        DrawMesh(light->GetLightMesh(), light->DrawOutline, false);
                     }
                 }
 
@@ -236,12 +248,12 @@ namespace ForLeaseEngine {
 
         void Renderer::SetCamera(const Entity& camera) {
             CurrentCamera = camera.GetID();
-            std::cout << "Set camera to " << CurrentCamera << std::endl;
+            //std::cout << "Set camera to " << CurrentCamera << std::endl;
         }
 
         void Renderer::SetCamera(unsigned long camera) {
             CurrentCamera = camera;
-            std::cout << "Set Camera to " << CurrentCamera << std::endl;
+            //std::cout << "Set Camera to " << CurrentCamera << std::endl;
         }
 
         long Renderer::GetCameraID() {
@@ -300,6 +312,9 @@ namespace ForLeaseEngine {
                         break;
                     case BlendMode::MULTIPLY:
                         glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+                        break;
+                    case BlendMode::LIGHT:
+                        glBlendFunc(GL_DST_COLOR, GL_SRC_ALPHA);
                         break;
                 }
                 ++BlendModeSwapCount;
@@ -496,8 +511,10 @@ namespace ForLeaseEngine {
         void Renderer::DrawMesh(Mesh* mesh, bool drawEdges, bool drawVertices, std::string animationName, unsigned int frame, float t, Color const& color) {
             if(!mesh)
                 return;
-            Point* transformed = new Point[mesh->GetVertexCount()];
-            Color* faceColors = new Color[mesh->GetFaceCount()];
+            //Point* transformed = new Point[mesh->GetVertexCount()];
+            //Color* faceColors = new Color[mesh->GetFaceCount()];
+            std::vector<Point> transformed = std::vector<Point>(mesh->GetVertexCount());
+            std::vector<Color> faceColors = std::vector<Color>(mesh->GetFaceCount());
 
             // Transform vertices to screen space
             if(animationName.compare("") != 0) {
@@ -579,7 +596,7 @@ namespace ForLeaseEngine {
                 glBegin(GL_TRIANGLES);
                     for(int i = 0; i < mesh->GetFaceCount(); ++i) {
                         IndexedFace face = mesh->GetIndexedFace(i);
-                        SetDrawingColor(mesh->GetFaceColor(i));
+                        SetDrawingColor(faceColors[i]);
                         for(int j = 0; j < 3; ++j) {
                             glVertex2f(transformed[face.Indices[j]][0], transformed[face.Indices[j]][1]);
                         }
@@ -598,7 +615,8 @@ namespace ForLeaseEngine {
                 glEnd();
             }
 
-			delete[] transformed;
+			//delete[] transformed;
+			//delete[] faceColors;
         }
 
         void Renderer::DrawParticleSystem(Components::ParticleSystem* pSystem) {

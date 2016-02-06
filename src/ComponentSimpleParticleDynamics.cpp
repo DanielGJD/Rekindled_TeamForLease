@@ -33,6 +33,7 @@ namespace ForLeaseEngine {
         }
 
         void SimpleParticleDynamics::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned int>(Type));
             Serializer dynamics = root.GetChild("SimpleParticleDynamics");
             dynamics.WriteUint("Type", static_cast<unsigned int>(Type));
             dynamics.WriteBool("Active", Active);

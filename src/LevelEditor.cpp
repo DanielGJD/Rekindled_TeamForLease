@@ -193,19 +193,6 @@ namespace ForLeaseEngine
         leg::componentNames.push_back("Transform Control");
         leg::componentNames.push_back("Vision Cone");
         //PopulateMap();
-//        Point moved(100000, 100000);
-//        Entity* ent = GetEntityByName("PauseMenu", true);
-//        Components::Transform* trans = ent->GetComponent<Components::Transform>();
-//        trans->Position = moved;
-//        ent = GetEntityByName("QuitConfirm", true);
-//        trans = ent->GetComponent<Components::Transform>();
-//        trans->Position = moved;
-//        ent = GetEntityByName("HowToConfirm", true);
-//        trans = ent->GetComponent<Components::Transform>();
-//        trans->Position = moved;
-//        ent = GetEntityByName("HowToScreen", true);
-//        trans = ent->GetComponent<Components::Transform>();
-//        trans->Position = moved;
     }
 
     void LevelEditor::Initialize()
@@ -409,33 +396,6 @@ namespace ForLeaseEngine
                     AddLevelComponent(levelmenu);
                 }
                 leg::selection = NULL;
-                Point moved(100000, 100000);
-                Entity* ent = GetEntityByName("PauseMenu");
-                Components::Transform* trans;
-                if (ent != NULL)
-                {
-                    trans = ent->GetComponent<Components::Transform>();
-                    trans->Position = moved;
-                }
-
-                ent = GetEntityByName("QuitConfirm");
-                if (ent != NULL)
-                {
-                    trans = ent->GetComponent<Components::Transform>();
-                    trans->Position = moved;
-                }
-                ent = GetEntityByName("HowToConfirm");
-                if (ent != NULL)
-                {
-                    trans = ent->GetComponent<Components::Transform>();
-                    trans->Position = moved;
-                }
-                ent = GetEntityByName("HowToScreen");
-                if (ent != NULL)
-                {
-                    trans = ent->GetComponent<Components::Transform>();
-                    trans->Position = moved;
-                }
             }
             leg::toLoad = false;
         }
@@ -457,7 +417,10 @@ namespace ForLeaseEngine
             SetName(leg::statename);
 
         Input();
-        leg::levelLight->Update(Entities);
+
+        if (leg::levelLight)
+            leg::levelLight->Update(Entities);
+
         leg::render->Update(Entities);
         for(Entity* it : Entities)
         {
@@ -477,16 +440,7 @@ namespace ForLeaseEngine
                 }
             }
         }
-        if (leg::selection && leg::selFade)
-        {
-            Entity* ent = GetEntityByID(leg::selFade->TrackedEntityID);
-            if (ent != NULL)
-            {
-                Components::Transform* trans = ent->GetComponent<Components::Transform>();
-                leg::render->SetDrawingColor(Color(1, 0, 0));
-                leg::render->DrawRectangle(trans->Position, leg::camCamera->Size / 25, leg::camCamera->Size / 25, trans->Rotation);
-            }
-        }
+
 
         if (leg::selection && leg::selPartEmitter && leg::selPartColor && leg::selPartDynamics && leg::selPartSystem)
         {
@@ -496,6 +450,21 @@ namespace ForLeaseEngine
             leg::selPartDynamics->Update();
         }
         ImGui::Render();
+        if (leg::selection)
+        {
+            leg::render->SetDrawingColor(1, 0, 0);
+            leg::render->DrawRectangle(leg::selTran->Position, leg::selTran->ScaleX * 2, leg::selTran->ScaleY * 2, leg::selTran->Rotation);
+            if (leg::selFade)
+            {
+                Entity* ent = GetEntityByID(leg::selFade->TrackedEntityID);
+                if (ent != NULL)
+                {
+                    Components::Transform* trans = ent->GetComponent<Components::Transform>();
+                    leg::render->SetDrawingColor(Color(1, 0, 1));
+                    leg::render->DrawRectangle(trans->Position, trans->ScaleX * 2, trans->ScaleY * 2, trans->Rotation);
+                }
+            }
+        }
         ForLease->GameWindow->UpdateGameWindow();
     }
 

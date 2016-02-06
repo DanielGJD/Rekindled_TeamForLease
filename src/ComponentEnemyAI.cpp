@@ -156,14 +156,32 @@ namespace ForLeaseEngine {
             bool willBeAngry = false;
             for(unsigned int i = 0; i < multi_e->EntityIDs.size(); ++i) {
                 Entity* entity = ForLease->GameStateManager().CurrentState().GetEntityByID(multi_e->EntityIDs[i]);
+                LevelComponents::Light* lightSystem = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Light>();
                 std::string entityName = entity->GetName();
 
                 if(entityName.compare(LikedEntityName) == 0) {
-                    Happy = true;
-                    break; // Don't need to continue if happy since it overwrites angry
+                    // not using lighting
+                    if(!lightSystem) {
+                        Happy = true;
+                        break; // Don't need to continue if happy since it overwrites angry
+                    }
+                    // using lighting
+                    else {
+                        if(lightSystem->CheckIfLit(multi_e->EntityIDs[i])) {
+                            Happy = true;
+                            break;
+                        }
+                    }
                 }
                 else if(entityName.compare(HatedEntityName) == 0) {
-                    willBeAngry = true;
+                    if(!lightSystem) {
+                        willBeAngry = true;
+                    }
+                    else {
+                        if(lightSystem->CheckIfLit(multi_e->EntityIDs[i])) {
+                            willBeAngry = true;
+                        }
+                    }
                 }
             }
             if(!Happy) {

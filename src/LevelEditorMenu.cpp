@@ -2,6 +2,7 @@
 #include "LevelEditorGlobals.h"
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
+#include "Utilities.h"
 #include <iostream>
 #include <cmath>
 #include <fstream>
@@ -22,7 +23,23 @@ namespace ForLeaseEngine
             {
                 if (ImGui::InputText("File Name", leg::statefile, 70, ImGuiInputTextFlags_EnterReturnsTrue))
                 {
-                    leg::toSave = true;
+                    ImGui::OpenPopup("Are you sure");
+                }
+
+                if (ImGui::BeginPopupModal("Are you sure", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+                {
+                    ImGui::Text("Are you sure you want to overwrite %s?\n", leg::statefile);
+                    if (ImGui::Button("Yes"))
+                    {
+                        leg::toSave = true;
+                        ImGui::CloseCurrentPopup();
+                    }
+                    ImGui::SameLine();
+                    if (ImGui::Button("Cancel"))
+                    {
+                        ImGui::CloseCurrentPopup();
+                    }
+                    ImGui::EndPopup();
                 }
 
                 ImGui::EndMenu();
@@ -104,6 +121,7 @@ namespace ForLeaseEngine
         ImGui::Checkbox("Move Camera", &leg::moveMode);
         ImGui::SameLine();
         ImGui::Checkbox("Place Objects", &leg::clickAdd);
+
         ImGui::EndMainMenuBar();
     }
 
@@ -111,12 +129,43 @@ namespace ForLeaseEngine
     {
         ImGui::Begin("Level Editor");
 
+        if (ImGui::Button("Test Level"))
+        {
+            ImGui::OpenPopup("Test Level");
+        }
+
+        if (ImGui::BeginPopupModal("Test Level", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            static char filename[64];
+            ImGui::Text("Input the name of the level file you wish to test.\nThe file will be saved/overwritten.");
+            ImGui::InputText("File Name", filename, 64);
+            if (ImGui::Button("Launch"))
+            {
+                SpawnNewLevelProcess(filename);
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
         if (ImGui::InputText("Level Name", leg::statename, 70, ImGuiInputTextFlags_EnterReturnsTrue))
             leg::setName = true;
 
-        ImGui::InputFloat("Time Scale", &leg::timeScale);
-        if (leg::timeScale > 0)
-            ForLease->FrameRateController().TimeScaling(leg::timeScale);
+        if (leg::levelLight)
+        {
+            if (ImGui::Button("Remove Light Component"))
+            {
+                DeleteLevelComponent(leg::levelLight);
+                leg::levelLight = 0;
+            }
+        }
+        else
+        {
+            if (ImGui::Button("Add Light Component"))
+            {
+                leg::levelLight = new LevelComponents::Light(*this);
+                AddLevelComponent(leg::levelLight);
+            }
+        }
 
         if (ImGui::CollapsingHeader("Camera"))
         {
