@@ -97,13 +97,13 @@ void SoundEmitter::Serialize(Serializer& root)
 
 void SoundEmitter::Deserialize(Serializer& root)
 {
-//             Serializer soundEmitter = root.GetChild("SoundEmitter");
-//             soundEmitter.ReadString("startSound",startSound);
-//             soundEmitter.ReadBool("playSoundOnStart", playSoundOnStart);
-            // soundEmitter.ReadFloat("Pitch", Pitch);
-             //soundEmitter.ReadFloat("Volume", Volume);
-            // soundEmitter.ReadBool("Looping", Looping);
-            // soundEmitter.ReadInt("LoopCount", LoopCount);
+             Serializer soundEmitter = root.GetChild("SoundEmitter");
+             soundEmitter.ReadString("startSound",startSound);
+             soundEmitter.ReadBool("playSoundOnStart", playSoundOnStart);
+//             soundEmitter.ReadFloat("Pitch", Pitch);
+//             soundEmitter.ReadFloat("Volume", Volume);
+//             soundEmitter.ReadBool("Looping", Looping);
+//             soundEmitter.ReadInt("LoopCount", LoopCount);
 }
 // void SoundEmitter::SerializeRead(Serializer& str)
 // {
