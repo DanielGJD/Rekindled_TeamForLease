@@ -12,6 +12,7 @@
 #include "Level.h"
 #include <string>
 #include <vector>
+#include "ResourceManager.h"
 
 #ifndef UTILITIES_H
 #define UTILITIES_H
@@ -26,6 +27,24 @@ namespace CommandLine {
     bool ArgumentExists(char** start, char** end, const std::string argument);
     StringArgument GetStringArgument(char** start, char** end, const std::string argument);
     IntArgument GetIntArgument(char** start, char** end, const std::string argument);
+}
+
+namespace FileSystem {
+    std::vector<std::string> GetAllFilesInFolder(std::string folder);
+}
+
+namespace Preloader {
+    enum class Asset : char {
+        Sound = 1,
+        Mesh = 2,
+        MeshAnimation = 3,
+        Texture = 4,
+        Font = 5
+    };
+
+    typedef std::pair<Asset, std::string> AssetPath;
+
+    void PreloadAssets(std::vector<AssetPath> paths);
 }
 
 #endif // UTILITIES_H

@@ -31,6 +31,7 @@ int Start(int argc = 0, char** argv = 0) {
     // Find the testing level (if there is one).
     CommandLine::StringArgument testingLevel = CommandLine::GetStringArgument(argStart, argEnd, "-level");
 
+
     if (testingLevel.first)
         states = LoadSingleLevel(testingLevel.second, states);
     else {
