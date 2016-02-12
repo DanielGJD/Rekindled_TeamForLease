@@ -19,7 +19,7 @@ namespace ForLeaseEngine {
     namespace Components {
         TransformModeControls::TransformModeControls(Entity& owner)
                                                     : Component(owner), SlowMotionSpeed(0.5f), NormalSpeed(1),
-                                                      ModeToggleKey(Keys::LeftAlt), TransformModeSound(""), Active(false), EntitySelected(false), ActiveEntity(0) {}
+                                                      ModeToggleKey(Keys::Space), TransformModeSound(""), Active(false), EntitySelected(false), ActiveEntity(0) {}
 
         TransformModeControls::~TransformModeControls() {
             ForLease->Dispatcher.Detach(this, "KeyUp");
@@ -141,7 +141,7 @@ namespace ForLeaseEngine {
 
             //std::cout << "TRANSFORM MODE CONTROLS GOT KEY UP" << std::endl;
 
-            if(key_e->Key == Keys::LeftAlt) {
+            if(key_e->Key == Keys::Space) {
                 Toggle();
             }
         }
