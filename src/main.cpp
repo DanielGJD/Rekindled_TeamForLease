@@ -32,10 +32,18 @@ int Start(int argc = 0, char** argv = 0) {
     CommandLine::StringArgument testingLevel = CommandLine::GetStringArgument(argStart, argEnd, "-level");
 
 
+    //Preloading
+    if (FileSystem::PathExists("Game.json"))
+        Preload::AllAssets("Game.json");
+
     if (testingLevel.first)
         states = LoadSingleLevel(testingLevel.second, states);
-    else {
+    else if (FileSystem::PathExists("Game.json")) {
         states = LoadLevels("Game.json", states);
+        states.push_back(new HowToPlay());
+    }
+    else { // This is a pretty screwed-up place to be.  Just loads the main menu and the how to play screen.  No gameplay is loaded.
+        states.push_back(new MainMenu());
         states.push_back(new HowToPlay());
     }
 

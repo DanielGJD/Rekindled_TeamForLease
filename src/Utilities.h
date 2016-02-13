@@ -31,10 +31,11 @@ namespace CommandLine {
 
 namespace FileSystem {
     std::vector<std::string> GetAllFilesInFolder(std::string folder);
+    bool PathExists(std::string path);
 }
 
-namespace Preloader {
-    enum class Asset : char {
+namespace Preload {
+    enum class AssetType : char {
         Sound = 1,
         Mesh = 2,
         MeshAnimation = 3,
@@ -42,9 +43,10 @@ namespace Preloader {
         Font = 5
     };
 
-    typedef std::pair<Asset, std::string> AssetPath;
+    typedef std::pair<AssetType, std::string> AssetPath;
 
-    void PreloadAssets(std::vector<AssetPath> paths);
+    void Assets(std::vector<AssetPath> paths);
+    void AllAssets(std::string file);
 }
 
 #endif // UTILITIES_H

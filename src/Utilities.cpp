@@ -129,8 +129,13 @@ namespace FileSystem {
         }
         return result;
     }
+
+    bool PathExists(std::string path) {
+        return GetFileAttributes(path.c_str()) == INVALID_FILE_ATTRIBUTES;
+    }
 #else
     #include <dirent.h>
+    #include <unistd.h>
 
     std::vector<std::string> GetAllFilesInFolder(std::string folder) {
         std::vector<std::string> result;
@@ -147,25 +152,32 @@ namespace FileSystem {
 
         return result;
     }
+
+    bool PathExists(std::string path) {
+        return access(path.c_str(), F_OK) == -1;
+    }
 #endif
 }
 
-namespace Preloader {
-    void PreloadIndividualAsset(std::string file, Asset type) {
+namespace Preload {
+    /*!
+        Helper function for PreloadAssets.
+    */
+    void IndividualAsset(std::string file, AssetType type) {
         switch (type) {
-            case Asset::Sound:
+            case AssetType::Sound:
                 ForLease->Resources.LoadSound(file);
                 break;
-            case Asset::Mesh:
+            case AssetType::Mesh:
                 ForLease->Resources.LoadMesh(file);
                 break;
-            case Asset::MeshAnimation:
+            case AssetType::MeshAnimation:
                 ForLease->Resources.LoadMeshAnimation(file);
                 break;
-            case Asset::Texture:
+            case AssetType::Texture:
                 ForLease->Resources.LoadTexture(file);
                 break;
-            case Asset::Font:
+            case AssetType::Font:
                 ForLease->Resources.LoadFont(file);
                 break;
             default: // No idea how you got here.  You screwed something up if that happened.
@@ -173,12 +185,31 @@ namespace Preloader {
         }
     }
 
-    void PreloadAssets(std::vector<AssetPath> paths) {
+    void Assets(std::vector<AssetPath> paths) {
         for (AssetPath path : paths) {
             std::vector<std::string> filenames = FileSystem::GetAllFilesInFolder(path.second);
             for (std::string file : filenames) {
-                PreloadIndividualAsset(path.second + file, path.first);
+                IndividualAsset(path.second + file, path.first);
             }
         }
+    }
+
+    void AllAssets(std::string file) {
+        FLE::Serializer serial;
+        serial.ReadFile(file);
+        //FLE::Serializer levelArray = serial.GetChild("Levels");
+        //FLE::ArraySerializer levels(levelArray);
+
+        //for (unsigned i = 0; i < levels.Size(); ++i) {
+        //    FLE::Serializer level = levels[i];
+        //    std::string file;
+        //    level.ReadString("File", file);
+
+        //    FLE::Level* levelInstance = new FLE::Level(file);
+
+        //    appendTo.push_back(levelInstance);
+        //    std::cout << "Just got " << file << std::endl;
+        //    std::cout << "Name: " << levelInstance->GetName() << std::endl;
+        //}
     }
 }
