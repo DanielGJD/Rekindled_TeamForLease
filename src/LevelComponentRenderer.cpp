@@ -454,6 +454,20 @@ namespace ForLeaseEngine {
             glEnd();
         }
 
+        void Renderer::DrawCircle(const Point& center, float radius) {
+            const float controlPointCount = 40;
+            const float stepSize = 3.1415927 * 2 / controlPointCount;
+            SetModelView(center, radius, radius, 0);
+            Matrix combigned = Projection * ModelView;
+            SetBlendMode(BlendMode::NONE);
+            glBegin(GL_LINE_STRIP);
+            for(int i = 0; i <= controlPointCount; ++i) {
+                Point p = combigned * Point(cos(stepSize * i), sin(stepSize * i));
+                glVertex2f(p[0], p[1]);
+            }
+            glEnd();
+        }
+
         unsigned int Renderer::GetVertexCount() { return VertexCount; }
 
         unsigned int Renderer::GetTriCount() { return TriCount; }
@@ -491,8 +505,8 @@ namespace ForLeaseEngine {
                 return;
             }
             Texture* texture = ForLease->Resources.GetTexture(region->GetTexture());
-            float halfWidth = region->GetWidth() / 2;
-            float halfHeight = region->GetHeight() / 2;
+            float halfWidth = texture->GetWidth() / 2;
+            float halfHeight = texture->GetHeight() / 2;
             Point vertices[] = {Point(halfWidth, halfHeight), Point(-halfWidth, halfHeight),
                                 Point(-halfWidth, -halfHeight), Point(halfWidth, - halfHeight)};
             for(int i = 0; i < 4; ++i) {
@@ -500,10 +514,18 @@ namespace ForLeaseEngine {
             }
             SetTexture(texture);
             glBegin(GL_QUADS);
-                for(int i = 0; i < 4; ++i) {
-                    glTexCoord2f(region->GetUV()[i][0], region->GetUV()[i][1]);
-                    glVertex2f(vertices[i][0], vertices[i][1]);
-                }
+                //for(int i = 0; i < 4; ++i) {
+                //    glTexCoord2f(region->GetUV()[i][0], region->GetUV()[i][1]);
+                //    glVertex2f(vertices[i][0], vertices[i][1]);
+                //}
+                glTexCoord2f(1, 0);
+                glVertex2f(vertices[0][0], vertices[0][1]);
+                glTexCoord2f(0, 0);
+                glVertex2f(vertices[1][0], vertices[1][1]);
+                glTexCoord2f(0, 1);
+                glVertex2f(vertices[2][0], vertices[2][1]);
+                glTexCoord2f(1, 1);
+                glVertex2f(vertices[3][0], vertices[3][1]);
             glEnd();
             TriCount += 2;
         }

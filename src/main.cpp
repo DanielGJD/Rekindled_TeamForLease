@@ -55,7 +55,7 @@ int Start(int argc = 0, char** argv = 0) {
     //bool fullscreen = CommandLine::ArgumentExists(argStart, argEnd, "-fullscreen");
     bool fullscreen = true;
 
-    ForLeaseEngine::Engine engine(states, resolutionX, resolutionY, fps, fullscreen);
+    ForLeaseEngine::Engine engine(states, 1280, 720, fps, false);
     engine.Run();
 
     return 0;
