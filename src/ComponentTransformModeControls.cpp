@@ -149,7 +149,7 @@ namespace ForLeaseEngine {
 
             //std::cout << "TRANSFORM MODE CONTROLS GOT KEY UP" << std::endl;
 
-            if(key_e->Key == Keys::LeftAlt) {
+            if(key_e->Key == Keys::Space) {
                 Toggle();
             }
         }

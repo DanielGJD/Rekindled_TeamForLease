@@ -39,6 +39,7 @@ namespace ForLeaseEngine {
         }
 
         void Light::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned>(ComponentType::Light));
             Serializer light = root.GetChild("Light");
             light.WriteUint("Type", static_cast<unsigned>(ComponentType::Light));
             root.Append(light, "Light");
