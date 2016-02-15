@@ -308,7 +308,7 @@ namespace ForLeaseEngine {
                         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         break;
                     case BlendMode::ADDITIVE:
-                        glBlendFunc(GL_ONE, GL_ONE);
+                        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
                         break;
                     case BlendMode::MULTIPLY:
                         glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
@@ -505,10 +505,10 @@ namespace ForLeaseEngine {
                 return;
             }
             Texture* texture = ForLease->Resources.GetTexture(region->GetTexture());
-            float halfWidth = texture->GetWidth() / 2;
-            float halfHeight = texture->GetHeight() / 2;
-            Point vertices[] = {Point(halfWidth, halfHeight), Point(-halfWidth, halfHeight),
-                                Point(-halfWidth, -halfHeight), Point(halfWidth, - halfHeight)};
+            //float halfWidth = texture->GetWidth() / 2;
+            //float halfHeight = texture->GetHeight() / 2;
+            Point vertices[] = {Point(1, 1), Point(-1, 1),
+                                Point(-1, -1), Point(1, - 1)};
             for(int i = 0; i < 4; ++i) {
                 ModelToScreen(vertices[i], vertices[i]);
             }
@@ -646,7 +646,7 @@ namespace ForLeaseEngine {
             float CompileTime = 0;
             float RasterTime = 0;
             Timer timer;
-            SetTexture(NULL);
+            SetTexture(ForLease->Resources.GetTexture(pSystem->SpriteSource));
             SetBlendMode(pSystem->BlendingMode);
             std::list<Particle*> const* particles = pSystem->GetActiveParticles();
             std::vector<Point> transformed = std::vector<Point>(particles->size() * 4);
@@ -683,22 +683,19 @@ namespace ForLeaseEngine {
             glBegin(GL_QUADS);
                 p = 0;
                 for(std::list<Particle*>::const_iterator i = particles->begin(); i != particles->end(); ++i) {
-                    //SetDrawingColor((*i)->ParticleColor);
                     glColor4fv((*i)->ParticleColor.GetAll());
-//                    SetModelView((*i)->Position, (*i)->Size, (*i)->Size, (*i)->Rotation);
-//                    Matrix combigned = Projection * ModelView;
-//                    Point tl = combigned * Point(-0.5, 0.5);
-//                    Point bl = combigned * Point(-0.5, -0.5);
-//                    Point br = combigned * Point(0.5, -0.5);
-//                    Point tr = combigned * Point(0.5, 0.5);
 
                     glVertex2f(transformed[p][0], transformed[p][1]);
+                    glTexCoord2f(0, 0);
                     ++p;
                     glVertex2f(transformed[p][0], transformed[p][1]);
+                    glTexCoord2f(0, 1);
                     ++p;
                     glVertex2f(transformed[p][0], transformed[p][1]);
+                    glTexCoord2f(1, 1);
                     ++p;
                     glVertex2f(transformed[p][0], transformed[p][1]);
+                    glTexCoord2f(1, 0);
                     ++p;
                 }
             glEnd();

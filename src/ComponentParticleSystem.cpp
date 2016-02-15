@@ -9,13 +9,15 @@ namespace ForLeaseEngine {
                                        BlendMode blendMode,
                                        Color startingColor,
                                        unsigned int maxParticles,
-                                       Vector systemSize)
+                                       Vector systemSize,
+                                       std::string spriteSource)
                                        : Component(parent, ComponentType::Transform),
                                          Visible(visible),
                                          BlendingMode(blendMode),
                                          StartingColor(startingColor),
                                          MaxParticles(maxParticles),
                                          SystemSize(systemSize),
+                                         SpriteSource(spriteSource),
                                          Particles(std::vector<Particle>(maxParticles)),
                                          ActiveParticles(std::list<Particle*>()),
                                          InactiveParticles(std::list<Particle*>()) {
