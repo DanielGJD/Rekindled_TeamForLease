@@ -62,6 +62,7 @@ namespace ForLeaseEngine {
             transModeCont.WriteFloat("NormalSpeed", NormalSpeed);
             transModeCont.WriteInt("ModeToggleKey", ModeToggleKey);
             transModeCont.WriteString("TransformModeSound", TransformModeSound);
+            transModeCont.WriteFloat("InfluenceRadius", InfluenceRadius);
             transModeCont.WriteUint("Type", static_cast<unsigned int>(Type));
             root.Append(transModeCont, "TransformModeControls");
         }
@@ -71,6 +72,7 @@ namespace ForLeaseEngine {
             transModeCont.ReadFloat("SlowMotionSpeed", SlowMotionSpeed);
             transModeCont.ReadFloat("NormalSpeed", NormalSpeed);
             transModeCont.ReadInt("ModeToggleKey", ModeToggleKey);
+            transModeCont.ReadFloat("InfluenceRadius", InfluenceRadius);
             transModeCont.ReadString("TransformModeSound", TransformModeSound);
         }
 
