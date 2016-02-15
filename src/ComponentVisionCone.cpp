@@ -36,6 +36,21 @@ namespace ForLeaseEngine {
         ComponentType VisionCone::GetType() { return Type; }
 
         void VisionCone::Update() {
+            ////////////////////////////////////////////
+            float scaledDt = ForLease->FrameRateController().GetDt();
+            float realDt = ForLease->FrameRateController().GetUnscaledDt();
+            float ratio = scaledDt / realDt;
+            float tolerance = 0.00001;
+
+            // Normal speed
+            if(ratio > 1 - tolerance && ratio < 1 + tolerance) {
+                Visible = false;
+            }
+            // Slow speed
+            else {
+                Visible = true;
+            }
+            ////////////////////////////////////////////
             ViewMesh.ClearData();
             if(!Active) {
                 return;

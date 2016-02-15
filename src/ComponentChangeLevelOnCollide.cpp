@@ -48,6 +48,8 @@ namespace ForLeaseEngine {
                     Switching = true;
                     SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
                     if(TriggerSoundName.compare("") && emitter) {
+                        emitter->SetVolume(1.0f,TriggerSoundName);
+                        emitter->StopEvent(TriggerSoundName);
                         emitter->PlayEvent(TriggerSoundName);
                     }
                     ForLease->FrameRateController().TimeScaling(OnSwitchTimeScale);
