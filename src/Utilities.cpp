@@ -165,9 +165,9 @@ namespace Preload {
     */
     void IndividualAsset(std::string file, AssetType type) {
         switch (type) {
-            case AssetType::Sound:
-                ForLease->Resources.LoadSound(file);
-                break;
+            //case AssetType::Sound:
+            //    ForLease->Resources.LoadSound(file);
+            //    break;
             case AssetType::Mesh:
                 ForLease->Resources.LoadMesh(file);
                 break;

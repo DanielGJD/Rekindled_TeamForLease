@@ -18,6 +18,7 @@
 #include "HowToPlay.h"
 #include "Utilities.h"
 #include "Platforms.h"
+#include "Loading.h"
 
 #undef main
 
@@ -31,14 +32,10 @@ int Start(int argc = 0, char** argv = 0) {
     // Find the testing level (if there is one).
     CommandLine::StringArgument testingLevel = CommandLine::GetStringArgument(argStart, argEnd, "-level");
 
-
-    //Preloading
-    if (FileSystem::PathExists("Game.json"))
-        Preload::AllAssets("Game.json");
-
     if (testingLevel.first)
         states = LoadSingleLevel(testingLevel.second, states);
     else if (FileSystem::PathExists("Game.json")) {
+        states.push_back(new Loading("Game.json"));
         states = LoadLevels("Game.json", states);
         states.push_back(new HowToPlay());
     }
