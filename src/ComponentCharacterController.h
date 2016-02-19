@@ -26,6 +26,8 @@ namespace ForLeaseEngine {
                 CharacterController(Entity& owner);
                 ~CharacterController();
 
+                double dt = ForLease->FrameRateController().GetDt();
+
                 int RightKey;
                 int LeftKey;
                 int JumpKey;

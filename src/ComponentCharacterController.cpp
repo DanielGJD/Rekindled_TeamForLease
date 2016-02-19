@@ -19,7 +19,7 @@ namespace ForLeaseEngine {
         CharacterController::CharacterController(Entity& owner)
                                                 : Component(owner, ComponentType::Physics | ComponentType::Collision),
                                                   RightKey(Keys::D), LeftKey(Keys::A), JumpKey(Keys::W),
-                                                  MoveSpeed(0), JumpSpeed(0), WalkSound(""), JumpSound(""), LandSound(""),
+                                                  MoveSpeed(0.0f), JumpSpeed(0), WalkSound(""), JumpSound(""), LandSound(""),
                                                   WalkAnimation(""), JumpAnimation(""), CanJump(false) {};
 
         CharacterController* CharacterController::Create(Entity& owner) {
@@ -71,7 +71,16 @@ namespace ForLeaseEngine {
             Components::Model* model = Parent.GetComponent<Components::Model>();
             if(key_e->Key == LeftKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
-                rbody->Velocity += Vector(-MoveSpeed, 0);
+                //rbody->Velocity += Vector(-MoveSpeed, 0);
+                //rbody->Acceleration += Vector(-MoveSpeed, 0 ) * 5;
+                rbody->Acceleration += Vector(-MoveSpeed, 0 ) * 25;
+                if((rbody->Acceleration.GetX()) > MoveSpeed)
+                    rbody->Acceleration.SetDecrementX(MoveSpeed);
+                if((rbody->Acceleration.GetX()) < -MoveSpeed)
+                    rbody->Acceleration.SetIncrementX(MoveSpeed);
+
+
+
                 if(model)
                     model->FlipY = true;
                 if(collider->CollidedLastFrame && collider->CollidedWithSide == Collision::Side::Top) {
@@ -87,7 +96,16 @@ namespace ForLeaseEngine {
             }
             else if(key_e->Key == RightKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
-                rbody->Velocity += Vector(MoveSpeed, 0);
+
+               //rbody->Velocity += Vector(MoveSpeed, 0);
+                rbody->Acceleration += Vector(MoveSpeed, 0) * 25;
+
+                if((rbody->Acceleration.GetX()) > MoveSpeed)
+                    rbody->Acceleration.SetDecrementX(MoveSpeed);
+                if((rbody->Acceleration.GetX()) < -MoveSpeed)
+                   rbody->Acceleration.SetIncrementX(MoveSpeed);
+
+
                 if(model)
                     model->FlipY = false;
                 if(collider->CollidedLastFrame && collider->CollidedWithSide == Collision::Side::Top) {
@@ -135,6 +153,7 @@ namespace ForLeaseEngine {
             if(key_e->Key == LeftKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
                 rbody->Velocity[0] = 0;
+                rbody->Acceleration[0] = 0;
                 if(emitter)
                     emitter->SetPause(true, WalkSound);
 
@@ -144,6 +163,7 @@ namespace ForLeaseEngine {
             else if(key_e->Key == RightKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
                 rbody->Velocity[0] = 0;
+                rbody->Acceleration[0] = 0;
                 if(emitter)
                     emitter->SetPause(true, WalkSound);
                 if(model)
