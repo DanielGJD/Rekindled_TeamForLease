@@ -154,12 +154,13 @@ namespace FileSystem {
     }
 
     bool PathExists(std::string path) {
-        return access(path.c_str(), F_OK) == -1;
+        return access(path.c_str(), F_OK) != -1;
     }
 #endif
 }
 
 namespace Preload {
+
     /*!
         Helper function for PreloadAssets.
     */
@@ -186,30 +187,35 @@ namespace Preload {
     }
 
     void Assets(std::vector<AssetPath> paths) {
-        for (AssetPath path : paths) {
-            std::vector<std::string> filenames = FileSystem::GetAllFilesInFolder(path.second);
-            for (std::string file : filenames) {
-                IndividualAsset(path.second + file, path.first);
-            }
-        }
+        //for (AssetPath path : paths) {
+        //    std::vector<std::string> filenames = FileSystem::GetAllFilesInFolder(path.second);
+        //    for (std::string file : filenames) {
+        //        IndividualAsset(path.second + file, path.first);
+        //    }
+        //}
     }
 
-    void AllAssets(std::string file) {
+    std::vector<AssetPath> AllAssets(std::string file) {
         FLE::Serializer serial;
         serial.ReadFile(file);
-        //FLE::Serializer levelArray = serial.GetChild("Levels");
-        //FLE::ArraySerializer levels(levelArray);
+        FLE::Serializer assetArray = serial.GetChild("Assets");
+        FLE::ArraySerializer assets(assetArray);
 
-        //for (unsigned i = 0; i < levels.Size(); ++i) {
-        //    FLE::Serializer level = levels[i];
-        //    std::string file;
-        //    level.ReadString("File", file);
+        std::vector<AssetPath> assetPaths;
 
-        //    FLE::Level* levelInstance = new FLE::Level(file);
+        for (unsigned i = 0; i < assets.Size(); ++i) {
+            FLE::Serializer asset = assets[i];
 
-        //    appendTo.push_back(levelInstance);
-        //    std::cout << "Just got " << file << std::endl;
-        //    std::cout << "Name: " << levelInstance->GetName() << std::endl;
-        //}
+            AssetPath newAssetPath;
+
+            unsigned type;
+            asset.ReadUint("Type", type);
+            newAssetPath.first = static_cast<AssetType>(type);
+            asset.ReadString("File", newAssetPath.second);
+
+            assetPaths.push_back(newAssetPath);
+        }
+
+        return std::vector<AssetPath>();
     }
 }

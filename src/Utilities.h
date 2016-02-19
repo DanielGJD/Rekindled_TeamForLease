@@ -35,7 +35,7 @@ namespace FileSystem {
 }
 
 namespace Preload {
-    enum class AssetType : char {
+    enum class AssetType : unsigned {
         Sound = 1,
         Mesh = 2,
         MeshAnimation = 3,
@@ -45,8 +45,17 @@ namespace Preload {
 
     typedef std::pair<AssetType, std::string> AssetPath;
 
+    //class AssetPath : public ForLeaseEngine::Serializable {
+    //    public:
+    //        void Deserialize(ForLeaseEngine::Serializer& serializer);
+
+    //        AssetType   Type;
+    //        std::string File;
+    //};
+
+    void IndividualAsset(std::string file, AssetType type);
     void Assets(std::vector<AssetPath> paths);
-    void AllAssets(std::string file);
+    std::vector<AssetPath> AllAssets(std::string file);
 }
 
 #endif // UTILITIES_H

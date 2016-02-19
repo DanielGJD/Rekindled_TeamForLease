@@ -16,6 +16,8 @@
 #include "GameStateManager.h"
 #include "Ray.h"
 
+#include "Utilities.h"
+
 #include <iostream>
 #include <string>
 
@@ -49,7 +51,7 @@ void Loading::Load() {
     Entity* logo = AddEntity("Logo");
     logo->AddComponent(new Components::Transform(*logo, Point(0, 5)));
     logo->AddComponent(new Components::Sprite(*logo));
-    logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("ControlPage.png");
+    logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
     logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
     logo->GetComponent<Components::Transform>(true)->ScaleX = 0.02;
     logo->GetComponent<Components::Transform>(true)->ScaleY = 0.02;
@@ -74,6 +76,8 @@ void Loading::Initialize() {
     Serializer serializer;
     serializer.ReadFile("Loading.json");
     Deserialize(serializer);
+
+    std::vector<Preload::AssetPath> assets = Preload::AllAssets(LoadFile);
 }
 
 void Loading::Update() {
