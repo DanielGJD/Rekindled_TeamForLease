@@ -13,12 +13,14 @@
 
 #include "Component.h"
 #include "Event.h"
+#include "Keys.h"
 
 namespace ForLeaseEngine {
     namespace Components {
         class TransformModeControls : public Component {
             public:
-                TransformModeControls(Entity& owner);
+                TransformModeControls(Entity& owner, float slowMotionSpeed = 0, float normalSpeed = 1,
+                                      float influenceRadius = 5, int modeToggleKey = Keys::LeftAlt, std::string transformModeSound = "");
                 ~TransformModeControls();
                 virtual ComponentType GetType();
                 void Initialize();
@@ -38,6 +40,7 @@ namespace ForLeaseEngine {
                 static const ComponentType Type = ComponentType::TransformModeControls;
                 float SlowMotionSpeed;
                 float NormalSpeed;
+                float InfluenceRadius;
                 int ModeToggleKey;
 
                 std::string TransformModeSound;

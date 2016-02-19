@@ -429,7 +429,12 @@ namespace ForLeaseEngine {
 
         if(animation) {
             ImGui::RadioButton("Mesh", &AnimationEdit, 0); ImGui::SameLine();
+            int lastMode = AnimationEdit;
             ImGui::RadioButton("Animation", &AnimationEdit, 1);
+
+            if(lastMode != AnimationEdit) {
+                ClearAllSelections();
+            }
 
             if(AnimationEdit == 0)
                 ImGui::Dummy(ImVec2(0, 10));

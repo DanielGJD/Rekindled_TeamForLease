@@ -19,39 +19,54 @@ namespace ForLeaseEngine
         ImGui::BeginMainMenuBar();
         if (ImGui::BeginMenu("File"))
         {
-            if (ImGui::BeginMenu("Save"))
+            if (ImGui::Button("Save"))
             {
-                if (ImGui::InputText("File Name", leg::statefile, 70, ImGuiInputTextFlags_EnterReturnsTrue))
-                {
-                    ImGui::OpenPopup("Are you sure");
-                }
+                ImGui::OpenPopup("Save");
+            }
 
-                if (ImGui::BeginPopupModal("Are you sure", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            if (ImGui::BeginPopupModal("Save", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                ImGui::InputText("File Name", leg::statefile, 128);
+                ImGui::Text("Warning: File will get overwritten if it already exists\n");
+                if (ImGui::Button("Save"))
                 {
-                    ImGui::Text("Are you sure you want to overwrite %s?\n", leg::statefile);
-                    if (ImGui::Button("Yes"))
-                    {
-                        leg::toSave = true;
-                        ImGui::CloseCurrentPopup();
-                    }
-                    ImGui::SameLine();
-                    if (ImGui::Button("Cancel"))
-                    {
-                        ImGui::CloseCurrentPopup();
-                    }
-                    ImGui::EndPopup();
+                    leg::toSave = true;
+                    ImGui::CloseCurrentPopup();
                 }
-
-                ImGui::EndMenu();
+                ImGui::SameLine();
+                if (ImGui::Button("Cancel"))
+                {
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndPopup();
             }
 
             if (ImGui::BeginMenu("Load"))
             {
                 if (ImGui::BeginMenu("Level"))
                 {
-                    if (ImGui::InputText("File Name", leg::statefile, 70, ImGuiInputTextFlags_EnterReturnsTrue))
+                    if (ImGui::InputText("File Name", leg::statefile, 128, ImGuiInputTextFlags_EnterReturnsTrue))
                     {
-                        leg::toLoad = true;
+                        ImGui::OpenPopup("Load");
+                    }
+
+                    if (ImGui::BeginPopupModal("Load", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+                    {
+                        ImGui::Text("Any unsaved progress will be lost!");
+                        if (ImGui::Button("Continue"))
+                        {
+                            leg::toLoad = true;
+                            ImGui::CloseCurrentPopup();
+                        }
+
+                        ImGui::SameLine();
+
+                        if (ImGui::Button("Cancel"))
+                        {
+                            ImGui::CloseCurrentPopup();
+                        }
+
+                        ImGui::EndPopup();
                     }
 
                     ImGui::EndMenu();
@@ -121,7 +136,6 @@ namespace ForLeaseEngine
         ImGui::Checkbox("Move Camera", &leg::moveMode);
         ImGui::SameLine();
         ImGui::Checkbox("Place Objects", &leg::clickAdd);
-
         ImGui::EndMainMenuBar();
     }
 
@@ -147,6 +161,7 @@ namespace ForLeaseEngine
 
             ImGui::EndPopup();
         }
+
         if (ImGui::InputText("Level Name", leg::statename, 70, ImGuiInputTextFlags_EnterReturnsTrue))
             leg::setName = true;
 
@@ -289,6 +304,20 @@ namespace ForLeaseEngine
                 leg::selModel = NULL;
             return;
         }
+        if (!(component.compare("Occluder")) && !leg::selOccluder)
+        {
+            leg::selOccluder = new Components::Occluder(*leg::selection);
+            if (!leg::selection->AddComponent(leg::selOccluder))
+                leg::selOccluder = NULL;
+            return;
+        }
+        if (!(component.compare("Parallax")) && !leg::selParallax)
+        {
+            leg::selParallax = new Components::Parallax(*leg::selection);
+            if (!leg::selection->AddComponent(leg::selParallax))
+                leg::selParallax = NULL;
+            return;
+        }
         if (!(component.compare("Particle Color")) && !leg::selPartColor)
         {
             leg::selPartColor = new Components::ParticleColorAnimator(*leg::selection);
@@ -338,13 +367,13 @@ namespace ForLeaseEngine
                 leg::selScale = NULL;
             return;
         }
-//        if (!(component.compare("Sound")) && !leg::selSound)
-//        {
-//            leg::selSound = new Components::SoundEmitter(*leg::selection);
-//            if (!leg::selection->AddComponent(leg::selSound))
-//                leg::selSound = NULL;
-//            return;
-//        }
+        if (!(component.compare("Sound")) && !leg::selSound)
+        {
+            leg::selSound = new Components::SoundEmitter(*leg::selection);
+            if (!leg::selection->AddComponent(leg::selSound))
+                leg::selSound = NULL;
+            return;
+        }
         if (!(component.compare("Sprite")) && !leg::selSprite)
         {
             leg::selSprite = new Components::Sprite(*leg::selection);

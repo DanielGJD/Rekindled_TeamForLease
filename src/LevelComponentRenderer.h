@@ -65,6 +65,7 @@ namespace ForLeaseEngine {
                 void DrawArrow(const Point& start, const Vector& displacement);
                 void DrawMesh(Mesh* mesh, bool drawEdges = false, bool drawVertices = false, std::string animationName = "", unsigned int frame = 0, float t = 0, Color const& color = Color(1, 1, 1, 1));
                 void DrawPoint(const Point& point);
+                void DrawCircle(const Point& center, float radius);
 
                 // Debug stats
                 unsigned int GetVertexCount();

@@ -137,8 +137,7 @@ namespace {
 #ifdef FLE_WINDOWS
 
         std::stringstream ss;
-
-        ss << execLocation << "/" << process;
+        ss << /*execLocation << "/" <<*/ process;
 
         STARTUPINFO startInfo;
         PROCESS_INFORMATION processInfo;
@@ -152,8 +151,8 @@ namespace {
         // Copy the string to a vector of characters
         std::vector<char> command_line(arguments.c_str(), arguments.c_str() + arguments.size() + 1);
 
-        BOOL err = CreateProcess(ss.str().c_str(), &command_line[0], 0, 0, FALSE,
-            CREATE_UNICODE_ENVIRONMENT, 0, execLocation.c_str(),
+        BOOL err = CreateProcess(ss.str().c_str(), command_line.data(), 0, 0, FALSE,
+            CREATE_UNICODE_ENVIRONMENT, 0, NULL,
             &startInfo, &processInfo);
 
         if (!err) throw FLE::Exception("Could not create process.");

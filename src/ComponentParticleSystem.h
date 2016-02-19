@@ -45,13 +45,15 @@ namespace ForLeaseEngine {
                 Color StartingColor;
                 unsigned int MaxParticles;
                 Vector SystemSize;
+                std::string SpriteSource;
 
                 ParticleSystem(Entity& parent,
                                bool visible = true,
                                BlendMode blendMode = BlendMode::ALPHA,
                                Color startingColor = Color(1, 1, 1, 1),
                                unsigned int maxParticles = 100,
-                               Vector systemSize = Vector(5, 5));
+                               Vector systemSize = Vector(5, 5),
+                               std::string spriteSource = "");
                 ~ParticleSystem();
                 virtual ComponentType GetType();
                 void Update();
