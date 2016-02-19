@@ -254,11 +254,11 @@ namespace ForLeaseEngine
             ImGui::ColorEdit4("No Detection Color", const_cast<float*>(leg::selEnemyAI->NoDetectionColor.GetAll()));
             ImGui::PopItemWidth();
 
-            if (ImGui::InputText("Hated Entity Name", leg::enemyHateN, 70, ImGuiInputTextFlags_EnterReturnsTrue))
-                leg::selEnemyAI->HatedEntityName = leg::enemyHateN;
+            if (ImGui::InputText("Hated Entity Name", leg::enemyHateName, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selEnemyAI->HatedEntityName = leg::enemyHateName;
 
-            if (ImGui::InputText("Liked Entity Name", leg::enemyLikeN, 70, ImGuiInputTextFlags_EnterReturnsTrue))
-                leg::selEnemyAI->LikedEntityName = leg::enemyLikeN;
+            if (ImGui::InputText("Liked Entity Name", leg::enemyLikeName, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selEnemyAI->LikedEntityName = leg::enemyLikeName;
 
 //            ImGui::Checkbox("Liked Sound", &(leg::setLiked));
 //            if (ImGui::IsItemHovered())
@@ -323,26 +323,26 @@ namespace ForLeaseEngine
                 leg::selFade = NULL;
             }
         }
-//        if (leg::selLight && ImGui::CollapsingHeader("Light"))
-//        {
-//            ImGui::InputInt("Rays", &leg::lightRays, 1, 5);
-//            if (leg::lightRays >= 0)
-//                leg::selLight->Rays = leg::lightRays;
-//            ImGui::DragFloat("Sweep", &(leg::selLight->Sweep), 0.05);
-//            ImGui::Text("Direction");
-//            ImGui::SameLine();
-//            ImGui::DragFloat("x", &(leg::selLight->Direction[0]), 0.05);
-//            ImGui::SameLine();
-//            ImGui::DragFloat("y", &(leg::selLight->Direction[1]), 0.05);
-//            ImGui::PushItemWidth(250);
-//            ImGui::ColorEdit4("Light Color", const_cast<float*>(leg::selLight->DrawColor.GetAll()));
-//
-//            if (ImGui::Button("Remove Light"))
-//            {
-//                leg::selection->DeleteComponent(ComponentType::Light);
-//                leg::selLight = NULL;
-//            }
-//        }
+        if (leg::selLight && ImGui::CollapsingHeader("Light"))
+        {
+            ImGui::Checkbox(activeString.c_str(), &(leg::selLight->Active));
+            activeString.append(" ");
+            ImGui::Checkbox("Visible     ", &(leg::selLight->Visible));
+            ImGui::Checkbox("Draw Outline", &(leg::selLight->DrawOutline));
+            ImGui::DragFloat("Angle", &(leg::selLight->Angle), 0.001, 0.0001, 22/7);
+            ImGui::DragFloat("X Direction", &(leg::selLight->Direction[0]), 0.05);
+            ImGui::DragFloat("Y Direction", &(leg::selLight->Direction[1]), 0.05);
+            ImGui::DragFloat("X Offset", &(leg::selLight->Offset[0]), 0.05);
+            ImGui::DragFloat("Y Offset", &(leg::selLight->Offset[1]), 0.05);
+            ImGui::PushItemWidth(250);
+            ImGui::ColorEdit4("Light Color", const_cast<float*>(leg::selLight->LightColor.GetAll()));
+
+            if (ImGui::Button("Remove Light"))
+            {
+                leg::selection->DeleteComponent(ComponentType::Light);
+                leg::selLight = NULL;
+            }
+        }
 
         if (leg::selPartColor && ImGui::CollapsingHeader("Particle Color"))
         {
@@ -548,22 +548,22 @@ namespace ForLeaseEngine
 
         if (leg::selScale && ImGui::CollapsingHeader("Scale with Keyboard"))
         {
-            ImGui::Checkbox(activeString.c_str(), &(leg::selScale->Active));
-            activeString.append(" ");
-            ImGui::InputFloat("Scale Speed", &(leg::selScale->ScaleSpeed));
-            ImGui::InputInt("X up Key", &(leg::selScale->ScaleXUpKey));
-            ImGui::SameLine();
-            ImGui::InputInt("X down Key", &(leg::selScale->ScaleXDownKey));
-            ImGui::InputInt("Y up Key", &(leg::selScale->ScaleYUpKey));
-            ImGui::SameLine();
-            ImGui::InputInt("Y down Key", &(leg::selScale->ScaleYDownKey));
-            ImGui::InputFloat("Min X", &(leg::selScale->MinXScale));
-            ImGui::SameLine();
-            ImGui::InputFloat("Max X", &(leg::selScale->MaxXScale));
-            ImGui::InputFloat("Min Y", &(leg::selScale->MinYScale));
-            ImGui::SameLine();
-            ImGui::InputFloat("Max Y", &(leg::selScale->MaxYScale));
-            ImGui::Text("Scale Sound: %s", leg::selScale->ScaleSound.c_str());
+//            ImGui::Checkbox(activeString.c_str(), &(leg::selScale->Active));
+//            activeString.append(" ");
+//            ImGui::InputFloat("Scale Speed", &(leg::selScale->ScaleSpeed));
+//            ImGui::InputInt("X up Key", &(leg::selScale->ScaleXUpKey));
+//            ImGui::SameLine();
+//            ImGui::InputInt("X down Key", &(leg::selScale->ScaleXDownKey));
+//            ImGui::InputInt("Y up Key", &(leg::selScale->ScaleYUpKey));
+//            ImGui::SameLine();
+//            ImGui::InputInt("Y down Key", &(leg::selScale->ScaleYDownKey));
+//            ImGui::InputFloat("Min X", &(leg::selScale->MinXScale));
+//            ImGui::SameLine();
+//            ImGui::InputFloat("Max X", &(leg::selScale->MaxXScale));
+//            ImGui::InputFloat("Min Y", &(leg::selScale->MinYScale));
+//            ImGui::SameLine();
+//            ImGui::InputFloat("Max Y", &(leg::selScale->MaxYScale));
+//            ImGui::Text("Scale Sound: %s", leg::selScale->ScaleSound.c_str());
 //            static ImGuiTextFilter scaleSound;
 //            scaleSound.Draw("Trigger Sound", 250);
 //            ImGui::Text("Available Sounds");
