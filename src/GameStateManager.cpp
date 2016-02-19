@@ -43,11 +43,10 @@ namespace ForLeaseEngine {
         */
         void GameStateManager::Run() {
             while (Action != StateAction::Quit) {
+                StateCurrentlyExecuting = States[StateIndex];
                 States[StateIndex]->Load(); // Load the next state
 
                 do {
-
-                    StateCurrentlyExecuting = States[StateIndex];
 
                     States[StateIndex]->Initialize(); // Initialize the current state
 

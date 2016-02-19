@@ -131,7 +131,7 @@ namespace FileSystem {
     }
 
     bool PathExists(std::string path) {
-        return GetFileAttributes(path.c_str()) == INVALID_FILE_ATTRIBUTES;
+        return GetFileAttributes(path.c_str()) != INVALID_FILE_ATTRIBUTES;
     }
 #else
     #include <dirent.h>
