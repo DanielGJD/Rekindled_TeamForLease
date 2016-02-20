@@ -21,6 +21,8 @@ All content 2015 DigiPen (USA) Corporation, all rights reserved.
 #include"common.h"
 #include <unordered_map>
 #include <string>
+#include <vector>
+#include <fstream>
 
 //#include "SoundEmitter.h"
 
