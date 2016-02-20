@@ -57,6 +57,7 @@ class SoundManager //: public ISystem
 		void ResumeAll(void);
 		void Resume(void);
 		void Volume(float vol, std::string name);
+		std::vector<std::string>GetName();
 
 	private:
 		SoundSys m_Sys;

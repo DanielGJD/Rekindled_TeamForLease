@@ -117,6 +117,27 @@ void SoundManager::ShutDown()
     FMOD_Studio_System_Release(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys));
 }
 
+std::vector<std::string>GetName()
+{
+	std::string temptext;
+    vector<string> SoundsList;
+    ifstream readfile("GUIDs.txt");
+
+
+    while(std::getline(readfile,temptext)
+    {
+        std::string key = "event:/";
+        unsigned pos = temptext.find(key)
+        if(pos != std::string::npos)
+        {
+            pos += key.length();
+            SoundsList.push_back(temptext.substr(pos));
+        }
+    }
+
+    return SoundsList;
+}
+
 bool SoundManager::PlayEvent(std::string name)
 {
 	FMOD::Studio::EventDescription * SoundDescription = nullptr;
