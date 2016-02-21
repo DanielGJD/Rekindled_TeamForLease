@@ -29,6 +29,11 @@ namespace ForLeaseEngine {
         }
 
         Filesystem::Filesystem(std::string gameFile) {
+            if (PathExists("sounds/")) AssetPaths.insert({ AssetType::Sound, "sounds/" });
+            if (PathExists("meshes/")) AssetPaths.insert({ AssetType::Mesh, "meshes/" });
+            if (PathExists("animations/")) AssetPaths.insert({ AssetType::Animation, "animations/" });
+            if (PathExists("images/")) AssetPaths.insert({ AssetType::Image, "images/" });
+            if (PathExists("fonts/")) AssetPaths.insert({ AssetType::Font, "fonts/" });
             Initialize(gameFile);
         }
 
@@ -48,7 +53,8 @@ namespace ForLeaseEngine {
 
             for (AssetPath newPath : newPaths) {
                 auto oldPath = AssetPaths.find(newPath.first);
-                oldPath->second = newPath.second;
+                if (oldPath != AssetPaths.end()) oldPath->second = newPath.second;
+                else AssetPaths.insert({ newPath.first, newPath.second });
             }
         }
 
