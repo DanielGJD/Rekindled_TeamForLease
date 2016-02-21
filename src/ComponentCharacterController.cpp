@@ -19,7 +19,7 @@ namespace ForLeaseEngine {
         CharacterController::CharacterController(Entity& owner)
                                                 : Component(owner, ComponentType::Physics | ComponentType::Collision),
                                                   RightKey(Keys::D), LeftKey(Keys::A), JumpKey(Keys::W),
-                                                  MoveSpeed(0.0f), JumpSpeed(0), WalkSound(""), JumpSound(""), LandSound(""),
+                                                  MoveSpeed(0.0f), JumpSpeed(0),Drag(0), WalkSound(""), JumpSound(""), LandSound(""),
                                                   WalkAnimation(""), JumpAnimation(""), CanJump(false) {};
 
         CharacterController* CharacterController::Create(Entity& owner) {
@@ -53,7 +53,7 @@ namespace ForLeaseEngine {
                     emitter->PlayEvent(JumpSound);
             }
 
-            float Drag = .05;
+            //float Drag = .05;
             Physics* rbody = Parent.GetComponent<Physics>();
             Vector currentVelocity = rbody->Velocity;
             currentVelocity.Rotate(currentVelocity, 180);
@@ -241,6 +241,7 @@ namespace ForLeaseEngine {
             controller.WriteInt("JumpKey", JumpKey);
             controller.WriteFloat("MoveSpeed", MoveSpeed);
             controller.WriteFloat("JumpSpeed", JumpSpeed);
+            controller.WriteFloat("Drag", Drag);
             controller.WriteString("WalkSound", WalkSound);
             controller.WriteString("JumpSound", JumpSound);
             controller.WriteString("LandSound", LandSound);
@@ -257,6 +258,7 @@ namespace ForLeaseEngine {
             controller.ReadInt("JumpKey", JumpKey);
             controller.ReadFloat("MoveSpeed", MoveSpeed);
             controller.ReadFloat("JumpSpeed", JumpSpeed);
+            controller.ReadFloat("Drag", Drag);
             controller.ReadString("WalkSound", WalkSound);
             controller.ReadString("JumpSound", JumpSound);
             controller.ReadString("LandSound", LandSound);
