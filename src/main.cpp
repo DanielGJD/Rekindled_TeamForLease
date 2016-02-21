@@ -62,7 +62,7 @@ int Start(int argc = 0, char** argv = 0) {
     // Right now, windowed is the default.  We may wish to change this at submission.
     bool fullscreen = CommandLine::ArgumentExists(argStart, argEnd, "-fullscreen");
 
-    ForLeaseEngine::Engine engine(states, resolutionX, resolutionY, fps, fullscreen);
+    ForLeaseEngine::Engine engine(states, 1280, 720, fps, false);
     engine.Run();
 
     return 0;

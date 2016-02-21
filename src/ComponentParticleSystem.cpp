@@ -9,13 +9,15 @@ namespace ForLeaseEngine {
                                        BlendMode blendMode,
                                        Color startingColor,
                                        unsigned int maxParticles,
-                                       Vector systemSize)
+                                       Vector systemSize,
+                                       std::string spriteSource)
                                        : Component(parent, ComponentType::Transform),
                                          Visible(visible),
                                          BlendingMode(blendMode),
                                          StartingColor(startingColor),
                                          MaxParticles(maxParticles),
                                          SystemSize(systemSize),
+                                         SpriteSource(spriteSource),
                                          Particles(std::vector<Particle>(maxParticles)),
                                          ActiveParticles(std::list<Particle*>()),
                                          InactiveParticles(std::list<Particle*>()) {
@@ -61,6 +63,7 @@ namespace ForLeaseEngine {
             StartingColor.Serialize(system);
             system.WriteUint("MaxParticles", MaxParticles);
             system.WriteVec("SystemSize", SystemSize);
+            system.WriteString("SpriteSource", SpriteSource);
             system.WriteUint("Type", static_cast<unsigned int>(Type));
             root.Append(system, "ParticleSystem");
         }
@@ -74,6 +77,7 @@ namespace ForLeaseEngine {
             StartingColor.Deserialize(system);
             system.ReadUint("MaxParticles", MaxParticles);
             system.ReadVec("SystemSize", SystemSize);
+            system.ReadString("SpriteSource", SpriteSource);
         }
 
         std::vector<Particle> const* ParticleSystem::GetAllParticles() const{
