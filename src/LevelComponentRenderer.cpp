@@ -374,29 +374,29 @@ namespace ForLeaseEngine {
             }
 
             //Matrix combinged = Projection * ModelView;
-            SetDrawingColor(1, 1, 1, 1);
-            SetDebugPointSize(4);
+//            SetDrawingColor(1, 1, 1, 1);
+//            SetDebugPointSize(4);
 
-            glBegin(GL_POINTS);
+            //glBegin(GL_POINTS);
             for(int i = 0; i < verts.size(); ++i) {
                 ModelToScreen(verts[i], verts[i]);
-                glVertex2f(verts[i][0], verts[i][1]);
+                //glVertex2f(verts[i][0], verts[i][1]);
                 //std::cout << i << ":" << verts[i][0] << "," << verts[i][1] << std::endl;
             }
-            glEnd();
+            //glEnd();
 
-            glBegin(GL_LINES);
-            glVertex2f(0, 0);
-            glVertex2f(1, 0);
-            glVertex2f(0, 0);
-            glVertex2f(0, -1);
-            glVertex2f(0, -font->LineHeight * 2 / 720.0);
-            glVertex2f(1, -font->LineHeight * 2 / 720.0);
-            glVertex2f(0, -font->LineHeight * 2 * 2 / 720.0);
-            glVertex2f(1, -font->LineHeight * 2 * 2 / 720.0);
-            glVertex2f(0, -font->LineHeight * 3 * 2 / 720.0);
-            glVertex2f(1, -font->LineHeight * 3 * 2 / 720.0);
-            glEnd();
+//            glBegin(GL_LINES);
+//            glVertex2f(0, 0);
+//            glVertex2f(1, 0);
+//            glVertex2f(0, 0);
+//            glVertex2f(0, -1);
+//            glVertex2f(0, -font->LineHeight * 2 / 720.0);
+//            glVertex2f(1, -font->LineHeight * 2 / 720.0);
+//            glVertex2f(0, -font->LineHeight * 2 * 2 / 720.0);
+//            glVertex2f(1, -font->LineHeight * 2 * 2 / 720.0);
+//            glVertex2f(0, -font->LineHeight * 3 * 2 / 720.0);
+//            glVertex2f(1, -font->LineHeight * 3 * 2 / 720.0);
+//            glEnd();
 
             SetDrawingColor(spriteText->TextColor);
             SetTexture(ForLease->Resources.GetTexture(font->FontTextures[0]));

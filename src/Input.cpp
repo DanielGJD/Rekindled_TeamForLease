@@ -156,20 +156,20 @@ namespace ForLeaseEngine {
                     case SDL_WINDOWEVENT_LEAVE:
                         std::cout << "Window " << SDL_e.window.windowID << " lost mouse focus" << std::endl;
                         break;
-//                    case SDL_WINDOWEVENT_FOCUS_GAINED:
-//                    {
-//                        std::cout << "Window " << SDL_e.window.windowID << " gained keyboard focus" << std::endl;
-//                        WindowEvent e = WindowEvent(WindowEvent::FocusGained);
-//                        ForLease->Dispatcher.Dispatch(&e, this);
-//                        break;
-//                    }
-//                    case SDL_WINDOWEVENT_FOCUS_LOST:
-//                    {
-//                        std::cout << "Window " << SDL_e.window.windowID << " lost keyboard focus" << std::endl;
-//                        WindowEvent e = WindowEvent(WindowEvent::FocusLost);
-//                        ForLease->Dispatcher.Dispatch(&e, this);
-//                        break;
-//                    }
+                    case SDL_WINDOWEVENT_FOCUS_GAINED:
+                    {
+                        std::cout << "Window " << SDL_e.window.windowID << " gained keyboard focus" << std::endl;
+                        WindowEvent e = WindowEvent(WindowEvent::FocusGained);
+                        ForLease->Dispatcher.Dispatch(&e, this);
+                        break;
+                    }
+                    case SDL_WINDOWEVENT_FOCUS_LOST:
+                    {
+                        std::cout << "Window " << SDL_e.window.windowID << " lost keyboard focus" << std::endl;
+                        WindowEvent e = WindowEvent(WindowEvent::FocusLost);
+                        ForLease->Dispatcher.Dispatch(&e, this);
+                        break;
+                    }
                     case SDL_WINDOWEVENT_CLOSE:
                         std::cout << "Window " << SDL_e.window.windowID << " closed" << std::endl;
                         break;
