@@ -330,36 +330,88 @@ namespace ForLeaseEngine {
 
         // Currently a little weird, doesn't support scaling or rotation
         void Renderer::DrawSpriteText(Components::SpriteText* spriteText, const Point& position, float scaleX, float scaleY, float rotation) {
-            //SetModelView(position, scaleX, scaleY, rotation);
-            SetBlendMode(BlendMode::ALPHA);
-            std::string text = spriteText->Text;
+            if(spriteText->Text.size() == 0)
+                return;
+
             Font* font = ForLease->Resources.GetFont(spriteText->GetFont());
             if(!font) {
                 std::cout << "Font " << spriteText->GetFont() << " not loaded" << std::endl;
                 return;
             }
-            float xMargin = position[0];
-            Point currentDrawingLoc(position[0], position[1] - font->Base);
+
+            SetModelView(position, scaleX / font->LineHeight, scaleY / font->LineHeight, rotation);
+            SetBlendMode(BlendMode::ALPHA);
+            std::string text = spriteText->Text;
+
+            std::vector<Point> verts = std::vector<Point>(text.size() * 4);
+            Point currentDrawingLoc(0, 0);
+
+//            float xMargin = position[0];
+//            Point currentDrawingLoc(position[0], position[1] - font->Base);
             for(unsigned int i = 0; i < text.length(); ++i) {
                 char currentLetter = text.at(i);
                 if(currentLetter == '\n') {
-                    currentDrawingLoc[0] = xMargin;
-                    currentDrawingLoc[1] -= font->LineHeight * scaleY;
+                    currentDrawingLoc[0] = 0;
+                    currentDrawingLoc[1] -= font->LineHeight;
                 } else {
                     Glyph currentGlyph = font->GetGlyph(currentLetter);
                     Point glyphDrawingLoc;
-                    glyphDrawingLoc[0] = currentDrawingLoc[0] + currentGlyph.Offset[0] * scaleX + currentGlyph.Width / 2 * scaleX;
-                    glyphDrawingLoc[1] = currentDrawingLoc[1] - currentGlyph.Offset[1] * scaleY - currentGlyph.Height / 2 * scaleY;
-                    SetModelView(glyphDrawingLoc, scaleX, scaleY, rotation);
-                    DrawTextureRegion(&currentGlyph.Region);
+                    glyphDrawingLoc[0] = currentDrawingLoc[0] - currentGlyph.Offset[0];
+                    glyphDrawingLoc[1] = currentDrawingLoc[1] - currentGlyph.Offset[1];
+                    verts[i * 4] = Point(glyphDrawingLoc[0] + currentGlyph.Width, glyphDrawingLoc[1]);
+                    verts[i * 4 + 1] = Point(glyphDrawingLoc[0], glyphDrawingLoc[1]);
+                    verts[i * 4 + 2] = Point(glyphDrawingLoc[0], glyphDrawingLoc[1] - currentGlyph.Height);
+                    verts[i * 4 + 3] = Point(glyphDrawingLoc[0] + currentGlyph.Width, glyphDrawingLoc[1] - currentGlyph.Height);
+                    //SetModelView(glyphDrawingLoc, scaleX, scaleY, rotation);
+                    //DrawTextureRegion(&currentGlyph.Region);
                     //DrawRectangle(glyphDrawingLoc, currentGlyph.Region.GetWidth(), currentGlyph.Region.GetHeight());
                     //DrawTextureRegion(Point(shiftedLoc[0] - currentGlyph.Offset[0] * 3, shiftedLoc[1] - currentGlyph.Offset[1] * 0.5f), &currentGlyph.Region, scaleX, scaleY, rotation);
                     //DrawRectangle(Point(shiftedLoc[0] - currentGlyph.Offset[0] * 3, shiftedLoc[1] - currentGlyph.Offset[1] * 0.5f), currentGlyph.Region.GetWidth(), currentGlyph.Region.GetHeight());
-                    currentDrawingLoc[0] += currentGlyph.XAdvance * scaleX;
+                    currentDrawingLoc[0] += currentGlyph.XAdvance;
                     //shiftedLoc[0] += currentGlyph.XAdvance;
-                    TriCount += 2;
+                    //TriCount += 2;
                 }
             }
+
+            //Matrix combinged = Projection * ModelView;
+            SetDrawingColor(1, 1, 1, 1);
+            SetDebugPointSize(4);
+
+            glBegin(GL_POINTS);
+            for(int i = 0; i < verts.size(); ++i) {
+                ModelToScreen(verts[i], verts[i]);
+                glVertex2f(verts[i][0], verts[i][1]);
+                //std::cout << i << ":" << verts[i][0] << "," << verts[i][1] << std::endl;
+            }
+            glEnd();
+
+            glBegin(GL_LINES);
+            glVertex2f(0, 0);
+            glVertex2f(1, 0);
+            glVertex2f(0, 0);
+            glVertex2f(0, -1);
+            glVertex2f(0, -font->LineHeight * 2 / 720.0);
+            glVertex2f(1, -font->LineHeight * 2 / 720.0);
+            glVertex2f(0, -font->LineHeight * 2 * 2 / 720.0);
+            glVertex2f(1, -font->LineHeight * 2 * 2 / 720.0);
+            glVertex2f(0, -font->LineHeight * 3 * 2 / 720.0);
+            glVertex2f(1, -font->LineHeight * 3 * 2 / 720.0);
+            glEnd();
+
+            SetDrawingColor(spriteText->TextColor);
+            SetTexture(ForLease->Resources.GetTexture(font->FontTextures[0]));
+            glBegin(GL_QUADS);
+            for(unsigned int i = 0; i < text.length(); ++i) {
+                char currentLetter = text.at(i);
+                if(currentLetter != '\n') {
+                    Glyph glyph = font->GetGlyph(currentLetter);
+                    glTexCoord2f(glyph.Region.GetUV()[0][0], glyph.Region.GetUV()[0][1]); glVertex2f(verts[i * 4][0], verts[i * 4][1]);
+                    glTexCoord2f(glyph.Region.GetUV()[1][0], glyph.Region.GetUV()[1][1]); glVertex2f(verts[i * 4 + 1][0], verts[i * 4 + 1][1]);
+                    glTexCoord2f(glyph.Region.GetUV()[2][0], glyph.Region.GetUV()[2][1]); glVertex2f(verts[i * 4 + 2][0], verts[i * 4 + 2][1]);
+                    glTexCoord2f(glyph.Region.GetUV()[3][0], glyph.Region.GetUV()[3][1]); glVertex2f(verts[i * 4 + 3][0], verts[i * 4 + 3][1]);
+                }
+            }
+            glEnd();
         }
 
         void Renderer::DrawModel(Components::Model* model) {

@@ -80,9 +80,9 @@ namespace ForLeaseEngine {
 
             private:
                 //! Major OpenGL version
-                static const int FLE_GL_MAJOR_VERSION = 2;
+                static const int FLE_GL_MAJOR_VERSION = 3;
                 //! Minor OpenGL version
-                static const int FLE_GL_MINOR_VERSION = 1;
+                static const int FLE_GL_MINOR_VERSION = 0;
                 //! Application window
                 SDL_Window* window;
                 //! OpenGL context
