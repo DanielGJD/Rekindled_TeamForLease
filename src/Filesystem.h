@@ -36,11 +36,13 @@ namespace ForLeaseEngine {
                 static bool PathExists(std::string path);
 
                 enum class AssetType : unsigned {
-                    Sound = 1,
-                    Mesh = 2,
-                    Animation = 3,
-                    Image = 4,
-                    Font = 5
+                    Level,
+                    Blueprint,
+                    Sound,
+                    Mesh,
+                    Animation,
+                    Image,
+                    Font,
                 };
 
                 typedef std::pair<AssetType, std::string> AssetPath;

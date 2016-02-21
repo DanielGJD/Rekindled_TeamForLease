@@ -21,6 +21,7 @@ namespace ForLeaseEngine {
             Basic constructor for the Filesystem.  Includes default locations.
         */
         Filesystem::Filesystem() {
+            if (PathExists("levels/")) AssetPaths.insert({ AssetType::Level, "levels/" });
             if (PathExists("sounds/")) AssetPaths.insert({ AssetType::Sound, "sounds/" });
             if (PathExists("meshes/")) AssetPaths.insert({ AssetType::Mesh, "meshes/" });
             if (PathExists("animations/")) AssetPaths.insert({ AssetType::Animation, "animations/" });
@@ -29,6 +30,7 @@ namespace ForLeaseEngine {
         }
 
         Filesystem::Filesystem(std::string gameFile) {
+            if (PathExists("levels/")) AssetPaths.insert({ AssetType::Level, "levels/" });
             if (PathExists("sounds/")) AssetPaths.insert({ AssetType::Sound, "sounds/" });
             if (PathExists("meshes/")) AssetPaths.insert({ AssetType::Mesh, "meshes/" });
             if (PathExists("animations/")) AssetPaths.insert({ AssetType::Animation, "animations/" });
