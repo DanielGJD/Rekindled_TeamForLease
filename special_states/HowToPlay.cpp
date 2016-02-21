@@ -25,6 +25,9 @@ using namespace ForLeaseEngine;
 HowToPlay::HowToPlay() : State("HowToPlay") {}
 
 void HowToPlay::Load() {
+}
+
+void HowToPlay::Initialize() {
     FLE::LevelComponents::Renderer* renderer = new FLE::LevelComponents::Renderer(*this);
     FLE::Entity* camera = AddEntity("Camera");
     camera->AddComponent(new FLE::Components::Transform(*camera, FLE::Point(0, 0), 1, 1, 0));
@@ -52,24 +55,11 @@ void HowToPlay::Load() {
 
 
     Entity* menu = AddEntity("Menu");
-    menu->AddComponent(new Components::Transform(*menu, Point(0,-15)));
+    menu->AddComponent(new Components::Transform(*menu, Point(0, -15)));
     menu->AddComponent(new Components::Menu(*menu));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
     menuComp->AddItem(new MenuItems::LoadLevel("ButtonMainMenu.png", "MainMenu"));
     menuComp->Activate();
-
-    Serializer serializer;
-    Serialize(serializer);
-    serializer.WriteFile("HowToPlay.json");
-
-    DeleteAllEntities();
-    DeleteAllLevelComponents();
-}
-
-void HowToPlay::Initialize() {
-    Serializer serializer;
-    serializer.ReadFile("HowToPlay.json");
-    Deserialize(serializer);
 }
 
 void HowToPlay::Update() {

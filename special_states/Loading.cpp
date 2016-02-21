@@ -27,6 +27,9 @@ using namespace ForLeaseEngine;
 Loading::Loading(std::string loadfile) : State("Loading"), LoadFile(loadfile) {}
 
 void Loading::Load() {
+}
+
+void Loading::Initialize() {
     FLE::LevelComponents::Renderer* renderer = new FLE::LevelComponents::Renderer(*this);
     FLE::Entity* camera = AddEntity("Camera");
     camera->AddComponent(new FLE::Components::Transform(*camera, FLE::Point(0, 0), 1, 1, 0));
@@ -53,27 +56,6 @@ void Loading::Load() {
     logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
     logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
 
-    //Entity* menu = AddEntity("Menu");
-    //menu->AddComponent(new Components::Transform(*menu, Point(0,-15)));
-    //menu->AddComponent(new Components::Menu(*menu));
-    //Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
-    //ForLease->Resources.LoadTexture("ButtonMainMenu.png");
-    //menuComp->AddItem(new MenuItems::LoadLevel("ButtonMainMenu.png", "MainMenu"));
-    //menuComp->Activate();
-
-    Serializer serializer;
-    Serialize(serializer);
-    serializer.WriteFile("Loading.json");
-
-    DeleteAllEntities();
-    DeleteAllLevelComponents();
-}
-
-void Loading::Initialize() {
-    Serializer serializer;
-    serializer.ReadFile("Loading.json");
-    Deserialize(serializer);
-
     //ForLease->Filesystem.LoadAllAssets();
 
     LoadPaths = ForLease->Filesystem.GetAllAssetDirectoryListings();
@@ -81,8 +63,6 @@ void Loading::Initialize() {
     if (LoadPaths.size() != 0)
         RotationPerFile = 2 * PI / LoadPaths.size();
     NextToLoad = 0;
-
-    //std::vector<Preload::AssetPath> assets = Preload::AllAssets(LoadFile);
 }
 
 void Loading::Update() {
