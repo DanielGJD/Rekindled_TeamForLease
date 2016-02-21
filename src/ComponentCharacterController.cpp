@@ -19,7 +19,7 @@ namespace ForLeaseEngine {
         CharacterController::CharacterController(Entity& owner)
                                                 : Component(owner, ComponentType::Physics | ComponentType::Collision),
                                                   RightKey(Keys::D), LeftKey(Keys::A), JumpKey(Keys::W),
-                                                  MoveSpeed(0), JumpSpeed(0), WalkSound(""), JumpSound(""), LandSound(""),
+                                                  MoveSpeed(0.0f), JumpSpeed(0),Drag(0), WalkSound(""), JumpSound(""), LandSound(""),
                                                   WalkAnimation(""), JumpAnimation(""), CanJump(false) {};
 
         CharacterController* CharacterController::Create(Entity& owner) {
@@ -53,6 +53,19 @@ namespace ForLeaseEngine {
                     emitter->PlayEvent(JumpSound);
             }
 
+            //float Drag = .05;
+            Physics* rbody = Parent.GetComponent<Physics>();
+            Vector currentVelocity = rbody->Velocity;
+            currentVelocity.Rotate(currentVelocity, 180);
+            currentVelocity = currentVelocity * Drag;
+            rbody->Velocity = (rbody->Velocity - currentVelocity);
+//            if(rbody->Velocity.GetX() > 0)
+//                {
+//                    rbody->Velocity[0] = rbody->Velocity[0] - Drag;
+//                    if(rbody->Velocity[0] < 0)
+//                        rbody->Velocity[0] = 0;
+//                }
+
             Model* model = Parent.GetComponent<Model>();
             if(model && model->AnimationActive && model->GetAnimation().compare(WalkAnimation) == 0) {
                 unsigned int currentFrame = model->GetFrame();
@@ -69,9 +82,18 @@ namespace ForLeaseEngine {
             Components::SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
             Components::Collision* collider = Parent.GetComponent<Components::Collision>();
             Components::Model* model = Parent.GetComponent<Components::Model>();
+            Physics* rbody = Parent.GetComponent<Physics>();
             if(key_e->Key == LeftKey) {
-                Physics* rbody = Parent.GetComponent<Physics>();
-                rbody->Velocity += Vector(-MoveSpeed, 0);
+
+                //rbody->Velocity += Vector(-MoveSpeed, 0);
+                //rbody->Acceleration += Vector(-MoveSpeed, 0 ) * 5;
+                if(rbody->Acceleration.GetX() < MoveSpeed)
+                    rbody->Acceleration += Vector(-MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0 );
+                    //printf("LEFTa %f", rbody->Acceleration[0]);
+                   // printf("pressRV %f", rbody->Velocity[0]);
+
+
+
                 if(model)
                     model->FlipY = true;
                 if(collider->CollidedLastFrame && collider->CollidedWithSide == Collision::Side::Top) {
@@ -86,8 +108,15 @@ namespace ForLeaseEngine {
                 }
             }
             else if(key_e->Key == RightKey) {
-                Physics* rbody = Parent.GetComponent<Physics>();
-                rbody->Velocity += Vector(MoveSpeed, 0);
+                //Physics* rbody = Parent.GetComponent<Physics>();
+                if(rbody->Acceleration.GetX() > -MoveSpeed)
+               //rbody->Velocity += Vector(MoveSpeed, 0);
+                    rbody->Acceleration += Vector(MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0) ;
+                    //printf("RIGHTa %f", rbody->Acceleration[0]);
+                    printf("pressLV %f", rbody->Velocity[0]);
+
+
+
                 if(model)
                     model->FlipY = false;
                 if(collider->CollidedLastFrame && collider->CollidedWithSide == Collision::Side::Top) {
@@ -132,9 +161,34 @@ namespace ForLeaseEngine {
             const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
             Components::SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
             Components::Model* model = Parent.GetComponent<Components::Model>();
+            float deccelerate = 0.2;
             if(key_e->Key == LeftKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
-                rbody->Velocity[0] = 0;
+
+                //rbody->Acceleration += Vector(MoveSpeed * 900 * ForLease->FrameRateController().GetDt(), 0) ;
+//                while(rbody->Velocity[0] < 0){
+//                    rbody->Velocity[0] = rbody->Velocity[0] + deccelerate;
+//                    if(rbody->Velocity[0] > 0)
+//                        rbody->Velocity[0] = 0;
+//                }
+                if(rbody->Acceleration[0] == 0)
+                    rbody->Acceleration[0] = 0;
+                //rbody->Acceleration += Vector(-MoveSpeed * 20, 0 );
+
+                //rbody
+                printf("releaseLV %f", rbody->Velocity[0]);
+                //printf("rightA %f", rbody->Acceleration[0]);
+
+                //rbody->Acceleration += Vector(MoveSpeed * 20, 0 );
+                //rbody->Velocity[0] = 0;
+//                if((rbody->Acceleration.GetX()) > MoveSpeed)
+//                    rbody->Velocity.SetDecrementX(MoveSpeed);
+//                if((rbody->Acceleration.GetX()) < -MoveSpeed)
+//                   rbody->Velocity.SetIncrementX(MoveSpeed);
+//                if((rbody->Velocity.GetX()) > MoveSpeed)
+//                    rbody->Velocity.SetDecrementX(MoveSpeed);
+//                if((rbody->Velocity.GetX()) < -MoveSpeed)
+//                   rbody->Velocity.SetIncrementX(MoveSpeed);
                 if(emitter)
                     emitter->SetPause(true, WalkSound);
 
@@ -143,7 +197,35 @@ namespace ForLeaseEngine {
             }
             else if(key_e->Key == RightKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
-                rbody->Velocity[0] = 0;
+                //rbody->Acceleration += Vector(-MoveSpeed * 900 * ForLease->FrameRateController().GetDt(), 0 );
+//                rbody->Velocity[0] = rbody->Velocity[0]  - deccelerate;
+//                if(rbody->Acceleration[0] == 0)
+//                    rbody->Acceleration[0] = 0;
+//
+//                while(rbody->Velocity[0] > 0){
+//                    rbody->Velocity[0] = rbody->Velocity[0] - deccelerate;
+//                    if(rbody->Velocity[0] < 0)
+//                        rbody->Velocity[0] = 0;
+//                }
+                //rbody->Acceleration += Vector(-MoveSpeed * 20, 0 );
+                //if(rbody->Velocity[0] = 0)
+                    //rbody->Velocity[0] = 0;
+                    //rbody->Velocity[0] = 0;
+                printf("releaseRV %f", rbody->Velocity[0]);
+                //printf("rightA %f", rbody->Acceleration[0]);
+                //rbody->Acceleration += Vector(-MoveSpeed * 20, 0 );
+
+                //rbody->Velocity[0] = 0;
+                //rbody->Velocity[0] = 0;
+
+//                if((rbody->Acceleration.GetX()) > MoveSpeed)
+//                    rbody->Velocity.SetDecrementX(MoveSpeed * 20);
+//                if((rbody->Acceleration.GetX()) < -MoveSpeed)
+//                   rbody->Velocity.SetIncrementX(MoveSpeed * 20);
+//                if((rbody->Velocity.GetX()) > MoveSpeed)
+//                    rbody->Velocity.SetDecrementX(MoveSpeed);
+//                if((rbody->Velocity.GetX()) < -MoveSpeed)
+//                   rbody->Velocity.SetIncrementX(MoveSpeed);
                 if(emitter)
                     emitter->SetPause(true, WalkSound);
                 if(model)
@@ -159,6 +241,7 @@ namespace ForLeaseEngine {
             controller.WriteInt("JumpKey", JumpKey);
             controller.WriteFloat("MoveSpeed", MoveSpeed);
             controller.WriteFloat("JumpSpeed", JumpSpeed);
+            controller.WriteFloat("Drag", Drag);
             controller.WriteString("WalkSound", WalkSound);
             controller.WriteString("JumpSound", JumpSound);
             controller.WriteString("LandSound", LandSound);
@@ -175,6 +258,7 @@ namespace ForLeaseEngine {
             controller.ReadInt("JumpKey", JumpKey);
             controller.ReadFloat("MoveSpeed", MoveSpeed);
             controller.ReadFloat("JumpSpeed", JumpSpeed);
+            controller.ReadFloat("Drag", Drag);
             controller.ReadString("WalkSound", WalkSound);
             controller.ReadString("JumpSound", JumpSound);
             controller.ReadString("LandSound", LandSound);
