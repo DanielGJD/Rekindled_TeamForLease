@@ -38,33 +38,28 @@ void Loading::Load() {
 
 
     Entity* background = AddEntity("Background");
-    background->AddComponent(new Components::Transform(*background, 0, 0, 1, 1, -50));
+    background->AddComponent(new Components::Transform(*background, 0, 0, 50, 50));
     background->AddComponent(new Components::Sprite(*background));
     ForLease->Resources.LoadTexture("bg7.png");
     //Texture* texture = Texture::CreateTexture("bg7.png");
     //TextureRegion textureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
     background->GetComponent<Components::Sprite>(true)->SetSpriteSource("bg7.png");
     background->GetComponent<Components::Sprite>(true)->AnimationActive = false;
-    background->GetComponent<Components::Transform>(true)->ScaleX = 0.05;
-    background->GetComponent<Components::Transform>(true)->ScaleY = 0.05;
 
     Entity* logo = AddEntity("Logo");
-    logo->AddComponent(new Components::Transform(*logo, Point(0, 5)));
+    logo->AddComponent(new Components::Transform(*logo, Point(0, 15), 30, 30));
     logo->AddComponent(new Components::Sprite(*logo));
     ForLease->Resources.LoadTexture("Title.png");
     logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
     logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
-    logo->GetComponent<Components::Transform>(true)->ScaleX = 0.02;
-    logo->GetComponent<Components::Transform>(true)->ScaleY = 0.02;
 
-
-    Entity* menu = AddEntity("Menu");
-    menu->AddComponent(new Components::Transform(*menu, Point(0,-15)));
-    menu->AddComponent(new Components::Menu(*menu));
-    Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
-    ForLease->Resources.LoadTexture("ButtonMainMenu.png");
-    menuComp->AddItem(new MenuItems::LoadLevel("ButtonMainMenu.png", "MainMenu"));
-    menuComp->Activate();
+    //Entity* menu = AddEntity("Menu");
+    //menu->AddComponent(new Components::Transform(*menu, Point(0,-15)));
+    //menu->AddComponent(new Components::Menu(*menu));
+    //Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
+    //ForLease->Resources.LoadTexture("ButtonMainMenu.png");
+    //menuComp->AddItem(new MenuItems::LoadLevel("ButtonMainMenu.png", "MainMenu"));
+    //menuComp->Activate();
 
     Serializer serializer;
     Serialize(serializer);
@@ -79,7 +74,7 @@ void Loading::Initialize() {
     serializer.ReadFile("Loading.json");
     Deserialize(serializer);
 
-    ForLease->Filesystem.LoadAllAssets();
+    //ForLease->Filesystem.LoadAllAssets();
 
     LoadPaths = ForLease->Filesystem.GetAllAssetDirectoryListings();
 
@@ -104,16 +99,16 @@ void Loading::Update() {
 
     LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
 
-    //if (NextToLoad < LoadPaths.size()) {
-    //    Entity* logo = GetEntityByName("Logo");
-    //    logo->GetComponent<FLE::Components::Transform>()->Rotation += RotationPerFile;
-    //    ForLease->Filesystem.LoadAsset(LoadPaths[NextToLoad]);
-    //    std::cout << "Loaded " << LoadPaths[NextToLoad].second << std::endl;
-    //    ++NextToLoad;
-    //}
-    //else {
+    if (NextToLoad < LoadPaths.size()) {
+        Entity* logo = GetEntityByName("Logo");
+        logo->GetComponent<FLE::Components::Transform>()->Rotation += RotationPerFile;
+        ForLease->Filesystem.LoadAsset(LoadPaths[NextToLoad]);
+        std::cout << "Loaded " << LoadPaths[NextToLoad].second << std::endl;
+        ++NextToLoad;
+    }
+    else {
         ForLease->GameStateManager().SetAction(FLE::Modules::StateAction::Next);
-    //}
+    }
 
     ForLease->GameWindow->UpdateGameWindow();
 }
