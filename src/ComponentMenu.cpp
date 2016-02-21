@@ -95,13 +95,13 @@ namespace ForLeaseEngine {
                 //rep->GetComponent<Components::Sprite>(true)->SpriteSource.push_back(textureRegion);
 
                 ///////////////// Chris hacked in some crazy magic here //////////////////////
-                Texture* texture = ForLease->Resources.GetTexture(item->Image);
+                //Texture* texture = ForLease->Resources.GetTexture(item->Image);
 
                 //////////////////////////////////////////////////////////////////////////////
 
                 rep->GetComponent<Components::Sprite>(true)->AnimationActive = false;
                 rep->GetComponent<Components::Sprite>(true)->SetSpriteSource(item->Image);
-                position += Spacing * FocusedScale * texture->GetHeight();
+                position += Spacing * FocusedScale;
             }
 
             std::cout << Parent.GetName() << " activated." << std::endl;
@@ -131,8 +131,8 @@ namespace ForLeaseEngine {
 //                float scaleY = transform->ScaleY * sprite->SpriteSource[0].GetHeight();
 
                 ///////////////////////////// More Chris hax /////////////////////////
-                float scaleX = transform->ScaleX * sprite->SpriteSource.GetWidth();
-                float scaleY = transform->ScaleY * sprite->SpriteSource.GetHeight();
+                float scaleX = transform->ScaleX;
+                float scaleY = transform->ScaleY;
                 //////////////////////////////////////////////////////////////////////
 
                 //std::cout

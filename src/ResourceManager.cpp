@@ -22,7 +22,7 @@ namespace ForLeaseEngine {
 
         void ResourceManager::LoadTexture(std::string fileName) {
             UnloadTexture(fileName);
-            Texture* texture = Texture::CreateTexture(ForLease->Filesystem.AssetDirectory(Filesystem::AssetType::Image) + fileName);
+            Texture* texture = Texture::CreateTexture(ForLease->Filesystem.AssetDirectory(Filesystem::AssetType::Image) + fileName, fileName);
             if(!texture) {
                 //throw(new Exception(std::string("Failed to load texture :").append(fileName)));
                 std::cout << "Failed to load texture: " << fileName << std::endl;

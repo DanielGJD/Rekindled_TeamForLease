@@ -17,7 +17,7 @@
 namespace ForLeaseEngine{
     class Texture {
         public:
-            static Texture* CreateTexture(std::string filename);
+            static Texture* CreateTexture(std::string filename, std::string name);
             static void DeleteTexture(Texture* texture);
             GLuint GetID();
             const std::string& GetName();

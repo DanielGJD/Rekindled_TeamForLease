@@ -36,27 +36,23 @@ void MainMenu::Load() {
 
 
     Entity* background = AddEntity("Background");
-    background->AddComponent(new Components::Transform(*background, 0,0,1,1,-50));
+    background->AddComponent(new Components::Transform(*background, 0,0,50,50));
     background->AddComponent(new Components::Sprite(*background));
     //ForLease->Resources.LoadTexture("bg7.png");
     //Texture* texture = Texture::CreateTexture("bg7.png");
     //TextureRegion textureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
     background->GetComponent<Components::Sprite>(true)->SetSpriteSource("bg7.png");
     background->GetComponent<Components::Sprite>(true)->AnimationActive = false;
-    background->GetComponent<Components::Transform>(true)->ScaleX = 0.05;
-    background->GetComponent<Components::Transform>(true)->ScaleY = 0.05;
 
     Entity* logo = AddEntity("Logo");
-    logo->AddComponent(new Components::Transform(*logo, Point(0, 15)));
+    logo->AddComponent(new Components::Transform(*logo, Point(0, 15), 30, 30));
     logo->AddComponent(new Components::Sprite(*logo));
     logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
     logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
-    logo->GetComponent<Components::Transform>(true)->ScaleX = 0.03;
-    logo->GetComponent<Components::Transform>(true)->ScaleY = 0.03;
     
 
     Entity* menu = AddEntity("Menu");
-    menu->AddComponent(new Components::Transform(*menu));
+    menu->AddComponent(new Components::Transform(*menu, 0, 0));
     menu->AddComponent(new Components::Menu(*menu));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
     menuComp->AddItem(new MenuItems::NextLevel("ButtonPlay.png"));

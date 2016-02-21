@@ -17,7 +17,7 @@
 namespace ForLeaseEngine {
     Texture::Texture(GLuint id, std::string name, int width, int height) : ID(id), Name(name), Width(width), Height(height) {}
 
-    Texture* Texture::CreateTexture(std::string filename) {
+    Texture* Texture::CreateTexture(std::string filename, std::string name) {
         SDL_Surface* surface = IMG_Load(filename.c_str());
         GLuint id;
         if(surface == NULL) {
@@ -52,7 +52,7 @@ namespace ForLeaseEngine {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glBindTexture(GL_TEXTURE_2D, 0);
-        Texture* texture = new Texture(id, filename, surface->w, surface->h);
+        Texture* texture = new Texture(id, name, surface->w, surface->h);
         SDL_FreeSurface(surface);
 
         /*std::cout << "Created texture:" << std::endl << "ID: " << static_cast<unsigned int>(texture->GetID()) << std::endl
