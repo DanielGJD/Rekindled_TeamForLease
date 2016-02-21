@@ -73,11 +73,9 @@ namespace ForLeaseEngine {
                 Physics* rbody = Parent.GetComponent<Physics>();
                 //rbody->Velocity += Vector(-MoveSpeed, 0);
                 //rbody->Acceleration += Vector(-MoveSpeed, 0 ) * 5;
-                rbody->Acceleration += Vector(-MoveSpeed, 0 ) * 25;
-                if((rbody->Acceleration.GetX()) > MoveSpeed)
-                    rbody->Acceleration.SetDecrementX(MoveSpeed);
-                if((rbody->Acceleration.GetX()) < -MoveSpeed)
-                    rbody->Acceleration.SetIncrementX(MoveSpeed);
+                if(rbody->Acceleration.GetX() < MoveSpeed)
+                    rbody->Acceleration += Vector(-MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0 );
+                    printf("LEFTa %f", rbody->Acceleration[0]);
 
 
 
@@ -96,14 +94,12 @@ namespace ForLeaseEngine {
             }
             else if(key_e->Key == RightKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
-
+                if(rbody->Acceleration.GetX() > -MoveSpeed)
                //rbody->Velocity += Vector(MoveSpeed, 0);
-                rbody->Acceleration += Vector(MoveSpeed, 0) * 25;
+                    rbody->Acceleration += Vector(MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0) ;
+                    printf("RIGHTa %f", rbody->Acceleration[0]);
+                    printf("RIGHTv %f", rbody->Velocity[0]);
 
-                if((rbody->Acceleration.GetX()) > MoveSpeed)
-                    rbody->Acceleration.SetDecrementX(MoveSpeed);
-                if((rbody->Acceleration.GetX()) < -MoveSpeed)
-                   rbody->Acceleration.SetIncrementX(MoveSpeed);
 
 
                 if(model)
@@ -150,10 +146,30 @@ namespace ForLeaseEngine {
             const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
             Components::SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
             Components::Model* model = Parent.GetComponent<Components::Model>();
+            float deccelerate = 0.2;
             if(key_e->Key == LeftKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
-                rbody->Velocity[0] = 0;
-                rbody->Acceleration[0] = 0;
+                //rbody->Acceleration += Vector(MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0) ;
+                rbody->Velocity[0] = rbody->Velocity[0] - deccelerate;
+                if(rbody->Acceleration[0] = 0)
+                    rbody->Acceleration[0] = 0;
+                //rbody->Acceleration += Vector(-MoveSpeed * 20, 0 );
+                if(rbody->Velocity[0] = 0)
+                    rbody->Velocity[0] = 0;
+                //rbody
+                printf("leftV %f", rbody->Velocity[0]);
+                printf("rightA %f", rbody->Acceleration[0]);
+
+                //rbody->Acceleration += Vector(MoveSpeed * 20, 0 );
+                //rbody->Velocity[0] = 0;
+//                if((rbody->Acceleration.GetX()) > MoveSpeed)
+//                    rbody->Velocity.SetDecrementX(MoveSpeed);
+//                if((rbody->Acceleration.GetX()) < -MoveSpeed)
+//                   rbody->Velocity.SetIncrementX(MoveSpeed);
+//                if((rbody->Velocity.GetX()) > MoveSpeed)
+//                    rbody->Velocity.SetDecrementX(MoveSpeed);
+//                if((rbody->Velocity.GetX()) < -MoveSpeed)
+//                   rbody->Velocity.SetIncrementX(MoveSpeed);
                 if(emitter)
                     emitter->SetPause(true, WalkSound);
 
@@ -162,8 +178,32 @@ namespace ForLeaseEngine {
             }
             else if(key_e->Key == RightKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
-                rbody->Velocity[0] = 0;
-                rbody->Acceleration[0] = 0;
+                //rbody->Acceleration += Vector(-MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0 );
+                rbody->Velocity[0] = rbody->Velocity[0] - deccelerate;
+                if(rbody->Acceleration[0] = 0)
+                    rbody->Acceleration[0] = 0;
+
+                if(rbody->Velocity[0] = 0)
+                    rbody->Velocity[0] = 0;
+                //rbody->Acceleration += Vector(-MoveSpeed * 20, 0 );
+                //if(rbody->Velocity[0] = 0)
+                    //rbody->Velocity[0] = 0;
+                    //rbody->Velocity[0] = 0;
+                printf("rightV %f", rbody->Velocity[0]);
+                printf("rightA %f", rbody->Acceleration[0]);
+                //rbody->Acceleration += Vector(-MoveSpeed * 20, 0 );
+
+                //rbody->Velocity[0] = 0;
+                //rbody->Velocity[0] = 0;
+
+//                if((rbody->Acceleration.GetX()) > MoveSpeed)
+//                    rbody->Velocity.SetDecrementX(MoveSpeed * 20);
+//                if((rbody->Acceleration.GetX()) < -MoveSpeed)
+//                   rbody->Velocity.SetIncrementX(MoveSpeed * 20);
+//                if((rbody->Velocity.GetX()) > MoveSpeed)
+//                    rbody->Velocity.SetDecrementX(MoveSpeed);
+//                if((rbody->Velocity.GetX()) < -MoveSpeed)
+//                   rbody->Velocity.SetIncrementX(MoveSpeed);
                 if(emitter)
                     emitter->SetPause(true, WalkSound);
                 if(model)

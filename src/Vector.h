@@ -68,8 +68,8 @@ namespace ForLeaseEngine {
         Vector operator+(const Vector& rhs);
         friend std::ostream& operator<<(std::ostream& os, const Vector& vector);
         float GetX() const { return x; };
-        void SetDecrementX(float X) const {X -= x;};
-        void SetIncrementX (float X) const {X += x;};
+        void SetDecrementX(float x) const {x--;};
+        void SetIncrementX (float x) const {x++;};
 	};
 
 	/*!
