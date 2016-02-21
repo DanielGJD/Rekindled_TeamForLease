@@ -53,6 +53,19 @@ namespace ForLeaseEngine {
                     emitter->PlayEvent(JumpSound);
             }
 
+            float Drag = .05;
+            Physics* rbody = Parent.GetComponent<Physics>();
+            Vector currentVelocity = rbody->Velocity;
+            currentVelocity.Rotate(currentVelocity, 180);
+            currentVelocity = currentVelocity * Drag;
+            rbody->Velocity = (rbody->Velocity - currentVelocity);
+//            if(rbody->Velocity.GetX() > 0)
+//                {
+//                    rbody->Velocity[0] = rbody->Velocity[0] - Drag;
+//                    if(rbody->Velocity[0] < 0)
+//                        rbody->Velocity[0] = 0;
+//                }
+
             Model* model = Parent.GetComponent<Model>();
             if(model && model->AnimationActive && model->GetAnimation().compare(WalkAnimation) == 0) {
                 unsigned int currentFrame = model->GetFrame();
@@ -69,14 +82,15 @@ namespace ForLeaseEngine {
             Components::SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
             Components::Collision* collider = Parent.GetComponent<Components::Collision>();
             Components::Model* model = Parent.GetComponent<Components::Model>();
+            Physics* rbody = Parent.GetComponent<Physics>();
             if(key_e->Key == LeftKey) {
-                Physics* rbody = Parent.GetComponent<Physics>();
+
                 //rbody->Velocity += Vector(-MoveSpeed, 0);
                 //rbody->Acceleration += Vector(-MoveSpeed, 0 ) * 5;
                 if(rbody->Acceleration.GetX() < MoveSpeed)
                     rbody->Acceleration += Vector(-MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0 );
                     //printf("LEFTa %f", rbody->Acceleration[0]);
-                    printf("pressRV %f", rbody->Velocity[0]);
+                   // printf("pressRV %f", rbody->Velocity[0]);
 
 
 
@@ -94,7 +108,7 @@ namespace ForLeaseEngine {
                 }
             }
             else if(key_e->Key == RightKey) {
-                Physics* rbody = Parent.GetComponent<Physics>();
+                //Physics* rbody = Parent.GetComponent<Physics>();
                 if(rbody->Acceleration.GetX() > -MoveSpeed)
                //rbody->Velocity += Vector(MoveSpeed, 0);
                     rbody->Acceleration += Vector(MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0) ;
@@ -152,11 +166,11 @@ namespace ForLeaseEngine {
                 Physics* rbody = Parent.GetComponent<Physics>();
 
                 //rbody->Acceleration += Vector(MoveSpeed * 900 * ForLease->FrameRateController().GetDt(), 0) ;
-                while(rbody->Velocity[0] < 0){
-                    rbody->Velocity[0] = rbody->Velocity[0] + deccelerate;
-                    if(rbody->Velocity[0] > 0)
-                        rbody->Velocity[0] = 0;
-                }
+//                while(rbody->Velocity[0] < 0){
+//                    rbody->Velocity[0] = rbody->Velocity[0] + deccelerate;
+//                    if(rbody->Velocity[0] > 0)
+//                        rbody->Velocity[0] = 0;
+//                }
                 if(rbody->Acceleration[0] == 0)
                     rbody->Acceleration[0] = 0;
                 //rbody->Acceleration += Vector(-MoveSpeed * 20, 0 );
@@ -184,15 +198,15 @@ namespace ForLeaseEngine {
             else if(key_e->Key == RightKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
                 //rbody->Acceleration += Vector(-MoveSpeed * 900 * ForLease->FrameRateController().GetDt(), 0 );
-                rbody->Velocity[0] = rbody->Velocity[0]  - deccelerate;
-                if(rbody->Acceleration[0] == 0)
-                    rbody->Acceleration[0] = 0;
-
-                while(rbody->Velocity[0] > 0){
-                    rbody->Velocity[0] = rbody->Velocity[0] - deccelerate;
-                    if(rbody->Velocity[0] < 0)
-                        rbody->Velocity[0] = 0;
-                }
+//                rbody->Velocity[0] = rbody->Velocity[0]  - deccelerate;
+//                if(rbody->Acceleration[0] == 0)
+//                    rbody->Acceleration[0] = 0;
+//
+//                while(rbody->Velocity[0] > 0){
+//                    rbody->Velocity[0] = rbody->Velocity[0] - deccelerate;
+//                    if(rbody->Velocity[0] < 0)
+//                        rbody->Velocity[0] = 0;
+//                }
                 //rbody->Acceleration += Vector(-MoveSpeed * 20, 0 );
                 //if(rbody->Velocity[0] = 0)
                     //rbody->Velocity[0] = 0;
