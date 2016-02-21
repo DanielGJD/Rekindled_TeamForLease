@@ -56,7 +56,7 @@ void PauseMenu::Load() {
 
     Entity* menu = AddEntity("Menu");
     menu->AddComponent(new Components::Transform(*menu));
-    menu->AddComponent(new Components::Menu(*menu));
+    menu->AddComponent(new Components::Menu(*menu, Vector(0,-3)));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
     menuComp->AddItem(new MenuItems::ResumeGame("ButtonResume.png"));
     //menuComp->AddItem(new MenuItems::LoadLevel("ButtonHowTo.png", "HowToPlay"));

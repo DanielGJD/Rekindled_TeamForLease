@@ -37,7 +37,8 @@ namespace ForLeaseEngine {
 
         void Menu::OnMouseMotion(const Event* e) {
             for (Entity* rep : Representations) {
-                rep->GetComponent<Components::Transform>()->ScaleX = UnfocusedScale;
+                Components::Sprite* sprite = rep->GetComponent<Components::Sprite>(true);
+                rep->GetComponent<Components::Transform>()->ScaleX = UnfocusedScale * sprite->SpriteSource.GetWidth() / sprite->SpriteSource.GetHeight();
                 rep->GetComponent<Components::Transform>()->ScaleY = UnfocusedScale;
             }
 
@@ -48,7 +49,8 @@ namespace ForLeaseEngine {
             position = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true)->ScreenToWorld(position);
             Entity* rep = GetRepresentationAtPosition(position);
             if (rep) {
-                rep->GetComponent<Components::Transform>()->ScaleX = FocusedScale;
+                Components::Sprite* sprite = rep->GetComponent<Components::Sprite>(true);
+                rep->GetComponent<Components::Transform>()->ScaleX = FocusedScale * sprite->SpriteSource.GetWidth() / sprite->SpriteSource.GetHeight();
                 rep->GetComponent<Components::Transform>()->ScaleY = FocusedScale;
                 LastActive = rep;
             }
@@ -100,7 +102,9 @@ namespace ForLeaseEngine {
                 //////////////////////////////////////////////////////////////////////////////
 
                 rep->GetComponent<Components::Sprite>(true)->AnimationActive = false;
-                rep->GetComponent<Components::Sprite>(true)->SetSpriteSource(item->Image);
+                Components::Sprite* sprite = rep->GetComponent<Components::Sprite>(true);
+                sprite->SetSpriteSource(item->Image);
+                rep->GetComponent<Components::Transform>(true)->ScaleX = UnfocusedScale * sprite->SpriteSource.GetWidth() / sprite->SpriteSource.GetHeight();
                 position += Spacing * FocusedScale;
             }
 
@@ -127,12 +131,12 @@ namespace ForLeaseEngine {
 
                 Components::Transform* transform = entity->GetComponent<Components::Transform>(true);
                 Components::Sprite* sprite = entity->GetComponent<Components::Sprite>(true);
-//                float scaleX = transform->ScaleX * sprite->SpriteSource[0].GetWidth();
-//                float scaleY = transform->ScaleY * sprite->SpriteSource[0].GetHeight();
+                float scaleX = transform->ScaleX * sprite->SpriteSource.GetWidth() / sprite->SpriteSource.GetHeight();
+                float scaleY = transform->ScaleY;
 
                 ///////////////////////////// More Chris hax /////////////////////////
-                float scaleX = transform->ScaleX;
-                float scaleY = transform->ScaleY;
+                //float scaleX = transform->ScaleX;
+                //float scaleY = transform->ScaleY;
                 //////////////////////////////////////////////////////////////////////
 
                 //std::cout
