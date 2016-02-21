@@ -29,33 +29,4 @@ namespace CommandLine {
     IntArgument GetIntArgument(char** start, char** end, const std::string argument);
 }
 
-namespace FileSystem {
-    std::vector<std::string> GetAllFilesInFolder(std::string folder);
-    bool PathExists(std::string path);
-}
-
-namespace Preload {
-    enum class AssetType : unsigned {
-        Sound = 1,
-        Mesh = 2,
-        MeshAnimation = 3,
-        Texture = 4,
-        Font = 5
-    };
-
-    typedef std::pair<AssetType, std::string> AssetPath;
-
-    //class AssetPath : public ForLeaseEngine::Serializable {
-    //    public:
-    //        void Deserialize(ForLeaseEngine::Serializer& serializer);
-
-    //        AssetType   Type;
-    //        std::string File;
-    //};
-
-    void IndividualAsset(std::string file, AssetType type);
-    void Assets(std::vector<AssetPath> paths);
-    std::vector<AssetPath> AllAssets(std::string file);
-}
-
 #endif // UTILITIES_H

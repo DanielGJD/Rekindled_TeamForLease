@@ -38,7 +38,7 @@ void MainMenu::Load() {
     Entity* background = AddEntity("Background");
     background->AddComponent(new Components::Transform(*background, 0,0,1,1,-50));
     background->AddComponent(new Components::Sprite(*background));
-    ForLease->Resources.LoadTexture("bg7.png");
+    //ForLease->Resources.LoadTexture("bg7.png");
     //Texture* texture = Texture::CreateTexture("bg7.png");
     //TextureRegion textureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
     background->GetComponent<Components::Sprite>(true)->SetSpriteSource("bg7.png");

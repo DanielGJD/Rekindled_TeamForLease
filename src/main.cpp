@@ -19,6 +19,7 @@
 #include "Utilities.h"
 #include "Platforms.h"
 #include "Loading.h"
+#include "Filesystem.h"
 
 #undef main
 
@@ -34,8 +35,9 @@ int Start(int argc = 0, char** argv = 0) {
 
     if (testingLevel.first)
         states = LoadSingleLevel(testingLevel.second, states);
-    else if (FileSystem::PathExists("Game.json")) {
+    else if (ForLeaseEngine::Modules::Filesystem::PathExists("Game.json")) {
         states.push_back(new Loading("Game.json"));
+        states.push_back(new MainMenu());
         states = LoadLevels("Game.json", states);
         states.push_back(new HowToPlay());
     }

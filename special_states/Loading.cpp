@@ -51,6 +51,7 @@ void Loading::Load() {
     Entity* logo = AddEntity("Logo");
     logo->AddComponent(new Components::Transform(*logo, Point(0, 5)));
     logo->AddComponent(new Components::Sprite(*logo));
+    ForLease->Resources.LoadTexture("Title.png");
     logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
     logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
     logo->GetComponent<Components::Transform>(true)->ScaleX = 0.02;
@@ -61,6 +62,7 @@ void Loading::Load() {
     menu->AddComponent(new Components::Transform(*menu, Point(0,-15)));
     menu->AddComponent(new Components::Menu(*menu));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
+    ForLease->Resources.LoadTexture("ButtonMainMenu.png");
     menuComp->AddItem(new MenuItems::LoadLevel("ButtonMainMenu.png", "MainMenu"));
     menuComp->Activate();
 
@@ -77,7 +79,15 @@ void Loading::Initialize() {
     serializer.ReadFile("Loading.json");
     Deserialize(serializer);
 
-    std::vector<Preload::AssetPath> assets = Preload::AllAssets(LoadFile);
+    ForLease->Filesystem.LoadAllAssets();
+
+    LoadPaths = ForLease->Filesystem.GetAllAssetDirectoryListings();
+
+    if (LoadPaths.size() != 0)
+        RotationPerFile = 2 * PI / LoadPaths.size();
+    NextToLoad = 0;
+
+    //std::vector<Preload::AssetPath> assets = Preload::AllAssets(LoadFile);
 }
 
 void Loading::Update() {
@@ -93,6 +103,17 @@ void Loading::Update() {
     }
 
     LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
+
+    //if (NextToLoad < LoadPaths.size()) {
+    //    Entity* logo = GetEntityByName("Logo");
+    //    logo->GetComponent<FLE::Components::Transform>()->Rotation += RotationPerFile;
+    //    ForLease->Filesystem.LoadAsset(LoadPaths[NextToLoad]);
+    //    std::cout << "Loaded " << LoadPaths[NextToLoad].second << std::endl;
+    //    ++NextToLoad;
+    //}
+    //else {
+        ForLease->GameStateManager().SetAction(FLE::Modules::StateAction::Next);
+    //}
 
     ForLease->GameWindow->UpdateGameWindow();
 }

@@ -51,7 +51,13 @@ namespace ForLeaseEngine {
     */
     Engine::Engine(std::vector<State *> states, int resolutionX, int resolutionY,
         int frameRate, bool fullscreen) : ResolutionX(resolutionX), ResolutionY(resolutionY),
-        FrameRate(frameRate), Fullscreen(fullscreen), GSM(*this, states), FRC(frameRate) { ForLease = this; }
+        FrameRate(frameRate), Fullscreen(fullscreen), GSM(*this, states), FRC(frameRate),
+        Filesystem() {
+            ForLease = this;
+
+            if (Filesystem.PathExists("Game.json"))
+                Filesystem.Initialize("Game.json");
+    }
 
     /*!
         Handles the main game loop.  Essentially calls FrameRateController and GameStateManager.

@@ -22,7 +22,7 @@ namespace ForLeaseEngine {
 
         void ResourceManager::LoadTexture(std::string fileName) {
             UnloadTexture(fileName);
-            Texture* texture = Texture::CreateTexture(fileName);
+            Texture* texture = Texture::CreateTexture(ForLease->Filesystem.AssetDirectory(Filesystem::AssetType::Image) + fileName);
             if(!texture) {
                 //throw(new Exception(std::string("Failed to load texture :").append(fileName)));
                 std::cout << "Failed to load texture: " << fileName << std::endl;
@@ -63,7 +63,7 @@ namespace ForLeaseEngine {
 
         void ResourceManager::LoadFont(std::string fileName) {
             UnloadFont(fileName);
-            std::ifstream fontFile(fileName, std::ios_base::in | std::ios_base::binary);
+            std::ifstream fontFile(ForLease->Filesystem.AssetDirectory(Filesystem::AssetType::Font) + fileName, std::ios_base::in | std::ios_base::binary);
             if(!fontFile.is_open()) {
                 std::cout << "Failed to load font: " << fileName << std::endl;
                 return;
@@ -109,7 +109,7 @@ namespace ForLeaseEngine {
         void ResourceManager::LoadMesh(std::string fileName) {
             UnloadMesh(fileName);
             Serializer root;
-            if(!root.ReadFile(fileName))
+            if(!root.ReadFile(ForLease->Filesystem.AssetDirectory(Filesystem::AssetType::Mesh) + fileName))
             {
                 std::cout << "Failed to load mesh: " << fileName << std::endl;
                 return;
@@ -197,7 +197,7 @@ namespace ForLeaseEngine {
         void ResourceManager::LoadMeshAnimation(std::string fileName) {
             UnloadMeshAnimation(fileName);
             Serializer loader;
-            if(!loader.ReadFile(fileName)) {
+            if(!loader.ReadFile(ForLease->Filesystem.AssetDirectory(Filesystem::AssetType::Animation) + fileName)) {
                 std::cout << "Failed to load mesh animation: " << fileName << std::endl;
                 return;
             }

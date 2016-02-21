@@ -17,6 +17,7 @@
 #include "Event.h"
 #include "LevelComponentsInclude.h"
 #include "State.h"
+#include "Filesystem.h"
 #include <string>
 
 class Loading : public ForLeaseEngine::State {
@@ -30,6 +31,9 @@ public:
 
 private:
     std::string LoadFile;
+    std::vector<ForLeaseEngine::Modules::Filesystem::AssetPath> LoadPaths;
+    float RotationPerFile;
+    unsigned NextToLoad;
 };
 
 #endif // LOADING_H
