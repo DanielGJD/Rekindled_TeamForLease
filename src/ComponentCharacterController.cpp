@@ -135,7 +135,7 @@ namespace ForLeaseEngine {
             }
             else if(key_e->Key == JumpKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
-                Collision* collider = Parent.GetComponent<Collision>();
+               // Collision* collider = Parent.GetComponent<Collision>();
                 if(CanJump) {
                     rbody->Velocity += Vector(0, JumpSpeed);
                     SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
@@ -166,7 +166,7 @@ namespace ForLeaseEngine {
             const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
             Components::SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
             Components::Model* model = Parent.GetComponent<Components::Model>();
-            float deccelerate = 0.2;
+          //  float deccelerate = 0.2;
             if(key_e->Key == LeftKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
 
