@@ -17,7 +17,6 @@ namespace ForLeaseEngine
     {
         std::string activeString = "Active";
         ImGui::Begin("Object Editor");
-        ImGui::PushItemWidth(80);
 
         if (ImGui::InputText("Name", leg::entName, 70, ImGuiInputTextFlags_EnterReturnsTrue))
             leg::selection->SetName(leg::entName);
@@ -548,21 +547,14 @@ namespace ForLeaseEngine
 
         if (leg::selScale && ImGui::CollapsingHeader("Scale with Keyboard"))
         {
-//            ImGui::Checkbox(activeString.c_str(), &(leg::selScale->Active));
-//            activeString.append(" ");
-//            ImGui::InputFloat("Scale Speed", &(leg::selScale->ScaleSpeed));
-//            ImGui::InputInt("X up Key", &(leg::selScale->ScaleXUpKey));
-//            ImGui::SameLine();
-//            ImGui::InputInt("X down Key", &(leg::selScale->ScaleXDownKey));
-//            ImGui::InputInt("Y up Key", &(leg::selScale->ScaleYUpKey));
-//            ImGui::SameLine();
-//            ImGui::InputInt("Y down Key", &(leg::selScale->ScaleYDownKey));
-//            ImGui::InputFloat("Min X", &(leg::selScale->MinXScale));
-//            ImGui::SameLine();
-//            ImGui::InputFloat("Max X", &(leg::selScale->MaxXScale));
-//            ImGui::InputFloat("Min Y", &(leg::selScale->MinYScale));
-//            ImGui::SameLine();
-//            ImGui::InputFloat("Max Y", &(leg::selScale->MaxYScale));
+            ImGui::Checkbox(activeString.c_str(), &(leg::selScale->Active));
+            activeString.append(" ");
+            ImGui::InputFloat("Scale Speed", &(leg::selScale->ScaleSpeed));
+            ImGui::InputInt("Scale up Key", &(leg::selScale->ScaleUpKey));
+            ImGui::InputInt("Scale down Key", &(leg::selScale->ScaleDownKey));
+            ImGui::InputFloat("Max X", &(leg::selScale->MaxXScale));
+            ImGui::InputFloat("Max Y", &(leg::selScale->MaxYScale));
+            ImGui::DragFloat("Scale", &(leg::selScale->Scale), 0.01, 0, 1);
 //            ImGui::Text("Scale Sound: %s", leg::selScale->ScaleSound.c_str());
 //            static ImGuiTextFilter scaleSound;
 //            scaleSound.Draw("Trigger Sound", 250);
@@ -649,8 +641,8 @@ namespace ForLeaseEngine
 
         if (leg::selSprtxt && ImGui::CollapsingHeader("Sprite Text"))
         {
-            ImGui::InputText("Text", leg::spriteTextBuf, 500);
-            leg::selSprtxt->Text = leg::spriteTextBuf;
+            if (ImGui::InputText("Text", leg::spriteTextBuf, 500, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selSprtxt->Text = leg::spriteTextBuf;
             ImGui::PushItemWidth(300);
             ImGui::ColorEdit4("Color", const_cast<float*>(leg::selSprtxt->TextColor.GetAll()));
             ImGui::PopItemWidth();
