@@ -14,7 +14,7 @@
 #include "Texture.h"
 #include "Mesh.h"
 #include "Font.h"
-#include "Sound.h"
+#include "SoundFS.h"
 #include "MeshAnimation.h"
 #include <unordered_map>
 #include <string>
@@ -64,6 +64,9 @@ namespace ForLeaseEngine {
                 //std::unordered_map<std::string, Sound*> Sounds;
                 std::unordered_map<std::string, MeshAnimation*> MeshAnimations;
 
+                Systems::SoundManager * FSmanager;
+                // For implementation, call the function below and specific the path and file name in char instead of string.
+                //FSmanager->Initialize(const char* PathFileName);
                 unsigned int LoadedTextures;
                 unsigned int LoadedMeshes;
                 unsigned int LoadedFonts;
