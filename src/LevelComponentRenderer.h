@@ -32,6 +32,7 @@ namespace ForLeaseEngine {
                 static const ComponentType Type = ComponentType::Renderer;
                 virtual ComponentType GetType() { return Type; }
                 Renderer(State& owner);
+                ~Renderer();
 
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
@@ -89,6 +90,8 @@ namespace ForLeaseEngine {
                 unsigned long CurrentCamera;
                 BlendMode BlendingMode;
                 GLuint CurrentTexture;
+                GLuint LightTexture;
+                GLuint LightFBO;
 
                 float DebugPointSize;
                 float DebugLineWidth;

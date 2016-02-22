@@ -26,13 +26,15 @@ namespace ForLeaseEngine {
                 static const ComponentType Type = ComponentType::Light;
                 virtual ComponentType GetType() { return Type; }
 
-                Light(State& owner);
+                Light(State& owner, Color const& ambientLight = Color(0, 0, 0));
                 void Update(std::vector<Entity *>& entities);
 
                 virtual void Serialize(Serializer& root);
                 virtual void Deserialize(Serializer& root);
 
                 bool CheckIfLit(unsigned long id);
+
+                Color AmbientLight;
             private:
                 std::unordered_set<unsigned long> LitEntities;
         };
