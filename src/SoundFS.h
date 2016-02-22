@@ -47,7 +47,7 @@ class SoundManager //: public ISystem
 		~SoundManager();
 
 
-		void Initialize();
+		void Initialize(const char* PathFileName);
 		void Update(float dt);
 		void ShutDown();
 
