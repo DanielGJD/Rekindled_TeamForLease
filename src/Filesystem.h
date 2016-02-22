@@ -15,6 +15,7 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <map>
 
 namespace ForLeaseEngine {
 
@@ -29,7 +30,7 @@ namespace ForLeaseEngine {
 
             public:
                 Filesystem();
-                Filesystem::Filesystem(std::string gameFile);
+                Filesystem(std::string gameFile);
                 void Initialize(std::string gameFile);
 
                 static std::vector<std::string> GetAllFilesInFolder(std::string folder);
@@ -58,7 +59,7 @@ namespace ForLeaseEngine {
                 std::string AssetDirectory(AssetType type);
                 std::vector<AssetPath> AllAssetDirectories();
             private:
-                std::unordered_map<AssetType, std::string> AssetPaths;
+                std::map<AssetType, std::string> AssetPaths;
                 //std::vector<AssetPath> AssetPaths;
         };
 
