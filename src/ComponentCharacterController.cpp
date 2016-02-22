@@ -20,7 +20,7 @@ namespace ForLeaseEngine {
                                                 : Component(owner, ComponentType::Physics | ComponentType::Collision),
                                                   RightKey(Keys::D), LeftKey(Keys::A), JumpKey(Keys::W),
                                                   MoveSpeed(0.0f), JumpSpeed(0),Drag(0), WalkSound(""), JumpSound(""), LandSound(""),
-                                                  WalkAnimation(""), JumpAnimation(""), CanJump(false) {};
+                                                  WalkAnimation(""), JumpAnimation(""), CanJump(false) , CheckMove(false){};
 
         CharacterController* CharacterController::Create(Entity& owner) {
             CharacterController* controller = new CharacterController(owner);
@@ -53,19 +53,24 @@ namespace ForLeaseEngine {
                     emitter->PlayEvent(JumpSound);
             }
 
-            //float Drag = .05;
-            Physics* rbody = Parent.GetComponent<Physics>();
-            Vector currentVelocity = rbody->Velocity;
-            currentVelocity.Rotate(currentVelocity, 180);
-            currentVelocity = currentVelocity * Drag;
-            rbody->Velocity = (rbody->Velocity - currentVelocity);
-//            if(rbody->Velocity.GetX() > 0)
-//                {
-//                    rbody->Velocity[0] = rbody->Velocity[0] - Drag;
-//                    if(rbody->Velocity[0] < 0)
-//                        rbody->Velocity[0] = 0;
-//                }
 
+            float Drag = .05;
+            float maxSpeed = 2.0;
+            if(!CheckMove)
+            {
+                Physics* rbody = Parent.GetComponent<Physics>();
+                Vector currentVelocity = rbody->Velocity;
+                currentVelocity.Rotate(currentVelocity, 180);
+                currentVelocity = currentVelocity * Drag;
+                rbody->Velocity = (rbody->Velocity - currentVelocity);
+
+                if(rbody->Velocity.GetX() > maxSpeed)
+                {
+                    rbody->Velocity[0] = rbody->Velocity[0] - Drag;
+                    if(rbody->Velocity[0] < Drag)
+                        rbody->Velocity[0]  = rbody->Velocity[0] + maxSpeed;
+                }
+            }
             Model* model = Parent.GetComponent<Model>();
             if(model && model->AnimationActive && model->GetAnimation().compare(WalkAnimation) == 0) {
                 unsigned int currentFrame = model->GetFrame();
@@ -91,7 +96,7 @@ namespace ForLeaseEngine {
                     rbody->Acceleration += Vector(-MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0 );
                     //printf("LEFTa %f", rbody->Acceleration[0]);
                    // printf("pressRV %f", rbody->Velocity[0]);
-
+                    CheckMove = true;
 
 
                 if(model)
@@ -115,7 +120,7 @@ namespace ForLeaseEngine {
                     //printf("RIGHTa %f", rbody->Acceleration[0]);
                     printf("pressLV %f", rbody->Velocity[0]);
 
-
+                    CheckMove = true;
 
                 if(model)
                     model->FlipY = false;
@@ -130,7 +135,7 @@ namespace ForLeaseEngine {
             }
             else if(key_e->Key == JumpKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
-                Collision* collider = Parent.GetComponent<Collision>();
+               // Collision* collider = Parent.GetComponent<Collision>();
                 if(CanJump) {
                     rbody->Velocity += Vector(0, JumpSpeed);
                     SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
@@ -161,7 +166,7 @@ namespace ForLeaseEngine {
             const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
             Components::SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
             Components::Model* model = Parent.GetComponent<Components::Model>();
-            float deccelerate = 0.2;
+          //  float deccelerate = 0.2;
             if(key_e->Key == LeftKey) {
                 Physics* rbody = Parent.GetComponent<Physics>();
 
@@ -171,6 +176,7 @@ namespace ForLeaseEngine {
 //                    if(rbody->Velocity[0] > 0)
 //                        rbody->Velocity[0] = 0;
 //                }
+                CheckMove = false;
                 if(rbody->Acceleration[0] == 0)
                     rbody->Acceleration[0] = 0;
                 //rbody->Acceleration += Vector(-MoveSpeed * 20, 0 );
@@ -211,6 +217,7 @@ namespace ForLeaseEngine {
                 //if(rbody->Velocity[0] = 0)
                     //rbody->Velocity[0] = 0;
                     //rbody->Velocity[0] = 0;
+                CheckMove = false;
                 printf("releaseRV %f", rbody->Velocity[0]);
                 //printf("rightA %f", rbody->Acceleration[0]);
                 //rbody->Acceleration += Vector(-MoveSpeed * 20, 0 );

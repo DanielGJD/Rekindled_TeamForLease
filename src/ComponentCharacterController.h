@@ -55,6 +55,7 @@ namespace ForLeaseEngine {
 
             private:
                 bool CanJump;
+                bool CheckMove;
                 unsigned int LastAnimationFrame;
         };
     }
