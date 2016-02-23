@@ -66,7 +66,7 @@ namespace ForLeaseEngine {
 
                 Systems::SoundManager * FSmanager;
                 // For implementation, call the function below and specific the path and file name in char instead of string.
-                //FSmanager->Initialize(const char* PathFileName);
+                //FSmanager->Initialize("sounds/Master Bank.bank", "sounds/Master Bank.strings.bank");
                 unsigned int LoadedTextures;
                 unsigned int LoadedMeshes;
                 unsigned int LoadedFonts;

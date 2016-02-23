@@ -60,7 +60,7 @@ SoundManager::~SoundManager()
 //    return false;
 //  }
 
-void SoundManager::Initialize(const char* PathFileName)
+void SoundManager::Initialize(const char* PathFileName, const char * StringBank)
 {
     FMOD_RESULT result_;
     result_ = FMOD_Studio_System_LoadBankFile(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),PathFileName, FMOD_STUDIO_LOAD_BANK_NORMAL, reinterpret_cast<FMOD_STUDIO_BANK**>(&m_MasterBank));
@@ -84,7 +84,7 @@ void SoundManager::Initialize(const char* PathFileName)
 //		printf("bankfile3 is not loaded\n");
 //	}
 
-	result_ = FMOD_Studio_System_LoadBankFile(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),PathFileName, FMOD_STUDIO_LOAD_BANK_NORMAL, reinterpret_cast<FMOD_STUDIO_BANK**>(&m_StringsBank));
+	result_ = FMOD_Studio_System_LoadBankFile(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),StringBank, FMOD_STUDIO_LOAD_BANK_NORMAL, reinterpret_cast<FMOD_STUDIO_BANK**>(&m_StringsBank));
 	if (result_ != FMOD_OK)
 	{
 		std::cout << result_ << std::endl;
