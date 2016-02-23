@@ -14,6 +14,7 @@
 #include <iostream>
 #include <fstream>
 #include <SDL.h>
+#include <GL/glew.h>
 #include "GraphicsException.h"
 #include "Window.h"
 
@@ -249,6 +250,15 @@ namespace ForLeaseEngine {
             glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
             //std::cout << glGetString(GL_VERSION) << std::endl;
             //std::cout << glGetString(GL_EXTENSIONS) << std::endl;
+
+            // Initialize glew
+            GLenum glewErr = glewInit();
+            if(glewErr != GLEW_OK) {
+                std::cout << "FAILED TO INITIALIZE GLEW: " << glewGetErrorString(glewErr) << std::endl;
+            }
+            else {
+                std::cout << "GLEW INITIALIZED" << std::endl;
+            }
         }
 
         /*!

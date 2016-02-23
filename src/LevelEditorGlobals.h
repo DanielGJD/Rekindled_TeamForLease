@@ -37,7 +37,7 @@ namespace ForLeaseEngine
         extern Components::Parallax*               selParallax;
         extern Components::Occluder*               selOccluder;
 
-
+        extern Entity*                levelCamera;
         extern Entity*                camera;
         extern Components::Transform* camTrans;
         extern Components::Camera*    camCamera;

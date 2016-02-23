@@ -1,12 +1,12 @@
 /*!
-    \file   MainMenu.cpp
+    \file   Loading.cpp
     \author Sean McGeer
-    \date   11/23/15
+    \date   2/15/16
 
-    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+    \copyright ©Copyright 2016 DigiPen Institute of Technology, All Rights Reserved
 */
 
-#include "MainMenu.h"
+#include "Loading.h"
 #include "ComponentsInclude.h"
 #include "ResourceManager.h"
 #include "Vector.h"
@@ -16,18 +16,20 @@
 #include "GameStateManager.h"
 #include "Ray.h"
 
+#include "Utilities.h"
+
 #include <iostream>
 #include <string>
 
 namespace FLE = ForLeaseEngine;
 using namespace ForLeaseEngine;
 
-MainMenu::MainMenu() : State("MainMenu") {}
+Loading::Loading(std::string loadfile) : State("Loading"), LoadFile(loadfile) {}
 
-void MainMenu::Load() {
+void Loading::Load() {
 }
 
-void MainMenu::Initialize() {
+void Loading::Initialize() {
     FLE::LevelComponents::Renderer* renderer = new FLE::LevelComponents::Renderer(*this);
     FLE::Entity* camera = AddEntity("Camera");
     camera->AddComponent(new FLE::Components::Transform(*camera, FLE::Point(0, 0), 1, 1, 0));
@@ -41,7 +43,7 @@ void MainMenu::Initialize() {
     Entity* background = AddEntity("Background");
     background->AddComponent(new Components::Transform(*background, 0, 0, 50, 50));
     background->AddComponent(new Components::Sprite(*background));
-    //ForLease->Resources.LoadTexture("bg7.png");
+    ForLease->Resources.LoadTexture("bg7.png");
     //Texture* texture = Texture::CreateTexture("bg7.png");
     //TextureRegion textureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
     background->GetComponent<Components::Sprite>(true)->SetSpriteSource("bg7.png");
@@ -50,28 +52,20 @@ void MainMenu::Initialize() {
     Entity* logo = AddEntity("Logo");
     logo->AddComponent(new Components::Transform(*logo, Point(0, 15), 30, 30));
     logo->AddComponent(new Components::Sprite(*logo));
+    ForLease->Resources.LoadTexture("Title.png");
     logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
     logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
 
+    //ForLease->Filesystem.LoadAllAssets();
 
-    Entity* menu = AddEntity("Menu");
-    menu->AddComponent(new Components::Transform(*menu, 0, 0));
-    menu->AddComponent(new Components::Menu(*menu, Vector(0, -3)));
-    Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
-    menuComp->AddItem(new MenuItems::NextLevel("ButtonPlay.png"));
-    menuComp->AddItem(new MenuItems::LoadLevel("ButtonHowTo.png", "HowToPlay"));
-    menuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonQuit.png", "QuitConfirm", "Menu"));
-    menuComp->Activate();
+    LoadPaths = ForLease->Filesystem.GetAllAssetDirectoryListings();
 
-    Entity* quitConfirm = AddEntity("QuitConfirm");
-    quitConfirm->AddComponent(new Components::Transform(*quitConfirm));
-    quitConfirm->AddComponent(new Components::Menu(*quitConfirm));
-    Components::Menu* quitConfirmComp = quitConfirm->GetComponent<Components::Menu>();
-    quitConfirmComp->AddItem(new MenuItems::Quit("ButtonQuit.png"));
-    quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonCancel.png", "Menu", "QuitConfirm"));
+    if (LoadPaths.size() != 0)
+        RotationPerFile = 2 * PI / LoadPaths.size();
+    NextToLoad = 0;
 }
 
-void MainMenu::Update() {
+void Loading::Update() {
 
     ForLease->OSInput.ProcessAllInput();
 
@@ -85,12 +79,23 @@ void MainMenu::Update() {
 
     LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
 
+    if (NextToLoad < LoadPaths.size()) {
+        Entity* logo = GetEntityByName("Logo");
+        logo->GetComponent<FLE::Components::Transform>()->Rotation += RotationPerFile;
+        ForLease->Filesystem.LoadAsset(LoadPaths[NextToLoad]);
+        std::cout << "Loaded " << LoadPaths[NextToLoad].second << std::endl;
+        ++NextToLoad;
+    }
+    else {
+        ForLease->GameStateManager().SetAction(FLE::Modules::StateAction::Next);
+    }
+
     ForLease->GameWindow->UpdateGameWindow();
 }
 
-void MainMenu::Deinitialize() {
+void Loading::Deinitialize() {
     DeleteAllEntities();
     DeleteAllLevelComponents();
 }
 
-void MainMenu::Unload() {}
+void Loading::Unload() {}

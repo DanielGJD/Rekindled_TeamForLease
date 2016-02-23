@@ -21,6 +21,8 @@ All content 2015 DigiPen (USA) Corporation, all rights reserved.
 #include"common.h"
 #include <unordered_map>
 #include <string>
+#include <vector>
+#include <fstream>
 
 //#include "SoundEmitter.h"
 
@@ -57,6 +59,7 @@ class SoundManager //: public ISystem
 		void ResumeAll(void);
 		void Resume(void);
 		void Volume(float vol, std::string name);
+		std::vector<std::string>GetName();
 
 	private:
 		SoundSys m_Sys;

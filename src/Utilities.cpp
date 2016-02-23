@@ -10,6 +10,7 @@
 */
 
 #include "Utilities.h"
+#include "Filesystem.h"
 #include "Serialize.h"
 #include "State.h"
 #include "Level.h"
@@ -41,9 +42,7 @@ std::vector<ForLeaseEngine::State *> LoadLevels(std::string levelList, std::vect
         FLE::Serializer level = levels[i];
         std::string file;
         level.ReadString("File", file);
-
         FLE::Level* levelInstance = new FLE::Level(file);
-
         appendTo.push_back(levelInstance);
         std::cout << "Just got " << file << std::endl;
         std::cout << "Name: " << levelInstance->GetName() << std::endl;

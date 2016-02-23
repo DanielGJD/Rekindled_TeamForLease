@@ -18,6 +18,8 @@
 #include "HowToPlay.h"
 #include "Utilities.h"
 #include "Platforms.h"
+#include "Loading.h"
+#include "Filesystem.h"
 
 #undef main
 
@@ -33,8 +35,14 @@ int Start(int argc = 0, char** argv = 0) {
 
     if (testingLevel.first)
         states = LoadSingleLevel(testingLevel.second, states);
-    else {
+    else if (ForLeaseEngine::Modules::Filesystem::PathExists("Game.json")) {
+        states.push_back(new Loading("Game.json"));
+        states.push_back(new MainMenu());
         states = LoadLevels("Game.json", states);
+        states.push_back(new HowToPlay());
+    }
+    else { // This is a pretty screwed-up place to be.  Just loads the main menu and the how to play screen.  No gameplay is loaded.
+        states.push_back(new MainMenu());
         states.push_back(new HowToPlay());
     }
 

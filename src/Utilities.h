@@ -12,6 +12,7 @@
 #include "Level.h"
 #include <string>
 #include <vector>
+#include "ResourceManager.h"
 
 #ifndef UTILITIES_H
 #define UTILITIES_H

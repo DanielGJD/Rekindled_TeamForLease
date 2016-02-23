@@ -28,6 +28,9 @@ using namespace ForLeaseEngine;
 PauseMenu::PauseMenu() : State("PauseMenu") {}
 
 void PauseMenu::Load() {
+}
+
+void PauseMenu::Initialize() {
     FLE::LevelComponents::Renderer* renderer = new FLE::LevelComponents::Renderer(*this);
     FLE::Entity* camera = AddEntity("Camera");
     camera->AddComponent(new FLE::Components::Transform(*camera, FLE::Point(0, 0), 1, 1, 0));
@@ -39,28 +42,24 @@ void PauseMenu::Load() {
 
 
     Entity* background = AddEntity("Background");
-    background->AddComponent(new Components::Transform(*background, 0, 0, 1, 1, -50));
+    background->AddComponent(new Components::Transform(*background, 0, 0, 50, 50));
     background->AddComponent(new Components::Sprite(*background));
-    ForLease->Resources.LoadTexture("bg7.png");
+    //ForLease->Resources.LoadTexture("bg7.png");
     //Texture* texture = Texture::CreateTexture("bg7.png");
     //TextureRegion textureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
     background->GetComponent<Components::Sprite>(true)->SetSpriteSource("bg7.png");
     background->GetComponent<Components::Sprite>(true)->AnimationActive = false;
-    background->GetComponent<Components::Transform>(true)->ScaleX = 0.05;
-    background->GetComponent<Components::Transform>(true)->ScaleY = 0.05;
 
     Entity* logo = AddEntity("Logo");
-    logo->AddComponent(new Components::Transform(*logo, Point(0, 15)));
+    logo->AddComponent(new Components::Transform(*logo, Point(0, 15), 30, 30));
     logo->AddComponent(new Components::Sprite(*logo));
     logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
     logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
-    logo->GetComponent<Components::Transform>(true)->ScaleX = 0.03;
-    logo->GetComponent<Components::Transform>(true)->ScaleY = 0.03;
 
 
     Entity* menu = AddEntity("Menu");
     menu->AddComponent(new Components::Transform(*menu));
-    menu->AddComponent(new Components::Menu(*menu));
+    menu->AddComponent(new Components::Menu(*menu, Vector(0, -3)));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
     menuComp->AddItem(new MenuItems::ResumeGame("ButtonResume.png"));
     //menuComp->AddItem(new MenuItems::LoadLevel("ButtonHowTo.png", "HowToPlay"));
@@ -81,19 +80,6 @@ void PauseMenu::Load() {
     Components::Menu* mainMenuConfirmComp = mainMenuConfirm->GetComponent<Components::Menu>();
     mainMenuConfirmComp->AddItem(new MenuItems::LoadLevel("ButtonMainMenu.png", "MainMenu"));
     mainMenuConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonCancel.png", "Menu", "MainMenuConfirm"));
-
-    Serializer serializer;
-    Serialize(serializer);
-    serializer.WriteFile("PauseMenu.json");
-
-    DeleteAllEntities();
-    DeleteAllLevelComponents();
-}
-
-void PauseMenu::Initialize() {
-    Serializer serializer;
-    serializer.ReadFile("PauseMenu.json");
-    Deserialize(serializer);
 
     ForLease->Dispatcher.Attach(NULL, this, "KeyDown", &PauseMenu::OnKeyDown);
 }

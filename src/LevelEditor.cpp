@@ -62,6 +62,7 @@ namespace ForLeaseEngine
 
 
 
+         Entity*                levelCamera;
          Entity*                camera;
          Components::Transform* camTrans;
          Components::Camera*    camCamera;
@@ -122,33 +123,35 @@ namespace ForLeaseEngine
 
     namespace leg = LevelEditorGlobals;
 
-//    void PopulateMap()
-//    {
-//        std::vector<Component*> comps;
-//        Entity dummy;
-//        comps.push_back(new Components::BackgroundMusic(dummy));
-//        comps.push_back(new Components::Camera(dummy));
-//        comps.push_back(new Components::ChangeLevelOnCollide(dummy));
-//        comps.push_back(new Components::Collision(dummy));
-//        comps.push_back(new Components::DragWithMouse(dummy));
-//        comps.push_back(new Components::FadeWithDistance(dummy));
-//        comps.push_back(new Components::EnemyAI(dummy));
-//        comps.push_back(new Components::Light(dummy));
-//        comps.push_back(new Components::Model(dummy));
-//        comps.push_back(new Components::Physics(dummy));
-//        comps.push_back(new Components::CharacterController(dummy));
-//        comps.push_back(new Components::ScaleWithKeyboard(dummy));
-//        comps.push_back(new Components::SoundEmitter(dummy));
-//        comps.push_back(new Components::Sprite(dummy));
-//        comps.push_back(new Components::SpriteText(dummy));
-//        comps.push_back(new Components::TransformModeControls(dummy));
-//        comps.push_back(new Components::VisionCone(dummy));
-//
-//        for (int i = 0; i < comps.size(); i++)
-//        {
-//            leg::reqMap[leg::componentNames[i]] = comps[i]->GetRequired;
-//        }
-//    }
+    void PopulateMap()
+    {
+        std::vector<Component*> comps;
+        Entity dummy;
+        Components::DragWithMouse* dwm;
+        comps.push_back(new Components::BackgroundMusic(dummy));
+        comps.push_back(new Components::Camera(dummy, 0, 0, 0));
+        comps.push_back(new Components::ChangeLevelOnCollide(dummy));
+        comps.push_back(new Components::Collision(dummy));
+        comps.push_back(dwm->Create(dummy));
+        comps.push_back(new Components::FadeWithDistance(dummy));
+        comps.push_back(new Components::EnemyAI(dummy));
+        comps.push_back(new Components::Light(dummy));
+        comps.push_back(new Components::Model(dummy));
+        comps.push_back(new Components::Physics(dummy));
+        comps.push_back(new Components::CharacterController(dummy));
+        comps.push_back(new Components::ScaleWithKeyboard(dummy));
+        comps.push_back(new Components::SoundEmitter(dummy));
+        comps.push_back(new Components::Sprite(dummy));
+        comps.push_back(new Components::SpriteText(dummy, "Arial.fnt"));
+        comps.push_back(new Components::TransformModeControls(dummy));
+        comps.push_back(new Components::VisionCone(dummy));
+
+        for (unsigned i = 0; i < comps.size(); i++)
+        {
+            //unsigned long long ull = comps[i]->GetRequired();
+            leg::reqMap[leg::componentNames[i]] = comps[i]->GetRequired();
+        }
+    }
 
     void LevelEditor::Load()
     {
@@ -159,6 +162,7 @@ namespace ForLeaseEngine
         leg::camCamera = new Components::Camera(*leg::camera, 0, 1, 50);
         leg::camera->AddComponent(leg::camTrans);
         leg::camera->AddComponent(leg::camCamera);
+        leg::levelCamera = leg::camera;
         leg::render->SetCamera(*leg::camera);
         leg::levelPhysics = new LevelComponents::Physics(*this);
         leg::levelLight = new LevelComponents::Light(*this);
@@ -487,30 +491,14 @@ namespace ForLeaseEngine
     {
         Serializer root;
         if (root.ReadFile("LevelEditorData.json"))
-        {
-            root.ReadStringArray("Meshes", leg::meshNames);
             root.ReadStringArray("Archetypes", leg::archetypeNames);
-   //         root.ReadStringArray("Sounds", leg::soundNames);
-            root.ReadStringArray("Animations", leg::animationNames);
-            root.ReadStringArray("Fonts", leg::fontNames);
-            root.ReadStringArray("Textures", leg::textureNames);
-            for (auto i : leg::meshNames)
-                ForLease->Resources.LoadMesh(i);
-//            for (auto i : leg::soundNames)
-//                ForLease->Resources.LoadSound(i);
-            for (auto i : leg::animationNames)
-                ForLease->Resources.LoadMeshAnimation(i);
-            for (auto i : leg::fontNames)
-                ForLease->Resources.LoadFont(i);
-            for (auto i : leg::textureNames)
-                ForLease->Resources.LoadTexture(i);
 
-            leg::meshNames = ForLease->Resources.GetLoadedMeshNames();
-//            leg::soundNames = ForLease->Resources.GetLoadedSoundNames();
-            leg::animationNames = ForLease->Resources.GetLoadedMeshAnimationNames();
-            leg::fontNames = ForLease->Resources.GetLoadedFontNames();
-            leg::textureNames = ForLease->Resources.GetLoadedTextureNames();
-        }
+        ForLease->Filesystem.LoadAllAssets();
+        leg::meshNames = ForLease->Resources.GetLoadedMeshNames();
+        leg::soundNames = ForLease->sound->GetName();
+        leg::animationNames = ForLease->Resources.GetLoadedMeshAnimationNames();
+        leg::fontNames = ForLease->Resources.GetLoadedFontNames();
+        leg::textureNames = ForLease->Resources.GetLoadedTextureNames();
     }
 }
 

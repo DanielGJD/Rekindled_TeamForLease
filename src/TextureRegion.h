@@ -20,7 +20,7 @@ namespace ForLeaseEngine {
     class TextureRegion  : public Serializable {
         public:
             TextureRegion();
-            TextureRegion(Texture* texture, int left, int right, int top, int bottom);
+            TextureRegion(std::string texture, int left, int right, int top, int bottom);
 
             void Serialize(Serializer& root);
             void Deserialize(Serializer& root);

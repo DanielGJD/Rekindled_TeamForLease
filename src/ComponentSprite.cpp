@@ -106,7 +106,7 @@ namespace ForLeaseEngine {
         void Sprite::SetSpriteSource(std::string const& textureName) {
             Texture* texture = ForLease->Resources.GetTexture(textureName);
             if(texture)
-                SpriteSource = TextureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
+                SpriteSource = TextureRegion(textureName, 0, texture->GetWidth(), 0, texture->GetHeight());
         }
 
         std::string Sprite::GetSourceName() {
