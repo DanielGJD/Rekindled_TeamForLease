@@ -40,6 +40,7 @@ namespace ForLeaseEngine {
         }
 
         Point Checkpoint::GetLastCheckpointPosition() {
+            if (CheckpointsReached)
             Entity* lastCheckpoint = ForLease->GameStateManager().CurrentState().GetEntityByID(LastCheckpointReached);
             if (lastCheckpoint) {
                 return lastCheckpoint->GetComponent<Components::Transform>()->Position;
