@@ -31,8 +31,10 @@ namespace ForLeaseEngine {
             virtual void Update();
             virtual void Deinitialize();
             virtual void Unload();
-
+            virtual void SignalResetToCheckpoint();
         private:
+            virtual void ResetToCheckpoint();
+            bool Reset;
             std::string File;
     };
 

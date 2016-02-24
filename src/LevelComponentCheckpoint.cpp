@@ -10,6 +10,7 @@
 */
 
 #include "LevelComponentCheckpoint.h"
+#include "State.h"
 #include <iostream>
 
 namespace ForLeaseEngine {
@@ -32,6 +33,19 @@ namespace ForLeaseEngine {
                 }
             }
 
+        }
+
+        void Checkpoint::ReachedCheckpoint(unsigned long checkpointID) {
+            CheckpointsReached.push_back(checkpointID);
+        }
+
+        Point Checkpoint::GetLastCheckpointPosition() {
+            Entity* lastCheckpoint = ForLease->GameStateManager().CurrentState().GetEntityByID(LastCheckpointReached);
+            if (lastCheckpoint) {
+                return lastCheckpoint->GetComponent<Components::Transform>()->Position;
+            }
+
+            return Point();
         }
 
         void Checkpoint::Serialize(Serializer& root) {
