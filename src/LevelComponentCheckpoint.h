@@ -16,6 +16,7 @@
 #include "ComponentCheckpoint.h"
 #include "ComponentTransform.h"
 #include "Vector.h"
+#include "Event.h"
 
 namespace ForLeaseEngine {
 
@@ -36,16 +37,13 @@ namespace ForLeaseEngine {
                 Checkpoint(State& owner);
                 void Update(std::vector<Entity *>& entities);
 
-                void ReachedCheckpoint(unsigned long checkpointID);
-
-                Point GetLastCheckpointPosition();
-
-                std::vector<unsigned long> CheckpointsReached;
-                Point PlayerStartPosition;
+                void CheckpointActivated(const Event* e);
+                void ResetToCheckpoint();
 
                 virtual void Serialize(Serializer& root);
                 virtual void Deserialize(Serializer& root);
             private:
+                Serializer LastCheckpointState;
         };
 
     } // LevelComponents

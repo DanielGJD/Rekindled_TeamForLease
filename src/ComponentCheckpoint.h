@@ -15,6 +15,7 @@
 
 #include "Component.h"
 #include "Vector.h"
+#include "Event.h"
 
 namespace ForLeaseEngine {
 
@@ -38,6 +39,7 @@ namespace ForLeaseEngine {
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
             private:
+                bool Active;
                 Checkpoint() = delete;
         };
 

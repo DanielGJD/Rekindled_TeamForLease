@@ -17,7 +17,7 @@
 
 namespace ForLeaseEngine {
 
-    Level::Level(std::string file) : File(file), Reset(false) {
+    Level::Level(std::string file) : File(file) {
         Serializer serial;
         serial.ReadFile(File);
         serial = serial.GetChild("State");
@@ -57,14 +57,4 @@ namespace ForLeaseEngine {
 
     void Level::Unload() {}
 
-    void Level::SignalResetToCheckpoint() {
-        Reset = true;
-    }
-
-    void Level::ResetToCheckpoint() {
-        LevelComponents::Checkpoint* checkpoint = GetLevelComponent<LevelComponents::Checkpoint>();
-
-        Reset = false;
-    }
-
-}
+} // ForLeaseEngine

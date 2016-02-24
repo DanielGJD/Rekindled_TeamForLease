@@ -23,30 +23,25 @@ namespace ForLeaseEngine {
             \param owner
                 A reference to the State that created it.
         */
-        Checkpoint::Checkpoint(State& owner) : LevelComponent(owner, ComponentType::Checkpoint) {}
+        Checkpoint::Checkpoint(State& owner) : LevelComponent(owner, ComponentType::Checkpoint), LastCheckpointState() {
+            ForLease->Dispatcher.Attach(NULL, this, "CheckpointActivated", &Checkpoint::CheckpointActivated);
+        }
 
         void Checkpoint::Update(std::vector<Entity *>& entities) {
 
-            for (Entity* entity : entities) {
-                if (CheckEntityCompatibility(entity)) {
-
-                }
-            }
-
+//            for (Entity* entity : entities) {
+//                if (CheckEntityCompatibility(entity)) {
+//
+//                }
+//            }
         }
 
-        void Checkpoint::ReachedCheckpoint(unsigned long checkpointID) {
-            CheckpointsReached.push_back(checkpointID);
+        void Checkpoint::CheckpointActivated(const Event* e) {
+            Owner.Serialize(LastCheckpointState);
         }
 
-        Point Checkpoint::GetLastCheckpointPosition() {
-            if (CheckpointsReached)
-            Entity* lastCheckpoint = ForLease->GameStateManager().CurrentState().GetEntityByID(LastCheckpointReached);
-            if (lastCheckpoint) {
-                return lastCheckpoint->GetComponent<Components::Transform>()->Position;
-            }
-
-            return Point();
+        void Checkpoint::ResetToCheckpoint() {
+            Owner.Deserialize(LastCheckpointState);
         }
 
         void Checkpoint::Serialize(Serializer& root) {
