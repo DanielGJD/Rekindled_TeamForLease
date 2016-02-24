@@ -42,6 +42,8 @@ namespace ForLeaseEngine {
 
                 virtual void Serialize(Serializer& root);
                 virtual void Deserialize(Serializer& root);
+
+                unsigned long TriggerEntityID;
             private:
                 Serializer LastCheckpointState;
         };

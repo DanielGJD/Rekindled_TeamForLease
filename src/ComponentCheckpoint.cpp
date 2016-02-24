@@ -22,17 +22,20 @@ namespace ForLeaseEngine {
             \param owner
                 The owning Entity.
         */
-        Checkpoint::Checkpoint(Entity& owner) : Component(owner, ComponentType::Transform) {}
+        Checkpoint::Checkpoint(Entity& owner) : Component(owner, ComponentType::Transform | ComponentType::Collision),
+            Active(false) {}
 
         void Checkpoint::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer checkpoint = root.GetChild("Checkpoint");
+            checkpoint.WriteBool("Active", Active);
             checkpoint.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(checkpoint, "Checkpoint");
         }
 
         void Checkpoint::Deserialize(Serializer& root) {
             Serializer checkpoint = root.GetChild("Checkpoint");
+            checkpoint.ReadBool("Active", Active);
         }
     } // Components
 

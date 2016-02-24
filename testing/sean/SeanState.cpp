@@ -186,7 +186,7 @@ void SeanState::Update() {
     //std::cout << "=========================================================" << std::endl;
 
     LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
-    
+
     //std::vector<Ray> rays;
     //rays.push_back(Ray(Point(1, 1), Vector(0,-1), 15));
     //rays.push_back(Ray(Point(-1, -1), Vector(0, 1), 15));

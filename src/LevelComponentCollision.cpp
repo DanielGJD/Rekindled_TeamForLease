@@ -61,10 +61,10 @@ namespace ForLeaseEngine {
                     if (entity2 == entity1 || !CheckEntityCompatibility(entity2)) continue;
 
                     if (CheckCollision(entity1, entity2)) {
-                        //CollisionEvent e1 = CollisionEvent(entity1);
-                        //CollisionEvent e2 = CollisionEvent(entity2);
-                        //ForLease->Dispatcher.DispatchTo(&e1, entity2);
-                        //ForLease->Dispatcher.DispatchTo(&e2, entity1);
+                        CollisionEvent e1 = CollisionEvent(entity1);
+                        CollisionEvent e2 = CollisionEvent(entity2);
+                        ForLease->Dispatcher.DispatchTo(&e1, entity2);
+                        ForLease->Dispatcher.DispatchTo(&e2, entity1);
                         ResolveCollision(entity1, entity2);
                     }
 

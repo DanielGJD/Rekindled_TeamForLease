@@ -23,7 +23,8 @@ namespace ForLeaseEngine {
             \param owner
                 A reference to the State that created it.
         */
-        Checkpoint::Checkpoint(State& owner) : LevelComponent(owner, ComponentType::Checkpoint), LastCheckpointState() {
+        Checkpoint::Checkpoint(State& owner) : LevelComponent(owner, ComponentType::Checkpoint), LastCheckpointState(),
+            TriggerEntityID(0) {
             ForLease->Dispatcher.Attach(NULL, this, "CheckpointActivated", &Checkpoint::CheckpointActivated);
         }
 
@@ -47,12 +48,16 @@ namespace ForLeaseEngine {
         void Checkpoint::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(ComponentType::Checkpoint));
             Serializer checkpoint = root.GetChild("Checkpoint");
+            checkpoint.WriteUint("TriggerEntityID", static_cast<unsigned>(TriggerEntityID));
             checkpoint.WriteUint("Type", static_cast<unsigned>(ComponentType::Checkpoint));
             root.Append(checkpoint, "Checkpoint");
         }
 
         void Checkpoint::Deserialize(Serializer& root) {
             Serializer checkpoint = root.GetChild("Checkpoint");
+            unsigned triggerID;
+            checkpoint.ReadUint("TriggerEntityID", triggerID);
+            TriggerEntityID = triggerID;
         }
 
     } // LevelComponents
