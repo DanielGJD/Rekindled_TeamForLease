@@ -123,9 +123,9 @@ namespace ForLeaseEngine {
                 case AssetType::Image:
                     ForLease->Resources.LoadTexture(file);
                     break;
-                //case AssetType::Font:
-                //    ForLease->Resources.LoadFont(file);
-                //    break;
+                case AssetType::Font:
+                    ForLease->Resources.LoadFont(file);
+                    break;
                 default: // No idea how you got here.  You screwed something up if that happened.
                     break;
             }
