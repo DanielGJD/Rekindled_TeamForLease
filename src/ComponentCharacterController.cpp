@@ -55,7 +55,8 @@ namespace ForLeaseEngine {
 
 
             float Drag = .05;
-            float maxSpeed = 2.0;
+            float maxSpeed = 1.5;
+            float Friction = 0.5;
             if(!CheckMove)
             {
                 Physics* rbody = Parent.GetComponent<Physics>();
@@ -64,11 +65,19 @@ namespace ForLeaseEngine {
                 currentVelocity = currentVelocity * Drag;
                 rbody->Velocity = (rbody->Velocity - currentVelocity);
 
-                if(rbody->Velocity.GetX() > maxSpeed)
+                if(rbody->Velocity[0] > maxSpeed)
                 {
-                    rbody->Velocity[0] = rbody->Velocity[0] - Drag;
-                    if(rbody->Velocity[0] < Drag)
-                        rbody->Velocity[0]  = rbody->Velocity[0] + maxSpeed;
+                    printf("updateV %f\n", rbody->Velocity[0]);
+                    rbody->Velocity[0] = rbody->Velocity[0] - Friction;
+                    if(rbody->Velocity[0] < maxSpeed)
+                        rbody->Velocity[0]  = rbody->Velocity[0] + Friction;
+                }
+                if(rbody->Velocity[0] < -maxSpeed)
+                {
+                    printf("negativeV %f\n", rbody->Velocity[0]);
+                    rbody->Velocity[0] = rbody->Velocity[0] + Friction;
+                    if(rbody->Velocity[0] > -maxSpeed)
+                        rbody->Velocity[0] = rbody->Velocity[0] - Friction;
                 }
             }
             Model* model = Parent.GetComponent<Model>();
@@ -118,7 +127,7 @@ namespace ForLeaseEngine {
                //rbody->Velocity += Vector(MoveSpeed, 0);
                     rbody->Acceleration += Vector(MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0) ;
                     //printf("RIGHTa %f", rbody->Acceleration[0]);
-                    printf("pressLV %f", rbody->Velocity[0]);
+                    printf("pressLV %f\n", rbody->Velocity[0]);
 
                     CheckMove = true;
 
@@ -177,12 +186,12 @@ namespace ForLeaseEngine {
 //                        rbody->Velocity[0] = 0;
 //                }
                 CheckMove = false;
-                if(rbody->Acceleration[0] == 0)
-                    rbody->Acceleration[0] = 0;
+                //if(rbody->Acceleration[0] == 0)
+                rbody->Acceleration[0] = 0;
                 //rbody->Acceleration += Vector(-MoveSpeed * 20, 0 );
 
                 //rbody
-                printf("releaseLV %f", rbody->Velocity[0]);
+                printf("releaseLV %f\n", rbody->Velocity[0]);
                 //printf("rightA %f", rbody->Acceleration[0]);
 
                 //rbody->Acceleration += Vector(MoveSpeed * 20, 0 );
@@ -217,8 +226,9 @@ namespace ForLeaseEngine {
                 //if(rbody->Velocity[0] = 0)
                     //rbody->Velocity[0] = 0;
                     //rbody->Velocity[0] = 0;
+                rbody->Acceleration[0] = 0;
                 CheckMove = false;
-                printf("releaseRV %f", rbody->Velocity[0]);
+                printf("releaseRV %f\n", rbody->Velocity[0]);
                 //printf("rightA %f", rbody->Acceleration[0]);
                 //rbody->Acceleration += Vector(-MoveSpeed * 20, 0 );
 
