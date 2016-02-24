@@ -342,6 +342,9 @@ namespace ForLeaseEngine {
             case ComponentType::SimpleParticleDynamics:
                 component = new Components::SimpleParticleDynamics(entity);
                 break;
+            case ComponentType::Checkpoint:
+                component = new Components::Checkpoint(entity);
+                break;
             default:
                 std::cout << "Unknown Type: " << type << std::endl;
                 return 0;
