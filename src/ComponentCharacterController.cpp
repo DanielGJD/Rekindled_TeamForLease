@@ -19,7 +19,7 @@ namespace ForLeaseEngine {
         CharacterController::CharacterController(Entity& owner)
                                                 : Component(owner, ComponentType::Physics | ComponentType::Collision),
                                                   RightKey(Keys::D), LeftKey(Keys::A), JumpKey(Keys::W),
-                                                  MoveSpeed(0.0f), JumpSpeed(0),Drag(0), WalkSound(""), JumpSound(""), LandSound(""),
+                                                  MoveSpeed(0.0f), JumpSpeed(0),Drag(0), maxSpeed(0), Friction(0),WalkSound(""), JumpSound(""), LandSound(""),
                                                   WalkAnimation(""), JumpAnimation(""), CanJump(false) , CheckMove(false){};
 
         CharacterController* CharacterController::Create(Entity& owner) {
@@ -259,6 +259,8 @@ namespace ForLeaseEngine {
             controller.WriteFloat("MoveSpeed", MoveSpeed);
             controller.WriteFloat("JumpSpeed", JumpSpeed);
             controller.WriteFloat("Drag", Drag);
+            controller.WriteFloat("maxSpeed", maxSpeed);
+            controller.WriteFloat("Friction", Friction);
             controller.WriteString("WalkSound", WalkSound);
             controller.WriteString("JumpSound", JumpSound);
             controller.WriteString("LandSound", LandSound);
@@ -276,6 +278,8 @@ namespace ForLeaseEngine {
             controller.ReadFloat("MoveSpeed", MoveSpeed);
             controller.ReadFloat("JumpSpeed", JumpSpeed);
             controller.ReadFloat("Drag", Drag);
+            controller.ReadFloat("maxSpeed", maxSpeed);
+            controller.ReadFloat("Friction", Friction);
             controller.ReadString("WalkSound", WalkSound);
             controller.ReadString("JumpSound", JumpSound);
             controller.ReadString("LandSound", LandSound);
