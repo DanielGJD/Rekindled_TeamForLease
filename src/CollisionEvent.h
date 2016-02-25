@@ -30,10 +30,13 @@ namespace ForLeaseEngine {
     class CollisionEvent : public Event {
         public:
             typedef std::pair<Entity*, Entity*> EntityPair;
-            
+
             EntityPair Colliding;
 
             CollisionEvent(Entity* first, Entity* second);
+
+            bool Matches(Entity* entity);
+            Entity* Other(Entity* entity);
 
         private:
             CollisionEvent() = delete;
