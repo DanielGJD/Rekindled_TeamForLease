@@ -12,6 +12,8 @@
 */
 #include "Serialize.h"
 #include "Exception.h"
+#include "Filesystem.h"
+#include "Engine.h"
 #include <iostream>
 #include <fstream>
 
@@ -29,6 +31,12 @@ namespace ForLeaseEngine
     */
     bool Serializer::ReadFile(const std::string& filename)
     {
+        if (!(ForLease->Filesystem.PathExists(filename)))
+        {
+            std::cout << "File not found: " << filename << std::endl;
+            return false;
+        }
+
         try
         {
             std::ifstream file(filename);
@@ -55,6 +63,10 @@ namespace ForLeaseEngine
         file << node << std::endl;
     }
 
+    bool Serializer::Empty() const
+    {
+        return node.empty();
+    }
     /*!
         \brief
             Writes an integer to the node

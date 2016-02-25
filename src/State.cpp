@@ -212,7 +212,7 @@ namespace ForLeaseEngine {
 
         for (Entity* entity : Entities) {
             if (!entity->HasComponent(ComponentType::Transform)) continue;
-            if (entity->HasComponent(ComponentType::Camera)) continue;
+            if (entity->GetName() == "LevelEditorCamera") continue;
 
             Components::Transform* transform = entity->GetComponent<Components::Transform>(true);
 

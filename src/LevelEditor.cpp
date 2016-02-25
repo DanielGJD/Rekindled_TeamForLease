@@ -157,7 +157,7 @@ namespace ForLeaseEngine
     {
         leg::timeScale = ForLease->FrameRateController().TimeScaling();
         leg::render = new LevelComponents::Renderer(*this);
-        leg::camera = AddEntity("Level Camera");
+        leg::camera = AddEntity("LevelEditorCamera");
         leg::camTrans = new Components::Transform(*leg::camera);
         leg::camCamera = new Components::Camera(*leg::camera, 0, 1, 50);
         leg::camera->AddComponent(leg::camTrans);
@@ -165,12 +165,10 @@ namespace ForLeaseEngine
         leg::levelCamera = leg::camera;
         leg::render->SetCamera(*leg::camera);
         leg::levelPhysics = new LevelComponents::Physics(*this);
-        leg::levelLight = new LevelComponents::Light(*this);
         AddLevelComponent(leg::render);
         AddLevelComponent(leg::levelPhysics);
         AddLevelComponent(new LevelComponents::Menu(*this));
         AddLevelComponent(new LevelComponents::Collision(*this));
-        AddLevelComponent(leg::levelLight);
         leg::gravity = leg::levelPhysics->GetGravity();
         leg::window = ForLease->GameWindow->DangerousGetRawWindow();
         strcpy(leg::statename, Name.c_str());
