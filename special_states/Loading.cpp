@@ -56,6 +56,11 @@ void Loading::Initialize() {
     logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
     logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
 
+    Entity* status = AddEntity("Status");
+    status->AddComponent(new Components::Transform(*status, Point(0,0), 2, 2));
+    status->AddComponent(new Components::SpriteText(*status, "Liberation_Serif.fnt"));
+
+
     //ForLease->Filesystem.LoadAllAssets();
 
     LoadPaths = ForLease->Filesystem.GetAllAssetDirectoryListings();
@@ -85,6 +90,10 @@ void Loading::Update() {
         ForLease->Filesystem.LoadAsset(LoadPaths[NextToLoad]);
         std::cout << "Loaded " << LoadPaths[NextToLoad].second << std::endl;
         ++NextToLoad;
+        if (NextToLoad < LoadPaths.size()) {
+            Entity* status = GetEntityByName("Status");
+            status->GetComponent<FLE::Components::SpriteText>()->Text = "Loading " + LoadPaths[NextToLoad].second + "...";
+        }
     }
     else {
         ForLease->GameStateManager().SetAction(FLE::Modules::StateAction::Next);
