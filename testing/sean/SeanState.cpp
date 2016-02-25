@@ -14,6 +14,7 @@
 #include "Mesh.h"
 #include "GameStateManager.h"
 #include "Ray.h"
+#include "ComponentsInclude.h"
 
 #include <iostream>
 #include <string>
@@ -33,16 +34,40 @@ void SeanState::Load() {
     AddLevelComponent(new LevelComponents::Physics(*this, Vector(0,-10)));
     AddLevelComponent(new LevelComponents::Collision(*this));
     AddLevelComponent(new LevelComponents::Menu(*this));
-    AddLevelComponent(new LevelComponents::Checkpoint(*this));
-
 
     Entity* checkpoint = AddEntity("Checkpoint");
-    checkpoint->AddComponent(new Components::Transform(checkpoint));
-    checkpoint->AddComponent(new Components::Collision(checkpoint));
-    checkpoint->AddComponent(new Components::Checkpoint(checkpoint));
+    checkpoint->AddComponent(new Components::Transform(*checkpoint));
+    Components::Collision* checkpointCollide = new Components::Collision(*checkpoint);
+    checkpointCollide->ResolveCollisions = false;
+    checkpoint->AddComponent(checkpointCollide);
+    checkpoint->AddComponent(Components::Checkpoint::Create(*checkpoint));
+    checkpoint->AddComponent(new Components::Model(*checkpoint, true, false, false, "1-1Block.json"));
+
+    Entity* floor = AddEntity("Floor");
+    floor->AddComponent(new Components::Transform(*floor, Point(0,-4), 20, 1, 0, 0));
+    floor->AddComponent(new Components::Collision(*floor));
+    floor->AddComponent(new Components::Model(*floor, true, false, false, "1-1Block.json"));
+
+    Entity* character = AddEntity("Character");
+    character->AddComponent(new Components::Transform(*character, Point(0, 4)));
+    character->AddComponent(new Components::Physics(*character));
+    character->AddComponent(new Components::Collision(*character));
+    character->AddComponent(new Components::Model(*character, true, false, false, "1-1Block.json"));
+    Components::CharacterController* charController = Components::CharacterController::Create(*character);
+    charController->JumpSpeed = 50;
+    charController->MoveSpeed = 50;
+    charController->maxSpeed = 200;
+    character->AddComponent(charController);
+
+    Serializer serial;
+    LevelComponents::Checkpoint* lcCheckpoint = new LevelComponents::Checkpoint(*this, serial);
+    lcCheckpoint->TriggerEntityID = character->GetID();
+    AddLevelComponent(lcCheckpoint);
 
     Serializer serial2;
     Serialize(serial2);
+    lcCheckpoint->LastCheckpointState = serial2;
+
     serial2.WriteFile("StateTest.json");
 }
 

@@ -23,6 +23,7 @@
 int Start(){
     std::vector<ForLeaseEngine::State *> states;
     states.push_back(new Loading("Game.json"));
+    states.push_back(new SeanState());
 
 
     ForLeaseEngine::Engine engine(states, 1024, 768, 60);
