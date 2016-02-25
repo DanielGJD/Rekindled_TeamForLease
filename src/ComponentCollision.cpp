@@ -35,8 +35,8 @@ namespace ForLeaseEngine {
         }
 
         void Collision::OnCollide(const Event* e) {
-            const CollisionEvent* event = static_cast<const CollisionEvent *>(e);
-            std::cout << Parent.GetName() << " collided with " << event->Other->GetName() << std::endl;
+            //const CollisionEvent* event = static_cast<const CollisionEvent *>(e);
+            //std::cout << Parent.GetName() << " collided with " << event->Other->GetName() << std::endl;
         }
 
         float Collision::ScaledWidth() {

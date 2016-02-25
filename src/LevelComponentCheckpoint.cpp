@@ -23,12 +23,14 @@ namespace ForLeaseEngine {
             \param owner
                 A reference to the State that created it.
         */
-        Checkpoint::Checkpoint(State& owner) : LevelComponent(owner, ComponentType::Checkpoint), LastCheckpointState(),
+        Checkpoint::Checkpoint(State& owner, Serializer& root) : LevelComponent(owner, ComponentType::Checkpoint), LastCheckpointState(root),
             TriggerEntityID(0) {
             ForLease->Dispatcher.Attach(NULL, this, "CheckpointActivated", &Checkpoint::CheckpointActivated);
+            ForLease->Dispatcher.Attach(NULL, this, "KeyDown", &Checkpoint::OnKeyDown);
         }
 
-        Checkpoint::Checkpoint() {
+        Checkpoint::~Checkpoint() {
+            ForLease->Dispatcher.Detach(this, "KeyDown");
             ForLease->Dispatcher.Detach(this, "CheckpointActivated");
         }
 
@@ -46,7 +48,7 @@ namespace ForLeaseEngine {
         }
 
         void Checkpoint::ResetToCheckpoint() {
-            Owner.Deserialize(LastCheckpointState);
+            Owner.DeserializeNonReference(LastCheckpointState);
         }
 
         void Checkpoint::Serialize(Serializer& root) {
@@ -62,6 +64,13 @@ namespace ForLeaseEngine {
             unsigned triggerID;
             checkpoint.ReadUint("TriggerEntityID", triggerID);
             TriggerEntityID = triggerID;
+        }
+
+        void Checkpoint::OnKeyDown(const Event* e) {
+            const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
+
+            if (key_e->Key == Keys::P)
+                ResetToCheckpoint();
         }
 
     } // LevelComponents

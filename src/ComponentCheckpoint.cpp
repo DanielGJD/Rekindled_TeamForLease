@@ -21,6 +21,12 @@ namespace ForLeaseEngine {
 
     namespace Components {
 
+        Checkpoint* Checkpoint::Create(Entity& owner) {
+            Checkpoint* checkpoint = new Checkpoint(owner);
+            checkpoint->Initialize();
+            return checkpoint;
+        }
+
         /*!
             Constructor for the Checkpoint component.
 
@@ -28,19 +34,28 @@ namespace ForLeaseEngine {
                 The owning Entity.
         */
         Checkpoint::Checkpoint(Entity& owner) : Component(owner, ComponentType::Transform | ComponentType::Collision),
-            Active(false) {
-                ForLease->Dispatcher.Attach(NULL, this, "Collision", &Checkpoint::OnCollide);
-            }
+            Active(false) {}
 
-        ~Checkpoint::Checkpoint() {
+        Checkpoint::~Checkpoint() {
             ForLease->Dispatcher.Detach(this, "Collision");
         }
 
-        void Checkpoint::OnCollide(const CollisionEvent* e) {
+        void Checkpoint::Initialize() {
+            ForLease->Dispatcher.Attach(NULL, this, "Collision", &Checkpoint::OnCollide);
+        }
+
+        void Checkpoint::OnCollide(const Event* e) {
+            const CollisionEvent* collision = reinterpret_cast<const CollisionEvent*>(e);
+            Entity* other;
+            if (collision->Colliding.first != &Parent && collision->Colliding.second != &Parent)
+                return;
+            if (collision->Colliding.first != &Parent) other = collision->Colliding.first;
+            else other = collision->Colliding.second;
+
             LevelComponents::Checkpoint* lcCheckpoint = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Checkpoint>();
             if (!lcCheckpoint) throw Exception("No checkpoint level component found!");
 
-            if (e->Other->GetID() == lcCheckpoint->TriggerEntityID && !Active) {
+            if (other->GetID() == lcCheckpoint->TriggerEntityID && !Active) {
                 Active = true;
                 Event activatedEvent = Event("CheckpointActivated");
                 ForLease->Dispatcher.Dispatch(&activatedEvent, this);

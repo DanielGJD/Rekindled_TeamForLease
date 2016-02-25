@@ -34,7 +34,7 @@ namespace ForLeaseEngine {
             public:
                 static const ComponentType Type = ComponentType::Checkpoint;
                 virtual ComponentType GetType() { return Type; }
-                Checkpoint(State& owner);
+                Checkpoint(State& owner, Serializer& root);
                 ~Checkpoint();
                 void Update(std::vector<Entity *>& entities);
 
@@ -45,8 +45,11 @@ namespace ForLeaseEngine {
                 virtual void Deserialize(Serializer& root);
 
                 unsigned long TriggerEntityID;
-            private:
                 Serializer LastCheckpointState;
+
+                void OnKeyDown(const Event* e);
+            private:
+                
         };
 
     } // LevelComponents

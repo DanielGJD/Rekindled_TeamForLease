@@ -36,10 +36,12 @@ namespace ForLeaseEngine {
             public:
                 static const ComponentType Type = ComponentType::Checkpoint;
                 virtual ComponentType GetType() { return Type; }
+                static Checkpoint* Create(Entity& owner);
                 Checkpoint(Entity& owner);
                 ~Checkpoint();
+                void Initialize();
                 void Update() {}
-                void OnCollide(const CollisionEvent* e);
+                void OnCollide(const Event* e);
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
             private:

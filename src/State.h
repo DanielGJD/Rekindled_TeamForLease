@@ -85,13 +85,15 @@ namespace ForLeaseEngine {
             virtual void Serialize(Serializer& root);
             virtual void Deserialize(Serializer& root);
 
+            virtual void DeserializeNonReference(Serializer root);
+
         protected:
             std::string Name;                               //! Name of the state
             std::vector<LevelComponent*> LevelComponents;   //! The level components in the state
             std::vector<Entity*> Entities;                  //! The entities in the state
     };
 
-    LevelComponent* DeserializeLevelComponent(Serializer& root, State& state);
+    LevelComponent* DeserializeLevelComponent(Serializer& root, State& state, Serializer& stateSerializer);
     void AddLevelComponentsToState(ComponentType mask, State* state);
 
 } // ForLeaseEngine
