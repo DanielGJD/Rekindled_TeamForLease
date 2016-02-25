@@ -44,6 +44,7 @@ namespace ForLeaseEngine {
         }
 
         void Checkpoint::CheckpointActivated(const Event* e) {
+            LastCheckpointState = Serializer();
             Owner.Serialize(LastCheckpointState);
         }
 
