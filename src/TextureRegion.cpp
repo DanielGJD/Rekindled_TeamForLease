@@ -11,6 +11,7 @@
 #include "TextureRegion.h"
 #include "Serializable.h"
 #include "Serialize.h"
+#include "Engine.h"
 #include <sstream>
 
 namespace ForLeaseEngine {
@@ -20,20 +21,21 @@ namespace ForLeaseEngine {
         Height = 0;
     }
 
-    TextureRegion::TextureRegion(Texture* texture, int left, int right, int top, int bottom) {
-        Source = texture->GetName();
-        TextureID = texture->GetID();
+    TextureRegion::TextureRegion(std::string texture, int left, int right, int top, int bottom) {
+        Source = texture;
         Width = right - left;
         Height = bottom - top;
-        UV[0][0] = static_cast<float>(right) / texture->GetWidth();
-        UV[1][0] = static_cast<float>(left) / texture->GetWidth();
-        UV[2][0] = static_cast<float>(left) / texture->GetWidth();
-        UV[3][0] = static_cast<float>(right) / texture->GetWidth();
+        Texture* tex = ForLease->Resources.GetTexture(texture);
+        TextureID = tex->GetID();
+        UV[0][0] = static_cast<float>(right) / tex->GetWidth();
+        UV[1][0] = static_cast<float>(left) / tex->GetWidth();
+        UV[2][0] = static_cast<float>(left) / tex->GetWidth();
+        UV[3][0] = static_cast<float>(right) / tex->GetWidth();
 
-        UV[0][1] = static_cast<float>(top) / texture->GetHeight();
-        UV[1][1] = static_cast<float>(top) / texture->GetHeight();
-        UV[2][1] = static_cast<float>(bottom) / texture->GetHeight();
-        UV[3][1] = static_cast<float>(bottom) / texture->GetHeight();
+        UV[0][1] = static_cast<float>(top) / tex->GetHeight();
+        UV[1][1] = static_cast<float>(top) / tex->GetHeight();
+        UV[2][1] = static_cast<float>(bottom) / tex->GetHeight();
+        UV[3][1] = static_cast<float>(bottom) / tex->GetHeight();
     }
 
     void TextureRegion::Serialize(Serializer& root) {

@@ -38,5 +38,6 @@
 #include "ComponentSimpleParticleDynamics.h"
 #include "ComponentParallax.h"
 #include "ComponentOccluder.h"
+#include "ComponentCheckpoint.h"
 
 #endif

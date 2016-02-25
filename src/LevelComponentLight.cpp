@@ -19,7 +19,7 @@ namespace ForLeaseEngine {
 
     namespace LevelComponents {
 
-        Light::Light(State& owner) : LevelComponent(owner) { }
+        Light::Light(State& owner, Color const& ambientLight) : LevelComponent(owner), AmbientLight(ambientLight) { }
 
         void Light::Update(std::vector<Entity *>& entities) {
             LitEntities.clear();
@@ -39,13 +39,19 @@ namespace ForLeaseEngine {
         }
 
         void Light::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned>(ComponentType::Light));
             Serializer light = root.GetChild("Light");
             light.WriteUint("Type", static_cast<unsigned>(ComponentType::Light));
+            Serializer ambient = light.GetChild("AmbientLight");
+            AmbientLight.Serialize(ambient);
+            light.Append(ambient, "AmbientLight");
             root.Append(light, "Light");
         }
 
         void Light::Deserialize(Serializer& root) {
             Serializer light = root.GetChild("Light");
+            Serializer ambient = light.GetChild("AmbientLight");
+            AmbientLight.Deserialize(ambient);
         }
 
         bool Light::CheckIfLit(unsigned long id) {

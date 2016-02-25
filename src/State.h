@@ -41,6 +41,7 @@ namespace ForLeaseEngine {
 
             void UpdateEntities();
             void AddLevelComponent(LevelComponent* levelComponent);
+            void DeleteLevelComponent(LevelComponent* levelComponent);
             Entity* AddEntity(std::string name = "");
             Entity* SpawnArchetype(std::string filename, Point position = Point(), std::string name = "");
             bool DeleteEntity(long unsigned id);
@@ -85,13 +86,15 @@ namespace ForLeaseEngine {
             virtual void Serialize(Serializer& root);
             virtual void Deserialize(Serializer& root);
 
+            virtual void DeserializeNonReference(Serializer root);
+
         protected:
             std::string Name;                               //! Name of the state
             std::vector<LevelComponent*> LevelComponents;   //! The level components in the state
             std::vector<Entity*> Entities;                  //! The entities in the state
     };
 
-    LevelComponent* DeserializeLevelComponent(Serializer& root, State& state);
+    LevelComponent* DeserializeLevelComponent(Serializer& root, State& state, Serializer& stateSerializer);
     void AddLevelComponentsToState(ComponentType mask, State* state);
 
 } // ForLeaseEngine

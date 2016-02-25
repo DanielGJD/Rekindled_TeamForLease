@@ -17,9 +17,9 @@
 
 namespace ForLeaseEngine {
     namespace Components {
-        TransformModeControls::TransformModeControls(Entity& owner)
-                                                    : Component(owner), SlowMotionSpeed(0.5f), NormalSpeed(1),
-                                                      ModeToggleKey(Keys::LeftAlt), TransformModeSound(""), Active(false), EntitySelected(false), ActiveEntity(0) {}
+        TransformModeControls::TransformModeControls(Entity& owner, float slowMotionSpeed, float normalSpeed, float influenceRadius, int modeToggleKey, std::string transformModeSound)
+                                                    : Component(owner), SlowMotionSpeed(slowMotionSpeed), NormalSpeed(normalSpeed), InfluenceRadius(influenceRadius),
+                                                      ModeToggleKey(modeToggleKey), TransformModeSound(transformModeSound), Active(false), EntitySelected(false), ActiveEntity(0) {}
 
         TransformModeControls::~TransformModeControls() {
             ForLease->Dispatcher.Detach(this, "KeyUp");
@@ -45,6 +45,14 @@ namespace ForLeaseEngine {
                     ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->DrawRectangle(trans->Position, collider->Width * trans->ScaleX, collider->Height * trans->ScaleY);
                 }
             }
+            if(Active) {
+                Entity* player = ForLease->GameStateManager().CurrentState().GetEntityByName("Player");
+                Point center = player->GetComponent<Components::Transform>()->Position;
+                LevelComponents::Renderer* render = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
+                render->SetDrawingColor(1, 0, 0);
+                render->SetDebugLineWidth(2);
+                render->DrawCircle(center, InfluenceRadius);
+            }
         }
 
         void TransformModeControls::Serialize(Serializer& root) {
@@ -54,6 +62,7 @@ namespace ForLeaseEngine {
             transModeCont.WriteFloat("NormalSpeed", NormalSpeed);
             transModeCont.WriteInt("ModeToggleKey", ModeToggleKey);
             transModeCont.WriteString("TransformModeSound", TransformModeSound);
+            transModeCont.WriteFloat("InfluenceRadius", InfluenceRadius);
             transModeCont.WriteUint("Type", static_cast<unsigned int>(Type));
             root.Append(transModeCont, "TransformModeControls");
         }
@@ -63,6 +72,7 @@ namespace ForLeaseEngine {
             transModeCont.ReadFloat("SlowMotionSpeed", SlowMotionSpeed);
             transModeCont.ReadFloat("NormalSpeed", NormalSpeed);
             transModeCont.ReadInt("ModeToggleKey", ModeToggleKey);
+            transModeCont.ReadFloat("InfluenceRadius", InfluenceRadius);
             transModeCont.ReadString("TransformModeSound", TransformModeSound);
         }
 
@@ -141,7 +151,7 @@ namespace ForLeaseEngine {
 
             //std::cout << "TRANSFORM MODE CONTROLS GOT KEY UP" << std::endl;
 
-            if(key_e->Key == Keys::LeftAlt) {
+            if(key_e->Key == Keys::Space) {
                 Toggle();
             }
         }
@@ -156,8 +166,17 @@ namespace ForLeaseEngine {
             if(Active) {
                 Point worldLoc = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->ScreenToWorld(mouse_e->ScreenLocation);
                 Entity* entity = ForLease->GameStateManager().CurrentState().GetEntityCollidingAtPoint(worldLoc);
+                Components::Transform* radCenter = ForLease->GameStateManager().CurrentState().GetEntityByName("Player")->GetComponent<Components::Transform>();
 
-                if(!entity || (!entity->HasComponent(ComponentType::DragWithMouse) && !entity->HasComponent(ComponentType::ScaleWithKeyboard))) {
+                if(!entity || (!entity->HasComponent(ComponentType::DragWithMouse) && !entity->HasComponent(ComponentType::ScaleWithKeyboard)) || Point::DistanceSquared(entity->GetComponent<Components::Transform>()->Position, radCenter->Position) > InfluenceRadius * InfluenceRadius) {
+                    /////////////////////////////////
+                    if(!entity)
+                        std::cout << "No entity selected" << std::endl;
+                    else if(!entity->HasComponent(ComponentType::DragWithMouse) && !entity->HasComponent(ComponentType::ScaleWithKeyboard))
+                        std::cout << "Entity can't be transformed" << std::endl;
+                    else if(Point::DistanceSquared(entity->GetComponent<Components::Transform>()->Position, radCenter->Position) > InfluenceRadius * InfluenceRadius)
+                        std::cout << "Selection distance " << Point::Distance(entity->GetComponent<Components::Transform>()->Position, radCenter->Position) << " greater than radius " << InfluenceRadius << std::endl;
+                    /////////////////////////////////
                     if(EntitySelected) {
                         Entity* selected = ForLease->GameStateManager().CurrentState().GetEntityByID(ActiveEntity);
                         if(selected) {

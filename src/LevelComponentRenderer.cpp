@@ -11,7 +11,7 @@
     \see Renderer.h
 */
 #include <iostream>
-#include <GL/gl.h>
+#include <GL/glew.h>
 #include "Vector.h"
 #include "Matrix.h"
 #include "LevelComponentRenderer.h"
@@ -63,6 +63,26 @@ namespace ForLeaseEngine {
             index = glGenLists(1);
             //GLuint framebuffer;
             //glGenFramebuffers(1, &framebuffer);
+
+            // Generate texture for lighting
+            glGenTextures(1, &LightTexture);
+            glBindTexture(GL_TEXTURE_2D, LightTexture);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ForLease->GameWindow->GetXResolution(), ForLease->GameWindow->GetYResolution(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            glGenFramebuffers(1, &LightFBO);
+            glBindFramebuffer(GL_FRAMEBUFFER, LightFBO);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, LightTexture, 0);
+            if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+                std::cout << "ERROR CREATING LIGHTING FRAMEBUFFER" << std::endl;
+            }
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        }
+
+        Renderer::~Renderer() {
+            glDeleteTextures(1, &LightTexture);
         }
 
         void Renderer::Serialize(Serializer& root) {
@@ -93,6 +113,7 @@ namespace ForLeaseEngine {
         }
 
         void Renderer::Update(std::vector<Entity*>& entities) {
+            //glClear(GL_COLOR_BUFFER_BIT);
             Timer renderTimer = Timer();
             VertexCount = 0;
             TriCount = 0;
@@ -100,6 +121,33 @@ namespace ForLeaseEngine {
             TextureSwapCount = 0;
             BlendModeSwapCount = 0;
             RenderTime = 0;
+
+            LevelComponents::Light* lighting = Owner.GetLevelComponent<LevelComponents::Light>();
+            if(lighting) {
+                glBindFramebuffer(GL_FRAMEBUFFER, LightFBO);
+                SetBlendMode(BlendMode::NONE);
+                SetTexture(NULL);
+                //glPushAttrib(GL_VIEWPORT_BIT);
+                //glViewport(0, 0, ForLease->GameWindow->GetXResolution(), ForLease->GameWindow->GetYResolution());
+                //std::cout << lighting->AmbientLight.GetR() << "|" << lighting->AmbientLight.GetG() <<
+                SetDrawingColor(lighting->AmbientLight);
+                //SetDrawingColor(1, 1, 0, 1);
+                glBegin(GL_QUADS);
+                    glVertex2f(-1, -1);
+                    glVertex2f(-1, 1);
+                    glVertex2f(1, 1);
+                    glVertex2f(1, -1);
+                glEnd();
+                //glClearColor(lighting->AmbientLight.GetR(), lighting->AmbientLight.GetG(), lighting->AmbientLight.GetB(), lighting->AmbientLight.GetA());
+                //glClearColor(1, 1, 1, 1);
+                //glClear(GL_COLOR_BUFFER_BIT);
+                //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                //glClearColor(ClearColor.GetR(), ClearColor.GetG() ,ClearColor.GetB() ,ClearColor.GetA());
+                //glPopAttrib();
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            }
+
+//            glFlush();
 
             if(CurrentCamera != 0) {
                 float aspectRatio = static_cast<float>(ForLease->GameWindow->GetXResolution()) / ForLease->GameWindow->GetYResolution();
@@ -189,6 +237,7 @@ namespace ForLeaseEngine {
                                             Matrix::Translation(mesh->GetCenter()) *
                                             Matrix::RotationRad(transform->Rotation) * Matrix::Scale(transform->ScaleX * (model->FlipY? -1 : 1), transform->ScaleY * (model->FlipX? -1 : 1)) *
                                             Matrix::Translation(o - mesh->GetCenter());
+                                //std::cout << "Model Color (" << model->ModelColor.GetR() << "," << model->ModelColor.GetG() << "," << model->ModelColor.GetB() << "," << model->ModelColor.GetA() << ")" << std::endl;
                                 DrawMesh(mesh, model->DrawEdges, model->DrawVertices, model->GetAnimation(), model->GetFrame(), model->GetFrameTime() * model->FrameRate - model->GetFrame(), model->ModelColor);
                             }
                         }
@@ -201,6 +250,7 @@ namespace ForLeaseEngine {
                         DrawSpriteText(spriteText, transform->Position, transform->ScaleX, transform->ScaleY, 0);
                     }
                     if(entity->HasComponent(ComponentType::ParticleSystem)) {
+                        glBindFramebuffer(GL_FRAMEBUFFER, 0);
                         Components::ParticleSystem* pSystem = entity->GetComponent<Components::ParticleSystem>();
                         DrawParticleSystem(pSystem);
                     }
@@ -208,51 +258,64 @@ namespace ForLeaseEngine {
                         Components::Light* light = entity->GetComponent<Components::Light>();
                         SetBlendMode(light->LightMode);
                         ModelView = Matrix::Translation(trans->Position);
+                        glBindFramebuffer(GL_FRAMEBUFFER, LightFBO);
                         DrawMesh(light->GetLightMesh(), light->DrawOutline, false);
+                        glBindFramebuffer(GL_FRAMEBUFFER, 0);
                     }
                 }
-
-
-                Entity* cameraEntity = Owner.GetEntityByID(CurrentCamera);
-                Components::Transform* cameraTrans = cameraEntity->GetComponent<Components::Transform>();
-                Components::Camera* camera = cameraEntity->GetComponent<Components::Camera>();
-
-                float height = camera->Size;
-                float width = height * ForLease->GameWindow->GetXResolution() / ForLease->GameWindow->GetYResolution();
-                float halfwidth = width / 2;
-                float halfheight = height / 2;
-                Point pos = cameraTrans->Position;
-
-                // Draw outline
-                SetDrawingColor(OutlineColor);
-                DrawRectangleFilled(pos + Vector(0, halfheight), width, OutlineWidth);
-                DrawRectangleFilled(pos + Vector(0, -halfheight), width, OutlineWidth);
-                DrawRectangleFilled(pos + Vector(halfwidth, 0), OutlineWidth, height);
-                DrawRectangleFilled(pos + Vector(-halfwidth, 0), OutlineWidth, height);
-
-                // Draw overlay
-                SetDrawingColor(OverlayColor);
-
-                DrawRectangleFilled(cameraTrans->Position, width, height, 0, BlendMode::ALPHA);
             }
 
-            Timer finishTime;
-            //glFinish();
-            //glFlush();
-            //std::cout << "glFinish Time: " << finishTime.GetTime() << std::endl;
-            SetBlendMode(BlendMode::NONE);
-            SetTexture(NULL);
-            RenderTime = renderTimer.GetTime();
+            if(lighting) {
+                SetBlendMode(BlendMode::MULTIPLY);
+                SetDrawingColor(1, 1, 1);
+                //glBindFramebuffer(GL_FRAMEBUFFER, LightFBO);
+                glBindTexture(GL_TEXTURE_2D, LightTexture);
+                GLboolean texEnable = glIsEnabled(GL_TEXTURE_2D);
+                glEnable(GL_TEXTURE_2D);
+                glBegin(GL_QUADS);
+                    glTexCoord2f(0, 0); glVertex2f(-1, -1);
+                    glTexCoord2f(0, 1); glVertex2f(-1, 1);
+                    glTexCoord2f(1, 1); glVertex2f(1, 1);
+                    glTexCoord2f(1, 0); glVertex2f(1, -1);
+                glEnd();
+                if(texEnable == GL_FALSE) {
+                    glDisable(GL_TEXTURE_2D);
+                }
+                glBindTexture(GL_TEXTURE_2D, CurrentTexture);
+                //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            }
+
+            Entity* cameraEntity = Owner.GetEntityByID(CurrentCamera);
+            Components::Transform* cameraTrans = cameraEntity->GetComponent<Components::Transform>();
+            Components::Camera* camera = cameraEntity->GetComponent<Components::Camera>();
+
+            float height = camera->Size;
+            float width = height * ForLease->GameWindow->GetXResolution() / ForLease->GameWindow->GetYResolution();
+            float halfwidth = width / 2;
+            float halfheight = height / 2;
+            Point pos = cameraTrans->Position;
+
+            // Draw outline
+            SetDrawingColor(OutlineColor);
+            DrawRectangleFilled(pos + Vector(0, halfheight), width, OutlineWidth);
+            DrawRectangleFilled(pos + Vector(0, -halfheight), width, OutlineWidth);
+            DrawRectangleFilled(pos + Vector(halfwidth, 0), OutlineWidth, height);
+            DrawRectangleFilled(pos + Vector(-halfwidth, 0), OutlineWidth, height);
+
+            // Draw overlay
+            SetDrawingColor(OverlayColor);
+
+            DrawRectangleFilled(cameraTrans->Position, width, height, 0, BlendMode::ALPHA);
         }
 
         void Renderer::SetCamera(const Entity& camera) {
             CurrentCamera = camera.GetID();
-            std::cout << "Set camera to " << CurrentCamera << std::endl;
+            //std::cout << "Set camera to " << CurrentCamera << std::endl;
         }
 
         void Renderer::SetCamera(unsigned long camera) {
             CurrentCamera = camera;
-            std::cout << "Set Camera to " << CurrentCamera << std::endl;
+            //std::cout << "Set Camera to " << CurrentCamera << std::endl;
         }
 
         long Renderer::GetCameraID() {
@@ -307,7 +370,7 @@ namespace ForLeaseEngine {
                         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         break;
                     case BlendMode::ADDITIVE:
-                        glBlendFunc(GL_ONE, GL_ONE);
+                        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
                         break;
                     case BlendMode::MULTIPLY:
                         glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
@@ -329,36 +392,88 @@ namespace ForLeaseEngine {
 
         // Currently a little weird, doesn't support scaling or rotation
         void Renderer::DrawSpriteText(Components::SpriteText* spriteText, const Point& position, float scaleX, float scaleY, float rotation) {
-            //SetModelView(position, scaleX, scaleY, rotation);
-            SetBlendMode(BlendMode::ALPHA);
-            std::string text = spriteText->Text;
+            if(spriteText->Text.size() == 0)
+                return;
+
             Font* font = ForLease->Resources.GetFont(spriteText->GetFont());
             if(!font) {
                 std::cout << "Font " << spriteText->GetFont() << " not loaded" << std::endl;
                 return;
             }
-            float xMargin = position[0];
-            Point currentDrawingLoc(position[0], position[1] - font->Base);
+
+            SetModelView(position, scaleX / font->LineHeight, scaleY / font->LineHeight, rotation);
+            SetBlendMode(BlendMode::ALPHA);
+            std::string text = spriteText->Text;
+
+            std::vector<Point> verts = std::vector<Point>(text.size() * 4);
+            Point currentDrawingLoc(0, 0);
+
+//            float xMargin = position[0];
+//            Point currentDrawingLoc(position[0], position[1] - font->Base);
             for(unsigned int i = 0; i < text.length(); ++i) {
                 char currentLetter = text.at(i);
                 if(currentLetter == '\n') {
-                    currentDrawingLoc[0] = xMargin;
-                    currentDrawingLoc[1] -= font->LineHeight * scaleY;
+                    currentDrawingLoc[0] = 0;
+                    currentDrawingLoc[1] -= font->LineHeight;
                 } else {
                     Glyph currentGlyph = font->GetGlyph(currentLetter);
                     Point glyphDrawingLoc;
-                    glyphDrawingLoc[0] = currentDrawingLoc[0] + currentGlyph.Offset[0] * scaleX + currentGlyph.Width / 2 * scaleX;
-                    glyphDrawingLoc[1] = currentDrawingLoc[1] - currentGlyph.Offset[1] * scaleY - currentGlyph.Height / 2 * scaleY;
-                    SetModelView(glyphDrawingLoc, scaleX, scaleY, rotation);
-                    DrawTextureRegion(&currentGlyph.Region);
+                    glyphDrawingLoc[0] = currentDrawingLoc[0] - currentGlyph.Offset[0];
+                    glyphDrawingLoc[1] = currentDrawingLoc[1] - currentGlyph.Offset[1];
+                    verts[i * 4] = Point(glyphDrawingLoc[0] + currentGlyph.Width, glyphDrawingLoc[1]);
+                    verts[i * 4 + 1] = Point(glyphDrawingLoc[0], glyphDrawingLoc[1]);
+                    verts[i * 4 + 2] = Point(glyphDrawingLoc[0], glyphDrawingLoc[1] - currentGlyph.Height);
+                    verts[i * 4 + 3] = Point(glyphDrawingLoc[0] + currentGlyph.Width, glyphDrawingLoc[1] - currentGlyph.Height);
+                    //SetModelView(glyphDrawingLoc, scaleX, scaleY, rotation);
+                    //DrawTextureRegion(&currentGlyph.Region);
                     //DrawRectangle(glyphDrawingLoc, currentGlyph.Region.GetWidth(), currentGlyph.Region.GetHeight());
                     //DrawTextureRegion(Point(shiftedLoc[0] - currentGlyph.Offset[0] * 3, shiftedLoc[1] - currentGlyph.Offset[1] * 0.5f), &currentGlyph.Region, scaleX, scaleY, rotation);
                     //DrawRectangle(Point(shiftedLoc[0] - currentGlyph.Offset[0] * 3, shiftedLoc[1] - currentGlyph.Offset[1] * 0.5f), currentGlyph.Region.GetWidth(), currentGlyph.Region.GetHeight());
-                    currentDrawingLoc[0] += currentGlyph.XAdvance * scaleX;
+                    currentDrawingLoc[0] += currentGlyph.XAdvance;
                     //shiftedLoc[0] += currentGlyph.XAdvance;
-                    TriCount += 2;
+                    //TriCount += 2;
                 }
             }
+
+            //Matrix combinged = Projection * ModelView;
+//            SetDrawingColor(1, 1, 1, 1);
+//            SetDebugPointSize(4);
+
+            //glBegin(GL_POINTS);
+            for(int i = 0; i < verts.size(); ++i) {
+                ModelToScreen(verts[i], verts[i]);
+                //glVertex2f(verts[i][0], verts[i][1]);
+                //std::cout << i << ":" << verts[i][0] << "," << verts[i][1] << std::endl;
+            }
+            //glEnd();
+
+//            glBegin(GL_LINES);
+//            glVertex2f(0, 0);
+//            glVertex2f(1, 0);
+//            glVertex2f(0, 0);
+//            glVertex2f(0, -1);
+//            glVertex2f(0, -font->LineHeight * 2 / 720.0);
+//            glVertex2f(1, -font->LineHeight * 2 / 720.0);
+//            glVertex2f(0, -font->LineHeight * 2 * 2 / 720.0);
+//            glVertex2f(1, -font->LineHeight * 2 * 2 / 720.0);
+//            glVertex2f(0, -font->LineHeight * 3 * 2 / 720.0);
+//            glVertex2f(1, -font->LineHeight * 3 * 2 / 720.0);
+//            glEnd();
+
+            SetDrawingColor(spriteText->TextColor);
+            SetTexture(ForLease->Resources.GetTexture(font->FontTextures[0]));
+            glBegin(GL_QUADS);
+            for(unsigned int i = 0; i < text.length(); ++i) {
+                char currentLetter = text.at(i);
+                if(currentLetter != '\n') {
+                    Glyph glyph = font->GetGlyph(currentLetter);
+                    glTexCoord2f(glyph.Region.GetUV()[0][0], glyph.Region.GetUV()[0][1]); glVertex2f(verts[i * 4][0], verts[i * 4][1]);
+                    glTexCoord2f(glyph.Region.GetUV()[1][0], glyph.Region.GetUV()[1][1]); glVertex2f(verts[i * 4 + 1][0], verts[i * 4 + 1][1]);
+                    glTexCoord2f(glyph.Region.GetUV()[2][0], glyph.Region.GetUV()[2][1]); glVertex2f(verts[i * 4 + 2][0], verts[i * 4 + 2][1]);
+                    glTexCoord2f(glyph.Region.GetUV()[3][0], glyph.Region.GetUV()[3][1]); glVertex2f(verts[i * 4 + 3][0], verts[i * 4 + 3][1]);
+                }
+            }
+            glEnd();
         }
 
         void Renderer::DrawModel(Components::Model* model) {
@@ -453,6 +568,20 @@ namespace ForLeaseEngine {
             glEnd();
         }
 
+        void Renderer::DrawCircle(const Point& center, float radius) {
+            const float controlPointCount = 40;
+            const float stepSize = 3.1415927 * 2 / controlPointCount;
+            SetModelView(center, radius, radius, 0);
+            Matrix combigned = Projection * ModelView;
+            SetBlendMode(BlendMode::NONE);
+            glBegin(GL_LINE_STRIP);
+            for(int i = 0; i <= controlPointCount; ++i) {
+                Point p = combigned * Point(cos(stepSize * i), sin(stepSize * i));
+                glVertex2f(p[0], p[1]);
+            }
+            glEnd();
+        }
+
         unsigned int Renderer::GetVertexCount() { return VertexCount; }
 
         unsigned int Renderer::GetTriCount() { return TriCount; }
@@ -490,19 +619,27 @@ namespace ForLeaseEngine {
                 return;
             }
             Texture* texture = ForLease->Resources.GetTexture(region->GetTexture());
-            float halfWidth = region->GetWidth() / 2;
-            float halfHeight = region->GetHeight() / 2;
-            Point vertices[] = {Point(halfWidth, halfHeight), Point(-halfWidth, halfHeight),
-                                Point(-halfWidth, -halfHeight), Point(halfWidth, - halfHeight)};
+            //float halfWidth = texture->GetWidth() / 2;
+            //float halfHeight = texture->GetHeight() / 2;
+            Point vertices[] = {Point(1, 1), Point(-1, 1),
+                                Point(-1, -1), Point(1, - 1)};
             for(int i = 0; i < 4; ++i) {
                 ModelToScreen(vertices[i], vertices[i]);
             }
             SetTexture(texture);
             glBegin(GL_QUADS);
-                for(int i = 0; i < 4; ++i) {
-                    glTexCoord2f(region->GetUV()[i][0], region->GetUV()[i][1]);
-                    glVertex2f(vertices[i][0], vertices[i][1]);
-                }
+                //for(int i = 0; i < 4; ++i) {
+                //    glTexCoord2f(region->GetUV()[i][0], region->GetUV()[i][1]);
+                //    glVertex2f(vertices[i][0], vertices[i][1]);
+                //}
+                glTexCoord2f(1, 0);
+                glVertex2f(vertices[0][0], vertices[0][1]);
+                glTexCoord2f(0, 0);
+                glVertex2f(vertices[1][0], vertices[1][1]);
+                glTexCoord2f(0, 1);
+                glVertex2f(vertices[2][0], vertices[2][1]);
+                glTexCoord2f(1, 1);
+                glVertex2f(vertices[3][0], vertices[3][1]);
             glEnd();
             TriCount += 2;
         }
@@ -595,7 +732,7 @@ namespace ForLeaseEngine {
                 glBegin(GL_TRIANGLES);
                     for(int i = 0; i < mesh->GetFaceCount(); ++i) {
                         IndexedFace face = mesh->GetIndexedFace(i);
-                        SetDrawingColor(mesh->GetFaceColor(i));
+                        SetDrawingColor(faceColors[i]);
                         for(int j = 0; j < 3; ++j) {
                             glVertex2f(transformed[face.Indices[j]][0], transformed[face.Indices[j]][1]);
                         }
@@ -623,7 +760,7 @@ namespace ForLeaseEngine {
             float CompileTime = 0;
             float RasterTime = 0;
             Timer timer;
-            SetTexture(NULL);
+            SetTexture(ForLease->Resources.GetTexture(pSystem->SpriteSource));
             SetBlendMode(pSystem->BlendingMode);
             std::list<Particle*> const* particles = pSystem->GetActiveParticles();
             std::vector<Point> transformed = std::vector<Point>(particles->size() * 4);
@@ -660,22 +797,19 @@ namespace ForLeaseEngine {
             glBegin(GL_QUADS);
                 p = 0;
                 for(std::list<Particle*>::const_iterator i = particles->begin(); i != particles->end(); ++i) {
-                    //SetDrawingColor((*i)->ParticleColor);
                     glColor4fv((*i)->ParticleColor.GetAll());
-//                    SetModelView((*i)->Position, (*i)->Size, (*i)->Size, (*i)->Rotation);
-//                    Matrix combigned = Projection * ModelView;
-//                    Point tl = combigned * Point(-0.5, 0.5);
-//                    Point bl = combigned * Point(-0.5, -0.5);
-//                    Point br = combigned * Point(0.5, -0.5);
-//                    Point tr = combigned * Point(0.5, 0.5);
 
                     glVertex2f(transformed[p][0], transformed[p][1]);
+                    glTexCoord2f(0, 0);
                     ++p;
                     glVertex2f(transformed[p][0], transformed[p][1]);
+                    glTexCoord2f(0, 1);
                     ++p;
                     glVertex2f(transformed[p][0], transformed[p][1]);
+                    glTexCoord2f(1, 1);
                     ++p;
                     glVertex2f(transformed[p][0], transformed[p][1]);
+                    glTexCoord2f(1, 0);
                     ++p;
                 }
             glEnd();

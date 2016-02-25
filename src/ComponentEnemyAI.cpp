@@ -62,6 +62,7 @@ namespace ForLeaseEngine {
             }
 
             Components::VisionCone* cone = Parent.GetComponent<Components::VisionCone>();
+
             if(Happy) {
                 DetectionTimer = 0;
                 cone->IndicatorColor = HappyColor;
@@ -167,21 +168,21 @@ namespace ForLeaseEngine {
                     }
                     // using lighting
                     else {
-                        if(lightSystem->CheckIfLit(multi_e->EntityIDs[i])) {
+                        //if(lightSystem->CheckIfLit(multi_e->EntityIDs[i])) {
                             Happy = true;
                             break;
-                        }
+                        //}
                     }
                 }
                 else if(entityName.compare(HatedEntityName) == 0) {
-                    if(!lightSystem) {
+                    //if(!lightSystem) {
                         willBeAngry = true;
-                    }
-                    else {
-                        if(lightSystem->CheckIfLit(multi_e->EntityIDs[i])) {
+                    //}
+                    //else {
+                    //    if(lightSystem->CheckIfLit(multi_e->EntityIDs[i])) {
                             willBeAngry = true;
-                        }
-                    }
+                    //    }
+                    //}
                 }
             }
             if(!Happy) {

@@ -263,8 +263,8 @@ namespace ForLeaseEngine {
     }
 
     Component* DeserializeComponent(Serializer& root, Entity& entity) {
-        unsigned type;
-        root.ReadUint("Type", type);
+        unsigned long long type;
+        root.ReadUlonglong("Type", type);
 
         Component* component = 0;
 
@@ -341,6 +341,15 @@ namespace ForLeaseEngine {
                 break;
             case ComponentType::SimpleParticleDynamics:
                 component = new Components::SimpleParticleDynamics(entity);
+                break;
+            case ComponentType::Checkpoint:
+                component = Components::Checkpoint::Create(entity);
+                break;
+            case ComponentType::Occluder:
+                component = new Components::Occluder(entity);
+                break;
+            case ComponentType::Parallax:
+                component = new Components::Parallax(entity);
                 break;
             default:
                 std::cout << "Unknown Type: " << type << std::endl;

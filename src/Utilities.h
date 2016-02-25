@@ -12,6 +12,7 @@
 #include "Level.h"
 #include <string>
 #include <vector>
+#include "ResourceManager.h"
 
 #ifndef UTILITIES_H
 #define UTILITIES_H
@@ -27,5 +28,7 @@ namespace CommandLine {
     StringArgument GetStringArgument(char** start, char** end, const std::string argument);
     IntArgument GetIntArgument(char** start, char** end, const std::string argument);
 }
+
+void SpawnNewLevelProcess(const std::string& level);
 
 #endif // UTILITIES_H

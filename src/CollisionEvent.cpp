@@ -21,6 +21,6 @@ namespace ForLeaseEngine {
         \param other
             A pointer to the entity that the target entity collided with.
     */
-    CollisionEvent::CollisionEvent(Entity* other) : Event("Collision"), Other(other) {}
+    CollisionEvent::CollisionEvent(Entity* first, Entity* second) : Event("Collision"), Colliding(first, second) {}
 
 } // ForLeaseEngine

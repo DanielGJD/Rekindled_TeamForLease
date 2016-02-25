@@ -10,6 +10,7 @@ namespace ForLeaseEngine {
         void Parallax::Update() {}
 
         void Parallax::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned int>(Type));
             Serializer parallax = root.GetChild("Parallax");
             parallax.WriteUint("Type", static_cast<unsigned int>(Type));
             parallax.WriteBool("Active", Active);

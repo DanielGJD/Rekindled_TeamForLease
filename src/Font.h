@@ -24,9 +24,9 @@ namespace ForLeaseEngine {
             ~Font();
             TextureRegion* GetLetter(char letter);
             const Glyph& GetGlyph(char letter);
-            Texture* GetTexture(int texture);
+            std::string GetTexture(int texture);
         //private:
-            Texture** FontTextures;
+            std::string* FontTextures;
             int NumTextures;
             int LineHeight;
             int Base;

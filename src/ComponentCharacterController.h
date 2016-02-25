@@ -26,6 +26,8 @@ namespace ForLeaseEngine {
                 CharacterController(Entity& owner);
                 ~CharacterController();
 
+                double dt = ForLease->FrameRateController().GetDt();
+
                 int RightKey;
                 int LeftKey;
                 int JumpKey;
@@ -33,6 +35,9 @@ namespace ForLeaseEngine {
                 float MoveSpeed;
                 float JumpSpeed;
 
+                float Drag;
+                float maxSpeed;
+                float Friction;
                 std::string WalkSound;
                 std::string JumpSound;
                 std::string LandSound;
@@ -52,6 +57,7 @@ namespace ForLeaseEngine {
 
             private:
                 bool CanJump;
+                bool CheckMove;
                 unsigned int LastAnimationFrame;
         };
     }

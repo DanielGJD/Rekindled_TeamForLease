@@ -22,7 +22,7 @@
 
 namespace ForLeaseEngine {
     namespace Components {
-        DragWithMouse::DragWithMouse(Entity& owner) : Component(owner, ComponentType::Transform | ComponentType::Collision), Active(false), MouseDown(false) {
+        DragWithMouse::DragWithMouse(Entity& owner) : Component(owner, ComponentType::Transform | ComponentType::Collision | ComponentType::Physics), Active(false), MouseDown(false) {
         }
 
         DragWithMouse::~DragWithMouse() {
@@ -45,7 +45,31 @@ namespace ForLeaseEngine {
             if(MouseDown && Active) {
                 Components::Physics* phy = Parent.GetComponent<Components::Physics>();
                 Components::Transform* trans = Parent.GetComponent<Components::Transform>();
+
+                // EXPERIMENTAL CODE: KEEP OBJECTS INSIDE A RADIUS OF PLAYER
+                Entity* player = ForLease->GameStateManager().CurrentState().GetEntityByName("Player");
+                Components::TransformModeControls* controls = player->GetComponent<Components::TransformModeControls>();
+                float radius;
+                if(!controls)
+                    radius = 5;
+                else
+                    radius = controls->InfluenceRadius;
+                if(player) {
+                    Point playerLoc = player->GetComponent<Components::Transform>()->Position;
+                    float distance = Point::Distance(playerLoc, Target);
+                    if(distance > radius) {
+                        Vector direction = Target - playerLoc;
+                        direction.Normalize();
+                        Target = playerLoc + direction * radius;
+                    }
+                }
+                else {
+                    std::cout << "Player not found" << std::endl;
+                }
+                //////////////////////////////////////////////////////////////
+
                 phy->Velocity = (Target - trans->Position) * (1 / ForLease->FrameRateController().GetDt() / 2); // This is wildly unstable with fluctuating frame rate!
+
             }
         }
 
@@ -99,7 +123,7 @@ namespace ForLeaseEngine {
                 MouseMotionEvent const* mouse_e = static_cast<MouseMotionEvent const*>(e);
 
                 if(MouseDown) {
-                    std::cout << "MOVING OBJECT" << std::endl;
+                    //std::cout << "MOVING OBJECT" << std::endl;
                     //Components::Transform* trans = Parent.GetComponent<Components::Transform>();
                     //Components::Physics* phy = Parent.GetComponent<Components::Physics>();
                     //Point old = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->ScreenToWorld(Point(mouse_e->X - mouse_e->RelativeX, mouse_e->Y - mouse_e->RelativeY));

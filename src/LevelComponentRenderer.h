@@ -32,6 +32,7 @@ namespace ForLeaseEngine {
                 static const ComponentType Type = ComponentType::Renderer;
                 virtual ComponentType GetType() { return Type; }
                 Renderer(State& owner);
+                ~Renderer();
 
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
@@ -65,6 +66,7 @@ namespace ForLeaseEngine {
                 void DrawArrow(const Point& start, const Vector& displacement);
                 void DrawMesh(Mesh* mesh, bool drawEdges = false, bool drawVertices = false, std::string animationName = "", unsigned int frame = 0, float t = 0, Color const& color = Color(1, 1, 1, 1));
                 void DrawPoint(const Point& point);
+                void DrawCircle(const Point& center, float radius);
 
                 // Debug stats
                 unsigned int GetVertexCount();
@@ -88,6 +90,8 @@ namespace ForLeaseEngine {
                 unsigned long CurrentCamera;
                 BlendMode BlendingMode;
                 GLuint CurrentTexture;
+                GLuint LightTexture;
+                GLuint LightFBO;
 
                 float DebugPointSize;
                 float DebugLineWidth;

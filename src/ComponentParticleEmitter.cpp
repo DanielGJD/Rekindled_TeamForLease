@@ -35,6 +35,7 @@ namespace ForLeaseEngine {
         }
 
         void ParticleEmitter::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned int>(Type));
             Serializer emitter = root.GetChild("ParticleEmitter");
             emitter.WriteUint("Type", static_cast<unsigned int>(Type));
             emitter.WriteBool("Active", Active);

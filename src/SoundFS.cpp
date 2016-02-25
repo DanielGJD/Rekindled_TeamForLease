@@ -22,7 +22,7 @@ namespace ForLeaseEngine{
 SoundManager::SoundManager() : /*ISystem(),*/ m_Sys(nullptr), m_MasterBank(nullptr), m_StringsBank(nullptr)
 {
 	//sound = this;
-		FMOD_RESULT result_;
+    FMOD_RESULT result_;
 	// here we create our sound system
 	char text[200];
 
@@ -43,7 +43,27 @@ SoundManager::SoundManager() : /*ISystem(),*/ m_Sys(nullptr), m_MasterBank(nullp
 		//return;
 	}
 
-	result_ = FMOD_Studio_System_LoadBankFile(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),"bin/Debug/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, reinterpret_cast<FMOD_STUDIO_BANK**>(&m_MasterBank));
+
+
+	return;
+}
+
+SoundManager::~SoundManager()
+{
+
+}
+
+
+//    MessageBox(NULL, "ERROR: Could not create Sound System",
+//      strcpy(text, strcat("Error: ", system_name)), NULL);
+//
+//    return false;
+//  }
+
+void SoundManager::Initialize(const char* PathFileName, const char * StringBank)
+{
+    FMOD_RESULT result_;
+    result_ = FMOD_Studio_System_LoadBankFile(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),PathFileName, FMOD_STUDIO_LOAD_BANK_NORMAL, reinterpret_cast<FMOD_STUDIO_BANK**>(&m_MasterBank));
 	if (result_ != FMOD_OK)
 	{
 		std::cout << result_ << std::endl;
@@ -64,31 +84,12 @@ SoundManager::SoundManager() : /*ISystem(),*/ m_Sys(nullptr), m_MasterBank(nullp
 //		printf("bankfile3 is not loaded\n");
 //	}
 
-	result_ = FMOD_Studio_System_LoadBankFile(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),"bin/debug/Master Bank.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, reinterpret_cast<FMOD_STUDIO_BANK**>(&m_StringsBank));
+	result_ = FMOD_Studio_System_LoadBankFile(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),StringBank, FMOD_STUDIO_LOAD_BANK_NORMAL, reinterpret_cast<FMOD_STUDIO_BANK**>(&m_StringsBank));
 	if (result_ != FMOD_OK)
 	{
 		std::cout << result_ << std::endl;
 		printf("bankfile 4 is not loaded\n");
 	}
-
-	return;
-}
-
-SoundManager::~SoundManager()
-{
-
-}
-
-
-//    MessageBox(NULL, "ERROR: Could not create Sound System",
-//      strcpy(text, strcat("Error: ", system_name)), NULL);
-//
-//    return false;
-//  }
-
-void SoundManager::Initialize()
-{
-
 }
 
 
@@ -117,6 +118,28 @@ void SoundManager::ShutDown()
     FMOD_Studio_System_Release(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys));
 }
 
+std::vector<std::string>SoundManager::GetName()
+{
+    // Just to make sure, this function is to provide level
+    // editor a list of sound file's name generated in GUIDS.txt
+    // Not the actual function to read GUIDs.txt
+	std::string temptext;
+    std::vector<std::string> SoundsList;
+    std::ifstream readfile("GUIDs.txt");
+
+    while(std::getline(readfile,temptext))
+    {
+        std::string key = "event:/";
+        unsigned pos = temptext.find(key);
+        if(pos != std::string::npos)
+        {
+            pos += key.length();
+            SoundsList.push_back(temptext.substr(pos));
+        }
+    }
+    return SoundsList;
+}
+
 bool SoundManager::PlayEvent(std::string name)
 {
 	FMOD::Studio::EventDescription * SoundDescription = nullptr;
@@ -125,6 +148,7 @@ bool SoundManager::PlayEvent(std::string name)
 	std::string temptext = "event:/" + name;
 
 
+	// this is where we actually read in the GUIDs.txt and find the music's name
 	FMOD_RESULT SoundResult = FMOD_Studio_System_GetEvent(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),temptext.c_str(), reinterpret_cast<FMOD_STUDIO_EVENTDESCRIPTION**>(&SoundDescription));
 
 	if (SoundResult == FMOD_ERR_EVENT_NOTFOUND)

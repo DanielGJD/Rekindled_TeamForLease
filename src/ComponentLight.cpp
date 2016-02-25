@@ -91,7 +91,11 @@ namespace ForLeaseEngine {
                 HalfPlane hp1 = HalfPlane(castingPoint, top, mid);
                 HalfPlane hp2 = HalfPlane(castingPoint, bot, mid);
                 //Vector zeroAngleVector = top - castingPoint;
-                Vector zeroAngleVector = Vector(1, 0);
+                Vector zeroAngleVector;
+                if(Direction[0] < 0)
+                    zeroAngleVector = Vector(1, 0);
+                else
+                    zeroAngleVector = Vector(-1, 0);
                 //float radius2 = Radius * Radius;
                 Vector worldToModel = Point(0, 0) - trans->Position;
 
@@ -157,8 +161,13 @@ namespace ForLeaseEngine {
                 // This whole thing should be adjusted to only do 1 ray cast when ray casting can return more than one entity
                 for(std::vector<Point>::iterator i = castingPoints.begin(); i != castingPoints.end(); ++i) {
                     Point point = (*i);
-                    Point prePoint = castingPoint + Vector::Rotate(point - castingPoint, -angleOffset);
-                    Point postPoint = castingPoint + Vector::Rotate(point - castingPoint, angleOffset);
+                    Vector offset = point - castingPoint;
+                    offset = Vector(-offset[1], offset[0]);
+                    offset.Normalize();
+                    //Point prePoint = castingPoint + Vector::Rotate(point - castingPoint, -angleOffset);
+                    //Point postPoint = castingPoint + Vector::Rotate(point - castingPoint, angleOffset);
+                    Point prePoint = point + offset * 0.001;
+                    Point postPoint = point - offset * 0.001;
 
                     Ray preRay = Ray(castingPoint, prePoint - castingPoint, 9999);
                     Ray ray = Ray(castingPoint, point - castingPoint, 9999);
@@ -265,20 +274,35 @@ namespace ForLeaseEngine {
         }
 
         void Light::Serialize(Serializer& root) {
-//            Serializer light = root.GetChild("Light");
-//            light.WriteUint("Type", static_cast<unsigned>(Type));
-//            light.WriteVec("Direction", Direction);
-//            light.WriteFloat("Angle", Angle);
-//            DrawColor.Serialize(light);
-//            root.Append(light, "Light");
+            root.WriteUint("Type", static_cast<unsigned>(ComponentType::Light));
+            Serializer light = root.GetChild("Light");
+            light.WriteUint("Type", static_cast<unsigned>(ComponentType::Light));
+            light.WriteBool("Active", Active);
+            light.WriteBool("Visible", Visible);
+            light.WriteBool("DrawOutline", DrawOutline);
+            light.WriteVec("Offset", Offset);
+            light.WriteVec("Direction", Direction);
+            light.WriteFloat("Angle", Angle);
+            Serializer lightColor = light.GetChild("LightColor");
+            LightColor.Serialize(lightColor);
+            light.Append(lightColor, "LightColor");
+            light.WriteInt("LightMode", LightMode);
+            root.Append(light, "Light");
         }
 
         void Light::Deserialize(Serializer& root) {
-//            Serializer light = root.GetChild("Light");
-//            light.ReadVec("Direction", Direction);
-//            light.ReadFloat("Sweep", Sweep);
-//            light.ReadUint("Rays", Rays);
-//            DrawColor.Deserialize(light);
+            Serializer light = root.GetChild("Light");
+            light.ReadBool("Active", Active);
+            light.ReadBool("Visible", Visible);
+            light.ReadBool("DrawOutline", DrawOutline);
+            light.ReadVec("Offset", Offset);
+            light.ReadVec("Direction", Direction);
+            light.ReadFloat("Angle", Angle);
+            Serializer lightColor = light.GetChild("LightColor");
+            LightColor.Deserialize(lightColor);
+            int lightMode;
+            light.ReadInt("LightMode", lightMode);
+            lightMode = lightMode;
         }
 
         Mesh* Light::GetLightMesh() {

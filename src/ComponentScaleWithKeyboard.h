@@ -13,14 +13,19 @@
 
 #include "Component.h"
 #include "Event.h"
+#include "Keys.h"
 
 namespace ForLeaseEngine {
     namespace Components {
         class ScaleWithKeyboard : public Component{
             public:
                 static ScaleWithKeyboard* Create(Entity& owner);
+                ScaleWithKeyboard(Entity& owner, bool active = false, float scaleSpeed = 0,
+                                  int scaleUpKey = Keys::E, int scaleDownKey = Keys::Q,
+                                  float maxXScale = 2, float maxYScale = 2, float scale = 0, std::string ScaleSound = "");
                 ~ScaleWithKeyboard();
                 virtual ComponentType GetType();
+                void Initialize();
                 void Update();
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
@@ -31,23 +36,36 @@ namespace ForLeaseEngine {
                 static const ComponentType Type = ComponentType::ScaleWithKeyboard;
                 bool Active;
                 float ScaleSpeed;
-                int ScaleXUpKey;
-                int ScaleXDownKey;
-                int ScaleYUpKey;
-                int ScaleYDownKey;
+                // Going to remove these
+//                int ScaleXUpKey;
+//                int ScaleXDownKey;
+//                int ScaleYUpKey;
+//                int ScaleYDownKey;
+                ///////////////////////////////
+                int ScaleUpKey;
+                int ScaleDownKey;
+                // Going to remove these
                 float MaxXScale;
-                float MinXScale;
+                //float MinXScale;
                 float MaxYScale;
-                float MinYScale;
+                float Scale;
+                //float MinYScale;
+                //////////////////////////////
+                //float MinScale;
+                //float MaxScale;
 
                 std::string ScaleSound;
             private:
-                ScaleWithKeyboard(Entity& owner);
-                void Initialize();
-                bool ScaleXUp;
-                bool ScaleXDown;
-                bool ScaleYUp;
-                bool ScaleYDown;
+                // Going to remove these
+//                bool ScaleXUp;
+//                bool ScaleXDown;
+//                bool ScaleYUp;
+//                bool ScaleYDown;
+                ////////////////////////////////////
+                bool ScaleUp;
+                bool ScaleDown;
+                float NaturalWidth;
+                float NaturalHeight;
         };
     }
 }

@@ -43,6 +43,7 @@ namespace ForLeaseEngine {
         }
 
         void ParticleColorAnimator::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned int>(Type));
             Serializer colorAnimator = root.GetChild("ParticleColorAnimator");
             colorAnimator.WriteUint("Type", static_cast<unsigned int>(Type));
             colorAnimator.WriteBool("Active", Active);
