@@ -23,4 +23,17 @@ namespace ForLeaseEngine {
     */
     CollisionEvent::CollisionEvent(Entity* first, Entity* second) : Event("Collision"), Colliding(first, second) {}
 
+    bool CollisionEvent::Matches(Entity* entity) {
+        if (entity == Colliding.first || entity == Colliding.second)
+            return true;
+        else
+            return false;
+    }
+
+    Entity* CollisionEvent::Other(Entity* entity) {
+        if (entity == Colliding.first) return Colliding.second;
+        if (entity == Colliding.second) return Colliding.first;
+        return NULL;
+    }
+
 } // ForLeaseEngine
