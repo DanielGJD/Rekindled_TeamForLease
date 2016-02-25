@@ -28,6 +28,10 @@ namespace ForLeaseEngine {
             ForLease->Dispatcher.Attach(NULL, this, "CheckpointActivated", &Checkpoint::CheckpointActivated);
         }
 
+        Checkpoint::Checkpoint() {
+            ForLease->Dispatcher.Detach(this, "CheckpointActivated");
+        }
+
         void Checkpoint::Update(std::vector<Entity *>& entities) {
 
 //            for (Entity* entity : entities) {

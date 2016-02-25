@@ -10,6 +10,11 @@
 */
 
 #include "ComponentCheckpoint.h"
+#include "LevelComponentCheckpoint.h"
+#include "Engine.h"
+#include "GameStateManager.h"
+#include "State.h"
+#include "CollisionEvent.h"
 // #include "Entity.h"
 
 namespace ForLeaseEngine {
@@ -23,7 +28,24 @@ namespace ForLeaseEngine {
                 The owning Entity.
         */
         Checkpoint::Checkpoint(Entity& owner) : Component(owner, ComponentType::Transform | ComponentType::Collision),
-            Active(false) {}
+            Active(false) {
+                ForLease->Dispatcher.Attach(NULL, this, "Collision", &Checkpoint::OnCollide);
+            }
+
+        ~Checkpoint::Checkpoint() {
+            ForLease->Dispatcher.Detach(this, "Collision");
+        }
+
+        void Checkpoint::OnCollide(const CollisionEvent* e) {
+            LevelComponents::Checkpoint* lcCheckpoint = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Checkpoint>();
+            if (!lcCheckpoint) throw Exception("No checkpoint level component found!");
+
+            if (e->Other->GetID() == lcCheckpoint->TriggerEntityID && !Active) {
+                Active = true;
+                Event activatedEvent = Event("CheckpointActivated");
+                ForLease->Dispatcher.Dispatch(&activatedEvent, this);
+            }
+        }
 
         void Checkpoint::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));

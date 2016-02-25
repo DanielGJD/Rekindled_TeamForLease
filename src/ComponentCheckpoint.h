@@ -16,10 +16,12 @@
 #include "Component.h"
 #include "Vector.h"
 #include "Event.h"
+//#include "CollisionEvent.h"
 
 namespace ForLeaseEngine {
 
     class Entity;
+    class CollisionEvent;
 
     namespace Components {
 
@@ -35,7 +37,9 @@ namespace ForLeaseEngine {
                 static const ComponentType Type = ComponentType::Checkpoint;
                 virtual ComponentType GetType() { return Type; }
                 Checkpoint(Entity& owner);
+                ~Checkpoint();
                 void Update() {}
+                void OnCollide(const CollisionEvent* e);
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
             private:

@@ -35,6 +35,7 @@ namespace ForLeaseEngine {
                 static const ComponentType Type = ComponentType::Checkpoint;
                 virtual ComponentType GetType() { return Type; }
                 Checkpoint(State& owner);
+                ~Checkpoint();
                 void Update(std::vector<Entity *>& entities);
 
                 void CheckpointActivated(const Event* e);
