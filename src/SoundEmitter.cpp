@@ -40,15 +40,21 @@ SoundEmitter::~SoundEmitter()
 
 void SoundEmitter::PlayEvent(std::string name)
 {
+    if (name.empty())
+        return;
 	m_manager->PlayEvent(name);
 }
 
 void SoundEmitter::StopEvent(std::string name)
 {
+    if (name.empty())
+        return;
 	m_manager->StopSound(name);
 }
 void SoundEmitter::SetPause(bool pause, std::string name)
 {
+    if (name.empty())
+        return;
 	if (pause == true)
 		m_manager->Pause(true,name);
 	else
@@ -69,6 +75,8 @@ void SoundEmitter::Rock()
 
 void SoundEmitter::SetVolume(float vol, std::string name)
 {
+    if (name.empty())
+        return;
 	m_manager->Volume(vol, name);
 }
 

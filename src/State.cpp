@@ -55,6 +55,16 @@ namespace ForLeaseEngine {
         LevelComponents.push_back(levelComponent);
     }
 
+    void State::DeleteLevelComponent(LevelComponent* levelComponent) {
+        for (unsigned i = 0; i < LevelComponents.size(); i++) {
+            if (LevelComponents[i] == levelComponent) {
+                delete LevelComponents[i];
+                LevelComponents.erase(LevelComponents.begin() + i);
+                break;
+            }
+        }
+    }
+
     /*!
         Adds an entity to the Entities vector in the state.
 
@@ -202,7 +212,7 @@ namespace ForLeaseEngine {
 
         for (Entity* entity : Entities) {
             if (!entity->HasComponent(ComponentType::Transform)) continue;
-            if (entity->HasComponent(ComponentType::Camera)) continue;
+            if (entity->GetName() == "LevelEditorCamera") continue;
 
             Components::Transform* transform = entity->GetComponent<Components::Transform>(true);
 

@@ -118,7 +118,7 @@ void SoundManager::ShutDown()
     FMOD_Studio_System_Release(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys));
 }
 
-std::vector<std::string>GetName()
+std::vector<std::string>SoundManager::GetName()
 {
     // Just to make sure, this function is to provide level
     // editor a list of sound file's name generated in GUIDS.txt

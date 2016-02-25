@@ -41,6 +41,7 @@ namespace ForLeaseEngine {
 
             void UpdateEntities();
             void AddLevelComponent(LevelComponent* levelComponent);
+            void DeleteLevelComponent(LevelComponent* levelComponent);
             Entity* AddEntity(std::string name = "");
             Entity* SpawnArchetype(std::string filename, Point position = Point(), std::string name = "");
             bool DeleteEntity(long unsigned id);

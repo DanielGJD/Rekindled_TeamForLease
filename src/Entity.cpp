@@ -345,6 +345,12 @@ namespace ForLeaseEngine {
             case ComponentType::Checkpoint:
                 component = Components::Checkpoint::Create(entity);
                 break;
+            case ComponentType::Occluder:
+                component = new Components::Occluder(entity);
+                break;
+            case ComponentType::Parallax:
+                component = new Components::Parallax(entity);
+                break;
             default:
                 std::cout << "Unknown Type: " << type << std::endl;
                 return 0;
