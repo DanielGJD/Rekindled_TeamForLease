@@ -15,7 +15,7 @@ namespace ForLeaseEngine
 
     void LevelEditor::DrawObjectWindow()
     {
-        float width = ImGui::GetWindowWidth() / 3;
+        float width = 100;
         ImGui::Begin("Object Editor");
 
         if (ImGui::InputText("Name##Object", leg::entName, 128, ImGuiInputTextFlags_EnterReturnsTrue))
@@ -55,10 +55,10 @@ namespace ForLeaseEngine
 
         if (leg::selTran && ImGui::CollapsingHeader("Transform"))
         {
-            ImGui::PushItemWidth(width * 2);
-            ImGui::InputFloat("X##TransformPos", &(leg::selTran->Position[0]), 0.5, 1);
+            ImGui::PushItemWidth(width);
+            ImGui::InputFloat("X##TransformPos", &(leg::selTran->Position[0]));
             ImGui::SameLine();
-            ImGui::InputFloat("Y##TransformPos", &(leg::selTran->Position[1]), 0.5, 1);
+            ImGui::InputFloat("Y##TransformPos", &(leg::selTran->Position[1]));
             ImGui::SameLine();
             ImGui::Text("Position");
             ImGui::DragFloat("X##TransformScale", &(leg::selTran->ScaleX), 0.01);
@@ -214,6 +214,14 @@ namespace ForLeaseEngine
             {
                 leg::selection->DeleteComponent(ComponentType::ChangeLevelOnCollide);
                 leg::selChange = NULL;
+            }
+        }
+        if (leg::selCheckpoint && ImGui::CollapsingHeader("Checkpoint"))
+        {
+            if (ImGui::Button("Remove Checkpoint"))
+            {
+                leg::selection->DeleteComponent(ComponentType::Checkpoint);
+                leg::selCheckpoint = NULL;
             }
         }
         if (leg::selCollision && ImGui::CollapsingHeader("Collision"))
@@ -789,6 +797,8 @@ namespace ForLeaseEngine
         }
 
         ImGui::Separator();
+        if (ImGui::Button("Set Checkpoint Trigger"))
+            leg::levelCheckpoint->TriggerEntityID = leg::selection->GetID();
         if (ImGui::Button("Delete Object"))
             leg::delobj = true;
 

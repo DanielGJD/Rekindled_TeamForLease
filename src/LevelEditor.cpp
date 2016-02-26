@@ -28,9 +28,10 @@ namespace ForLeaseEngine
          SDL_Window* window;
          Point       mousePos;
 
-         LevelComponents::Renderer* render;
-         LevelComponents::Physics*  levelPhysics;
-         LevelComponents::Light*    levelLight;
+         LevelComponents::Renderer*   render;
+         LevelComponents::Physics*    levelPhysics;
+         LevelComponents::Light*      levelLight;
+         LevelComponents::Checkpoint* levelCheckpoint;
          Vector gravity;
 
          Entity*                             selection;
@@ -59,6 +60,7 @@ namespace ForLeaseEngine
          Components::SimpleParticleDynamics* selPartDynamics;
          Components::Parallax*               selParallax;
          Components::Occluder*               selOccluder;
+         Components::Checkpoint*             selCheckpoint;
 
 
 
@@ -134,10 +136,13 @@ namespace ForLeaseEngine
         leg::levelCamera = leg::camera;
         leg::render->SetCamera(*leg::camera);
         leg::levelPhysics = new LevelComponents::Physics(*this);
+        Serializer root;
+        leg::levelCheckpoint = new LevelComponents::Checkpoint(*this, root);
         AddLevelComponent(leg::render);
         AddLevelComponent(leg::levelPhysics);
         AddLevelComponent(new LevelComponents::Menu(*this));
         AddLevelComponent(new LevelComponents::Collision(*this));
+        AddLevelComponent(leg::levelCheckpoint);
         leg::gravity = leg::levelPhysics->GetGravity();
         leg::window = ForLease->GameWindow->DangerousGetRawWindow();
         strcpy(leg::statename, Name.c_str());
@@ -146,6 +151,7 @@ namespace ForLeaseEngine
         leg::componentNames.push_back("Camera");
         leg::componentNames.push_back("Change Level on Collide");
         leg::componentNames.push_back("Collision");
+        leg::componentNames.push_back("Checkpoint");
         leg::componentNames.push_back("Drag with Mouse");
         leg::componentNames.push_back("Fade with Distance");
         leg::componentNames.push_back("Enemy AI");

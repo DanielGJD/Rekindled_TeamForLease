@@ -5,9 +5,10 @@ namespace ForLeaseEngine
         extern SDL_Window* window;
         extern Point       mousePos;
 
-        extern LevelComponents::Renderer* render;
-        extern LevelComponents::Physics*  levelPhysics;
-        extern LevelComponents::Light*    levelLight;
+        extern LevelComponents::Renderer*   render;
+        extern LevelComponents::Physics*    levelPhysics;
+        extern LevelComponents::Light*      levelLight;
+        extern LevelComponents::Checkpoint* levelCheckpoint;
         extern Vector gravity;
 
         extern Entity*                             selection;
@@ -36,6 +37,7 @@ namespace ForLeaseEngine
         extern Components::SimpleParticleDynamics* selPartDynamics;
         extern Components::Parallax*               selParallax;
         extern Components::Occluder*               selOccluder;
+        extern Components::Checkpoint*             selCheckpoint;
 
         extern Entity*                levelCamera;
         extern Entity*                camera;

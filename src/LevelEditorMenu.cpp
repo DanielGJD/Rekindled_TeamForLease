@@ -151,7 +151,7 @@ namespace ForLeaseEngine
         if (ImGui::BeginPopupModal("Test Level", NULL, ImGuiWindowFlags_AlwaysAutoResize))
         {
             static char filename[64];
-            ImGui::Text("Input the name of the level file you wish to test.\nThe file will be saved/overwritten.");
+            ImGui::Text("Input the name of the level file you wish to test.\n");
             ImGui::InputText("File Name", filename, 64);
             if (ImGui::Button("Launch"))
             {
@@ -205,6 +205,11 @@ namespace ForLeaseEngine
                 leg::levelPhysics->SetGravity(leg::gravity);
 
             ImGui::PopItemWidth();
+        }
+
+        if (leg::levelLight && ImGui::CollapsingHeader("Light"))
+        {
+            ImGui::ColorEdit4("Ambient Light", const_cast<float*>(leg::levelLight->AmbientLight.GetAll()));
         }
 
         if (ImGui::CollapsingHeader("Spawn Archetype"))
@@ -261,6 +266,13 @@ namespace ForLeaseEngine
             leg::selChange = new Components::ChangeLevelOnCollide(*leg::selection);
             if (!leg::selection->AddComponent(leg::selChange))
                 leg::selChange = NULL;
+            return;
+        }
+        if (!(component.compare("Checkpoint")) && !leg::selCheckpoint)
+        {
+            leg::selCheckpoint = Components::Checkpoint::Create(*leg::selection);
+            if (!leg::selection->AddComponent(leg::selCheckpoint))
+                leg::selCheckpoint = NULL;
             return;
         }
         if (!(component.compare("Collision")) && !leg::selCollision)
