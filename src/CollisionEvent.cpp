@@ -21,6 +21,19 @@ namespace ForLeaseEngine {
         \param other
             A pointer to the entity that the target entity collided with.
     */
-    CollisionEvent::CollisionEvent(Entity* other) : Event("Collision"), Other(other) {}
+    CollisionEvent::CollisionEvent(Entity* first, Entity* second) : Event("Collision"), Colliding(first, second) {}
+
+    bool CollisionEvent::Matches(Entity* entity) {
+        if (entity == Colliding.first || entity == Colliding.second)
+            return true;
+        else
+            return false;
+    }
+
+    Entity* CollisionEvent::Other(Entity* entity) {
+        if (entity == Colliding.first) return Colliding.second;
+        if (entity == Colliding.second) return Colliding.first;
+        return NULL;
+    }
 
 } // ForLeaseEngine

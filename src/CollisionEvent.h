@@ -16,6 +16,7 @@
 
 #include "Event.h"
 #include "Entity.h"
+#include <utility>
 
 namespace ForLeaseEngine {
 
@@ -28,9 +29,14 @@ namespace ForLeaseEngine {
     */
     class CollisionEvent : public Event {
         public:
-            Entity* Other;
+            typedef std::pair<Entity*, Entity*> EntityPair;
 
-            CollisionEvent(Entity* other);
+            EntityPair Colliding;
+
+            CollisionEvent(Entity* first, Entity* second);
+
+            bool Matches(Entity* entity);
+            Entity* Other(Entity* entity);
 
         private:
             CollisionEvent() = delete;

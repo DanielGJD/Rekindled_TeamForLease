@@ -599,11 +599,11 @@ namespace ForLeaseEngine {
 
         for (unsigned i = 0; i < jsonLevelComponents.Size(); ++i) {
             Serializer lcSerializer = jsonLevelComponents[i];
-            AddLevelComponent(DeserializeLevelComponent(lcSerializer, *this));
+            AddLevelComponent(DeserializeLevelComponent(lcSerializer, *this, root));
         }
     }
 
-    LevelComponent* DeserializeLevelComponent(Serializer& root, State& state) {
+    LevelComponent* DeserializeLevelComponent(Serializer& root, State& state, Serializer& stateSerializer) {
         unsigned type;
         root.ReadUint("Type", type);
 
@@ -627,6 +627,9 @@ namespace ForLeaseEngine {
             case ComponentType::Light:
                 lc = new LevelComponents::Light(state);
                 break;
+            case ComponentType::Checkpoint:
+                lc = new LevelComponents::Checkpoint(state, stateSerializer);
+                break;
             default:
                 return 0;
         }
@@ -634,6 +637,10 @@ namespace ForLeaseEngine {
         lc->Deserialize(root);
 
         return lc;
+    }
+
+    void State::DeserializeNonReference(Serializer root) {
+        Deserialize(root);
     }
 
     /*!
@@ -654,5 +661,4 @@ namespace ForLeaseEngine {
         if ((mask & ComponentType::Collision) == ComponentType::Collision)
             state->AddLevelComponent(new LevelComponents::Collision(*state));
     }
-
 }

@@ -17,5 +17,6 @@
 #include "LevelComponentRenderer.h"
 #include "LevelComponentMenu.h"
 #include "LevelComponentLight.h"
+#include "LevelComponentCheckpoint.h"
 
 #endif

@@ -342,6 +342,9 @@ namespace ForLeaseEngine {
             case ComponentType::SimpleParticleDynamics:
                 component = new Components::SimpleParticleDynamics(entity);
                 break;
+            case ComponentType::Checkpoint:
+                component = Components::Checkpoint::Create(entity);
+                break;
             case ComponentType::Occluder:
                 component = new Components::Occluder(entity);
                 break;
