@@ -75,7 +75,6 @@ namespace ForLeaseEngine
          std::vector<std::string> animationNames;
          std::vector<std::string> textureNames;
 
-         std::map<std::string, ComponentType> reqMap;
          Serializer copyEntity;
 
          bool clickAdd   = false;
@@ -122,36 +121,6 @@ namespace ForLeaseEngine
     }
 
     namespace leg = LevelEditorGlobals;
-
-    void PopulateMap()
-    {
-        std::vector<Component*> comps;
-        Entity dummy;
-        Components::DragWithMouse* dwm;
-        comps.push_back(new Components::BackgroundMusic(dummy));
-        comps.push_back(new Components::Camera(dummy, 0, 0, 0));
-        comps.push_back(new Components::ChangeLevelOnCollide(dummy));
-        comps.push_back(new Components::Collision(dummy));
-        comps.push_back(dwm->Create(dummy));
-        comps.push_back(new Components::FadeWithDistance(dummy));
-        comps.push_back(new Components::EnemyAI(dummy));
-        comps.push_back(new Components::Light(dummy));
-        comps.push_back(new Components::Model(dummy));
-        comps.push_back(new Components::Physics(dummy));
-        comps.push_back(new Components::CharacterController(dummy));
-        comps.push_back(new Components::ScaleWithKeyboard(dummy));
-        comps.push_back(new Components::SoundEmitter(dummy));
-        comps.push_back(new Components::Sprite(dummy));
-        comps.push_back(new Components::SpriteText(dummy, "Arial.fnt"));
-        comps.push_back(new Components::TransformModeControls(dummy));
-        comps.push_back(new Components::VisionCone(dummy));
-
-        for (unsigned i = 0; i < comps.size(); i++)
-        {
-            //unsigned long long ull = comps[i]->GetRequired();
-            leg::reqMap[leg::componentNames[i]] = comps[i]->GetRequired();
-        }
-    }
 
     void LevelEditor::Load()
     {
@@ -347,10 +316,13 @@ namespace ForLeaseEngine
 
         if (leg::toSave)
         {
+            if (leg::levelCamera)
+                leg::render->SetCamera(*leg::levelCamera);
             Serializer root;
             Serialize(root);
             root.WriteFile(leg::statefile);
             leg::toSave = false;
+            leg::render->SetCamera(*leg::camera);
         }
 
         if (leg::toLoad)
@@ -398,6 +370,8 @@ namespace ForLeaseEngine
         if (leg::delobj)
         {
             DeleteEntity(leg::selection);
+            if (leg::levelCamera == leg::selection)
+                leg::levelCamera = leg::camera;
             leg::selection = NULL;
             leg::delobj = false;
         }

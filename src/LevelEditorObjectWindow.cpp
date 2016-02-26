@@ -168,7 +168,7 @@ namespace ForLeaseEngine
         {
             ImGui::InputFloat("Size##Camera", &(leg::selCamera->Size));
             if (ImGui::Button("Set Camera"))
-                leg::render->SetCamera(*leg::selection);
+                leg::levelCamera = leg::selection;
 
             if (ImGui::Button("Remove Camera"))
             {
@@ -352,7 +352,28 @@ namespace ForLeaseEngine
                 leg::selLight = NULL;
             }
         }
+        if (leg::selOccluder && ImGui::CollapsingHeader("Occluder"))
+        {
+            ImGui::Checkbox("Blocks Light##occluder", &(leg::selOccluder->BlocksLight));
+            ImGui::Checkbox("Blocks Vision##occluder", &(leg::selOccluder->BlocksVision));
 
+            if (ImGui::Button("Remove Occluder"))
+            {
+                leg::selection->DeleteComponent(ComponentType::Occluder);
+                leg::selOccluder = NULL;
+            }
+        }
+        if (leg::selParallax && ImGui::CollapsingHeader("Parallax"))
+        {
+            ImGui::Checkbox("Active", &(leg::selParallax->Active));
+            ImGui::Checkbox("Repeating", &(leg::selParallax->Repeating));
+
+            if (ImGui::Button("Remove Parallax"))
+            {
+                leg::selection->DeleteComponent(ComponentType::Parallax);
+                leg::selParallax = NULL;
+            }
+        }
         if (leg::selPartColor && ImGui::CollapsingHeader("Particle Color"))
         {
             ImGui::Checkbox("Active##PartColor", &(leg::selPartColor->Active));
@@ -392,9 +413,13 @@ namespace ForLeaseEngine
         if (leg::selPartDynamics && ImGui::CollapsingHeader("Particle Dynamics"))
         {
             ImGui::Checkbox("Active##PartDynamics", &(leg::selPartDynamics->Active));
+            ImGui::PushItemWidth(width);
             ImGui::InputFloat("X##PartDynamics", &(leg::selPartDynamics->Force[0]));
             ImGui::SameLine();
             ImGui::InputFloat("Y##PartDynamics", &(leg::selPartDynamics->Force[1]));
+            ImGui::SameLine();
+            ImGui::Text("Force");
+            ImGui::PopItemWidth();
             ImGui::DragFloat("Torque##PartDynamics", &(leg::selPartDynamics->Torque), 0.01);
             ImGui::DragFloat("Growth##PartDynamics", &(leg::selPartDynamics->Growth), 0.01);
             ImGui::DragFloat("Drag##PartDynamics", &(leg::selPartDynamics->Drag), 0.01);
@@ -412,14 +437,14 @@ namespace ForLeaseEngine
             if (ImGui::InputInt("Emit Count##PartEmitter", &leg::eCount, 1, 1, ImGuiInputTextFlags_EnterReturnsTrue) && leg::eCount > 0)
                 leg::selPartEmitter->EmitCount = leg::eCount;
 
-            if (ImGui::IsItemActive())
+            if (ImGui::IsItemHovered())
             {
                 ImGui::BeginTooltip();
                 ImGui::Text("Press Enter to set");
                 ImGui::EndTooltip();
             }
 
-
+            ImGui::PushItemWidth(width * 2);
             ImGui::DragFloat("Emit Rate##PartEmitter", &(leg::selPartEmitter->EmitRate), 0.01);
             ImGui::DragFloat("Emit Random##PartEmitter", &(leg::selPartEmitter->EmitRandom), 0.01);
             ImGui::DragFloat("Size##PartEmitter", &(leg::selPartEmitter->Size), 0.01);
@@ -428,13 +453,17 @@ namespace ForLeaseEngine
             ImGui::DragFloat("Life Random##PartEmitter", &(leg::selPartEmitter->LifeRandom), 0.01);
             ImGui::DragFloat("Rotation##PartEmitter", &(leg::selPartEmitter->Rotation), 0.01);
             ImGui::DragFloat("Rotation Random##PartEmitter", &(leg::selPartEmitter->RotationRandom), 0.01);
-            ImGui::PushItemWidth(ImGui::GetWindowWidth()/4);
+            ImGui::PushItemWidth(width);
             ImGui::DragFloat("X##PartEmmiterVel", &(leg::selPartEmitter->Velocity[0]), 0.01);
             ImGui::SameLine();
             ImGui::DragFloat("Y##PartEmmiterVel", &(leg::selPartEmitter->Velocity[1]), 0.01);
+            ImGui::SameLine();
+            ImGui::Text("Velocity");
             ImGui::DragFloat("X##PartEmmiterVelRand", &(leg::selPartEmitter->VelocityRandom[0]), 0.01);
             ImGui::SameLine();
             ImGui::DragFloat("Y##PartEmmiterVelRand", &(leg::selPartEmitter->VelocityRandom[1]), 0.01);
+            ImGui::SameLine();
+            ImGui::Text("Random Velocity");
             ImGui::DragFloat("X##PartEmmiterSize", &(leg::selPartEmitter->EmitterSize[0]), 0.01);
             ImGui::SameLine();
             ImGui::DragFloat("Y##PartEmmiterSize", &(leg::selPartEmitter->EmitterSize[1]), 0.01);
@@ -443,6 +472,7 @@ namespace ForLeaseEngine
             ImGui::PopItemWidth();
             ImGui::DragFloat("Rotational Velocity##PartEmitter", &(leg::selPartEmitter->RotationalVelocity), 0.01);
             ImGui::DragFloat("Rotational Velocity Random##PartEmitter", &(leg::selPartEmitter->RotationalVelocityRandom), 0.01);
+            ImGui::PopItemWidth();
 
             if (ImGui::Button("Remove Particle Emitter"))
             {
@@ -460,11 +490,13 @@ namespace ForLeaseEngine
 
             if (ImGui::InputInt("Max Number of Particles##PartSystem", &leg::maxParticles, 1, 1, ImGuiInputTextFlags_EnterReturnsTrue) && leg::maxParticles > 0)
                 leg::selPartSystem->MaxParticles = leg::maxParticles;
+            ImGui::PushItemWidth(width);
             ImGui::InputFloat("X##PartSystemSize", &(leg::selPartSystem->SystemSize[0]));
             ImGui::SameLine();
             ImGui::InputFloat("Y##PartSystemSize", &(leg::selPartSystem->SystemSize[1]));
             ImGui::SameLine();
             ImGui::Text("System Size");
+            ImGui::PopItemWidth();
             ImGui::Text("Current Sprite Source: %s", leg::selPartSystem->SpriteSource.c_str());
             static ImGuiTextFilter partTextures;
             partTextures.Draw("##PartSystem", 300);
@@ -508,6 +540,9 @@ namespace ForLeaseEngine
             ImGui::InputInt("Move Right Key##Player", &(leg::selController->RightKey));
             ImGui::InputFloat("Jump Speed##Player", &(leg::selController->JumpSpeed));
             ImGui::InputFloat("Move Speed##Player", &(leg::selController->MoveSpeed));
+            ImGui::InputFloat("Max Speed##Player", &(leg::selController->maxSpeed));
+            ImGui::InputFloat("Friction##Player", &(leg::selController->Friction));
+            ImGui::InputFloat("Drag##Player", &(leg::selController->Drag));
 //            ImGui::Indent();
 //            if (ImGui::CollapsingHeader("Edit Sound"))
 //            {
@@ -586,6 +621,7 @@ namespace ForLeaseEngine
 
         if (leg::selScale && ImGui::CollapsingHeader("Scale with Keyboard"))
         {
+            ImGui::PushItemWidth(width * 2);
             ImGui::Checkbox("Active##SWK", &(leg::selScale->Active));
             ImGui::InputFloat("Scale Speed##SWK", &(leg::selScale->ScaleSpeed));
             ImGui::InputInt("Scale up Key##SWK", &(leg::selScale->ScaleUpKey));
@@ -593,6 +629,7 @@ namespace ForLeaseEngine
             ImGui::InputFloat("Max X##SWK", &(leg::selScale->MaxXScale));
             ImGui::InputFloat("Max Y##SWK", &(leg::selScale->MaxYScale));
             ImGui::DragFloat("Scale##SWK", &(leg::selScale->Scale), 0.01, 0, 1);
+            ImGui::PopItemWidth();
 //            ImGui::Text("Scale Sound: %s", leg::selScale->ScaleSound.c_str());
 //            static ImGuiTextFilter scaleSound;
 //            scaleSound.Draw("Trigger Sound", 250);
@@ -641,12 +678,12 @@ namespace ForLeaseEngine
 
         if (leg::selSprite && ImGui::CollapsingHeader("Sprite"))
         {
-            ImGui::Checkbox("Visible", &(leg::selSprite->Visible));
-            ImGui::Checkbox("Flip X", &(leg::selSprite->FlipX));
+            ImGui::Checkbox("Visible##sprite", &(leg::selSprite->Visible));
+            ImGui::Checkbox("Flip X##sprite", &(leg::selSprite->FlipX));
             ImGui::SameLine();
-            ImGui::Checkbox("Flip Y", &(leg::selSprite->FlipY));
+            ImGui::Checkbox("Flip Y##sprite", &(leg::selSprite->FlipY));
             ImGui::PushItemWidth(250);
-            ImGui::ColorEdit4("Sprite Color", const_cast<float*>(leg::selSprite->SpriteColor.GetAll()));
+            ImGui::ColorEdit4("Color##sprite", const_cast<float*>(leg::selSprite->SpriteColor.GetAll()));
             ImGui::Text("Current Sprite Source: %s", leg::selSprite->GetSourceName().c_str());
             static ImGuiTextFilter textures;
             textures.Draw("##Sprite", 300);
@@ -664,11 +701,6 @@ namespace ForLeaseEngine
                 }
             }
             ImGui::EndChild();
-            if (textures.IsActive() && ImGui::IsKeyPressed(Keys::Return))
-            {
-                ForLease->Resources.LoadTexture(textures.InputBuf);
-                leg::textureNames = ForLease->Resources.GetLoadedTextureNames();
-            }
 
             if (ImGui::Button("Remove Sprite"))
             {
@@ -679,10 +711,10 @@ namespace ForLeaseEngine
 
         if (leg::selSprtxt && ImGui::CollapsingHeader("Sprite Text"))
         {
-            if (ImGui::InputText("Text", leg::spriteTextBuf, 500, ImGuiInputTextFlags_EnterReturnsTrue))
+            if (ImGui::InputTextMultiline("Text##sprtxt", leg::spriteTextBuf, 512, ImVec2(), ImGuiInputTextFlags_EnterReturnsTrue))
                 leg::selSprtxt->Text = leg::spriteTextBuf;
             ImGui::PushItemWidth(300);
-            ImGui::ColorEdit4("Color", const_cast<float*>(leg::selSprtxt->TextColor.GetAll()));
+            ImGui::ColorEdit4("Color##sprtxt", const_cast<float*>(leg::selSprtxt->TextColor.GetAll()));
             ImGui::PopItemWidth();
 
             if (ImGui::Button("Remove Sprite Text"))
@@ -694,10 +726,11 @@ namespace ForLeaseEngine
 
         if (leg::selTMC && ImGui::CollapsingHeader("Transform Control"))
         {
-            ImGui::PushItemWidth(200);
-            ImGui::InputInt("Toggle Key", &(leg::selTMC->ModeToggleKey));
-            ImGui::InputFloat("Normal Speed", &(leg::selTMC->NormalSpeed));
-            ImGui::InputFloat("Slow Motion Speed", &(leg::selTMC->SlowMotionSpeed));
+            ImGui::PushItemWidth(width * 2);
+            ImGui::InputInt("Toggle Key##TMC", &(leg::selTMC->ModeToggleKey));
+            ImGui::InputFloat("Normal Speed##TMC", &(leg::selTMC->NormalSpeed));
+            ImGui::InputFloat("Slow Motion Speed##TMC", &(leg::selTMC->SlowMotionSpeed));
+            ImGui::InputFloat("Influence Radius##TMC", &(leg::selTMC->InfluenceRadius));
             ImGui::PopItemWidth();
 //            ImGui::Text("Sound: %s", leg::selTMC->TransformModeSound.c_str());
 //            static ImGuiTextFilter tmcSound;

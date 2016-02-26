@@ -50,7 +50,7 @@ namespace ForLeaseEngine
         extern std::vector<std::string> animationNames;
         extern std::vector<std::string> textureNames;
 
-        extern std::map<std::string, ComponentType> reqMap;
+        extern std::map<std::string, unsigned long long> reqMap;
         extern Serializer copyEntity;
 
         extern bool clickAdd;
