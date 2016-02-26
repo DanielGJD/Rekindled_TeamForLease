@@ -157,8 +157,8 @@ namespace ForLeaseEngine {
                     Components::Camera* camera = cameraEntity->GetComponent<Components::Camera>(true);
                     SetProjection(transform->Position, camera->Size * aspectRatio, camera->Size, camera->Near, camera->Far, transform->Rotation);
                 }
-                catch(Exception* e) {
-                    std::cout << e->GetInfo();
+                catch(Exception& e) {
+                    std::cout << e.GetInfo();
                     char c;
                     std::cin >> c;
                 }
