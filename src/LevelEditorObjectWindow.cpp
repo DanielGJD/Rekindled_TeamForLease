@@ -24,9 +24,9 @@ namespace ForLeaseEngine
         ImGui::InputText("Blueprint Name##Blueprint", leg::archetypefile, 128);
         if (ImGui::Button("Save Blueprint"))
         {
-            std::string s = leg::archetypefile;
-            leg::selection->CreateArchetype(leg::archetypefile);
-            if (std::find(leg::archetypeNames.begin(), leg::archetypeNames.end(), s) == leg::archetypeNames.end())
+            std::string s = leg::blueprintDir + leg::archetypefile;
+            leg::selection->CreateArchetype(s);
+            if (std::find(leg::archetypeNames.begin(), leg::archetypeNames.end(), leg::archetypefile) == leg::archetypeNames.end())
             {
                 leg::archetypeNames.push_back(leg::archetypefile);
             }
@@ -81,7 +81,7 @@ namespace ForLeaseEngine
             {
                 static ImGuiTextFilter meshFilter;
                 ImGui::Text("Current Mesh: %s", leg::selModel->ModelMesh.c_str());
-                meshFilter.Draw("Mesh", 250.0f);
+                meshFilter.Draw("##Mesh", 250.0f);
                 ImGui::Text("Available Meshes");
                 ImGui::Separator();
                 ImGui::BeginChild("Meshes", ImVec2(0, 100), false, ImGuiWindowFlags_HorizontalScrollbar);
@@ -112,7 +112,7 @@ namespace ForLeaseEngine
                 ImGui::InputFloat("Frame Rate##Model", &(leg::selModel->FrameRate));
                 ImGui::Text("Current Animation: %s", leg::selModel->GetAnimation().c_str());
                 static ImGuiTextFilter animations;
-                animations.Draw("Animation", 300);
+                animations.Draw("##Animation", 250);
                 ImGui::Text("Available Animations");
                 ImGui::Separator();
                 ImGui::BeginChild("Animations", ImVec2(0, 100));
@@ -178,16 +178,18 @@ namespace ForLeaseEngine
         }
         if (leg::selChange && ImGui::CollapsingHeader("Change Level on Collide"))
         {
+            ImGui::PushItemWidth(width * 2);
             ImGui::Checkbox("Active##CLoC", &(leg::selChange->Active));
             ImGui::InputFloat("On Switch Time Scale##CLoC", &(leg::selChange->OnSwitchTimeScale));
             ImGui::InputFloat("Fade Out Time##CLoC", &(leg::selChange->FadeOutTime));
             ImGui::Text("Level Name: %s", leg::selChange->LevelName.c_str());
-            if (ImGui::InputText("##CLoC", leg::changeLevel, 70, ImGuiInputTextFlags_EnterReturnsTrue))
+            if (ImGui::InputText("##CLoC", leg::changeLevel, 128, ImGuiInputTextFlags_EnterReturnsTrue))
                 leg::selChange->LevelName = leg::changeLevel;
             ImGui::Text("Trigger Object Name: %s", leg::selChange->TriggerObjectName.c_str());
-            if (ImGui::InputText("##CLoCObject", leg::changeObject, 70, ImGuiInputTextFlags_EnterReturnsTrue))
+            if (ImGui::InputText("##CLoCObject", leg::changeObject, 128, ImGuiInputTextFlags_EnterReturnsTrue))
                 leg::selChange->TriggerObjectName = leg::changeObject;
 
+            ImGui::PopItemWidth();
 //            ImGui::Text("Current Sound: %s", leg::selChange->TriggerSoundName.c_str());
 //            static ImGuiTextFilter changeSound;
 //            changeSound.Draw("Trigger Sound", 250);
@@ -210,6 +212,7 @@ namespace ForLeaseEngine
 //                ForLease->Resources.LoadSound(changeSound.InputBuf);
 //                leg::soundNames = ForLease->Resources.GetLoadedSoundNames();
 //            }
+
             if (ImGui::Button("Remove Change on Collide"))
             {
                 leg::selection->DeleteComponent(ComponentType::ChangeLevelOnCollide);
@@ -252,7 +255,7 @@ namespace ForLeaseEngine
 
         if (leg::selEnemyAI && ImGui::CollapsingHeader("Enemy AI"))
         {
-            ImGui::PushItemWidth(width * 3);
+            ImGui::PushItemWidth(width * 2);
             ImGui::Checkbox("Active##EnemyAI", &(leg::selEnemyAI->Active));
             ImGui::InputFloat("Detection Delay##EnemyAI", &(leg::selEnemyAI->DetectionDelay));
             ImGui::ColorEdit4("Happy Color##EnemyAI", const_cast<float*>(leg::selEnemyAI->HappyColor.GetAll()));
@@ -313,13 +316,14 @@ namespace ForLeaseEngine
         }
         if (leg::selFade && ImGui::CollapsingHeader("Fade with Distance"))
         {
+            ImGui::PushItemWidth(width * 2);
             ImGui::Checkbox("Active##FWD", &(leg::selFade->Active));
             ImGui::Checkbox("Fade with X##FWD", &(leg::selFade->XDirection));
             ImGui::Checkbox("Fade with Y##FWD", &(leg::selFade->YDirection));
             ImGui::DragFloat("Begin Distance##FWD", &(leg::selFade->FadeBeginDistance), 0.05, 0);
             ImGui::DragFloat("End Distance##FWD", &(leg::selFade->FadeEndDistance), 0.05, 0);
             ImGui::Checkbox("Select Target##FWD", &leg::setTarget);
-
+            ImGui::PopItemWidth();
             if (ImGui::IsItemHovered())
             {
                 ImGui::BeginTooltip();
@@ -448,7 +452,7 @@ namespace ForLeaseEngine
             if (ImGui::IsItemHovered())
             {
                 ImGui::BeginTooltip();
-                ImGui::Text("Press Enter to set");
+                ImGui::Text("Press ENTER to set");
                 ImGui::EndTooltip();
             }
 
@@ -479,7 +483,7 @@ namespace ForLeaseEngine
             ImGui::Text("Emitter Size");
             ImGui::PopItemWidth();
             ImGui::DragFloat("Rotational Velocity##PartEmitter", &(leg::selPartEmitter->RotationalVelocity), 0.01);
-            ImGui::DragFloat("Rotational Velocity Random##PartEmitter", &(leg::selPartEmitter->RotationalVelocityRandom), 0.01);
+            ImGui::DragFloat("Rotational Vel Rand##PartEmitter", &(leg::selPartEmitter->RotationalVelocityRandom), 0.01);
             ImGui::PopItemWidth();
 
             if (ImGui::Button("Remove Particle Emitter"))
@@ -492,12 +496,23 @@ namespace ForLeaseEngine
         if (leg::selPartSystem && ImGui::CollapsingHeader("Particle System"))
         {
             ImGui::Checkbox("Visible##PartSystem", &(leg::selPartSystem->Visible));
-            ImGui::PushItemWidth(250);
+            ImGui::PushItemWidth(width * 2);
             ImGui::ColorEdit4("Color##PartSystem", const_cast<float*>(leg::selPartSystem->StartingColor.GetAll()));
-            ImGui::PopItemWidth();
 
             if (ImGui::InputInt("Max Number of Particles##PartSystem", &leg::maxParticles, 1, 1, ImGuiInputTextFlags_EnterReturnsTrue) && leg::maxParticles > 0)
                 leg::selPartSystem->MaxParticles = leg::maxParticles;
+
+            if (ImGui::IsItemHovered())
+            {
+                ImGui::BeginTooltip();
+                ImGui::Text("Press ENTER to set");
+                ImGui::EndTooltip();
+            }
+
+            ImGui::Combo("Blending Mode##partsystem", &leg::particleBlend, "None\0Alpha\0Additive\0Multiply\0\0");
+            leg::selPartSystem->BlendingMode = static_cast<BlendMode>(leg::particleBlend);
+
+            ImGui::PopItemWidth();
             ImGui::PushItemWidth(width);
             ImGui::InputFloat("X##PartSystemSize", &(leg::selPartSystem->SystemSize[0]));
             ImGui::SameLine();
@@ -507,7 +522,7 @@ namespace ForLeaseEngine
             ImGui::PopItemWidth();
             ImGui::Text("Current Sprite Source: %s", leg::selPartSystem->SpriteSource.c_str());
             static ImGuiTextFilter partTextures;
-            partTextures.Draw("##PartSystem", 300);
+            partTextures.Draw("##PartSystem", 250);
             ImGui::Text("Available Sprite Sources");
             ImGui::Separator();
             ImGui::BeginChild("ParticleTextures", ImVec2(0,100));
@@ -721,7 +736,14 @@ namespace ForLeaseEngine
         {
             if (ImGui::InputTextMultiline("Text##sprtxt", leg::spriteTextBuf, 512, ImVec2(), ImGuiInputTextFlags_EnterReturnsTrue))
                 leg::selSprtxt->Text = leg::spriteTextBuf;
-            ImGui::PushItemWidth(300);
+
+            if (ImGui::IsItemHovered())
+            {
+                ImGui::BeginTooltip();
+                ImGui::Text("Press CTRL + ENTER to set");
+                ImGui::EndTooltip();
+            }
+            ImGui::PushItemWidth(width * 2);
             ImGui::ColorEdit4("Color##sprtxt", const_cast<float*>(leg::selSprtxt->TextColor.GetAll()));
             ImGui::PopItemWidth();
 

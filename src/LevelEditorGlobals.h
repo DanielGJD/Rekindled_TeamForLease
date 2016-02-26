@@ -62,8 +62,6 @@ namespace ForLeaseEngine
         extern bool selMade;
         extern bool archSpawn;
         extern bool selMode;
-        extern bool toSave;
-        extern bool toLoad;
         extern bool delobj;
         extern bool copySet;
         extern bool setLiked;
@@ -74,7 +72,7 @@ namespace ForLeaseEngine
         extern bool landSound;
         extern bool walkAni;
         extern bool jumpAni;
-        extern bool setName;
+        extern bool levelSaved;
 
         extern char entName[128];
         extern char spriteTextBuf[512];
@@ -100,6 +98,8 @@ namespace ForLeaseEngine
         extern const char* archToSpawn;
         extern int eCount;
         extern int maxParticles;
-        extern float timeScale;
+        extern int particleBlend;
+        extern std::string levelDir;
+        extern std::string blueprintDir;
     }
 }

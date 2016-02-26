@@ -27,10 +27,10 @@ namespace ForLeaseEngine
             if (ImGui::BeginPopupModal("Save", NULL, ImGuiWindowFlags_AlwaysAutoResize))
             {
                 ImGui::InputText("File Name", leg::statefile, 128);
-                ImGui::Text("Warning: File will get overwritten if it already exists\n");
+                ImGui::Text("Warning: File will get overwritten if it already exists");
                 if (ImGui::Button("Save"))
                 {
-                    leg::toSave = true;
+                    SaveLevel(leg::statefile);
                     ImGui::CloseCurrentPopup();
                 }
                 ImGui::SameLine();
@@ -41,91 +41,89 @@ namespace ForLeaseEngine
                 ImGui::EndPopup();
             }
 
-            if (ImGui::BeginMenu("Load"))
+            if (ImGui::Button("New Level"))
             {
-                if (ImGui::BeginMenu("Level"))
+                ImGui::OpenPopup("new level");
+            }
+
+            if (ImGui::BeginPopupModal("new level", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                ImGui::Text("Warning: All unsaved progress will be lost");
+                if (ImGui::Button("Continue"))
                 {
-                    if (ImGui::InputText("File Name", leg::statefile, 128, ImGuiInputTextFlags_EnterReturnsTrue))
-                    {
-                        ImGui::OpenPopup("Load");
-                    }
+                    DeleteAllLevelComponents();
+                    DeleteAllEntities();
+                    leg::selection = NULL;
+                    Load();
+                    ImGui::CloseCurrentPopup();
+                    leg::levelSaved = false;
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Cancel"))
+                {
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndPopup();
+            }
 
-                    if (ImGui::BeginPopupModal("Load", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-                    {
-                        ImGui::Text("Any unsaved progress will be lost!");
-                        if (ImGui::Button("Continue"))
-                        {
-                            leg::toLoad = true;
-                            ImGui::CloseCurrentPopup();
-                        }
-
-                        ImGui::SameLine();
-
-                        if (ImGui::Button("Cancel"))
-                        {
-                            ImGui::CloseCurrentPopup();
-                        }
-
-                        ImGui::EndPopup();
-                    }
-
-                    ImGui::EndMenu();
+            if (ImGui::BeginMenu("Load Level"))
+            {
+                if (ImGui::InputText("File Name", leg::statefile, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                {
+                    ImGui::OpenPopup("Load");
                 }
 
-                if (ImGui::BeginMenu("Archetype"))
+                if (ImGui::BeginPopupModal("Load", NULL, ImGuiWindowFlags_AlwaysAutoResize))
                 {
-                    if (ImGui::InputText("File Name", leg::archetypefile, 70, ImGuiInputTextFlags_EnterReturnsTrue))
+                    ImGui::Text("Any unsaved progress will be lost!");
+                    if (ImGui::Button("Continue"))
                     {
-                        leg::archetypeNames.push_back(leg::archetypefile);
+                        LoadLevel(leg::statefile);
+                        ImGui::CloseCurrentPopup();
                     }
 
-                    ImGui::EndMenu();
-                }
+                    ImGui::SameLine();
 
-                if (ImGui::BeginMenu("Mesh"))
-                {
-                    if (ImGui::InputText("File Name", leg::meshfile, 70, ImGuiInputTextFlags_EnterReturnsTrue))
+                    if (ImGui::Button("Cancel"))
                     {
-                        ForLease->Resources.LoadMesh(leg::meshfile);
-                        leg::meshNames = ForLease->Resources.GetLoadedMeshNames();
+                        ImGui::CloseCurrentPopup();
                     }
 
-                    ImGui::EndMenu();
+                    ImGui::EndPopup();
                 }
 
-                if (ImGui::BeginMenu("Animation"))
-                {
-                    if (ImGui::InputText("File Name", leg::animationfile, 70, ImGuiInputTextFlags_EnterReturnsTrue))
-                    {
-                        ForLease->Resources.LoadMeshAnimation(leg::animationfile);
-                        leg::animationNames = ForLease->Resources.GetLoadedMeshAnimationNames();
-                    }
-                    ImGui::EndMenu();
-                }
-
-//                if (ImGui::BeginMenu("Sound"))
-//                {
-//                    if (ImGui::InputText("File Name", leg::soundfile, 70, ImGuiInputTextFlags_EnterReturnsTrue))
-//                    {
-//                        ForLease->Resources.LoadSound(leg::soundfile);
-//                        leg::soundNames = ForLease->Resources.GetLoadedSoundNames();
-//                    }
-//
-//                    ImGui::EndMenu();
-//                }
-
-                if (ImGui::BeginMenu("Font"))
-                {
-                    if (ImGui::InputText("File Name", leg::fontfile, 70, ImGuiInputTextFlags_EnterReturnsTrue))
-                    {
-                        ForLease->Resources.LoadFont(leg::fontfile);
-                        leg::fontNames = ForLease->Resources.GetLoadedFontNames();
-                    }
-
-                    ImGui::EndMenu();
-                }
 
                 ImGui::EndMenu();
+            }
+
+            if (ImGui::Button("Test Level"))
+            {
+                ImGui::OpenPopup("Test Level");
+            }
+
+            if (ImGui::BeginPopupModal("Test Level", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                if (!leg::levelSaved)
+                {
+                    ImGui::Text("This level will be saved with this filename");
+                    ImGui::InputText("Filename", leg::statefile, 128);
+                }
+
+                ImGui::Text("Warning: %s will be overwritten!", leg::statefile);
+                if (ImGui::Button("Launch"))
+                {
+                    SaveLevel(leg::statefile);
+                    std::string file = leg::levelDir + leg::statefile;
+                    SpawnNewLevelProcess(file);
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Cancel"))
+                {
+                    ImGui::CloseCurrentPopup();
+                }
+
+                ImGui::EndPopup();
             }
 
             ImGui::EndMenu();
@@ -136,6 +134,9 @@ namespace ForLeaseEngine
         ImGui::Checkbox("Move Camera", &leg::moveMode);
         ImGui::SameLine();
         ImGui::Checkbox("Place Objects", &leg::clickAdd);
+        ImGui::SameLine();
+        if (ImGui::Button("Reload Assets"))
+            LoadFiles();
         ImGui::EndMainMenuBar();
     }
 
@@ -143,27 +144,8 @@ namespace ForLeaseEngine
     {
         ImGui::Begin("Level Editor");
 
-        if (ImGui::Button("Test Level"))
-        {
-            ImGui::OpenPopup("Test Level");
-        }
-
-        if (ImGui::BeginPopupModal("Test Level", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-        {
-            static char filename[64];
-            ImGui::Text("Input the name of the level file you wish to test.\n");
-            ImGui::InputText("File Name", filename, 64);
-            if (ImGui::Button("Launch"))
-            {
-                SpawnNewLevelProcess(filename);
-                ImGui::CloseCurrentPopup();
-            }
-
-            ImGui::EndPopup();
-        }
-
-        if (ImGui::InputText("Level Name", leg::statename, 70, ImGuiInputTextFlags_EnterReturnsTrue))
-            leg::setName = true;
+        if (ImGui::InputText("Level Name", leg::statename, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+            SetName(leg::statename);
 
         if (leg::levelLight)
         {
@@ -186,9 +168,9 @@ namespace ForLeaseEngine
         {
             ImGui::Text("Position");
             ImGui::PushItemWidth(80);
-            ImGui::InputFloat("x", &(leg::camTrans->Position[0]), 0, 0, 3);
+            ImGui::InputFloat("x##levelcam", &(leg::camTrans->Position[0]), 0, 0, 3);
             ImGui::SameLine();
-            ImGui::InputFloat("y", &(leg::camTrans->Position[1]), 0, 0, 3);
+            ImGui::InputFloat("y##levelcam", &(leg::camTrans->Position[1]), 0, 0, 3);
             ImGui::InputFloat("Size", &(leg::camCamera->Size), 0, 0, 0);
             ImGui::PopItemWidth();
         }
@@ -197,11 +179,11 @@ namespace ForLeaseEngine
         {
             ImGui::Text("Gravity");
             ImGui::PushItemWidth(80);
-            ImGui::InputFloat("x", &(leg::gravity[0]), 0, 0, 3);
+            ImGui::InputFloat("x##levelphy", &(leg::gravity[0]), 0, 0, 3);
             ImGui::SameLine();
-            ImGui::InputFloat("y", &(leg::gravity[1]), 0, 0, 3);
+            ImGui::InputFloat("y##levelphy", &(leg::gravity[1]), 0, 0, 3);
             ImGui::SameLine();
-            if (ImGui::Button("Set"))
+            if (ImGui::Button("Set##levelphy"))
                 leg::levelPhysics->SetGravity(leg::gravity);
 
             ImGui::PopItemWidth();
@@ -225,21 +207,11 @@ namespace ForLeaseEngine
                 {
                     if (ImGui::Button(leg::archetypeNames[i].c_str()))
                     {
-                        leg::archToSpawn = leg::archetypeNames[i].c_str();
+                        SpawnBluePrint(leg::archetypeNames[i]);
                     }
                 }
             }
             ImGui::EndChild();
-
-            if (archFilter.IsActive() && ImGui::IsKeyPressed(Keys::Return))
-            {
-                std::string s = archFilter.InputBuf;
-                Serializer root;
-                if (std::find(leg::archetypeNames.begin(), leg::archetypeNames.end(), s) == leg::archetypeNames.end() && root.ReadFile(s))
-                {
-                    leg::archetypeNames.push_back(s);
-                }
-            }
         }
 
         ImGui::End();
