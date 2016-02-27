@@ -19,7 +19,7 @@ namespace ForLeaseEngine {
         CharacterController::CharacterController(Entity& owner)
                                                 : Component(owner, ComponentType::Physics | ComponentType::Collision),
                                                   RightKey(Keys::D), LeftKey(Keys::A), JumpKey(Keys::W),
-                                                  MoveSpeed(0.0f), JumpSpeed(0),Drag(0), WalkSound(""), JumpSound(""), LandSound(""),
+                                                  MoveSpeed(0.0f), JumpSpeed(0),Drag(0), maxSpeed(0), Friction(0),WalkSound(""), JumpSound(""), LandSound(""),
                                                   WalkAnimation(""), JumpAnimation(""), CanJump(false) , CheckMove(false){};
 
         CharacterController* CharacterController::Create(Entity& owner) {
@@ -55,7 +55,8 @@ namespace ForLeaseEngine {
 
 
             float Drag = .05;
-            float maxSpeed = 2.0;
+            float maxSpeed = 1.5;
+            float Friction = 0.5;
             if(!CheckMove)
             {
                 Physics* rbody = Parent.GetComponent<Physics>();
@@ -64,11 +65,19 @@ namespace ForLeaseEngine {
                 currentVelocity = currentVelocity * Drag;
                 rbody->Velocity = (rbody->Velocity - currentVelocity);
 
-                if(rbody->Velocity.GetX() > maxSpeed)
+                if(rbody->Velocity[0] > maxSpeed)
                 {
-                    rbody->Velocity[0] = rbody->Velocity[0] - Drag;
-                    if(rbody->Velocity[0] < Drag)
-                        rbody->Velocity[0]  = rbody->Velocity[0] + maxSpeed;
+                    printf("updateV %f\n", rbody->Velocity[0]);
+                    rbody->Velocity[0] = rbody->Velocity[0] - Friction;
+                    if(rbody->Velocity[0] < maxSpeed)
+                        rbody->Velocity[0]  = rbody->Velocity[0] + Friction;
+                }
+                if(rbody->Velocity[0] < -maxSpeed)
+                {
+                    printf("negativeV %f\n", rbody->Velocity[0]);
+                    rbody->Velocity[0] = rbody->Velocity[0] + Friction;
+                    if(rbody->Velocity[0] > -maxSpeed)
+                        rbody->Velocity[0] = rbody->Velocity[0] - Friction;
                 }
             }
             Model* model = Parent.GetComponent<Model>();
@@ -102,11 +111,12 @@ namespace ForLeaseEngine {
                 if(model)
                     model->FlipY = true;
                 if(collider->CollidedLastFrame && collider->CollidedWithSide == Collision::Side::Top) {
-                    if(emitter)
+                    if (emitter) {
                         //emitter->Looping = true;
-                        emitter->SetVolume(1.0f,WalkSound);
+                        emitter->SetVolume(1.0f, WalkSound);
                         emitter->StopEvent(WalkSound);
                         emitter->PlayEvent(WalkSound);
+                    }
 
                     if(model)
                         model->SetAnimation(WalkAnimation);
@@ -118,17 +128,18 @@ namespace ForLeaseEngine {
                //rbody->Velocity += Vector(MoveSpeed, 0);
                     rbody->Acceleration += Vector(MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0) ;
                     //printf("RIGHTa %f", rbody->Acceleration[0]);
-                    printf("pressLV %f", rbody->Velocity[0]);
+                    printf("pressLV %f\n", rbody->Velocity[0]);
 
                     CheckMove = true;
 
                 if(model)
                     model->FlipY = false;
                 if(collider->CollidedLastFrame && collider->CollidedWithSide == Collision::Side::Top) {
-                    if(emitter)
+                    if (emitter) {
                         emitter->SetVolume(1.0f, WalkSound);
                         emitter->StopEvent(WalkSound);
                         emitter->PlayEvent(WalkSound);
+                    }
                     if(model)
                         model->SetAnimation(WalkAnimation);
                 }
@@ -139,10 +150,11 @@ namespace ForLeaseEngine {
                 if(CanJump) {
                     rbody->Velocity += Vector(0, JumpSpeed);
                     SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
-                    if(emitter)
+                    if (emitter) {
                         emitter->SetVolume(1.0f, JumpSound);
                         emitter->StopEvent(JumpSound);
                         emitter->PlayEvent(JumpSound);
+                    }
 
                     CanJump = false;
                 }
@@ -177,12 +189,12 @@ namespace ForLeaseEngine {
 //                        rbody->Velocity[0] = 0;
 //                }
                 CheckMove = false;
-                if(rbody->Acceleration[0] == 0)
-                    rbody->Acceleration[0] = 0;
+                //if(rbody->Acceleration[0] == 0)
+                rbody->Acceleration[0] = 0;
                 //rbody->Acceleration += Vector(-MoveSpeed * 20, 0 );
 
                 //rbody
-                printf("releaseLV %f", rbody->Velocity[0]);
+                printf("releaseLV %f\n", rbody->Velocity[0]);
                 //printf("rightA %f", rbody->Acceleration[0]);
 
                 //rbody->Acceleration += Vector(MoveSpeed * 20, 0 );
@@ -217,8 +229,9 @@ namespace ForLeaseEngine {
                 //if(rbody->Velocity[0] = 0)
                     //rbody->Velocity[0] = 0;
                     //rbody->Velocity[0] = 0;
+                rbody->Acceleration[0] = 0;
                 CheckMove = false;
-                printf("releaseRV %f", rbody->Velocity[0]);
+                printf("releaseRV %f\n", rbody->Velocity[0]);
                 //printf("rightA %f", rbody->Acceleration[0]);
                 //rbody->Acceleration += Vector(-MoveSpeed * 20, 0 );
 
@@ -249,6 +262,8 @@ namespace ForLeaseEngine {
             controller.WriteFloat("MoveSpeed", MoveSpeed);
             controller.WriteFloat("JumpSpeed", JumpSpeed);
             controller.WriteFloat("Drag", Drag);
+            controller.WriteFloat("maxSpeed", maxSpeed);
+            controller.WriteFloat("Friction", Friction);
             controller.WriteString("WalkSound", WalkSound);
             controller.WriteString("JumpSound", JumpSound);
             controller.WriteString("LandSound", LandSound);
@@ -266,6 +281,8 @@ namespace ForLeaseEngine {
             controller.ReadFloat("MoveSpeed", MoveSpeed);
             controller.ReadFloat("JumpSpeed", JumpSpeed);
             controller.ReadFloat("Drag", Drag);
+            controller.ReadFloat("maxSpeed", maxSpeed);
+            controller.ReadFloat("Friction", Friction);
             controller.ReadString("WalkSound", WalkSound);
             controller.ReadString("JumpSound", JumpSound);
             controller.ReadString("LandSound", LandSound);

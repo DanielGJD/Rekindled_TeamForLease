@@ -11,8 +11,8 @@ namespace ForLeaseEngine {
         void Occluder::Update() {}
 
         void Occluder::Serialize(Serializer& root) {
+            root.WriteUint("Type", static_cast<unsigned int>(Type));
             Serializer occluder = root.GetChild("Occluder");
-            occluder.WriteUint("Type", static_cast<unsigned int>(Type));
             occluder.WriteBool("BlocksVision", BlocksVision);
             occluder.WriteBool("BlocksLight", BlocksLight);
             root.Append(occluder, "Occluder");

@@ -56,7 +56,8 @@ namespace ForLeaseEngine {
         SimpleParticleDynamics = 1 << 23,   //! Adds dynamics to a particle system
         ParticleColorAnimator  = 1 << 24,   //! Adds color animation to particles
         Parallax               = 1 << 25,   //! Parallax scrolls the object
-        Occluder               = 1 << 26    //! Blocks light or vision
+        Occluder               = 1 << 26,   //! Blocks light or vision
+        Checkpoint             = 1 << 27    //! Saves player position for later loading
     };
 
     ComponentType operator|(const ComponentType& lhs, const ComponentType& rhs);

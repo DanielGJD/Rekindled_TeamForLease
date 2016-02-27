@@ -31,6 +31,7 @@ namespace ForLeaseEngine {
             public:
                 Filesystem();
                 Filesystem(std::string gameFile);
+                void Preinitialize();
                 void Initialize(std::string gameFile);
 
                 static std::vector<std::string> GetAllFilesInFolder(std::string folder);

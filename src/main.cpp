@@ -47,8 +47,8 @@ int Start(int argc = 0, char** argv = 0) {
     }
 
     // Set other options to defaults
-    unsigned resolutionX = 1920;
-    unsigned resolutionY = 1080;
+    unsigned resolutionX = 1280;
+    unsigned resolutionY = 720;
     unsigned fps         = 60;
 
     CommandLine::IntArgument rxArg  = CommandLine::GetIntArgument(argStart, argEnd, "-x");
@@ -62,7 +62,7 @@ int Start(int argc = 0, char** argv = 0) {
     // Right now, windowed is the default.  We may wish to change this at submission.
     bool fullscreen = CommandLine::ArgumentExists(argStart, argEnd, "-fullscreen");
 
-    ForLeaseEngine::Engine engine(states, 1280, 720, fps, false);
+    ForLeaseEngine::Engine engine(states, resolutionX, resolutionY, fps, fullscreen);
     engine.Run();
 
     return 0;

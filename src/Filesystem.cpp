@@ -21,16 +21,15 @@ namespace ForLeaseEngine {
             Basic constructor for the Filesystem.  Includes default locations.
         */
         Filesystem::Filesystem() {
-            if (PathExists("levels/")) AssetPaths.insert({ AssetType::Level, "levels/" });
-            if (PathExists("blueprints/")) AssetPaths.insert({ AssetType::Blueprint, "blueprints/" });
-            if (PathExists("sounds/")) AssetPaths.insert({ AssetType::Sound, "sounds/" });
-            if (PathExists("meshes/")) AssetPaths.insert({ AssetType::Mesh, "meshes/" });
-            if (PathExists("animations/")) AssetPaths.insert({ AssetType::Animation, "animations/" });
-            if (PathExists("images/")) AssetPaths.insert({ AssetType::Image, "images/" });
-            if (PathExists("fonts/")) AssetPaths.insert({ AssetType::Font, "fonts/" });
+            Preinitialize();
         }
 
         Filesystem::Filesystem(std::string gameFile) {
+            Preinitialize();
+            Initialize(gameFile);
+        }
+
+        void Filesystem::Preinitialize() {
             if (PathExists("levels/")) AssetPaths.insert({ AssetType::Level, "levels/" });
             if (PathExists("blueprints/")) AssetPaths.insert({ AssetType::Blueprint, "blueprints/" });
             if (PathExists("sounds/")) AssetPaths.insert({ AssetType::Sound, "sounds/" });
@@ -38,9 +37,7 @@ namespace ForLeaseEngine {
             if (PathExists("animations/")) AssetPaths.insert({ AssetType::Animation, "animations/" });
             if (PathExists("images/")) AssetPaths.insert({ AssetType::Image, "images/" });
             if (PathExists("fonts/")) AssetPaths.insert({ AssetType::Font, "fonts/" });
-            Initialize(gameFile);
         }
-
         /*!
             If we constructed the Filesystem instance already, but want to fix it
             with a game file.
@@ -123,9 +120,9 @@ namespace ForLeaseEngine {
                 case AssetType::Image:
                     ForLease->Resources.LoadTexture(file);
                     break;
-                //case AssetType::Font:
-                //    ForLease->Resources.LoadFont(file);
-                //    break;
+                case AssetType::Font:
+                    ForLease->Resources.LoadFont(file);
+                    break;
                 default: // No idea how you got here.  You screwed something up if that happened.
                     break;
             }
@@ -195,7 +192,11 @@ namespace ForLeaseEngine {
         }
 
         std::string Filesystem::AssetDirectory(AssetType type) {
-            return AssetPaths.at(type);
+            auto directory = AssetPaths.find(type);
+            if (directory != AssetPaths.end())
+                return directory->second;
+            else
+                return "";
         }
 
         std::vector<Filesystem::AssetPath> Filesystem::AllAssetDirectories() {

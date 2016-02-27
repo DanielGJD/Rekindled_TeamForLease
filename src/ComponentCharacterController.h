@@ -36,6 +36,8 @@ namespace ForLeaseEngine {
                 float JumpSpeed;
 
                 float Drag;
+                float maxSpeed;
+                float Friction;
                 std::string WalkSound;
                 std::string JumpSound;
                 std::string LandSound;

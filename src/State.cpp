@@ -55,6 +55,16 @@ namespace ForLeaseEngine {
         LevelComponents.push_back(levelComponent);
     }
 
+    void State::DeleteLevelComponent(LevelComponent* levelComponent) {
+        for (unsigned i = 0; i < LevelComponents.size(); i++) {
+            if (LevelComponents[i] == levelComponent) {
+                delete LevelComponents[i];
+                LevelComponents.erase(LevelComponents.begin() + i);
+                break;
+            }
+        }
+    }
+
     /*!
         Adds an entity to the Entities vector in the state.
 
@@ -202,7 +212,7 @@ namespace ForLeaseEngine {
 
         for (Entity* entity : Entities) {
             if (!entity->HasComponent(ComponentType::Transform)) continue;
-            if (entity->HasComponent(ComponentType::Camera)) continue;
+            if (entity->GetName() == "LevelEditorCamera") continue;
 
             Components::Transform* transform = entity->GetComponent<Components::Transform>(true);
 
@@ -589,11 +599,11 @@ namespace ForLeaseEngine {
 
         for (unsigned i = 0; i < jsonLevelComponents.Size(); ++i) {
             Serializer lcSerializer = jsonLevelComponents[i];
-            AddLevelComponent(DeserializeLevelComponent(lcSerializer, *this));
+            AddLevelComponent(DeserializeLevelComponent(lcSerializer, *this, root));
         }
     }
 
-    LevelComponent* DeserializeLevelComponent(Serializer& root, State& state) {
+    LevelComponent* DeserializeLevelComponent(Serializer& root, State& state, Serializer& stateSerializer) {
         unsigned type;
         root.ReadUint("Type", type);
 
@@ -617,6 +627,9 @@ namespace ForLeaseEngine {
             case ComponentType::Light:
                 lc = new LevelComponents::Light(state);
                 break;
+            case ComponentType::Checkpoint:
+                lc = new LevelComponents::Checkpoint(state, stateSerializer);
+                break;
             default:
                 return 0;
         }
@@ -624,6 +637,10 @@ namespace ForLeaseEngine {
         lc->Deserialize(root);
 
         return lc;
+    }
+
+    void State::DeserializeNonReference(Serializer root) {
+        Deserialize(root);
     }
 
     /*!
@@ -644,5 +661,4 @@ namespace ForLeaseEngine {
         if ((mask & ComponentType::Collision) == ComponentType::Collision)
             state->AddLevelComponent(new LevelComponents::Collision(*state));
     }
-
 }
