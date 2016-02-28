@@ -92,12 +92,12 @@ namespace ForLeaseEngine {
 
         void Collision::DebugDraw() {
             LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true);
-            renderer->SetDrawingColor(Color(1, 1, 1));
+            renderer->SetDrawingColor(Color(1, 0, 0));
             Components::Transform* transform = Parent.GetComponent<Components::Transform>(true);
             Point position = transform->Position;
             position[0] += OffsetX;
             position[1] += OffsetY;
-            renderer->DrawRectangle(position, Width, Height, transform->Rotation);
+            renderer->DrawRectangle(position, ScaledWidth(), ScaledHeight(), transform->Rotation);
         }
     } // Components
 

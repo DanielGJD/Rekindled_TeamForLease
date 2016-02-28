@@ -297,7 +297,7 @@ namespace ForLeaseEngine {
 
             if (side == Components::Collision::Side::Bottom || side == Components::Collision::Side::Top) {
                 velocity[1] = 0.0f;
-                toResolvePhysics->Velocity[1] = 0.0f;
+                //toResolvePhysics->Velocity[1] = 0.0f;
             }
             else {
                 //velocity[0] = 0.0f;
