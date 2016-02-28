@@ -47,6 +47,8 @@ namespace ForLeaseEngine {
             levelComponent->Update(Entities);
         }
 
+        UpdateDebug();
+
         ForLease->GameWindow->UpdateGameWindow();
     }
 

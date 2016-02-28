@@ -95,10 +95,7 @@ void SeanState::Update() {
         levelComponent->Update(Entities);
     }
 
-    for (FLE::Entity* entity : Entities) {
-        if (entity->HasComponent(ComponentType::Collision))
-            entity->GetComponent<Components::Collision>()->DebugDraw();
-    }
+    UpdateDebug();
 
     ForLease->GameWindow->UpdateGameWindow();
 }

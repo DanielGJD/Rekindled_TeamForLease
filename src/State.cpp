@@ -44,6 +44,16 @@ namespace ForLeaseEngine {
             levelComponent->Update(Entities);
     }
 
+    void State::UpdateDebug() {
+        if (ForLease->Debug.Draw.Collision) {
+            for (Entity* entity : Entities) {
+                if (entity->HasComponent(ComponentType::Collision)) {
+                    entity->GetComponent<Components::Collision>()->DebugDraw();
+                }
+            }
+        }
+    }
+
     void State::AddLevelComponent(LevelComponent* levelComponent) {
         for (LevelComponent* lc : LevelComponents) {
             if (lc->GetType() == levelComponent->GetType()) {
