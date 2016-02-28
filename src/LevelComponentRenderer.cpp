@@ -257,6 +257,7 @@ namespace ForLeaseEngine {
                     if(entity->HasComponent(ComponentType::Light)) {
                         Components::Light* light = entity->GetComponent<Components::Light>();
                         SetBlendMode(light->LightMode);
+                        SetTexture(NULL);
                         ModelView = Matrix::Translation(trans->Position);
                         glBindFramebuffer(GL_FRAMEBUFFER, LightFBO);
                         DrawMesh(light->GetLightMesh(), light->DrawOutline, false);
