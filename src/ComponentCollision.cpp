@@ -25,9 +25,10 @@ namespace ForLeaseEngine {
             \param owner
                 The entity that uses this Collision component.
         */
-        Collision::Collision(Entity& owner, float width, float height, bool resolve, float offsetX, float offsetY)
+        Collision::Collision(Entity& owner, float width, float height, bool resolve, float offsetX, float offsetY, bool inheritMomentum)
             : Component(owner, ComponentType::Transform), Width(width), Height(height),
-            OffsetX(offsetX), OffsetY(offsetY), CollidedLastFrame(false), CollidedWith(0), ResolveCollisions(resolve) {}
+            OffsetX(offsetX), OffsetY(offsetY), CollidedLastFrame(false), CollidedWith(0), ResolveCollisions(resolve),
+            InheritMomentum(inheritMomentum) {}
 
         void Collision::Initialize() {
             std::cout << Parent.GetName() << " collision init." << std::endl;
@@ -73,6 +74,7 @@ namespace ForLeaseEngine {
             collision.WriteFloat("OffsetX", OffsetX);
             collision.WriteFloat("OffsetY", OffsetY);
             collision.WriteBool("ResolveCollisions", ResolveCollisions);
+            collision.WriteBool("InheritMomentum", InheritMomentum);
             collision.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(collision, "Collision");
         }
@@ -84,6 +86,7 @@ namespace ForLeaseEngine {
             collision.ReadFloat("OffsetX", OffsetX);
             collision.ReadFloat("OffsetY", OffsetY);
             collision.ReadBool("ResolveCollisions", ResolveCollisions);
+            collision.ReadBool("InheritMomentum", InheritMomentum);
             CollidedLastFrame = false;
         }
 

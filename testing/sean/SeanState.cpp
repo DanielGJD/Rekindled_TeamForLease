@@ -35,13 +35,13 @@ void SeanState::Load() {
     AddLevelComponent(new LevelComponents::Collision(*this));
     AddLevelComponent(new LevelComponents::Menu(*this));
 
-    Entity* checkpoint = AddEntity("Checkpoint");
-    checkpoint->AddComponent(new Components::Transform(*checkpoint));
-    Components::Collision* checkpointCollide = new Components::Collision(*checkpoint);
-    checkpointCollide->ResolveCollisions = false;
-    checkpoint->AddComponent(checkpointCollide);
-    checkpoint->AddComponent(Components::Checkpoint::Create(*checkpoint));
-    checkpoint->AddComponent(new Components::Model(*checkpoint, true, false, false, "1-1Block.json"));
+    //Entity* checkpoint = AddEntity("Checkpoint");
+    //checkpoint->AddComponent(new Components::Transform(*checkpoint));
+    //Components::Collision* checkpointCollide = new Components::Collision(*checkpoint);
+    //checkpointCollide->ResolveCollisions = false;
+    //checkpoint->AddComponent(checkpointCollide);
+    //checkpoint->AddComponent(Components::Checkpoint::Create(*checkpoint));
+    //checkpoint->AddComponent(new Components::Model(*checkpoint, true, false, false, "1-1Block.json"));
 
     Entity* floor = AddEntity("Floor");
     floor->AddComponent(new Components::Transform(*floor, Point(0,-4), 20, 1, 0, 0));
@@ -51,13 +51,19 @@ void SeanState::Load() {
     Entity* character = AddEntity("Character");
     character->AddComponent(new Components::Transform(*character, Point(0, 4)));
     character->AddComponent(new Components::Physics(*character));
-    character->AddComponent(new Components::Collision(*character));
+    character->AddComponent(new Components::Collision(*character, 1.0f, 1.0f, true, 0,0,true));
     character->AddComponent(new Components::Model(*character, true, false, false, "1-1Block.json"));
     Components::CharacterController* charController = Components::CharacterController::Create(*character);
     charController->JumpSpeed = 50;
     charController->MoveSpeed = 50;
     charController->maxSpeed = 200;
     character->AddComponent(charController);
+
+    Entity* moving = AddEntity("Moving");
+    moving->AddComponent(new Components::Transform(*moving, Point(), 20));
+    moving->AddComponent(new Components::Physics(*moving, 1.0f, Vector(5,0), Vector(0,0), Vector(0,0), false, true));
+    moving->AddComponent(new Components::Collision(*moving));
+    moving->AddComponent(new Components::Model(*moving, true, false, false, "1-1Block.json"));
 
     Serializer serial;
     LevelComponents::Checkpoint* lcCheckpoint = new LevelComponents::Checkpoint(*this, serial);

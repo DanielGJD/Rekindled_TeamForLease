@@ -61,8 +61,6 @@ namespace ForLeaseEngine {
                     if (entity2 == entity1 || !CheckEntityCompatibility(entity2)) continue;
 
                     if (CheckCollision(entity1, entity2)) {
-//                        CollisionEvent collision = CollisionEvent(entity1, entity2);
-//                        ForLease->Dispatcher.Dispatch(&collision, this);
                         CollisionEvent e1(entity2);
                         CollisionEvent e2(entity1);
                         ForLease->Dispatcher.DispatchToParent(&e1, entity1);
@@ -224,6 +222,10 @@ namespace ForLeaseEngine {
             Components::Transform* otherTransform = other->GetComponent<Components::Transform>(true);
             Components::Collision* otherCollision = other->GetComponent<Components::Collision>(true);
 
+            if (toResolveCollision->InheritMomentum && other->HasComponent(ComponentType::Physics)) {
+                toResolvePhysics->Velocity += other->GetComponent<Components::Physics>()->Velocity;
+            }
+
             Vector velocity = toResolvePhysics->Velocity * ForLease->FrameRateController().GetDt();
             toResolveTransform->Position -= velocity;
             Point toResolvePosition = toResolveTransform->Position;
@@ -298,8 +300,8 @@ namespace ForLeaseEngine {
                 toResolvePhysics->Velocity[1] = 0.0f;
             }
             else {
-                velocity[0] = 0.0f;
-                toResolvePhysics->Velocity[0] = 0.0f;
+                //velocity[0] = 0.0f;
+                //toResolvePhysics->Velocity[0] = 0.0f;
             }
 
             toResolveTransform->Position += velocity;
