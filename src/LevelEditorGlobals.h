@@ -51,27 +51,18 @@ namespace ForLeaseEngine
         extern std::vector<std::string> fontNames;
         extern std::vector<std::string> animationNames;
         extern std::vector<std::string> textureNames;
+        extern std::vector<std::string> keyCodes;
 
-        extern std::map<std::string, unsigned long long> reqMap;
+        extern std::unordered_map<std::string, ComponentType> reqMap;
         extern Serializer copyEntity;
 
         extern bool clickAdd;
-        extern bool newSelect;
         extern bool moveMode;
-        extern bool showWindow;
         extern bool selMade;
-        extern bool archSpawn;
         extern bool selMode;
         extern bool delobj;
         extern bool copySet;
-        extern bool setLiked;
-        extern bool setHated;
         extern bool setTarget;
-        extern bool walkSound;
-        extern bool jumpSound;
-        extern bool landSound;
-        extern bool walkAni;
-        extern bool jumpAni;
         extern bool levelSaved;
 
         extern char entName[128];

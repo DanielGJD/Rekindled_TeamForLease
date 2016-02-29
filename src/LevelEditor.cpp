@@ -20,7 +20,7 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
-#include <map>
+#include <unordered_map>
 namespace ForLeaseEngine
 {
     namespace LevelEditorGlobals
@@ -76,26 +76,19 @@ namespace ForLeaseEngine
          std::vector<std::string> fontNames;
          std::vector<std::string> animationNames;
          std::vector<std::string> textureNames;
+         std::vector<std::string> keyCodes;
+         std::unordered_map<std::string, ComponentType> reqMap;
 
          Serializer copyEntity;
 
          bool clickAdd   = false;
          bool newSelect  = false;
          bool moveMode   = false;
-         bool showWindow = false;
          bool selMade    = false;
-         bool archSpawn  = false;
          bool selMode    = true;
          bool delobj     = false;
          bool copySet    = false;
-         bool setLiked   = false;
-         bool setHated   = false;
          bool setTarget  = false;
-         bool walkSound  = false;
-         bool jumpSound  = false;
-         bool landSound  = false;
-         bool walkAni    = false;
-         bool jumpAni    = false;
          bool startUp    = true;
          bool levelSaved = false;
 
@@ -126,6 +119,42 @@ namespace ForLeaseEngine
 
     namespace leg = LevelEditorGlobals;
 
+    void PopulateMap()
+    {
+        std::vector<Component*> comps;
+        Entity dummy;
+        comps.push_back(new Components::BackgroundMusic(dummy));
+        comps.push_back(new Components::Camera(dummy, 0, 0, 0));
+        comps.push_back(new Components::ChangeLevelOnCollide(dummy));
+        comps.push_back(new Components::Checkpoint(dummy));
+        comps.push_back(new Components::Collision(dummy));
+        comps.push_back(Components::DragWithMouse::Create(dummy));
+        comps.push_back(new Components::FadeWithDistance(dummy));
+        comps.push_back(new Components::EnemyAI(dummy));
+        comps.push_back(new Components::Light(dummy));
+        comps.push_back(new Components::Model(dummy));
+        comps.push_back(new Components::Occluder(dummy));
+        comps.push_back(new Components::Parallax(dummy));
+        comps.push_back(new Components::ParticleColorAnimator(dummy));
+        comps.push_back(new Components::SimpleParticleDynamics(dummy));
+        comps.push_back(new Components::ParticleEmitter(dummy));
+        comps.push_back(new Components::ParticleSystem(dummy));
+        comps.push_back(new Components::Physics(dummy));
+        comps.push_back(Components::CharacterController::Create(dummy));
+        comps.push_back(new Components::ScaleWithKeyboard(dummy));
+        comps.push_back(new Components::SoundEmitter(dummy));
+        comps.push_back(new Components::Sprite(dummy));
+        comps.push_back(new Components::SpriteText(dummy, "Arial.fnt"));
+        comps.push_back(new Components::TransformModeControls(dummy));
+        comps.push_back(new Components::VisionCone(dummy));
+
+        for (unsigned i = 0; i < comps.size(); i++)
+        {
+            leg::reqMap[leg::componentNames[i]] = comps[i]->GetRequired();
+            delete comps[i];
+        }
+    }
+
     void LevelEditor::Load()
     {
         leg::render = new LevelComponents::Renderer(*this);
@@ -149,12 +178,15 @@ namespace ForLeaseEngine
         strcpy(leg::statename, Name.c_str());
         if (leg::startUp)
         {
+            Keys::InitKeymap();
+            leg::keyCodes = Keys::GetKeyStrings();
+            std::sort(leg::keyCodes.begin(), leg::keyCodes.end());
             LoadFiles();
             leg::componentNames.push_back("Background Music");
             leg::componentNames.push_back("Camera");
             leg::componentNames.push_back("Change Level on Collide");
-            leg::componentNames.push_back("Collision");
             leg::componentNames.push_back("Checkpoint");
+            leg::componentNames.push_back("Collision");
             leg::componentNames.push_back("Drag with Mouse");
             leg::componentNames.push_back("Fade with Distance");
             leg::componentNames.push_back("Enemy AI");
@@ -177,7 +209,7 @@ namespace ForLeaseEngine
             leg::startUp = false;
         }
 
-        //PopulateMap();
+        PopulateMap();
     }
 
     void LevelEditor::Initialize()

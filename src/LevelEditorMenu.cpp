@@ -9,7 +9,7 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
-#include <map>
+#include <unordered_map>
 namespace ForLeaseEngine
 {
     namespace leg = LevelEditorGlobals;
@@ -386,6 +386,52 @@ namespace ForLeaseEngine
             if (!leg::selection->AddComponent(leg::selVision))
                 leg::selVision = NULL;
         }
+    }
+
+    std::string LevelEditor::RequiredToolTip(std::string component)
+    {
+        std::string tooltip = "Requires: ";
+        int counter = 0;
+        ComponentType reqMask = leg::reqMap[component];
+
+        if (static_cast<unsigned long long>(reqMask & ComponentType::Physics) != 0)
+        {
+            tooltip += "Physics";
+            ++counter;
+        }
+        if (static_cast<unsigned long long>(reqMask & ComponentType::Collision) != 0)
+        {
+            if (counter)
+                tooltip += ", ";
+            tooltip += "Collision";
+            ++counter;
+        }
+        if (static_cast<unsigned long long>(reqMask & ComponentType::Sprite) != 0)
+        {
+            if (counter)
+                tooltip += ", ";
+            tooltip += "Sprite";
+            ++counter;
+        }
+        if (static_cast<unsigned long long>(reqMask & ComponentType::SoundEmitter) != 0)
+        {
+            if (counter)
+                tooltip += ", ";
+            tooltip += "Sound";
+            ++counter;
+        }
+        if (static_cast<unsigned long long>(reqMask & ComponentType::ParticleSystem) != 0)
+        {
+            if (counter)
+                tooltip += ", ";
+            tooltip += "Particle System";
+            ++counter;
+        }
+
+        if (!counter)
+            tooltip += "None";
+
+        return tooltip;
     }
 
 

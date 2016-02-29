@@ -40,6 +40,7 @@ namespace ForLeaseEngine
         void SaveLevel(std::string level);
         void SpawnBluePrint(std::string blueprint);
         void LoadLevel(std::string level);
+        std::string RequiredToolTip(std::string component);
         void DrawMainWindow();
         void DrawObjectWindow();
         void GetMouse(Point& v);
