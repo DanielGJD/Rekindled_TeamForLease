@@ -83,6 +83,9 @@ namespace ForLeaseEngine
             ImGui::Checkbox("Flip X##Model", &(leg::selModel->FlipX));
             ImGui::SameLine();
             ImGui::Checkbox("Flip Y##Model", &(leg::selModel->FlipY));
+            ImGui::Combo("Blending Mode##model", &leg::modelBlend, "None\0Alpha\0Additive\0Multiply\0\0");
+            ImGui::ColorEdit4("Color##model", const_cast<float*>(leg::selModel->ModelColor.GetAll()));
+            leg::selModel->BlendingMode = static_cast<BlendMode>(leg::modelBlend);
             if (ImGui::TreeNode("Edit Mesh##model"))
             {
                 static ImGuiTextFilter meshFilter;
@@ -361,7 +364,9 @@ namespace ForLeaseEngine
             ImGui::Checkbox("Active##Light", &(leg::selLight->Active));
             ImGui::Checkbox("Visible##Light", &(leg::selLight->Visible));
             ImGui::Checkbox("Draw Outline##Light", &(leg::selLight->DrawOutline));
-            ImGui::DragFloat("Angle##Light", &(leg::selLight->Angle), 0.001, 0.0001, 22/7);
+            ImGui::Combo("Blending Mode##light", &leg::lightBlend, "None\0Alpha\0Additive\0Multiply\0\0");
+            leg::selLight->LightMode = static_cast<BlendMode>(leg::lightBlend);
+            ImGui::SliderAngle("Angle##Light", &(leg::selLight->Angle), 0, 180);
             ImGui::PushItemWidth(width);
             ImGui::DragFloat("X##LightDir", &(leg::selLight->Direction[0]), 0.05);
             ImGui::SameLine();
@@ -576,9 +581,6 @@ namespace ForLeaseEngine
 
         if (leg::selController && ImGui::CollapsingHeader("Player Controller"))
         {
-            ImGui::InputInt("Jump Key##Player", &(leg::selController->JumpKey));
-            ImGui::InputInt("Move Left Key##Player", &(leg::selController->LeftKey));
-            ImGui::InputInt("Move Right Key##Player", &(leg::selController->RightKey));
             ImGui::InputFloat("Jump Speed##Player", &(leg::selController->JumpSpeed));
             ImGui::InputFloat("Move Speed##Player", &(leg::selController->MoveSpeed));
             ImGui::InputFloat("Max Speed##Player", &(leg::selController->maxSpeed));

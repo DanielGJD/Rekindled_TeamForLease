@@ -112,6 +112,8 @@ namespace ForLeaseEngine
          int eCount = 0;
          int maxParticles = 0;
          int particleBlend = 1;
+         int modelBlend = 0;
+         int lightBlend = 2;
 
          std::string blueprintDir = "blueprints/";
          std::string levelDir     = "levels/";
@@ -225,6 +227,64 @@ namespace ForLeaseEngine
         v = leg::render->ScreenToWorld(v);
     }
 
+    void LevelEditor::MakeSelection()
+    {
+        std::string name = leg::selection->GetName();
+        strcpy(leg::entName, name.c_str());
+        leg::selCamera       = leg::selection->GetComponent<Components::Camera>();
+        leg::selTran         = leg::selection->GetComponent<Components::Transform>();
+        leg::selMenu         = leg::selection->GetComponent<Components::Menu>();
+        leg::selVision       = leg::selection->GetComponent<Components::VisionCone>();
+        leg::selDrag         = leg::selection->GetComponent<Components::DragWithMouse>();
+        leg::selScale        = leg::selection->GetComponent<Components::ScaleWithKeyboard>();
+        leg::selTMC          = leg::selection->GetComponent<Components::TransformModeControls>();
+        leg::selModel        = leg::selection->GetComponent<Components::Model>();
+        leg::selCollision    = leg::selection->GetComponent<Components::Collision>();
+        leg::selPhysics      = leg::selection->GetComponent<Components::Physics>();
+        leg::selSound        = leg::selection->GetComponent<Components::SoundEmitter>();
+        leg::selSprite       = leg::selection->GetComponent<Components::Sprite>();
+        leg::selSprtxt       = leg::selection->GetComponent<Components::SpriteText>();
+        leg::selController   = leg::selection->GetComponent<Components::CharacterController>();
+        leg::selEnemyAI      = leg::selection->GetComponent<Components::EnemyAI>();
+        leg::selLight        = leg::selection->GetComponent<Components::Light>();
+        leg::selFade         = leg::selection->GetComponent<Components::FadeWithDistance>();
+        leg::selChange       = leg::selection->GetComponent<Components::ChangeLevelOnCollide>();
+        leg::selMusic        = leg::selection->GetComponent<Components::BackgroundMusic>();
+        leg::selPartColor    = leg::selection->GetComponent<Components::ParticleColorAnimator>();
+        leg::selPartEmitter  = leg::selection->GetComponent<Components::ParticleEmitter>();
+        leg::selPartSystem   = leg::selection->GetComponent<Components::ParticleSystem>();
+        leg::selPartDynamics = leg::selection->GetComponent<Components::SimpleParticleDynamics>();
+        leg::selParallax     = leg::selection->GetComponent<Components::Parallax>();
+        leg::selOccluder     = leg::selection->GetComponent<Components::Occluder>();
+
+        if (leg::selSprtxt)
+            strcpy(leg::spriteTextBuf, leg::selSprtxt->Text.c_str());
+
+        if (leg::selChange)
+        {
+            strcpy(leg::changeLevel, leg::selChange->LevelName.c_str());
+            strcpy(leg::changeObject, leg::selChange->TriggerObjectName.c_str());
+        }
+
+        if (leg::selModel)
+            leg::modelBlend = leg::selModel->BlendingMode;
+
+        if (leg::selPartEmitter)
+            leg::eCount = leg::selPartEmitter->EmitCount;
+
+        if (leg::selPartSystem)
+        {
+            leg::maxParticles = leg::selPartSystem->MaxParticles;
+            leg::particleBlend = leg::selPartSystem->BlendingMode;
+        }
+
+        if (leg::selEnemyAI)
+        {
+            strcpy(leg::enemyHateName, leg::selEnemyAI->HatedEntityName.c_str());
+            strcpy(leg::enemyLikeName, leg::selEnemyAI->LikedEntityName.c_str());
+        }
+    }
+
     void LevelEditor::Input()
     {
         double dt = ForLease->FrameRateController().GetDt();
@@ -254,72 +314,17 @@ namespace ForLeaseEngine
                 leg::setTarget = false;
             }
         }
+
         else if (leg::selMode && ImGui::IsMouseClicked(0) && !ImGui::IsMouseHoveringAnyWindow())
         {
             GetMouse(leg::mousePos);
-            //std::vector<Entity*> ents = GetEntitiesAtPosition(leg::mousePos);
             leg::selection = GetEntityAtPosition(leg::mousePos);
 
-            //for (unsigned i = 0; i < ents.size(); i++)
-            //{
-                if (leg::selection)
-                {
-                    //leg::selection = ents[i];
-                    std::string name = leg::selection->GetName();
-                    strcpy(leg::entName, name.c_str());
-                    leg::selCamera       = leg::selection->GetComponent<Components::Camera>();
-                    leg::selTran         = leg::selection->GetComponent<Components::Transform>();
-                    leg::selMenu         = leg::selection->GetComponent<Components::Menu>();
-                    leg::selVision       = leg::selection->GetComponent<Components::VisionCone>();
-                    leg::selDrag         = leg::selection->GetComponent<Components::DragWithMouse>();
-                    leg::selScale        = leg::selection->GetComponent<Components::ScaleWithKeyboard>();
-                    leg::selTMC          = leg::selection->GetComponent<Components::TransformModeControls>();
-                    leg::selModel        = leg::selection->GetComponent<Components::Model>();
-                    leg::selCollision    = leg::selection->GetComponent<Components::Collision>();
-                    leg::selPhysics      = leg::selection->GetComponent<Components::Physics>();
-                    leg::selSound        = leg::selection->GetComponent<Components::SoundEmitter>();
-                    leg::selSprite       = leg::selection->GetComponent<Components::Sprite>();
-                    leg::selSprtxt       = leg::selection->GetComponent<Components::SpriteText>();
-                    leg::selController   = leg::selection->GetComponent<Components::CharacterController>();
-                    leg::selEnemyAI      = leg::selection->GetComponent<Components::EnemyAI>();
-                    leg::selLight        = leg::selection->GetComponent<Components::Light>();
-                    leg::selFade         = leg::selection->GetComponent<Components::FadeWithDistance>();
-                    leg::selChange       = leg::selection->GetComponent<Components::ChangeLevelOnCollide>();
-                    leg::selMusic        = leg::selection->GetComponent<Components::BackgroundMusic>();
-                    leg::selPartColor    = leg::selection->GetComponent<Components::ParticleColorAnimator>();
-                    leg::selPartEmitter  = leg::selection->GetComponent<Components::ParticleEmitter>();
-                    leg::selPartSystem   = leg::selection->GetComponent<Components::ParticleSystem>();
-                    leg::selPartDynamics = leg::selection->GetComponent<Components::SimpleParticleDynamics>();
-                    leg::selParallax     = leg::selection->GetComponent<Components::Parallax>();
-                    leg::selOccluder     = leg::selection->GetComponent<Components::Occluder>();
-
-                    if (leg::selSprtxt)
-                        strcpy(leg::spriteTextBuf, leg::selSprtxt->Text.c_str());
-
-                    if (leg::selChange)
-                    {
-                        strcpy(leg::changeLevel, leg::selChange->LevelName.c_str());
-                        strcpy(leg::changeObject, leg::selChange->TriggerObjectName.c_str());
-                    }
-
-                    if (leg::selPartEmitter)
-                        leg::eCount = leg::selPartEmitter->EmitCount;
-
-                    if (leg::selPartSystem)
-                    {
-                        leg::maxParticles = leg::selPartSystem->MaxParticles;
-                        leg::particleBlend = leg::selPartSystem->BlendingMode;
-                    }
-
-                    if (leg::selEnemyAI)
-                    {
-                        strcpy(leg::enemyHateName, leg::selEnemyAI->HatedEntityName.c_str());
-                        strcpy(leg::enemyLikeName, leg::selEnemyAI->LikedEntityName.c_str());
-                    }
-                    leg::selMade = true;
-                    //break;
-                }
-            //}
+            if (leg::selection)
+            {
+                MakeSelection();
+                leg::selMade = true;
+            }
         }
 
         if (leg::selMade && ImGui::IsMouseDown(0) && ImGui::IsMouseDragging(0))

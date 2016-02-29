@@ -43,6 +43,7 @@ namespace ForLeaseEngine
         std::string RequiredToolTip(std::string component);
         void DrawMainWindow();
         void DrawObjectWindow();
+        void MakeSelection();
         void GetMouse(Point& v);
         void AddComponent(const std::string& component);
     };

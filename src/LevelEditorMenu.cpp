@@ -66,6 +66,11 @@ namespace ForLeaseEngine
                 ImGui::EndPopup();
             }
 
+            if (ImGui::Button("Test Level"))
+            {
+                ImGui::OpenPopup("Test Level");
+            }
+
             if (ImGui::BeginMenu("Load Level"))
             {
                 if (ImGui::InputText("File Name", leg::statefile, 128, ImGuiInputTextFlags_EnterReturnsTrue))
@@ -94,11 +99,6 @@ namespace ForLeaseEngine
 
 
                 ImGui::EndMenu();
-            }
-
-            if (ImGui::Button("Test Level"))
-            {
-                ImGui::OpenPopup("Test Level");
             }
 
             if (ImGui::BeginPopupModal("Test Level", NULL, ImGuiWindowFlags_AlwaysAutoResize))
@@ -171,7 +171,7 @@ namespace ForLeaseEngine
             ImGui::InputFloat("x##levelcam", &(leg::camTrans->Position[0]), 0, 0, 3);
             ImGui::SameLine();
             ImGui::InputFloat("y##levelcam", &(leg::camTrans->Position[1]), 0, 0, 3);
-            ImGui::InputFloat("Size", &(leg::camCamera->Size), 0, 0, 0);
+            ImGui::InputFloat("Size##levelcam", &(leg::camCamera->Size), 0, 0, 0);
             ImGui::PopItemWidth();
         }
 
@@ -211,6 +211,36 @@ namespace ForLeaseEngine
                     }
                 }
             }
+            ImGui::EndChild();
+        }
+
+        if (ImGui::CollapsingHeader("Object List"))
+        {
+            std::vector<std::string> entityNames;
+            for (Entity* e : Entities)
+                entityNames.push_back(e->GetName());
+
+            static ImGuiTextFilter objectFilter;
+            objectFilter.Draw("Name##objects", 200);
+            ImGui::BeginChild("Objects##objects", ImVec2(0, 150), true);
+            for (std::string s : entityNames)
+            {
+                if (objectFilter.PassFilter(s.c_str()))
+                {
+                    if (ImGui::MenuItem(s.c_str()))
+                    {
+                        leg::selection = GetEntityByName(s);
+                        if (leg::selection)
+                        {
+                            MakeSelection();
+                            leg::camTrans->Position[0] = leg::selTran->Position[0];
+                            leg::camTrans->Position[1] = leg::selTran->Position[1];
+                        }
+                    }
+                }
+            }
+
+            entityNames.clear();
             ImGui::EndChild();
         }
 

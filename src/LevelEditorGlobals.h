@@ -90,6 +90,8 @@ namespace ForLeaseEngine
         extern int eCount;
         extern int maxParticles;
         extern int particleBlend;
+        extern int modelBlend;
+        extern int lightBlend;
         extern std::string levelDir;
         extern std::string blueprintDir;
     }
