@@ -244,23 +244,7 @@ namespace ForLeaseEngine {
             float xSpacing = toResolveCollision->ScaledWidth() / (numVertsX - 1);
             float ySpacing = toResolveCollision->ScaledHeight() / (numVertsY - 1);
 
-            //Point toResolveTopLeft(toResolvePosition[0] - toResolveHalfWidth, toResolvePosition[1] + toResolveHalfHeight);
-            //Point toResolveTopRight(toResolvePosition[0] + toResolveHalfWidth, toResolvePosition[1] + toResolveHalfHeight);
-            //Point toResolveBotRight(toResolvePosition[0] + toResolveHalfWidth, toResolvePosition[1] - toResolveHalfHeight);
-            //Point toResolveBotLeft(toResolvePosition[0] - toResolveHalfWidth, toResolvePosition[1] - toResolveHalfHeight);
-
-
-            //Ray toResolveTopLeftRay(toResolveTopLeft, velocity, velocity.Magnitude(), 1);
-            //Ray toResolveTopRightRay(toResolveTopRight, velocity, velocity.Magnitude(), 1);
-            //Ray toResolveBotRightRay(toResolveBotRight, velocity, velocity.Magnitude(), 1);
-            //Ray toResolveBotLeftRay(toResolveBotLeft, velocity, velocity.Magnitude(), 1);
-
             LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true);
-
-            //toResolveTopLeftRay.IsColliding(other);
-            //toResolveTopRightRay.IsColliding(other);
-            //toResolveBotRightRay.IsColliding(other);
-            //toResolveBotLeftRay.IsColliding(other);
 
             Components::Collision::Side side;
             float dist = 9999;
@@ -280,39 +264,6 @@ namespace ForLeaseEngine {
                 toResolve[0] = toResolvePosition[0] + toResolveHalfWidth;
                 CheckRay(toResolve, velocity, other, side, dist);
             }
-
-            //if (toResolveTopLeftRay.IsColliding(other) && toResolveTopLeftRay.GetLastDistance() < dist && toResolveTopLeftRay.GetLastDistance() > Epsilon) {
-            //    side = toResolveTopLeftRay.GetLastSide();
-            //    dist = toResolveTopLeftRay.GetLastDistance();
-            //}
-
-            //if (toResolveTopRightRay.IsColliding(other) && toResolveTopRightRay.GetLastDistance() < dist && toResolveTopRightRay.GetLastDistance() > Epsilon) {
-            //    side = toResolveTopRightRay.GetLastSide();
-            //    dist = toResolveTopRightRay.GetLastDistance();
-            //}
-
-            //if (toResolveBotRightRay.IsColliding(other) && toResolveBotRightRay.GetLastDistance() < dist && toResolveBotRightRay.GetLastDistance() > Epsilon) {
-            //    side = toResolveBotRightRay.GetLastSide();
-            //    dist = toResolveBotRightRay.GetLastDistance();
-            //}
-
-            //if (toResolveBotLeftRay.IsColliding(other) && toResolveBotLeftRay.GetLastDistance() < dist && toResolveBotLeftRay.GetLastDistance() > Epsilon) {
-            //    side = toResolveBotLeftRay.GetLastSide();
-            //    dist = toResolveBotLeftRay.GetLastDistance();
-            //}
-
-            //renderer->DrawArrow(toResolveTopLeft, toResolveTopLeftRay.GetScaledVector());
-            //renderer->DrawArrow(toResolveTopRight, toResolveTopRightRay.GetScaledVector());
-            //renderer->DrawArrow(toResolveBotRight, toResolveBotRightRay.GetScaledVector());
-            //renderer->DrawArrow(toResolveBotLeft, toResolveBotLeftRay.GetScaledVector());
-
-            //toResolvePhysics->Acceleration = Vector(0, 0);
-            //toResolvePhysics->Velocity = Vector(0, 0);
-
-            //toResolvePhysics->Acceleration[0] = 0;
-            //toResolvePhysics->Acceleration[1] = 0;
-            //toResolvePhysics->Velocity[0] = 0;
-            //toResolvePhysics->Velocity[1] = 0;
 
             if (dist > 1) return; // This should never happen
 
@@ -348,7 +299,7 @@ namespace ForLeaseEngine {
         }
 
         void Collision::CheckRay(Point point, Vector velocity, Entity* other, Components::Collision::Side& side, float& dist) {
-            ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->DrawRectangleFilled(point, 0.25, 0.25, 0);
+            //ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->DrawRectangleFilled(point, 0.25, 0.25, 0);
             
             Ray toResolveRay(point, velocity, velocity.Magnitude(), 1);
 
