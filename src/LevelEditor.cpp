@@ -390,6 +390,8 @@ namespace ForLeaseEngine
                 leg::render = new LevelComponents::Renderer(*this);
                 AddLevelComponent(leg::render);
             }
+            unsigned long camID = leg::render->GetCameraID();
+            leg::levelCamera = GetEntityByID(camID);
             leg::camera = GetEntityByName("LevelEditorCamera", true);
             leg::camTrans = leg::camera->GetComponent<Components::Transform>();
             leg::camCamera = leg::camera->GetComponent<Components::Camera>();
