@@ -244,12 +244,12 @@ namespace ForLeaseEngine {
             float xSpacing = toResolveCollision->ScaledWidth() / (numVertsX - 1);
             float ySpacing = toResolveCollision->ScaledHeight() / (numVertsY - 1);
 
-            LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true);
+            //LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true);
 
             Components::Collision::Side side;
             float dist = 9999;
 
-            std::cout << "X: " << numVertsX << " | Y: " << numVertsY << std::endl;
+            //std::cout << "X: " << numVertsX << " | Y: " << numVertsY << std::endl;
 
             for (unsigned i = 0; i < numVertsX; ++i) {
                 Point toResolve(toResolvePosition[0] - toResolveHalfWidth + (i * xSpacing), toResolvePosition[1] - toResolveHalfHeight);
