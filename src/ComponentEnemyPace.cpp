@@ -10,16 +10,24 @@ namespace ForLeaseEngine
     {
         EnemyPace::EnemyPace(Entity& owner): Component(owner, ComponentType::Physics | ComponentType::Collision),
                                             Detected(true), MoveRight(true), MoveLeft(false), PaceSpeed(2.0),PaceDistance(0.1),
-                                            MaxPaceDistance(5.0), PaceSound(""){};
+                                            MaxPaceDistance(5.0), PaceSound("")
+            {
+
+                Entity * enemy = ForLease->GameStateManager().CurrentState().GetEntityByName("Enemy");
+                Point EnemyPos = enemy->GetComponent()<Components::Transform>()->Position;
+
+
+            };
 
             EnemyPace * EnemyPace::Create(Entity* owner)
             {
-                EnemyPace* pace = new EnemyPace(owner);
-                pace->Initialize();
-                return pace;
+                //EnemyPace * pace = new EnemyPace(owner);
+
+
+
             }
 
-            EnemyPace::~EnemyPace
+            EnemyPace::~EnemyPace()
             {
 
             }
@@ -31,14 +39,18 @@ namespace ForLeaseEngine
 
             void EnemyPace::Update()
             {
-                Components::Model * EnemyModel = Parent.GetComponent<Component::Model>();
+
                 //Components::Physics * EnemyBody = Parent.GetComponent<Component::Phyiscs>();
-                Components::Transform * EnemyTrans = Parent.GetComponent<Component::Transform>();
+
+
+               // Components::Transform * entity2Transform = entity2->GetComponent<Components::Transform>();
+                //Point entity1Position = entity1Transform->Position;
 
                 //bool Detected = true;
                 //bool MoveRight = true;
                 //bool MoveLeft = false;
                 //float Pacedistance = 0.1;
+
                 Physics * EnemyBody = Parent.GetComponent<Physics>();
                 if(Detected && MoveRight && !MoveLeft)
                 {
@@ -46,31 +58,30 @@ namespace ForLeaseEngine
                     //Point EnemyPosition = Enemy->GetComponent<Components::Transform>()->Position;
                     //EnemyPosition += Pacedistance * ForLease->FrameRateController().GetDt();
                     EnemyBody->Velocity[0] = 2.0;
-                    if(EnemyBody->Velocity[0] > maxPaceDistance)
+                    if(EnemyPos.x > EnemyPos.x + MaxPaceDistance)
                     {
                         MoveRight = false;
-
-                        //printf("updateV %f\n", rbody->Velocity[0]);
-                        rbody->Velocity[0] = 0;
-
+                        MoveLeft = true;
+                        if(!MoveRight)
+                        {
+                            EnemyBody->Velocity[0] = 0;
+                            //ForLease->FrameRateController().GetDt();
+                        }
 
                     }
-
-
 
                 }
                 else if (Detected && MoveLeft && !MoveRight)
                 {
                     EnemyBody->Velocity[0] = -2.0;
-                    if(EnemyBody->Velocity[0] < -MaxPaceDistance)
+                    if(EnemyPos.x < (EnemyPos.x + -MaxPaceDistance))
                     {
-                        //printf("negativeV %f\n", rbody->Velocity[0]);
-//                        rbody->Velocity[0] = rbody->Velocity[0] + PaceDistance;
-//                        if(rbody->Velocity[0] > -MaxPaceDistance)
-//                            rbody->Velocity[0] = rbody->Velocity[0] - PaceDistance;
+                        MoveLeft = false;
                         MoveRight = true;
-                        EnemyBody->Velocity[0] = 0;
-
+                        if(!MoveLeft)
+                        {
+                            EnemyBody->Velocity[0] = 0;
+                        }
                     }
                 }
             }
@@ -80,12 +91,7 @@ namespace ForLeaseEngine
             {
                 root.WriteUint("Type", static_cast<unsigned>(Type));
                 Serializer controller = root.GetChild("EnemyPace");
-                controller.WriteFloat("MoveSpeed", MoveSpeed);
-                controller.WriteFloat("JumpSpeed", JumpSpeed);
-                controller.WriteFloat("Drag", Drag);
-                controller.WriteFloat("maxSpeed", maxSpeed);
-                controller.WriteFloat("PaceDistance", PaceDistance);
-                controller.WriteString("EnemyWalkAnimation", WalkAnimation);
+                controller.WriteFloat("MaxPaceDistance", MaxPaceDistance);
                 controller.WriteUint("Type", static_cast<unsigned>(Type));
                 root.Append(pace, "EnemyPace");
             }
@@ -94,12 +100,7 @@ namespace ForLeaseEngine
             {
                 root.WriteUint("Type", static_cast<unsigned>(Type));
                 Serializer controller = root.GetChild("EnemyPace");
-                controller.WriteFloat("MoveSpeed", MoveSpeed);
-                controller.WriteFloat("JumpSpeed", JumpSpeed);
-                controller.WriteFloat("Drag", Drag);
-                controller.WriteFloat("maxSpeed", maxSpeed);
-                controller.WriteFloat("PaceDistance", PaceDistance);
-                controller.WriteString("EnemyWalkAnimation", WalkAnimation);
+                controller.WriteFloat("MaxPaceDistance", MaxPaceDistance);
                 controller.WriteUint("Type", static_cast<unsigned>(Type));
                 root.Append(pace, "EnemyPace");
             }
