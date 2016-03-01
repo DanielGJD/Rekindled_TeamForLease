@@ -26,7 +26,7 @@ namespace ForLeaseEngine {
             const static unsigned Unlimited = static_cast<unsigned>(-1);
             Ray(Point start = Point(0,0), Vector direction = Vector(1,1), float scale = 20, int collisions = 1);
             bool IsColliding(Entity* entity);
-            std::vector<Point> GetCollisionPoints();
+            //std::vector<Point> GetCollisionPoints();
             void ResetLength();
             Point GetStart();
             Vector GetScaledVector();
@@ -36,6 +36,17 @@ namespace ForLeaseEngine {
             Point GetIntersectionPoint();
             HalfPlane::CollisionInterval GetHalfPlaneInterval(const HalfPlane& halfPlane);
             static Entity* CheckCollisions(Ray& ray, std::vector<Entity *>& entities);
+
+            class Collision {
+                public:
+                    Collision(float distance = 0, Entity* entity = 0, Point point = ForLeaseEngine::Point())
+                        : Distance(distance), Entity(entity), Point(point) {}
+                    float Distance;
+                    Entity* Entity;
+                    Point Point;
+            };
+
+            static std::vector<Collision> CheckCollisionsMultipleEntities(Ray& ray, std::vector<Entity *>& entities);
         private:
             Point Start;
             Vector Direction;
