@@ -20,6 +20,7 @@
 #include "Platforms.h"
 #include "Loading.h"
 #include "Filesystem.h"
+#include "Exception.h"
 
 #undef main
 
@@ -63,7 +64,15 @@ int Start(int argc = 0, char** argv = 0) {
     bool fullscreen = CommandLine::ArgumentExists(argStart, argEnd, "-fullscreen");
 
     ForLeaseEngine::Engine engine(states, resolutionX, resolutionY, fps, fullscreen);
+    try{
     engine.Run();
+    }
+    catch(ForLeaseEngine::Exception* e) {
+        std::cout << e->GetInfo() << std::endl;
+    }
+    catch(ForLeaseEngine::Exception& e) {
+        std::cout << e.GetInfo() << std::endl;
+    }
 
     return 0;
 }
