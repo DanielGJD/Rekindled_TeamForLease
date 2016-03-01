@@ -47,6 +47,8 @@ namespace ForLeaseEngine {
             private:
                 void ResolveCollisionBoundingBox(Entity* toResolve, Entity* other);
                 void ResolveCollisionMesh(Entity* toResolve, Entity* other);
+                void CheckRay(Point point, Vector velocity, Entity* other, Components::Collision::Side& side, float& dist);
+                static const unsigned DefaultVertsPerSide = 2;
         };
 
     } // LevelComponents

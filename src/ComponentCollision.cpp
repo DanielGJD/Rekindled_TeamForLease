@@ -25,10 +25,10 @@ namespace ForLeaseEngine {
             \param owner
                 The entity that uses this Collision component.
         */
-        Collision::Collision(Entity& owner, float width, float height, bool resolve, float offsetX, float offsetY, bool inheritMomentum, unsigned vertsPerSide)
+        Collision::Collision(Entity& owner, float width, float height, bool resolve, float offsetX, float offsetY, bool inheritMomentum)
             : Component(owner, ComponentType::Transform), Width(width), Height(height),
             OffsetX(offsetX), OffsetY(offsetY), CollidedLastFrame(false), CollidedWith(0), ResolveCollisions(resolve),
-            InheritMomentum(inheritMomentum), VertsPerSide(vertsPerSide) {}
+            InheritMomentum(inheritMomentum) {}
 
         void Collision::Initialize() {
             std::cout << Parent.GetName() << " collision init." << std::endl;

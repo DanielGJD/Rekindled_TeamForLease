@@ -234,18 +234,28 @@ namespace ForLeaseEngine {
             float toResolveHalfWidth = toResolveCollision->Width / 2 * toResolveTransform->ScaleX;
             float toResolveHalfHeight = toResolveCollision->Height / 2 * toResolveTransform->ScaleY;
 
-            Point toResolveTopLeft(toResolvePosition[0] - toResolveHalfWidth, toResolvePosition[1] + toResolveHalfHeight);
-            Point toResolveTopRight(toResolvePosition[0] + toResolveHalfWidth, toResolvePosition[1] + toResolveHalfHeight);
-            Point toResolveBotRight(toResolvePosition[0] + toResolveHalfWidth, toResolvePosition[1] - toResolveHalfHeight);
-            Point toResolveBotLeft(toResolvePosition[0] - toResolveHalfWidth, toResolvePosition[1] - toResolveHalfHeight);
+            unsigned numVertsX = ceil(toResolveCollision->ScaledWidth() / otherCollision->ScaledWidth()) + 1;
+            unsigned numVertsY = ceil(toResolveCollision->ScaledHeight() / otherCollision->ScaledHeight()) + 1;
+
+            // Make sure we have at least the default # of verts per side (2, one for each corner)
+            numVertsX = numVertsX < DefaultVertsPerSide ? DefaultVertsPerSide : numVertsX;
+            numVertsY = numVertsY < DefaultVertsPerSide ? DefaultVertsPerSide : numVertsY;
+
+            float xSpacing = toResolveCollision->ScaledWidth() / (numVertsX - 1);
+            float ySpacing = toResolveCollision->ScaledHeight() / (numVertsY - 1);
+
+            //Point toResolveTopLeft(toResolvePosition[0] - toResolveHalfWidth, toResolvePosition[1] + toResolveHalfHeight);
+            //Point toResolveTopRight(toResolvePosition[0] + toResolveHalfWidth, toResolvePosition[1] + toResolveHalfHeight);
+            //Point toResolveBotRight(toResolvePosition[0] + toResolveHalfWidth, toResolvePosition[1] - toResolveHalfHeight);
+            //Point toResolveBotLeft(toResolvePosition[0] - toResolveHalfWidth, toResolvePosition[1] - toResolveHalfHeight);
 
 
-            Ray toResolveTopLeftRay(toResolveTopLeft, velocity, velocity.Magnitude(), 1);
-            Ray toResolveTopRightRay(toResolveTopRight, velocity, velocity.Magnitude(), 1);
-            Ray toResolveBotRightRay(toResolveBotRight, velocity, velocity.Magnitude(), 1);
-            Ray toResolveBotLeftRay(toResolveBotLeft, velocity, velocity.Magnitude(), 1);
+            //Ray toResolveTopLeftRay(toResolveTopLeft, velocity, velocity.Magnitude(), 1);
+            //Ray toResolveTopRightRay(toResolveTopRight, velocity, velocity.Magnitude(), 1);
+            //Ray toResolveBotRightRay(toResolveBotRight, velocity, velocity.Magnitude(), 1);
+            //Ray toResolveBotLeftRay(toResolveBotLeft, velocity, velocity.Magnitude(), 1);
 
-            //LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true);
+            LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true);
 
             //toResolveTopLeftRay.IsColliding(other);
             //toResolveTopRightRay.IsColliding(other);
@@ -255,25 +265,41 @@ namespace ForLeaseEngine {
             Components::Collision::Side side;
             float dist = 9999;
 
-            if (toResolveTopLeftRay.IsColliding(other) && toResolveTopLeftRay.GetLastDistance() < dist && toResolveTopLeftRay.GetLastDistance() > Epsilon) {
-                side = toResolveTopLeftRay.GetLastSide();
-                dist = toResolveTopLeftRay.GetLastDistance();
+            std::cout << "X: " << numVertsX << " | Y: " << numVertsY << std::endl;
+
+            for (unsigned i = 0; i < numVertsX; ++i) {
+                Point toResolve(toResolvePosition[0] - toResolveHalfWidth + (i * xSpacing), toResolvePosition[1] - toResolveHalfHeight);
+                CheckRay(toResolve, velocity, other, side, dist);
+                toResolve[1] = toResolvePosition[1] + toResolveHalfHeight;
+                CheckRay(toResolve, velocity, other, side, dist);
             }
 
-            if (toResolveTopRightRay.IsColliding(other) && toResolveTopRightRay.GetLastDistance() < dist && toResolveTopRightRay.GetLastDistance() > Epsilon) {
-                side = toResolveTopRightRay.GetLastSide();
-                dist = toResolveTopRightRay.GetLastDistance();
+            for (unsigned i = 0; i < numVertsY; ++i) {
+                Point toResolve(toResolvePosition[0] - toResolveHalfWidth, toResolvePosition[1] - toResolveHalfHeight + (i * ySpacing));
+                CheckRay(toResolve, velocity, other, side, dist);
+                toResolve[0] = toResolvePosition[0] + toResolveHalfWidth;
+                CheckRay(toResolve, velocity, other, side, dist);
             }
 
-            if (toResolveBotRightRay.IsColliding(other) && toResolveBotRightRay.GetLastDistance() < dist && toResolveBotRightRay.GetLastDistance() > Epsilon) {
-                side = toResolveBotRightRay.GetLastSide();
-                dist = toResolveBotRightRay.GetLastDistance();
-            }
+            //if (toResolveTopLeftRay.IsColliding(other) && toResolveTopLeftRay.GetLastDistance() < dist && toResolveTopLeftRay.GetLastDistance() > Epsilon) {
+            //    side = toResolveTopLeftRay.GetLastSide();
+            //    dist = toResolveTopLeftRay.GetLastDistance();
+            //}
 
-            if (toResolveBotLeftRay.IsColliding(other) && toResolveBotLeftRay.GetLastDistance() < dist && toResolveBotLeftRay.GetLastDistance() > Epsilon) {
-                side = toResolveBotLeftRay.GetLastSide();
-                dist = toResolveBotLeftRay.GetLastDistance();
-            }
+            //if (toResolveTopRightRay.IsColliding(other) && toResolveTopRightRay.GetLastDistance() < dist && toResolveTopRightRay.GetLastDistance() > Epsilon) {
+            //    side = toResolveTopRightRay.GetLastSide();
+            //    dist = toResolveTopRightRay.GetLastDistance();
+            //}
+
+            //if (toResolveBotRightRay.IsColliding(other) && toResolveBotRightRay.GetLastDistance() < dist && toResolveBotRightRay.GetLastDistance() > Epsilon) {
+            //    side = toResolveBotRightRay.GetLastSide();
+            //    dist = toResolveBotRightRay.GetLastDistance();
+            //}
+
+            //if (toResolveBotLeftRay.IsColliding(other) && toResolveBotLeftRay.GetLastDistance() < dist && toResolveBotLeftRay.GetLastDistance() > Epsilon) {
+            //    side = toResolveBotLeftRay.GetLastSide();
+            //    dist = toResolveBotLeftRay.GetLastDistance();
+            //}
 
             //renderer->DrawArrow(toResolveTopLeft, toResolveTopLeftRay.GetScaledVector());
             //renderer->DrawArrow(toResolveTopRight, toResolveTopRightRay.GetScaledVector());
@@ -288,9 +314,7 @@ namespace ForLeaseEngine {
             //toResolvePhysics->Velocity[0] = 0;
             //toResolvePhysics->Velocity[1] = 0;
 
-            if (dist > 1) {
-                std::cout << "Balls" << std::endl;
-            }
+            if (dist > 1) return; // This should never happen
 
             toResolveCollision->CollidedWithSide = side;
 
@@ -321,6 +345,17 @@ namespace ForLeaseEngine {
             //toResolveTransform->Position[1] -= toResolvePhysics->Velocity[1] * 2 * ForLease->FrameRateController().GetDt();
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //toResolvePhysics->Velocity[1] = 0;
+        }
+
+        void Collision::CheckRay(Point point, Vector velocity, Entity* other, Components::Collision::Side& side, float& dist) {
+            ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->DrawRectangleFilled(point, 0.25, 0.25, 0);
+            
+            Ray toResolveRay(point, velocity, velocity.Magnitude(), 1);
+
+            if (toResolveRay.IsColliding(other) && toResolveRay.GetLastDistance() < dist && toResolveRay.GetLastDistance() > Epsilon) {
+                side = toResolveRay.GetLastSide();
+                dist = toResolveRay.GetLastDistance();
+            }
         }
 
         void Collision::ResolveCollisionMesh(Entity* toResolve, Entity* other) {

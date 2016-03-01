@@ -41,7 +41,7 @@ namespace ForLeaseEngine {
                 static const ComponentType Type = ComponentType::Collision;
                 virtual ComponentType GetType() { return Type; }
 
-                Collision(Entity& owner, float width = 1, float height = 1, bool resolve = true, float offsetX = 0, float offsetY = 0, bool inheritMomentum = false, unsigned vertsPerSide = DefaultVertsPerSide);
+                Collision(Entity& owner, float width = 1, float height = 1, bool resolve = true, float offsetX = 0, float offsetY = 0, bool inheritMomentum = false);
                 void Initialize();
                 void Update() {};
                 void OnCollide(const Event* e);
