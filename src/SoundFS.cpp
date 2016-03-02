@@ -43,7 +43,9 @@ SoundManager::SoundManager() : /*ISystem(),*/ m_Sys(nullptr), m_MasterBank(nullp
 		//return;
 	}
 
-
+    //load bank file from initialize()
+    //SoundManager* FS;
+    Initialize("sounds/Master Bank.bank", "sounds/Master Bank.strings.bank");
 
 	return;
 }

@@ -13,6 +13,7 @@
 #include <SDL.h>
 #include "Engine.h"
 #include "Window.h"
+#include "Keys.h"
 
 ForLeaseEngine::Engine * ForLease;
 
@@ -64,6 +65,7 @@ namespace ForLeaseEngine {
     */
     void Engine::Run() {
         SDL_Init(0);
+        Keys::InitKeymap();
         Systems::WindowProperties properties = Systems::WindowProperties();
         properties.xResolution = ResolutionX;
         properties.yResolution = ResolutionY;
