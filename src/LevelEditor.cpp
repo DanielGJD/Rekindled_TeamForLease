@@ -448,6 +448,7 @@ namespace ForLeaseEngine
             leg::levelLight->Update(Entities);
 
         leg::render->Update(Entities);
+
         for(Entity* it : Entities)
         {
             if (it->HasComponent(ComponentType::VisionCone))
@@ -475,11 +476,20 @@ namespace ForLeaseEngine
             leg::selPartSystem->Update();
             leg::selPartDynamics->Update();
         }
-        ImGui::Render();
+
         if (leg::selection)
         {
-            leg::render->SetDrawingColor(1, 0, 0);
-            leg::render->DrawRectangle(leg::selTran->Position, leg::selTran->ScaleX * 2, leg::selTran->ScaleY * 2, leg::selTran->Rotation);
+            if (leg::selection->HasComponent(ComponentType::Collision))
+            {
+                leg::render->SetDrawingColor(Color(0, 0, 1));
+                leg::selection->GetComponent<Components::Collision>()->DebugDraw();
+            }
+            else
+            {
+                leg::render->SetDrawingColor(Color(1, 0, 0));
+                leg::render->DrawRectangle(leg::selTran->Position, leg::selTran->ScaleX * 2, leg::selTran->ScaleY * 2, leg::selTran->Rotation);
+
+            }
             if (leg::selFade)
             {
                 Entity* ent = GetEntityByID(leg::selFade->TrackedEntityID);
@@ -491,6 +501,8 @@ namespace ForLeaseEngine
                 }
             }
         }
+
+        ImGui::Render();
         ForLease->GameWindow->UpdateGameWindow();
     }
 
