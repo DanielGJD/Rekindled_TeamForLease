@@ -237,11 +237,15 @@ namespace ForLeaseEngine {
                         Components::VisionCone* visionCone = entity->GetComponent<Components::VisionCone>();
                         if(visionCone->Visible) {
                             //Components::Transform* trans = entity->GetComponent<Components::Transform>();
+                            glBindFramebuffer(GL_FRAMEBUFFER, UIFBO);
                             SetTexture(NULL);
                             SetBlendMode(BlendMode::ALPHA);
                             ModelView = Matrix::Translation(trans->Position);
-                            SetBlendMode(BlendMode::ALPHA);
+                            //SetBlendMode(BlendMode::ALPHA);
                             DrawMesh(visionCone->GetVisionMesh(), visionCone->DrawOutline, false);
+                            if(!trans->UILayer) {
+                                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                            }
                         }
                     }
                     if(entity->HasComponent(ComponentType::Sprite)) {
