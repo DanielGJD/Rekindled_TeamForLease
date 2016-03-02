@@ -13,12 +13,12 @@ namespace ForLeaseEngine
         class EnemyPace : public Component
         {
             public:
-                static const ComponentType Type = ComponentType::PaceChecker;
+                //static const ComponentType Type = ComponentType::PaceChecker;
                 virtual ComponentType GetType()
                 {
                     return Type;
                 }
-                static EnemyPace * Create(Entity& owner);
+                EnemyPace * Create(Entity& owner);
                 EnemyPace(Entity & owner);
                 ~EnemyPace();
                 std::string PaceSound;
@@ -36,7 +36,7 @@ namespace ForLeaseEngine
                float PaceSpeed;
                float PaceDistance;
                float MaxPaceDistance;
-        }
+        };
 
 
     }
@@ -44,3 +44,5 @@ namespace ForLeaseEngine
 
 
   }
+
+  #endif // ENEMY_PACE_H

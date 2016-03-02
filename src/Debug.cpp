@@ -1,30 +1,13 @@
 /*!
-    \author Sam Montanari
-    
-    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+    \author Sean McGeer
+
+    \copyright ©Copyright 2016 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "Debug.h"
 namespace ForLeaseEngine
 {
-	Debug::Debug(const std::string& filename)
-	{
-		file.open(filename, std::ios_base::out);
-	}
-
-	bool Debug::IsOpen()
-	{
-		return file.is_open();
-	}
-
-	Debug::~Debug()
-	{
-		file.close();
-	}
-
-	Debug& Debug::operator<<(std::string& string)
-	{
-		file << string << std::endl;
-		return *this;
-	}
+    namespace Modules {
+        Debug::Debug() {}
+    }
 }

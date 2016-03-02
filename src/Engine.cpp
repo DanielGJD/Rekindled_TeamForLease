@@ -51,9 +51,9 @@ namespace ForLeaseEngine {
             The frame rate, or at which to refresh the window.
     */
     Engine::Engine(std::vector<State *> states, int resolutionX, int resolutionY,
-        int frameRate, bool fullscreen) : ResolutionX(resolutionX), ResolutionY(resolutionY),
+        int frameRate, bool fullscreen, Modules::Debug debug) : ResolutionX(resolutionX), ResolutionY(resolutionY),
         FrameRate(frameRate), Fullscreen(fullscreen), GSM(*this, states), FRC(frameRate),
-        Filesystem() {
+        Filesystem(), Debug(debug) {
             ForLease = this;
 
             if (Filesystem.PathExists("Game.json"))

@@ -99,8 +99,8 @@ namespace ForLeaseEngine {
                 //float radius2 = Radius * Radius;
                 Vector worldToModel = Point(0, 0) - trans->Position;
 
-                render->SetDrawingColor(0, 0, 1);
-                render->SetDebugPointSize(8);
+                //render->SetDrawingColor(0, 0, 1);
+                //render->SetDebugPointSize(8);
                 // Add corners of screen, skipping for now
 
                 castingPoints.push_back(top);
@@ -149,9 +149,9 @@ namespace ForLeaseEngine {
                     ++i;
                 }
 
-                render->SetDrawingColor(0, 1, 0);
+                //render->SetDrawingColor(0, 1, 0);
                 for(unsigned int i = 0; i < castingPoints.size(); ++i) {
-                    render->DrawPoint(castingPoints[i]);
+                    //render->DrawPoint(castingPoints[i]);
                 }
 
                 //std::cout << detected.size() << " OCCLUDING ENTITIES" << std::endl;

@@ -1,27 +1,26 @@
 /*!
-    \author Sam Montanari
+    \author Sean McGeer
     
-    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+    \copyright ©Copyright 2016 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #ifndef DEBUG_H
 #define DEBUG_H
-#include <fstream>
-#include <string>
 
 namespace ForLeaseEngine
 {
-	class Debug
-	{
-	private:
-		std::fstream file;
+    namespace Modules {
+        class Debug {
+            public:
+                Debug();
 
-	public:
-		Debug(const std::string& filename = "Debug.txt");
-		bool IsOpen();
-		Debug& operator<<(std::string& string);
-		~Debug();
-	};
+                struct Draw {
+                    bool Collision = false;
+                };
+
+                Draw Draw;
+        };
+    }
 }
 
 #endif

@@ -211,6 +211,8 @@ namespace ForLeaseEngine {
                         Components::VisionCone* visionCone = entity->GetComponent<Components::VisionCone>();
                         if(visionCone->Visible) {
                             //Components::Transform* trans = entity->GetComponent<Components::Transform>();
+                            SetTexture(NULL);
+                            SetBlendMode(BlendMode::ALPHA);
                             ModelView = Matrix::Translation(trans->Position);
                             SetBlendMode(BlendMode::ALPHA);
                             DrawMesh(visionCone->GetVisionMesh(), visionCone->DrawOutline, false);

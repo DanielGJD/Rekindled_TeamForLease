@@ -25,7 +25,7 @@
 
 namespace ForLeaseEngine {
     namespace Components {
-        VisionCone::VisionCone(Entity& parent, bool active, bool drawOutline, bool visible, Vector const& offset, float radius, Vector const& direction, float angle, Color const& indicatorColor)
+        VisionCone::VisionCone(Entity& parent, bool active, bool visible, bool drawOutline, Vector const& offset, float radius, Vector const& direction, float angle, Color const& indicatorColor)
                               : Component(parent, ComponentType::Transform | ComponentType::Collision),
                                 Active(active), Visible(visible), DrawOutline(drawOutline),
                                 Offset(offset), Radius(radius), Direction(direction),
@@ -36,23 +36,24 @@ namespace ForLeaseEngine {
         ComponentType VisionCone::GetType() { return Type; }
 
         void VisionCone::Update() {
-            ////////////////////////////////////////////
-            float scaledDt = ForLease->FrameRateController().GetDt();
-            float realDt = ForLease->FrameRateController().GetUnscaledDt();
-            float ratio = scaledDt / realDt;
-            float tolerance = 0.00001;
-
-            // Normal speed
-            if(ratio > 1 - tolerance && ratio < 1 + tolerance) {
-                Visible = false;
-            }
-            // Slow speed
-            else {
-                Visible = true;
-            }
-            ////////////////////////////////////////////
+//            ////////////////////////////////////////////
+//            float scaledDt = ForLease->FrameRateController().GetDt();
+//            float realDt = ForLease->FrameRateController().GetUnscaledDt();
+//            float ratio = scaledDt / realDt;
+//            float tolerance = 0.00001;
+//
+//            // Normal speed
+//            if(ratio > 1 - tolerance && ratio < 1 + tolerance) {
+//                Visible = false;
+//            }
+//            // Slow speed
+//            else {
+//                Visible = true;
+//            }
+//            ////////////////////////////////////////////
             ViewMesh.ClearData();
             if(!Active) {
+                std::cout << "Vision cone not active" << std::endl;
                 return;
             }
             Vector normalized = Vector(Direction);

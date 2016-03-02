@@ -35,29 +35,60 @@ void SeanState::Load() {
     AddLevelComponent(new LevelComponents::Collision(*this));
     AddLevelComponent(new LevelComponents::Menu(*this));
 
-    Entity* checkpoint = AddEntity("Checkpoint");
-    checkpoint->AddComponent(new Components::Transform(*checkpoint));
-    Components::Collision* checkpointCollide = new Components::Collision(*checkpoint);
-    checkpointCollide->ResolveCollisions = false;
-    checkpoint->AddComponent(checkpointCollide);
-    checkpoint->AddComponent(Components::Checkpoint::Create(*checkpoint));
-    checkpoint->AddComponent(new Components::Model(*checkpoint, true, false, false, "1-1Block.json"));
+    //Entity* checkpoint = AddEntity("Checkpoint");
+    //checkpoint->AddComponent(new Components::Transform(*checkpoint));
+    //Components::Collision* checkpointCollide = new Components::Collision(*checkpoint);
+    //checkpointCollide->ResolveCollisions = false;
+    //checkpoint->AddComponent(checkpointCollide);
+    //checkpoint->AddComponent(Components::Checkpoint::Create(*checkpoint));
+    //checkpoint->AddComponent(new Components::Model(*checkpoint, true, false, false, "1-1Block.json"));
 
     Entity* floor = AddEntity("Floor");
     floor->AddComponent(new Components::Transform(*floor, Point(0,-4), 20, 1, 0, 0));
-    floor->AddComponent(new Components::Collision(*floor));
+    floor->AddComponent(new Components::Collision(*floor, 2, 2));
     floor->AddComponent(new Components::Model(*floor, true, false, false, "1-1Block.json"));
 
+    Entity* floor2 = AddEntity("Floor2");
+    floor2->AddComponent(new Components::Transform(*floor2, Point(0, -8), 20, 1, 0, 0));
+    floor2->AddComponent(new Components::Collision(*floor2, 2, 2));
+    floor2->AddComponent(new Components::Model(*floor2, true, false, false, "1-1Block.json"));
+
+    Entity* floor3 = AddEntity("Floor3");
+    floor3->AddComponent(new Components::Transform(*floor3, Point(0, -12), 20, 1, 0, 0));
+    floor3->AddComponent(new Components::Collision(*floor3, 2, 2));
+    floor3->AddComponent(new Components::Model(*floor3, true, false, false, "1-1Block.json"));
+
+    Entity* floor4 = AddEntity("Floor4");
+    floor4->AddComponent(new Components::Transform(*floor4, Point(0, -16), 20, 1, 0, 0));
+    floor4->AddComponent(new Components::Collision(*floor4, 2, 2));
+    floor4->AddComponent(new Components::Model(*floor4, true, false, false, "1-1Block.json"));
+
     Entity* character = AddEntity("Character");
-    character->AddComponent(new Components::Transform(*character, Point(0, 4)));
+    character->AddComponent(new Components::Transform(*character, Point(0, 4), 5, 5));
     character->AddComponent(new Components::Physics(*character));
-    character->AddComponent(new Components::Collision(*character));
+    character->AddComponent(new Components::Collision(*character, 2.0f, 2.0f, true, 0, 0));
     character->AddComponent(new Components::Model(*character, true, false, false, "1-1Block.json"));
     Components::CharacterController* charController = Components::CharacterController::Create(*character);
     charController->JumpSpeed = 50;
     charController->MoveSpeed = 50;
     charController->maxSpeed = 200;
     character->AddComponent(charController);
+
+    //Entity* moving = AddEntity("Moving");
+    //moving->AddComponent(new Components::Transform(*moving, Point(), 20));
+    //moving->AddComponent(new Components::Physics(*moving, 1.0f, Vector(5,0), Vector(0,0), Vector(0,0), false, true));
+    //moving->AddComponent(new Components::Collision(*moving, 2, 2));
+    //moving->AddComponent(new Components::Model(*moving, true, false, false, "1-1Block.json"));
+
+    //Entity* wall = AddEntity("Wall");
+    //wall->AddComponent(new Components::Transform(*wall, Point(7, -4), 2, 3));
+    //wall->AddComponent(new Components::Collision(*wall, 2.0f, 2.0f, true, 0, 0));
+    //wall->AddComponent(new Components::Model(*wall, true, false, false, "1-1Block.json"));
+
+    Entity* platform = AddEntity("Platform");
+    platform->AddComponent(new Components::Transform(*platform, Point(12, 10), 1, 1));
+    platform->AddComponent(new Components::Collision(*platform, 2.0f, 2.0f, true, 0, 0));
+    platform->AddComponent(new Components::Model(*platform, true, false, false, "1-1Block.json"));
 
     Serializer serial;
     LevelComponents::Checkpoint* lcCheckpoint = new LevelComponents::Checkpoint(*this, serial);
@@ -88,6 +119,29 @@ void SeanState::Update() {
     for (FLE::LevelComponent* levelComponent : LevelComponents) {
         levelComponent->Update(Entities);
     }
+
+    FLE::Point testPos = FLE::Point(-5, 0);
+    FLE::Ray   testRay = FLE::Ray(testPos, Vector(1, -1), 20, FLE::Ray::Unlimited);
+
+    std::vector<FLE::Ray::Collision> collisions = FLE::Ray::CheckCollisionsMultipleEntities(testRay, Entities);
+
+    FLE::LevelComponents::Renderer* renderer = GetLevelComponent<FLE::LevelComponents::Renderer>();
+
+    renderer->SetDrawingColor(Color(1, 0, 0));
+
+    //renderer->DrawRectangleFilled(testPos, 1, 1, 0);
+    renderer->DrawArrow(testPos, testRay.GetScaledVector());
+
+    //std::cout << "============" << std::endl;
+
+    for (FLE::Ray::Collision collision : collisions) {
+        renderer->DrawRectangleFilled(collision.Point, 1, 1, 0);
+    }
+
+    //std::cout << "============" << std::endl;
+
+
+    UpdateDebug();
 
     ForLease->GameWindow->UpdateGameWindow();
 }
