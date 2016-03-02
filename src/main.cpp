@@ -21,6 +21,7 @@
 #include "Loading.h"
 #include "Filesystem.h"
 #include "Debug.h"
+#include "Exception.h"
 
 #undef main
 
@@ -67,7 +68,16 @@ int Start(int argc = 0, char** argv = 0) {
     debug.Draw.Collision = CommandLine::ArgumentExists(argStart, argEnd, "-dDrawCollision");
 
     ForLeaseEngine::Engine engine(states, resolutionX, resolutionY, fps, fullscreen, debug);
-    engine.Run();
+
+    try{
+        engine.Run();
+    }
+    catch(ForLeaseEngine::Exception* e) {
+        std::cout << e->GetInfo() << std::endl;
+    }
+    catch(ForLeaseEngine::Exception& e) {
+        std::cout << e.GetInfo() << std::endl;
+    }
 
     return 0;
 }

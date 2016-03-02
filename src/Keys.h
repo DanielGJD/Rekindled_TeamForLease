@@ -13,6 +13,9 @@
 #define KEYS_H
 
 #include <SDL.h>
+#include <vector>
+#include <string>
+#include <unordered_map>
 
 namespace ForLeaseEngine {
     /*!
@@ -135,6 +138,13 @@ namespace ForLeaseEngine {
         static const int BackSlash    = SDLK_BACKSLASH;
         static const int Slash        = SDLK_SLASH;
 
+        static void InitKeymap();
+        static std::vector<std::string> GetKeyStrings();
+        static int GetKeyFromString(std::string const& key);
+    private:
+        static std::unordered_map<std::string, int> StringToKeycode;
+
+        Keys();
     };
 
     /*!
