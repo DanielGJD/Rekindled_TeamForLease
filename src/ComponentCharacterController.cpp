@@ -57,29 +57,31 @@ namespace ForLeaseEngine {
             float Drag = .05;
             float maxSpeed = 1.5;
             float Friction = 0.5;
+            Physics* rbody = Parent.GetComponent<Physics>();
             if(!CheckMove)
             {
-                Physics* rbody = Parent.GetComponent<Physics>();
+
                 Vector currentVelocity = rbody->Velocity;
                 currentVelocity.Rotate(currentVelocity, 180);
                 currentVelocity = currentVelocity * Drag;
                 rbody->Velocity = (rbody->Velocity - currentVelocity);
-
-                if(rbody->Velocity[0] > maxSpeed)
-                {
-                    printf("updateV %f\n", rbody->Velocity[0]);
-                    rbody->Velocity[0] = rbody->Velocity[0] - Friction;
-                    if(rbody->Velocity[0] < maxSpeed)
-                        rbody->Velocity[0]  = rbody->Velocity[0] + Friction;
-                }
-                if(rbody->Velocity[0] < -maxSpeed)
-                {
-                    printf("negativeV %f\n", rbody->Velocity[0]);
-                    rbody->Velocity[0] = rbody->Velocity[0] + Friction;
-                    if(rbody->Velocity[0] > -maxSpeed)
-                        rbody->Velocity[0] = rbody->Velocity[0] - Friction;
-                }
             }
+
+            if(rbody->Velocity[0] > maxSpeed)
+            {
+                printf("updateV %f\n", rbody->Velocity[0]);
+                rbody->Velocity[0] = rbody->Velocity[0] - Friction;
+                if(rbody->Velocity[0] < maxSpeed)
+                    rbody->Velocity[0]  = rbody->Velocity[0] + Friction;
+            }
+            if(rbody->Velocity[0] < -maxSpeed)
+            {
+                printf("negativeV %f\n", rbody->Velocity[0]);
+                rbody->Velocity[0] = rbody->Velocity[0] + Friction;
+                if(rbody->Velocity[0] > -maxSpeed)
+                    rbody->Velocity[0] = rbody->Velocity[0] - Friction;
+            }
+
             Model* model = Parent.GetComponent<Model>();
             if(model && model->AnimationActive && model->GetAnimation().compare(WalkAnimation) == 0) {
                 unsigned int currentFrame = model->GetFrame();
@@ -97,21 +99,24 @@ namespace ForLeaseEngine {
             Components::Collision* collider = Parent.GetComponent<Components::Collision>();
             Components::Model* model = Parent.GetComponent<Components::Model>();
             Physics* rbody = Parent.GetComponent<Physics>();
-            if(key_e->Key == LeftKey) {
+            if(key_e->Key == LeftKey)
+            {
 
                 //rbody->Velocity += Vector(-MoveSpeed, 0);
                 //rbody->Acceleration += Vector(-MoveSpeed, 0 ) * 5;
-                if(rbody->Acceleration.GetX() < MoveSpeed)
-                    rbody->Acceleration += Vector(-MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0 );
+               // if(rbody->Acceleration.GetX() < MoveSpeed)
+                rbody->Acceleration += Vector(-MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0 );
                     //printf("LEFTa %f", rbody->Acceleration[0]);
-                    printf("pressLV %f", rbody->Velocity[0]);
-                    CheckMove = true;
+                printf("pressLV %f", rbody->Velocity[0]);
+                CheckMove = true;
 
 
                 if(model)
                     model->FlipY = true;
-                if(collider->CollidedLastFrame && collider->CollidedWithSide == Collision::Side::Top) {
-                    if (emitter) {
+                if(collider->CollidedLastFrame && collider->CollidedWithSide == Collision::Side::Top)
+                {
+                    if (emitter)
+                    {
                         //emitter->Looping = true;
                         emitter->SetVolume(1.0f, WalkSound);
                         emitter->StopEvent(WalkSound);
@@ -122,15 +127,16 @@ namespace ForLeaseEngine {
                         model->SetAnimation(WalkAnimation);
                 }
             }
-            else if(key_e->Key == RightKey) {
+            else if(key_e->Key == RightKey)
+            {
                 //Physics* rbody = Parent.GetComponent<Physics>();
-                if(rbody->Acceleration.GetX() > -MoveSpeed)
+                //if(rbody->Acceleration.GetX() > -MoveSpeed)
                //rbody->Velocity += Vector(MoveSpeed, 0);
-                    rbody->Acceleration += Vector(MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0) ;
+                rbody->Acceleration += Vector(MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0) ;
                     //printf("RIGHTa %f", rbody->Acceleration[0]);
-                    printf("pressRV %f\n", rbody->Velocity[0]);
+                printf("pressRV %f\n", rbody->Velocity[0]);
 
-                    CheckMove = true;
+                CheckMove = true;
 
                 if(model)
                     model->FlipY = false;
@@ -150,14 +156,15 @@ namespace ForLeaseEngine {
                 if(CanJump) {
                     rbody->Velocity += Vector(0, JumpSpeed);
                     SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
-                    if(rbody->Velocity.GetX() > 0)
-                    {
-                        rbody->Velocity[0] = 0.5;
-                    }
-                    if(rbody->Velocity.GetX() < 0)
-                    {
-                        rbody->Velocity[0] = -0.5;
-                    }
+//                    if(rbody->Velocity.GetX() > 0)
+//                    {
+//                        rbody->Velocity[0] = 0.5;
+//                    }
+//                    if(rbody->Velocity.GetX() < 0)
+//                    {
+//                        rbody->Velocity[0] = -0.5;
+//                    }
+                    printf("JumpV: %f", rbody->Velocity[0]);
                     if (emitter) {
                         emitter->SetVolume(1.0f, JumpSound);
                         emitter->StopEvent(JumpSound);
@@ -165,6 +172,7 @@ namespace ForLeaseEngine {
                     }
 
                     CanJump = false;
+
                 }
             }
             else if (key_e->Key == Keys::Q) {
