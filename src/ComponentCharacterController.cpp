@@ -66,20 +66,24 @@ namespace ForLeaseEngine {
                 currentVelocity = currentVelocity * Drag;
                 rbody->Velocity = (rbody->Velocity - currentVelocity);
             }
+            if(CheckMove)
+            {
 
-            if(rbody->Velocity[0] > maxSpeed)
-            {
-                printf("updateV %f\n", rbody->Velocity[0]);
-                rbody->Velocity[0] = rbody->Velocity[0] - Friction;
-                if(rbody->Velocity[0] < maxSpeed)
-                    rbody->Velocity[0]  = rbody->Velocity[0] + Friction;
-            }
-            if(rbody->Velocity[0] < -maxSpeed)
-            {
-                printf("negativeV %f\n", rbody->Velocity[0]);
-                rbody->Velocity[0] = rbody->Velocity[0] + Friction;
-                if(rbody->Velocity[0] > -maxSpeed)
+
+                if(rbody->Velocity[0] > maxSpeed)
+                {
+                    printf("updateV %f\n", rbody->Velocity[0]);
                     rbody->Velocity[0] = rbody->Velocity[0] - Friction;
+                    if(rbody->Velocity[0] < maxSpeed)
+                        rbody->Velocity[0]  = rbody->Velocity[0] + Friction;
+                }
+                if(rbody->Velocity[0] < -maxSpeed)
+                {
+                    printf("negativeV %f\n", rbody->Velocity[0]);
+                    rbody->Velocity[0] = rbody->Velocity[0] + Friction;
+                    if(rbody->Velocity[0] > -maxSpeed)
+                        rbody->Velocity[0] = rbody->Velocity[0] - Friction;
+                }
             }
 
             Model* model = Parent.GetComponent<Model>();
@@ -102,12 +106,12 @@ namespace ForLeaseEngine {
             if(key_e->Key == LeftKey)
             {
 
-                //rbody->Velocity += Vector(-MoveSpeed, 0);
+                rbody->Velocity += Vector(-MoveSpeed/2.0, 0);
                 //rbody->Acceleration += Vector(-MoveSpeed, 0 ) * 5;
                // if(rbody->Acceleration.GetX() < MoveSpeed)
-                rbody->Acceleration += Vector(-MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0 );
+                //rbody->Acceleration += Vector(-MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0 );
                     //printf("LEFTa %f", rbody->Acceleration[0]);
-                printf("pressLV %f", rbody->Velocity[0]);
+                printf("pressLV %f\n", rbody->Velocity[0]);
                 CheckMove = true;
 
 
@@ -131,8 +135,8 @@ namespace ForLeaseEngine {
             {
                 //Physics* rbody = Parent.GetComponent<Physics>();
                 //if(rbody->Acceleration.GetX() > -MoveSpeed)
-               //rbody->Velocity += Vector(MoveSpeed, 0);
-                rbody->Acceleration += Vector(MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0) ;
+               rbody->Velocity += Vector(MoveSpeed/2.0, 0);
+                //rbody->Acceleration += Vector(MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0) ;
                     //printf("RIGHTa %f", rbody->Acceleration[0]);
                 printf("pressRV %f\n", rbody->Velocity[0]);
 
@@ -151,28 +155,28 @@ namespace ForLeaseEngine {
                 }
             }
             else if(key_e->Key == JumpKey) {
-                Physics* rbody = Parent.GetComponent<Physics>();
+                Physics* Jbody = Parent.GetComponent<Physics>();
                // Collision* collider = Parent.GetComponent<Collision>();
                 if(CanJump) {
                     rbody->Velocity += Vector(0, JumpSpeed);
                     SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
-//                    if(rbody->Velocity.GetX() > 0)
-//                    {
-//                        rbody->Velocity[0] = 0.5;
-//                    }
-//                    if(rbody->Velocity.GetX() < 0)
-//                    {
-//                        rbody->Velocity[0] = -0.5;
-//                    }
+                    if(rbody->Velocity.GetX() > 0)
+                    {
+                        rbody->Velocity.Normalize();
+                    }
+                    if(rbody->Velocity.GetX() < 0)
+                    {
+                        rbody->Velocity.Normalize();
+                    }
+                    //rbody->Velocity.Normalize();
                     printf("JumpV: %f", rbody->Velocity[0]);
                     if (emitter) {
                         emitter->SetVolume(1.0f, JumpSound);
                         emitter->StopEvent(JumpSound);
                         emitter->PlayEvent(JumpSound);
                     }
-
+                    //rbody->Velocity.Normalize();
                     CanJump = false;
-
                 }
             }
             else if (key_e->Key == Keys::Q) {
@@ -208,7 +212,7 @@ namespace ForLeaseEngine {
 //                }
                 CheckMove = false;
                 //if(rbody->Acceleration[0] == 0)
-                //rbody->Acceleration[0] = 0;
+                rbody->Acceleration[0] = 0;
                 //rbody->Velocity[0] = 0;
                 //rbody->Acceleration += Vector(-MoveSpeed * 20, 0 );
 
@@ -248,7 +252,7 @@ namespace ForLeaseEngine {
                 //if(rbody->Velocity[0] = 0)
                     //rbody->Velocity[0] = 0;
                     //rbody->Velocity[0] = 0;
-                //rbody->Acceleration[0] = 0;
+                rbody->Acceleration[0] = 0;
                 //rbody->Velocity[0] = 0;
                 CheckMove = false;
                 printf("releaseRV %f\n", rbody->Velocity[0]);
