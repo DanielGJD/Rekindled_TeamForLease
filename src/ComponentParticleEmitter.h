@@ -11,6 +11,7 @@ namespace ForLeaseEngine {
                 static const ComponentType Type = ComponentType::ParticleEmitter;
                 bool Active;
                 Vector EmitterSize;
+                Vector Offset;
                 unsigned int EmitCount;
                 float EmitRate;
                 float EmitRandom;
@@ -28,6 +29,7 @@ namespace ForLeaseEngine {
                 ParticleEmitter(Entity& parent,
                                 bool active = true,
                                 Vector const& emitterSize = Vector(5, 5),
+                                Vector const& offset = Vector(0, 0),
                                 unsigned int emitCount = 1,
                                 float emitRate = 0.25,
                                 float emitRandom = 0,
