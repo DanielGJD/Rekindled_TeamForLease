@@ -62,7 +62,7 @@ namespace ForLeaseEngine
 
         if (leg::selTran && ImGui::CollapsingHeader("Transform"))
         {
-            ImGui::Checkbox("UI Layer##transform", &(leg::selTran->UILayer))
+            ImGui::Checkbox("UI Layer##transform", &(leg::selTran->UILayer));
             ImGui::PushItemWidth(width);
             ImGui::InputFloat("X##TransformPos", &(leg::selTran->Position[0]));
             ImGui::SameLine();

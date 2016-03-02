@@ -260,6 +260,8 @@ namespace ForLeaseEngine
         leg::selPartDynamics = leg::selection->GetComponent<Components::SimpleParticleDynamics>();
         leg::selParallax     = leg::selection->GetComponent<Components::Parallax>();
         leg::selOccluder     = leg::selection->GetComponent<Components::Occluder>();
+        leg::selCheckpoint   = leg::selection->GetComponent<Components::Checkpoint>();
+        leg::selFollow       = leg::selection->GetComponent<Components::Follow>();
 
         if (leg::selSprtxt)
             strcpy(leg::spriteTextBuf, leg::selSprtxt->Text.c_str());
