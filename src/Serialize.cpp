@@ -67,6 +67,11 @@ namespace ForLeaseEngine
     {
         return node.empty();
     }
+
+    void Serializer::Clear()
+    {
+        node.clear();
+    }
     /*!
         \brief
             Writes an integer to the node

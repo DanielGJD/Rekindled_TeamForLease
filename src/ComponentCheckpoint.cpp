@@ -41,21 +41,16 @@ namespace ForLeaseEngine {
         }
 
         void Checkpoint::Initialize() {
-            ForLease->Dispatcher.Attach(NULL, this, "Collision", &Checkpoint::OnCollide);
+            ForLease->Dispatcher.Attach(NULL, this, "Collision", &Checkpoint::OnCollide, &Parent);
         }
 
         void Checkpoint::OnCollide(const Event* e) {
             const CollisionEvent* collision = reinterpret_cast<const CollisionEvent*>(e);
-            Entity* other;
-            if (collision->Colliding.first != &Parent && collision->Colliding.second != &Parent)
-                return;
-            if (collision->Colliding.first != &Parent) other = collision->Colliding.first;
-            else other = collision->Colliding.second;
 
             LevelComponents::Checkpoint* lcCheckpoint = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Checkpoint>();
             if (!lcCheckpoint) throw Exception("No checkpoint level component found!");
 
-            if (other->GetID() == lcCheckpoint->TriggerEntityID && !Active) {
+            if (collision->With->GetID() == lcCheckpoint->TriggerEntityID && !Active) {
                 Active = true;
                 Event activatedEvent = Event("CheckpointActivated");
                 ForLease->Dispatcher.Dispatch(&activatedEvent, this);

@@ -20,6 +20,7 @@
 #include "Platforms.h"
 #include "Loading.h"
 #include "Filesystem.h"
+#include "Debug.h"
 #include "Exception.h"
 
 #undef main
@@ -63,9 +64,13 @@ int Start(int argc = 0, char** argv = 0) {
     // Right now, windowed is the default.  We may wish to change this at submission.
     bool fullscreen = CommandLine::ArgumentExists(argStart, argEnd, "-fullscreen");
 
-    ForLeaseEngine::Engine engine(states, resolutionX, resolutionY, fps, fullscreen);
+    ForLeaseEngine::Modules::Debug debug;
+    debug.Draw.Collision = CommandLine::ArgumentExists(argStart, argEnd, "-dDrawCollision");
+
+    ForLeaseEngine::Engine engine(states, resolutionX, resolutionY, fps, fullscreen, debug);
+
     try{
-    engine.Run();
+        engine.Run();
     }
     catch(ForLeaseEngine::Exception* e) {
         std::cout << e->GetInfo() << std::endl;
