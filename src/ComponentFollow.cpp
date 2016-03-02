@@ -54,9 +54,21 @@ namespace ForLeaseEngine {
         }
 
         void Follow::Serialize(Serializer& root) {
+            root.WriteUlonglong("Type", static_cast<unsigned long long>(Type));
+            Serializer follow = root.GetChild("Follow");
+            follow.WriteBool("Active", Active);
+            follow.WriteFloat("FollowBeginDistance", FollowBeginDistance);
+            follow.WriteFloat("FollowEndDistance", FollowEndDistance);
+            follow.WriteVec("Offset", Offset);
+            root.Append(follow, "Follow");
         }
 
         void Follow::Deserialize(Serializer& root) {
+            Serializer follow = root.GetChild("Follow");
+            follow.ReadBool("Active", Active);
+            follow.ReadFloat("FollowBeginDistance", FollowBeginDistance);
+            follow.ReadFloat("FollowEndDistance", FollowEndDistance);
+            follow.ReadVec("Offset", Offset);
         }
     }
 }

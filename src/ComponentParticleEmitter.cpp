@@ -40,6 +40,7 @@ namespace ForLeaseEngine {
             emitter.WriteUint("Type", static_cast<unsigned int>(Type));
             emitter.WriteBool("Active", Active);
             emitter.WriteVec("EmitterSize", EmitterSize);
+            emitter.WriteVec("Offset", Offset);
             emitter.WriteUint("EmitCount", EmitCount);
             emitter.WriteFloat("EmitRate", EmitRate);
             emitter.WriteFloat("EmitRandom", EmitRandom);
@@ -60,6 +61,7 @@ namespace ForLeaseEngine {
             Serializer emitter = root.GetChild("ParticleEmitter");
             emitter.ReadBool("Active", Active);
             emitter.ReadVec("EmitterSize", EmitterSize);
+            emitter.ReadVec("Offset", Offset);
             emitter.ReadUint("EmitCount", EmitCount);
             emitter.ReadFloat("EmitRate", EmitRate);
             emitter.ReadFloat("EmitRandom", EmitRandom);
