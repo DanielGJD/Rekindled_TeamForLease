@@ -62,6 +62,7 @@ namespace ForLeaseEngine
 
         if (leg::selTran && ImGui::CollapsingHeader("Transform"))
         {
+            ImGui::Checkbox("UI Layer##transform", &(leg::selTran->UILayer))
             ImGui::PushItemWidth(width);
             ImGui::InputFloat("X##TransformPos", &(leg::selTran->Position[0]));
             ImGui::SameLine();
@@ -342,7 +343,7 @@ namespace ForLeaseEngine
             ImGui::Checkbox("Fade with Y##FWD", &(leg::selFade->YDirection));
             ImGui::DragFloat("Begin Distance##FWD", &(leg::selFade->FadeBeginDistance), 0.05, 0);
             ImGui::DragFloat("End Distance##FWD", &(leg::selFade->FadeEndDistance), 0.05, 0);
-            ImGui::Checkbox("Select Target##FWD", &leg::setTarget);
+            ImGui::Checkbox("Select Target##FWD", &leg::setFade);
             ImGui::PopItemWidth();
             if (ImGui::IsItemHovered())
             {
@@ -354,9 +355,37 @@ namespace ForLeaseEngine
             ImGui::Text("Current Target ID: %lu", leg::selFade->TrackedEntityID);
             if (ImGui::Button("Remove Fade with Distance"))
             {
-                leg::setTarget = false;
+                leg::setFade = false;
                 leg::selection->DeleteComponent(ComponentType::FadeWithDistance);
                 leg::selFade = NULL;
+            }
+        }
+        if (leg::selFollow && ImGui::CollapsingHeader("Follow"))
+        {
+            ImGui::Checkbox("Active##follow", &(leg::selFollow->Active));
+            ImGui::InputFloat("Begin Distance##follow", &(leg::selFollow->FollowBeginDistance));
+            ImGui::InputFloat("End Distance##follow", &(leg::selFollow->FollowEndDistance));
+            ImGui::PushItemWidth(width);
+            ImGui::InputFloat("X##follow", &(leg::selFollow->Offset[0]));
+            ImGui::SameLine();
+            ImGui::InputFloat("Y##follow", &(leg::selFollow->Offset[1]));
+            ImGui::SameLine();
+            ImGui::Text("Offset");
+            ImGui::PopItemWidth();
+            ImGui::Checkbox("Follow Target ID: ", &leg::setFollow);
+            if (ImGui::IsItemHovered())
+            {
+                ImGui::BeginTooltip();
+                ImGui::Text("Once this is checked, click the entity you want to select");
+                ImGui::EndTooltip();
+            }
+            ImGui::SameLine();
+            ImGui::Text("%lu", leg::selFollow->FollowEntityID);
+            if (ImGui::Button("Remove Follow"))
+            {
+                leg::setFollow = false;
+                leg::selection->DeleteComponent(ComponentType::Follow);
+                leg::selFollow = NULL;
             }
         }
         if (leg::selLight && ImGui::CollapsingHeader("Light"))

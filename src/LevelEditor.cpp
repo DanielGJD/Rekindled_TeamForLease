@@ -61,6 +61,7 @@ namespace ForLeaseEngine
          Components::Parallax*               selParallax;
          Components::Occluder*               selOccluder;
          Components::Checkpoint*             selCheckpoint;
+         Components::Follow*                 selFollow;
 
 
 
@@ -88,9 +89,10 @@ namespace ForLeaseEngine
          bool selMode    = true;
          bool delobj     = false;
          bool copySet    = false;
-         bool setTarget  = false;
+         bool setFade    = false;
          bool startUp    = true;
          bool levelSaved = false;
+         bool setFollow  = false;
 
          char entName[128];
          char spriteTextBuf[512];
@@ -132,6 +134,7 @@ namespace ForLeaseEngine
         comps.push_back(new Components::Collision(dummy));
         comps.push_back(Components::DragWithMouse::Create(dummy));
         comps.push_back(new Components::FadeWithDistance(dummy));
+        comps.push_back(new Components::Follow(dummy));
         comps.push_back(new Components::EnemyAI(dummy));
         comps.push_back(new Components::Light(dummy));
         comps.push_back(new Components::Model(dummy));
@@ -191,6 +194,7 @@ namespace ForLeaseEngine
             leg::componentNames.push_back("Collision");
             leg::componentNames.push_back("Drag with Mouse");
             leg::componentNames.push_back("Fade with Distance");
+            leg::componentNames.push_back("Follow");
             leg::componentNames.push_back("Enemy AI");
             leg::componentNames.push_back("Light");
             leg::componentNames.push_back("Model");
@@ -304,14 +308,25 @@ namespace ForLeaseEngine
             ent->AddComponent(new Components::Transform(*ent, leg::mousePos[0], leg::mousePos[1]));
         }
 
-        if (leg::setTarget && ImGui::IsMouseClicked(0) && !ImGui::IsMouseHoveringAnyWindow())
+        if (leg::setFade && ImGui::IsMouseClicked(0) && !ImGui::IsMouseHoveringAnyWindow())
         {
             GetMouse(leg::mousePos);
             Entity* ent = GetEntityAtPosition(leg::mousePos);
             if (ent)
             {
                 leg::selFade->TrackedEntityID = ent->GetID();
-                leg::setTarget = false;
+                leg::setFade = false;
+            }
+        }
+
+        else if (leg::setFollow && ImGui::IsMouseClicked(0) && !ImGui::IsMouseHoveringAnyWindow())
+        {
+            GetMouse(leg::mousePos);
+            Entity* ent = GetEntityAtPosition(leg::mousePos);
+            if (ent)
+            {
+                leg::selFollow->FollowEntityID = ent->GetID();
+                leg::setFollow = false;
             }
         }
 

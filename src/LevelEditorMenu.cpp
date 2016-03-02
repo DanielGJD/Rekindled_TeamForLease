@@ -306,6 +306,13 @@ namespace ForLeaseEngine
                 leg::selFade = NULL;
             return;
         }
+        if (!(component.compare("Follow")) && !leg::selFollow)
+        {
+            leg::selFollow = new Components::Follow(*leg::selection);
+            if (!leg::selection->AddComponent(leg::selFollow))
+                leg::selFollow = NULL;
+            return;
+        }
         if (!(component.compare("Light")) && !leg::selLight)
         {
             leg::selLight = new Components::Light(*leg::selection);
