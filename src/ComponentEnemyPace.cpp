@@ -1,35 +1,36 @@
 #include "ComponentEnemyPace.h"
 #include "ComponentPhysics.h"
+#include "ComponentTransform.h"
 #include "SoundEmitter.h"
 #include "Entity.h"
 #include "Engine.h"
+#include "Vector.h"
 
 namespace ForLeaseEngine
 {
     namespace Components
     {
-        EnemyPace::EnemyPace(Entity& owner): Component(owner, ComponentType::Physics | ComponentType::Collision),
+        EnemyPace::EnemyPace(Entity& owner):Component(owner, ComponentType::Physics | ComponentType::Collision),
                                             Detected(true), MoveRight(true), MoveLeft(false), PaceSpeed(2.0),PaceDistance(0.1),
                                             MaxPaceDistance(5.0), PaceSound("")
             {
 
-                Entity * enemy = ForLease->GameStateManager().CurrentState().GetEntityByName("Enemy");
-                Point EnemyPos = enemy->GetComponent()<Components::Transform>()->Position;
-
-
-            };
-
-            EnemyPace * EnemyPace::Create(Entity* owner)
-            {
-                //EnemyPace * pace = new EnemyPace(owner);
+               // Entity * enemy = ForLease->GameStateManager().CurrentState().GetEntityByName("Enemy");
 
 
 
             }
 
+            EnemyPace * EnemyPace::Create(Entity& owner)
+            {
+                EnemyPace * pace = new EnemyPace(owner);
+                pace->Initialize();
+                return pace;
+            }
+
             EnemyPace::~EnemyPace()
             {
-
+                ForLease->Dispatcher.Detach(this, "EntitiesScreen");
             }
 
             void EnemyPace::Initialize()
@@ -39,6 +40,8 @@ namespace ForLeaseEngine
 
             void EnemyPace::Update()
             {
+                Components::Transform* trans = Parent.GetComponent<Components::Transform>();
+                Point EnemyPos = Parent.GetComponent<Components::Transform>()->Position;
 
                 //Components::Physics * EnemyBody = Parent.GetComponent<Component::Phyiscs>();
 
@@ -57,8 +60,10 @@ namespace ForLeaseEngine
                     //Entity * Enemy = ForLease->GameStateManager()->CurrentState()->GetEntityByName("Enemy");
                     //Point EnemyPosition = Enemy->GetComponent<Components::Transform>()->Position;
                     //EnemyPosition += Pacedistance * ForLease->FrameRateController().GetDt();
+
                     EnemyBody->Velocity[0] = 2.0;
-                    if(EnemyPos.x > EnemyPos.x + MaxPaceDistance)
+                    float MaxPaceDistance = 5.0;
+                    if(EnemyPos.GetX() > EnemyPos.GetX() + MaxPaceDistance)
                     {
                         MoveRight = false;
                         MoveLeft = true;

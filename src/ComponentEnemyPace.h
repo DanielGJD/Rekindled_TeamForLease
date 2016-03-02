@@ -1,10 +1,12 @@
-#ifndef ENEMY_PACE_H
-#define ENEMY_PACE_H
+#ifndef COMPONENT_ENEMY_PACE_H
+#define COMPONENT_ENEMY_PACE_H
 
-#include "Keys.h"
+//#include "Keys.h"
 #include "KeyboardEvent.h"
 #include "Component.h"
 #include "Engine.h"
+#include "Event.h"
+//#include "Entity.h"
 
 namespace ForLeaseEngine
  {
@@ -13,15 +15,20 @@ namespace ForLeaseEngine
         class EnemyPace : public Component
         {
             public:
-                //static const ComponentType Type = ComponentType::PaceChecker;
+                static const ComponentType Type = ComponentType::EnemyPace;
+                EnemyPace(Entity & owner);
+
+                ~EnemyPace();
+                static EnemyPace* Create(Entity& owner);
                 virtual ComponentType GetType()
                 {
                     return Type;
                 }
-                EnemyPace * Create(Entity& owner);
-                EnemyPace(Entity & owner);
-                ~EnemyPace();
                 std::string PaceSound;
+
+                float PaceSpeed;
+                float PaceDistance;
+                float MaxPaceDistance;
 
                 void Initialize();
                 void Update();
@@ -33,9 +40,7 @@ namespace ForLeaseEngine
                bool Detected;
                bool MoveRight;
                bool MoveLeft;
-               float PaceSpeed;
-               float PaceDistance;
-               float MaxPaceDistance;
+
         };
 
 
