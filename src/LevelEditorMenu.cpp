@@ -103,6 +103,7 @@ namespace ForLeaseEngine
 
             if (ImGui::BeginPopupModal("Test Level", NULL, ImGuiWindowFlags_AlwaysAutoResize))
             {
+                static bool debug = false;
                 if (!leg::levelSaved)
                 {
                     ImGui::Text("This level will be saved with this filename");
@@ -110,11 +111,12 @@ namespace ForLeaseEngine
                 }
 
                 ImGui::Text("Warning: %s will be overwritten!", leg::statefile);
+                ImGui::Checkbox("Draw Collision Boxes", &debug);
                 if (ImGui::Button("Launch"))
                 {
                     SaveLevel(leg::statefile);
                     std::string file = leg::levelDir + leg::statefile;
-                    SpawnNewLevelProcess(file);
+                    SpawnNewLevelProcess(file, debug);
                     ImGui::CloseCurrentPopup();
                 }
                 ImGui::SameLine();

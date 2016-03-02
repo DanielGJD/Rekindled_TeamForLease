@@ -42,8 +42,8 @@ namespace ForLeaseEngine {
                     Collision(float distance = 0, Entity* entity = 0, Point point = ForLeaseEngine::Point())
                         : Distance(distance), Entity(entity), Point(point) {}
                     float Distance;
-                    Entity* Entity;
-                    Point Point;
+                    ForLeaseEngine::Entity* Entity;
+                    ForLeaseEngine::Point Point;
             };
 
             static std::vector<Collision> CheckCollisionsMultipleEntities(Ray& ray, std::vector<Entity *>& entities);
