@@ -70,6 +70,13 @@ namespace ForLeaseEngine {
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ForLease->GameWindow->GetXResolution(), ForLease->GameWindow->GetYResolution(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+            glGenTextures(1, &UITexture);
+            glBindTexture(GL_TEXTURE_2D, UITexture);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ForLease->GameWindow->GetXResolution(), ForLease->GameWindow->GetYResolution(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
             glBindTexture(GL_TEXTURE_2D, 0);
 
             glGenFramebuffers(1, &LightFBO);
@@ -78,6 +85,14 @@ namespace ForLeaseEngine {
             if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
                 std::cout << "ERROR CREATING LIGHTING FRAMEBUFFER" << std::endl;
             }
+
+            glGenFramebuffers(1, &UIFBO);
+            glBindFramebuffer(GL_FRAMEBUFFER, UIFBO);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, UITexture, 0);
+            if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+                std::cout << "ERROR CREATING UI FRAMEBUFFER" << std::endl;
+            }
+
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
 
@@ -144,9 +159,13 @@ namespace ForLeaseEngine {
                 //glBindFramebuffer(GL_FRAMEBUFFER, 0);
                 //glClearColor(ClearColor.GetR(), ClearColor.GetG() ,ClearColor.GetB() ,ClearColor.GetA());
                 //glPopAttrib();
-                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                //glBindFramebuffer(GL_FRAMEBUFFER, 0);
             }
 
+            glBindFramebuffer(GL_FRAMEBUFFER, UIFBO);
+            glClearColor(0, 0, 0, 0);
+            glClear(GL_COLOR_BUFFER_BIT);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
 //            glFlush();
 
             if(CurrentCamera != 0) {
@@ -197,6 +216,13 @@ namespace ForLeaseEngine {
                     float parallaxAmount = 0;
                     Components::Parallax* parallax = entity->GetComponent<Components::Parallax>();
                     Components::Transform* trans = entity->GetComponent<Components::Transform>();
+
+                    if(trans->UILayer) {
+                        glBindFramebuffer(GL_FRAMEBUFFER, UIFBO);
+                    }
+                    else {
+                        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                    }
 
                     if(parallax && parallax->Active && trans->ZOrder != cameraZ) {
                         parallaxAmount = 1.0 - 1.0 / abs(trans->ZOrder - cameraZ);
@@ -263,30 +289,49 @@ namespace ForLeaseEngine {
                         ModelView = Matrix::Translation(trans->Position);
                         glBindFramebuffer(GL_FRAMEBUFFER, LightFBO);
                         DrawMesh(light->GetLightMesh(), light->DrawOutline, false);
-                        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                        if(trans->UILayer) {
+                            glBindFramebuffer(GL_FRAMEBUFFER, UIFBO);
+                        }
+                        else {
+                            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                        }
                     }
                 }
             }
+
+            GLboolean texEnable = glIsEnabled(GL_TEXTURE_2D);
+            glEnable(GL_TEXTURE_2D);
 
             if(lighting) {
                 SetBlendMode(BlendMode::MULTIPLY);
                 SetDrawingColor(1, 1, 1);
                 //glBindFramebuffer(GL_FRAMEBUFFER, LightFBO);
                 glBindTexture(GL_TEXTURE_2D, LightTexture);
-                GLboolean texEnable = glIsEnabled(GL_TEXTURE_2D);
-                glEnable(GL_TEXTURE_2D);
                 glBegin(GL_QUADS);
                     glTexCoord2f(0, 0); glVertex2f(-1, -1);
                     glTexCoord2f(0, 1); glVertex2f(-1, 1);
                     glTexCoord2f(1, 1); glVertex2f(1, 1);
                     glTexCoord2f(1, 0); glVertex2f(1, -1);
                 glEnd();
-                if(texEnable == GL_FALSE) {
-                    glDisable(GL_TEXTURE_2D);
-                }
-                glBindTexture(GL_TEXTURE_2D, CurrentTexture);
                 //glBindFramebuffer(GL_FRAMEBUFFER, 0);
             }
+
+            SetBlendMode(BlendMode::ALPHA);
+            SetDrawingColor(1, 1, 1, 1);
+            glBindTexture(GL_TEXTURE_2D, UITexture);
+            glBegin(GL_QUADS);
+                glTexCoord2f(0, 0); glVertex2f(-1, -1);
+                glTexCoord2f(0, 1); glVertex2f(-1, 1);
+                glTexCoord2f(1, 1); glVertex2f(1, 1);
+                glTexCoord2f(1, 0); glVertex2f(1, -1);
+            glEnd();
+
+            if(texEnable == GL_FALSE) {
+                glDisable(GL_TEXTURE_2D);
+            }
+            glBindTexture(GL_TEXTURE_2D, CurrentTexture);
+
+            //glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
             Entity* cameraEntity = Owner.GetEntityByID(CurrentCamera);
             Components::Transform* cameraTrans = cameraEntity->GetComponent<Components::Transform>();

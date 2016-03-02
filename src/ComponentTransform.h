@@ -35,10 +35,10 @@ namespace ForLeaseEngine {
                 virtual ComponentType GetType() { return Type; }
                 Transform(Entity& owner, float positionX = 0,
                     float positionY = 0, float scaleX = 1, float scaleY = 1,
-                    float rotation = 0, int zOrder = 0);
+                    float rotation = 0, int zOrder = 0, bool uilayer = false);
 
                 Transform(Entity& owner, Point position, float scaleX = 1,
-                    float scaleY = 1, float rotation = 0, int zOrder = 0);
+                    float scaleY = 1, float rotation = 0, int zOrder = 0, bool uilayer = false);
 
                 ~Transform() {};
                 void Update() {};
@@ -51,6 +51,7 @@ namespace ForLeaseEngine {
                 float ScaleY;   //! Scale on the Y axis
                 float Rotation; //! Rotation in radians
                 int   ZOrder;   //! Draw order, higher drawn first
+                bool  UILayer;  //! Draw the object in the UI layer
             private:
                 Transform() = delete;
 
