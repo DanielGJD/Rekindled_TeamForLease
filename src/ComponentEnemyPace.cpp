@@ -143,8 +143,11 @@ namespace ForLeaseEngine
                     NextAction = Action::PAUSE;
                     timer = PauseTimer;
                     Components::Model* model = Parent.GetComponent<Components::Model>();
+                    Components::VisionCone* vision = Parent.GetComponent<Components::VisionCone>();
                     if (model)
                         model->FlipY = !(model->FlipY);
+                    if (vision)
+                        vision->Direction[0] *= -1;
                 }
             }
             void EnemyPace::Serialize(Serializer& root)
