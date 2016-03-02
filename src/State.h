@@ -39,6 +39,8 @@ namespace ForLeaseEngine {
             virtual void Deinitialize() = 0;
             virtual void Unload() = 0;
 
+            void UpdateDebug();
+
             void UpdateEntities();
             void AddLevelComponent(LevelComponent* levelComponent);
             void DeleteLevelComponent(LevelComponent* levelComponent);

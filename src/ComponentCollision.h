@@ -41,7 +41,7 @@ namespace ForLeaseEngine {
                 static const ComponentType Type = ComponentType::Collision;
                 virtual ComponentType GetType() { return Type; }
 
-                Collision(Entity& owner, float width = 1, float height = 1, bool resolve = true, float offsetX = 0, float offsetY = 0);
+                Collision(Entity& owner, float width = 1, float height = 1, bool resolve = true, float offsetX = 0, float offsetY = 0, bool inheritMomentum = false);
                 void Initialize();
                 void Update() {};
                 void OnCollide(const Event* e);
@@ -63,7 +63,8 @@ namespace ForLeaseEngine {
                 bool CollidedLastFrame; //! Whether or not the entity collided on the last frame.  This should be handled by an event.
                 Entity* CollidedWith;   //! The last entity this entity collided with
                 Side CollidedWithSide;  //! The side of the last tneity this entity collided with
-                bool ResolveCollisions; //! Whether we want to resolve collisions by moving entities    
+                bool ResolveCollisions; //! Whether we want to resolve collisions by moving entities
+                bool InheritMomentum;   //! Whether we want to inherit the momentum of whatever we collide with
         private:
                 Collision() = delete;
         };

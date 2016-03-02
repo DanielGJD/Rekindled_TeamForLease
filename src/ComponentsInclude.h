@@ -39,5 +39,7 @@
 #include "ComponentParallax.h"
 #include "ComponentOccluder.h"
 #include "ComponentCheckpoint.h"
+#include "ComponentHealth.h"
+#include "ComponentEnemyPace.h"
 
 #endif

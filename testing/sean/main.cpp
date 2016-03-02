@@ -16,17 +16,20 @@
 #include "Platforms.h"
 #include "HowToPlay.h"
 #include "Loading.h"
+#include "Debug.h"
 //#include "SegmentPrototypeState.h"
 
 #undef main
 
 int Start(){
     std::vector<ForLeaseEngine::State *> states;
-    states.push_back(new Loading("Game.json"));
+    //states.push_back(new Loading("Game.json"));
     states.push_back(new SeanState());
 
+    ForLeaseEngine::Modules::Debug debug;
+    debug.Draw.Collision = true;
 
-    ForLeaseEngine::Engine engine(states, 1024, 768, 60);
+    ForLeaseEngine::Engine engine(states, 1024, 768, 60, false, debug);
     engine.Run();
 
     return 0;

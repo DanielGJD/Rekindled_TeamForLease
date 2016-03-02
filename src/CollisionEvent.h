@@ -29,14 +29,9 @@ namespace ForLeaseEngine {
     */
     class CollisionEvent : public Event {
         public:
-            typedef std::pair<Entity*, Entity*> EntityPair;
+            Entity* With;
 
-            EntityPair Colliding;
-
-            CollisionEvent(Entity* first, Entity* second);
-
-            bool Matches(Entity* entity);
-            Entity* Other(Entity* entity);
+            CollisionEvent(Entity* with);
 
         private:
             CollisionEvent() = delete;

@@ -15,6 +15,7 @@
 #include "State.h"
 #include "GameStateManager.h"
 #include "ComponentSoundEmitter.h"
+#include "DamageEvent.h"
 #include <iostream>
 
 namespace ForLeaseEngine {
@@ -57,57 +58,57 @@ namespace ForLeaseEngine {
 
         void EnemyAI::Update() {
             //Update timer and colors
-            if(!Active) {
-                return;
-            }
-
-            Components::VisionCone* cone = Parent.GetComponent<Components::VisionCone>();
-
-            if(Happy) {
-                DetectionTimer = 0;
-                cone->IndicatorColor = HappyColor;
-            }
-            else {
-                if(Angry) {
-                    //cone->IndicatorColor = DetectionColor;
-                    DetectionTimer += ForLease->FrameRateController().GetDt();
-                    if(DetectionTimer > DetectionDelay) {
-                        DetectionTimer = DetectionDelay;
-                        // Also, you lose!!!!!
-                        ForLease->GameStateManager().SetAction(Modules::StateAction::Restart);
-                    }
-                    // Option 1
-                    /*float timeSwitch = DetectionDelay / 2;
-
-                    if(DetectionTimer < timeSwitch) {
-                        float t = DetectionTimer / timeSwitch;
-                        cone->IndicatorColor = Color(NoDetectionColor.GetR() + DetectionColor.GetR() * t,
-                                                     NoDetectionColor.GetG() + DetectionColor.GetG() * t,
-                                                     NoDetectionColor.GetB() + DetectionColor.GetB() * t,
-                                                     NoDetectionColor.GetA() + DetectionColor.GetA() * t);
-                    }
-                    else {
-                        float t = 1 - (DetectionTimer - timeSwitch) / timeSwitch;
-                        cone->IndicatorColor = Color(NoDetectionColor.GetR() * t + DetectionColor.GetR(),
-                                                     NoDetectionColor.GetG() * t + DetectionColor.GetG(),
-                                                     NoDetectionColor.GetB() * t + DetectionColor.GetB(),
-                                                     NoDetectionColor.GetA() * t + DetectionColor.GetA());
-                    }*/
-
-                    // Option 2
-                    float badPart = DetectionTimer / DetectionDelay;
-                    float goodPart = 1 - badPart;
-
-                    cone->IndicatorColor = Color(NoDetectionColor.GetR() * goodPart + DetectionColor.GetR() * badPart,
-                                                 NoDetectionColor.GetG() * goodPart + DetectionColor.GetG() * badPart,
-                                                 NoDetectionColor.GetB() * goodPart + DetectionColor.GetB() * badPart,
-                                                 NoDetectionColor.GetA() * goodPart + DetectionColor.GetA() * badPart);
-                }
-                else {
-                    cone->IndicatorColor = NoDetectionColor;
-                    DetectionTimer = 0;
-                }
-            }
+//            if(!Active) {
+//                return;
+//            }
+//
+//            Components::VisionCone* cone = Parent.GetComponent<Components::VisionCone>();
+//
+//            if(Happy) {
+//                DetectionTimer = 0;
+//                cone->IndicatorColor = HappyColor;
+//            }
+//            else {
+//                if(Angry) {
+//                    //cone->IndicatorColor = DetectionColor;
+//                    DetectionTimer += ForLease->FrameRateController().GetDt();
+//                    if(DetectionTimer > DetectionDelay) {
+//                        DetectionTimer = DetectionDelay;
+//                        // Also, you lose!!!!!
+//                        ForLease->GameStateManager().SetAction(Modules::StateAction::Restart);
+//                    }
+//                    // Option 1
+//                    /*float timeSwitch = DetectionDelay / 2;
+//
+//                    if(DetectionTimer < timeSwitch) {
+//                        float t = DetectionTimer / timeSwitch;
+//                        cone->IndicatorColor = Color(NoDetectionColor.GetR() + DetectionColor.GetR() * t,
+//                                                     NoDetectionColor.GetG() + DetectionColor.GetG() * t,
+//                                                     NoDetectionColor.GetB() + DetectionColor.GetB() * t,
+//                                                     NoDetectionColor.GetA() + DetectionColor.GetA() * t);
+//                    }
+//                    else {
+//                        float t = 1 - (DetectionTimer - timeSwitch) / timeSwitch;
+//                        cone->IndicatorColor = Color(NoDetectionColor.GetR() * t + DetectionColor.GetR(),
+//                                                     NoDetectionColor.GetG() * t + DetectionColor.GetG(),
+//                                                     NoDetectionColor.GetB() * t + DetectionColor.GetB(),
+//                                                     NoDetectionColor.GetA() * t + DetectionColor.GetA());
+//                    }*/
+//
+//                    // Option 2
+//                    float badPart = DetectionTimer / DetectionDelay;
+//                    float goodPart = 1 - badPart;
+//
+//                    cone->IndicatorColor = Color(NoDetectionColor.GetR() * goodPart + DetectionColor.GetR() * badPart,
+//                                                 NoDetectionColor.GetG() * goodPart + DetectionColor.GetG() * badPart,
+//                                                 NoDetectionColor.GetB() * goodPart + DetectionColor.GetB() * badPart,
+//                                                 NoDetectionColor.GetA() * goodPart + DetectionColor.GetA() * badPart);
+//                }
+//                else {
+//                    cone->IndicatorColor = NoDetectionColor;
+//                    DetectionTimer = 0;
+//                }
+//            }
         }
 
         void EnemyAI::Serialize(Serializer& root) {
@@ -155,6 +156,7 @@ namespace ForLeaseEngine {
             Happy = false;
             Angry = false;
             bool willBeAngry = false;
+            Entity* hatedEntity = NULL;
             for(unsigned int i = 0; i < multi_e->EntityIDs.size(); ++i) {
                 Entity* entity = ForLease->GameStateManager().CurrentState().GetEntityByID(multi_e->EntityIDs[i]);
                 LevelComponents::Light* lightSystem = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Light>();
@@ -168,21 +170,23 @@ namespace ForLeaseEngine {
                     }
                     // using lighting
                     else {
-                        //if(lightSystem->CheckIfLit(multi_e->EntityIDs[i])) {
+                        if(lightSystem->CheckIfLit(multi_e->EntityIDs[i])) {
                             Happy = true;
                             break;
-                        //}
+                        }
                     }
                 }
                 else if(entityName.compare(HatedEntityName) == 0) {
-                    //if(!lightSystem) {
+                    if(!lightSystem) {
                         willBeAngry = true;
-                    //}
-                    //else {
-                    //    if(lightSystem->CheckIfLit(multi_e->EntityIDs[i])) {
+                        hatedEntity = entity;
+                    }
+                    else {
+                        if(lightSystem->CheckIfLit(multi_e->EntityIDs[i])) {
                             willBeAngry = true;
-                    //    }
-                    //}
+                            hatedEntity = entity;
+                        }
+                    }
                 }
             }
             if(!Happy) {
@@ -197,6 +201,12 @@ namespace ForLeaseEngine {
                 else if(!wasAngry && Angry) {
                     emitter->PlayEvent(HatedSeenSound);
                 }
+            }
+
+            if(!Happy && hatedEntity) {
+                //std::cout << "Sending " << damage.Damage << " to " << hatedEntity->GetName() << " : " << hatedEntity << std::endl;
+                DamageEvent damage = DamageEvent(ForLease->FrameRateController().GetDt());
+                ForLease->Dispatcher.DispatchToParent(&damage, hatedEntity);
             }
         }
     }

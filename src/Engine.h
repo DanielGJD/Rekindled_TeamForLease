@@ -20,6 +20,7 @@
 #include "ResourceManager.h"
 #include "SoundFS.h"
 #include "Filesystem.h"
+#include "Debug.h"
 #include <vector>
 
 namespace ForLeaseEngine {
@@ -33,7 +34,7 @@ namespace ForLeaseEngine {
 
         public:
             //Engine(std::vector<State *> states);
-            Engine(std::vector<State *> states, int resolutionX = 1280, int resolutionY = 720, int frameRate = 60, bool fullscreen = false);
+            Engine(std::vector<State *> states, int resolutionX = 1280, int resolutionY = 720, int frameRate = 60, bool fullscreen = false, Modules::Debug debug = Modules::Debug());
             void Run();
             Modules::GameStateManager& GameStateManager();
             Modules::FrameRateController& FrameRateController();
@@ -43,6 +44,7 @@ namespace ForLeaseEngine {
             ForLeaseEngine::Input OSInput;
             Systems::SoundManager* sound;
             Modules::Filesystem Filesystem;
+            Modules::Debug Debug;
         private:
             //! Width of the screen
             int ResolutionX;
