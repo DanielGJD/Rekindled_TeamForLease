@@ -25,7 +25,7 @@
 
 namespace ForLeaseEngine {
     namespace Components {
-        VisionCone::VisionCone(Entity& parent, bool active, bool drawOutline, bool visible, Vector const& offset, float radius, Vector const& direction, float angle, Color const& indicatorColor)
+        VisionCone::VisionCone(Entity& parent, bool active, bool visible, bool drawOutline, Vector const& offset, float radius, Vector const& direction, float angle, Color const& indicatorColor)
                               : Component(parent, ComponentType::Transform | ComponentType::Collision),
                                 Active(active), Visible(visible), DrawOutline(drawOutline),
                                 Offset(offset), Radius(radius), Direction(direction),
