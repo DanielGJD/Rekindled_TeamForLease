@@ -116,6 +116,8 @@ namespace ForLeaseEngine
          int particleBlend = 1;
          int modelBlend = 0;
          int lightBlend = 2;
+         float lightAngle = 3 * 3.1415 / 2;
+         float visionAngle = 0;
 
          std::string blueprintDir = "blueprints/";
          std::string levelDir     = "levels/";
@@ -288,6 +290,18 @@ namespace ForLeaseEngine
         {
             strcpy(leg::enemyHateName, leg::selEnemyAI->HatedEntityName.c_str());
             strcpy(leg::enemyLikeName, leg::selEnemyAI->LikedEntityName.c_str());
+        }
+        if (leg::selLight)
+        {
+            leg::lightAngle = atan2(leg::selLight->Direction[1], leg::selLight->Direction[0]);
+            if (leg::lightAngle < 0)
+                leg::lightAngle += 2 * 3.1415;
+        }
+        if (leg::selVision)
+        {
+            leg::visionAngle = atan2(leg::selVision->Direction[1], leg::selVision->Direction[0]);
+            if (leg::visionAngle < 0)
+                leg::visionAngle += 2 * 3.1415;
         }
     }
 
