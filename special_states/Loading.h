@@ -33,7 +33,7 @@ private:
     std::string LoadFile;
     std::vector<ForLeaseEngine::Modules::Filesystem::AssetPath> LoadPaths;
     float RotationPerFile;
-    ForLeaseEngine::Vector TotalMovement = ForLeaseEngine::Vector(60,0);
+    ForLeaseEngine::Vector TotalMovement = ForLeaseEngine::Vector(100,0);
     ForLeaseEngine::Vector MovementPerFile;
     unsigned NextToLoad;
 };

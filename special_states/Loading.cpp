@@ -57,7 +57,7 @@ void Loading::Initialize() {
     logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
 
     Entity* player = AddEntity("Player");
-    player->AddComponent(new Components::Transform(*player, Point(-30,5), 5, 5));
+    player->AddComponent(new Components::Transform(*player, Point(-50,5), 5, 5));
     Components::Model* model = new Components::Model(*player, true, false, false, "fox.json");
     player->AddComponent(model);
 
