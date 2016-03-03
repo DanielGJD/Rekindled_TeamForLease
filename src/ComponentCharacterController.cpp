@@ -106,10 +106,10 @@ namespace ForLeaseEngine {
             if(key_e->Key == LeftKey)
             {
 
-                rbody->Velocity += Vector(-MoveSpeed/2.0, 0);
+                //rbody->Velocity += Vector(-MoveSpeed/2.0, 0);
                 //rbody->Acceleration += Vector(-MoveSpeed, 0 ) * 5;
                // if(rbody->Acceleration.GetX() < MoveSpeed)
-                //rbody->Acceleration += Vector(-MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0 );
+                rbody->Acceleration += Vector(-MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0 );
                     //printf("LEFTa %f", rbody->Acceleration[0]);
                 printf("pressLV %f\n", rbody->Velocity[0]);
                 CheckMove = true;
@@ -136,7 +136,7 @@ namespace ForLeaseEngine {
                 //Physics* rbody = Parent.GetComponent<Physics>();
                 //if(rbody->Acceleration.GetX() > -MoveSpeed)
                rbody->Velocity += Vector(MoveSpeed/2.0, 0);
-                //rbody->Acceleration += Vector(MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0) ;
+                rbody->Acceleration += Vector(MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0) ;
                     //printf("RIGHTa %f", rbody->Acceleration[0]);
                 printf("pressRV %f\n", rbody->Velocity[0]);
 
