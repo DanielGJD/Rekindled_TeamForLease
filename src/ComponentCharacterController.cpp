@@ -135,7 +135,7 @@ namespace ForLeaseEngine {
             {
                 //Physics* rbody = Parent.GetComponent<Physics>();
                 //if(rbody->Acceleration.GetX() > -MoveSpeed)
-               rbody->Velocity += Vector(MoveSpeed/2.0, 0);
+               //rbody->Velocity += Vector(MoveSpeed/2.0, 0);
                 rbody->Acceleration += Vector(MoveSpeed * 1000 * ForLease->FrameRateController().GetDt(), 0) ;
                     //printf("RIGHTa %f", rbody->Acceleration[0]);
                 printf("pressRV %f\n", rbody->Velocity[0]);
