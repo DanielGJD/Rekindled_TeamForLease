@@ -158,16 +158,16 @@ namespace ForLeaseEngine {
                 Physics* Jbody = Parent.GetComponent<Physics>();
                // Collision* collider = Parent.GetComponent<Collision>();
                 if(CanJump) {
-                    rbody->Velocity += Vector(0, JumpSpeed);
+                    rbody->Velocity += Vector(0, JumpSpeed / 2.0);
                     SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
-                    if(rbody->Velocity.GetX() > 0)
-                    {
-                        rbody->Velocity.Normalize();
-                    }
-                    if(rbody->Velocity.GetX() < 0)
-                    {
-                        rbody->Velocity.Normalize();
-                    }
+//                    if(rbody->Velocity.GetX() > 0)
+//                    {
+//                        rbody->Velocity.Normalize();
+//                    }
+//                    if(rbody->Velocity.GetX() < 0)
+//                    {
+//                        rbody->Velocity.Normalize();
+//                    }
                     //rbody->Velocity.Normalize();
                     printf("JumpV: %f", rbody->Velocity[0]);
                     if (emitter) {
