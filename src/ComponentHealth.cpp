@@ -60,6 +60,12 @@ namespace ForLeaseEngine {
                 //std::cout << Parent.GetName() << " died" << std::endl;
 
             }
+
+            Components::Model* model = Parent.GetComponent<Components::Model>();
+            if(model) {
+                float t = CurrentHealth / MaxHealth;
+                model->ModelColor = Color(t, t, t, 1);
+            }
         }
     }
 }
