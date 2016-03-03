@@ -313,6 +313,15 @@ namespace ForLeaseEngine
                 leg::selFollow = NULL;
             return;
         }
+
+        if (!(component.compare("Health")) && !leg::selHealth)
+        {
+            leg::selHealth = new Components::Health(*leg::selection, 5);
+            if (!leg::selection->AddComponent(leg::selHealth))
+                leg::selHealth = NULL;
+            return;
+        }
+
         if (!(component.compare("Light")) && !leg::selLight)
         {
             leg::selLight = new Components::Light(*leg::selection);

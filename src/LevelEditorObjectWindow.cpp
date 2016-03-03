@@ -390,6 +390,16 @@ namespace ForLeaseEngine
                 leg::selFollow = NULL;
             }
         }
+        if (leg::selHealth && ImGui::CollapsingHeader("Health"))
+        {
+            ImGui::InputFloat("Max Health", &(leg::selHealth->MaxHealth));
+
+            if (ImGui::Button("Remove Health"))
+            {
+                leg::selection->DeleteComponent(ComponentType::Health);
+                leg::selHealth = NULL;
+            }
+        }
         if (leg::selLight && ImGui::CollapsingHeader("Light"))
         {
             ImGui::Checkbox("Active##Light", &(leg::selLight->Active));
@@ -631,9 +641,7 @@ namespace ForLeaseEngine
         if (leg::selController && ImGui::CollapsingHeader("Player Controller"))
         {
             ImGui::InputFloat("Jump Speed##Player", &(leg::selController->JumpSpeed));
-            ImGui::InputFloat("Move Speed##Player", &(leg::selController->MoveSpeed));
-            ImGui::InputFloat("Max Speed##Player", &(leg::selController->maxSpeed));
-            ImGui::InputFloat("Friction##Player", &(leg::selController->Friction));
+            ImGui::InputFloat("Acceleration##Player", &(leg::selController->Acceleration));
             ImGui::InputFloat("Drag##Player", &(leg::selController->Drag));
             if (ImGui::TreeNode("Edit Controls##Player"))
             {

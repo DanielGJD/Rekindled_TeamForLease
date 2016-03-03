@@ -40,6 +40,7 @@ namespace ForLeaseEngine
         extern Components::Checkpoint*             selCheckpoint;
         extern Components::Follow*                 selFollow;
         extern Components::EnemyPace*              selPace;
+        extern Components::Health*                 selHealth;
 
         extern Entity*                levelCamera;
         extern Entity*                camera;

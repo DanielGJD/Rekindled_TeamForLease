@@ -63,6 +63,7 @@ namespace ForLeaseEngine
          Components::Checkpoint*             selCheckpoint;
          Components::Follow*                 selFollow;
          Components::EnemyPace*              selPace;
+         Components::Health*                 selHealth;
 
 
 
@@ -136,12 +137,14 @@ namespace ForLeaseEngine
         comps.push_back(new Components::Checkpoint(dummy));
         comps.push_back(new Components::Collision(dummy));
         comps.push_back(Components::DragWithMouse::Create(dummy));
+        comps.push_back(new Components::EnemyAI(dummy));
         comps.push_back(new Components::FadeWithDistance(dummy));
         comps.push_back(new Components::Follow(dummy));
-        comps.push_back(new Components::EnemyAI(dummy));
+        comps.push_back(new Components::Health(dummy));
         comps.push_back(new Components::Light(dummy));
         comps.push_back(new Components::Model(dummy));
         comps.push_back(new Components::Occluder(dummy));
+        comps.push_back(Components::EnemyPace::Create(dummy));
         comps.push_back(new Components::Parallax(dummy));
         comps.push_back(new Components::ParticleColorAnimator(dummy));
         comps.push_back(new Components::SimpleParticleDynamics(dummy));
@@ -196,9 +199,10 @@ namespace ForLeaseEngine
             leg::componentNames.push_back("Checkpoint");
             leg::componentNames.push_back("Collision");
             leg::componentNames.push_back("Drag with Mouse");
+            leg::componentNames.push_back("Enemy AI");
             leg::componentNames.push_back("Fade with Distance");
             leg::componentNames.push_back("Follow");
-            leg::componentNames.push_back("Enemy AI");
+            leg::componentNames.push_back("Health");
             leg::componentNames.push_back("Light");
             leg::componentNames.push_back("Model");
             leg::componentNames.push_back("Occluder");
@@ -267,6 +271,7 @@ namespace ForLeaseEngine
         leg::selCheckpoint   = leg::selection->GetComponent<Components::Checkpoint>();
         leg::selFollow       = leg::selection->GetComponent<Components::Follow>();
         leg::selPace         = leg::selection->GetComponent<Components::EnemyPace>();
+        leg::selHealth       = leg::selection->GetComponent<Components::Health>();
 
         if (leg::selSprtxt)
             strcpy(leg::spriteTextBuf, leg::selSprtxt->Text.c_str());
