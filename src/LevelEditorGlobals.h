@@ -39,6 +39,7 @@ namespace ForLeaseEngine
         extern Components::Occluder*               selOccluder;
         extern Components::Checkpoint*             selCheckpoint;
         extern Components::Follow*                 selFollow;
+        extern Components::EnemyPace*              selPace;
 
         extern Entity*                levelCamera;
         extern Entity*                camera;

@@ -334,6 +334,15 @@ namespace ForLeaseEngine
                 leg::selOccluder = NULL;
             return;
         }
+
+        if (!(component.compare("PaceAI")) && !leg::selPace)
+        {
+            leg::selPace = Components::EnemyPace::Create(*leg::selection);
+            if (!leg::selection->AddComponent(leg::selPace))
+                leg::selPace = NULL;
+            return;
+
+        }
         if (!(component.compare("Parallax")) && !leg::selParallax)
         {
             leg::selParallax = new Components::Parallax(*leg::selection);

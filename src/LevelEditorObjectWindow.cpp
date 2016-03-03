@@ -427,6 +427,21 @@ namespace ForLeaseEngine
                 leg::selOccluder = NULL;
             }
         }
+        if (leg::selPace && ImGui::CollapsingHeader("PaceAI"))
+        {
+            ImGui::InputFloat("Speed##pace", &(leg::selPace->PaceSpeed));
+            ImGui::InputFloat("Distance##pace", &(leg::selPace->MaxPaceDistance));
+            ImGui::InputFloat("Pause Timer##pace", &(leg::selPace->PauseTimer));
+            ImGui::InputFloat("Detection Delay##pace", &(leg::selPace->DetectionDelay));
+            ImGui::RadioButton("Horizontal", &(leg::selPace->Direction), 0);
+            ImGui::RadioButton("Vertical", &(leg::selPace->Direction), 1);
+
+            if (ImGui::Button("Remove PaceAI"))
+            {
+                leg::selection->DeleteComponent(ComponentType::EnemyPace);
+                leg::selPace = NULL;
+            }
+        }
         if (leg::selParallax && ImGui::CollapsingHeader("Parallax"))
         {
             ImGui::Checkbox("Active", &(leg::selParallax->Active));

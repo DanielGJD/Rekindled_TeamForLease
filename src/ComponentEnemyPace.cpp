@@ -148,13 +148,13 @@ namespace ForLeaseEngine
 
             void EnemyPace::Serialize(Serializer& root)
             {
-                root.WriteUint("Type", static_cast<unsigned long long>(Type));
+                root.WriteUlonglong("Type", static_cast<unsigned long long>(Type));
                 Serializer pace = root.GetChild("EnemyPace");
                 pace.WriteFloat("MaxPaceDistance", MaxPaceDistance);
                 pace.WriteFloat("PaceSpeed", PaceSpeed);
                 pace.WriteFloat("PauseTimer", PauseTimer);
                 pace.WriteInt("Direction", Direction);
-                pace.WriteUint("Type", static_cast<unsigned long long>(Type));
+                pace.WriteUlonglong("Type", static_cast<unsigned long long>(Type));
                 root.Append(pace, "EnemyPace");
             }
 

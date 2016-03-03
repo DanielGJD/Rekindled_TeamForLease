@@ -62,6 +62,7 @@ namespace ForLeaseEngine
          Components::Occluder*               selOccluder;
          Components::Checkpoint*             selCheckpoint;
          Components::Follow*                 selFollow;
+         Components::EnemyPace*              selPace;
 
 
 
@@ -201,6 +202,7 @@ namespace ForLeaseEngine
             leg::componentNames.push_back("Light");
             leg::componentNames.push_back("Model");
             leg::componentNames.push_back("Occluder");
+            leg::componentNames.push_back("PaceAI");
             leg::componentNames.push_back("Parallax");
             leg::componentNames.push_back("Particle Color");
             leg::componentNames.push_back("Particle Dynamics");
@@ -264,6 +266,7 @@ namespace ForLeaseEngine
         leg::selOccluder     = leg::selection->GetComponent<Components::Occluder>();
         leg::selCheckpoint   = leg::selection->GetComponent<Components::Checkpoint>();
         leg::selFollow       = leg::selection->GetComponent<Components::Follow>();
+        leg::selPace         = leg::selection->GetComponent<Components::EnemyPace>();
 
         if (leg::selSprtxt)
             strcpy(leg::spriteTextBuf, leg::selSprtxt->Text.c_str());
