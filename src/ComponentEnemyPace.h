@@ -19,7 +19,8 @@ namespace ForLeaseEngine
                 {
                     PAUSE,
                     LEFT,
-                    RIGHT
+                    RIGHT,
+                    WATCH
                 };
 
                 static EnemyPace* Create(Entity& owner);
@@ -32,18 +33,22 @@ namespace ForLeaseEngine
                 float PaceSpeed;
                 float MaxPaceDistance;
                 float PauseTimer;
+                float DetectionDelay;
                 int Direction;
 
                 void Initialize();
                 void Update();
-                //void OnPlayerSeen(Event const* e);
+                void OnPlayerSeen(Event const* e);
+                void OnPlayerNotSeen(Event const* e);
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
 
             private:
+                bool playerDetected;
                 void MoveLeft(float dt);
                 void MoveRight(float dt);
                 void MovePause(float dt);
+                void WatchPlayer(float dt);
                 int CurrentAction;
                 int NextAction;
                 Point& Position;
