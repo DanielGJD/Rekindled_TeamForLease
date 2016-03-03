@@ -50,6 +50,14 @@ namespace ForLeaseEngine {
         UpdateDebug();
 
         ForLease->GameWindow->UpdateGameWindow();
+
+        if (ResetToCheckpoint) {
+            LevelComponents::Checkpoint* lcCheckpoint = GetLevelComponent<LevelComponents::Checkpoint>();
+            if (lcCheckpoint) {
+                DeserializeNonReference(lcCheckpoint->LastCheckpointState);
+            }
+            ResetToCheckpoint = false;
+        }
     }
 
     void Level::Deinitialize() {

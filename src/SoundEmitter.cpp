@@ -42,42 +42,42 @@ void SoundEmitter::PlayEvent(std::string name)
 {
     if (name.empty())
         return;
-	m_manager->PlayEvent(name);
+	ForLease->sound->PlayEvent(name);
 }
 
 void SoundEmitter::StopEvent(std::string name)
 {
     if (name.empty())
         return;
-	m_manager->StopSound(name);
+    ForLease->sound->StopSound(name);
 }
 void SoundEmitter::SetPause(bool pause, std::string name)
 {
     if (name.empty())
         return;
 	if (pause == true)
-		m_manager->Pause(true,name);
+        ForLease->sound->Pause(true,name);
 	else
-		m_manager->Pause(false,name);
+        ForLease->sound->Pause(false,name);
 }
 
 void SoundEmitter::BeQuiet()
 {
-	m_manager->PauseAll();
-	m_manager->Update(0.0f);
+    ForLease->sound->PauseAll();
+    ForLease->sound->Update(0.0f);
 }
 
 void SoundEmitter::Rock()
 {
-	m_manager->ResumeAll();
-	m_manager->Update(0.0f);
+    ForLease->sound->ResumeAll();
+    ForLease->sound->Update(0.0f);
 }
 
 void SoundEmitter::SetVolume(float vol, std::string name)
 {
     if (name.empty())
         return;
-	m_manager->Volume(vol, name);
+    ForLease->sound->Volume(vol, name);
 }
 
 void SoundEmitter::Update()

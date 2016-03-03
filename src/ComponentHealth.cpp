@@ -48,6 +48,13 @@ namespace ForLeaseEngine {
                 CurrentHealth -= damage_e->Damage;
                 //std::cout << Parent.GetName() << " took " << damage_e->Damage << " damage: " << CurrentHealth << "/" << MaxHealth << std::endl;
             }
+
+            Components::Model* model = Parent.GetComponent<Components::Model>();
+            if (model) {
+                float t = CurrentHealth / MaxHealth;
+                model->ModelColor = Color(t, t, t, 1);
+            }
+
             if(CurrentHealth < 0) {
                 CurrentHealth = 0;
                 LevelComponents::Checkpoint* checkpoints = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Checkpoint>();
@@ -61,11 +68,7 @@ namespace ForLeaseEngine {
 
             }
 
-            Components::Model* model = Parent.GetComponent<Components::Model>();
-            if(model) {
-                float t = CurrentHealth / MaxHealth;
-                model->ModelColor = Color(t, t, t, 1);
-            }
+            
         }
     }
 }
