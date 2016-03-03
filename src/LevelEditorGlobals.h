@@ -38,6 +38,8 @@ namespace ForLeaseEngine
         extern Components::Parallax*               selParallax;
         extern Components::Occluder*               selOccluder;
         extern Components::Checkpoint*             selCheckpoint;
+        extern Components::Follow*                 selFollow;
+        extern Components::EnemyPace*              selPace;
 
         extern Entity*                levelCamera;
         extern Entity*                camera;
@@ -62,8 +64,9 @@ namespace ForLeaseEngine
         extern bool selMode;
         extern bool delobj;
         extern bool copySet;
-        extern bool setTarget;
+        extern bool setFade;
         extern bool levelSaved;
+        extern bool setFollow;
 
         extern char entName[128];
         extern char spriteTextBuf[512];
@@ -92,6 +95,9 @@ namespace ForLeaseEngine
         extern int particleBlend;
         extern int modelBlend;
         extern int lightBlend;
+        extern float lightAngle;
+        extern float visionAngle;
+
         extern std::string levelDir;
         extern std::string blueprintDir;
     }

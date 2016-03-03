@@ -62,6 +62,7 @@ namespace ForLeaseEngine
 
         if (leg::selTran && ImGui::CollapsingHeader("Transform"))
         {
+            ImGui::Checkbox("UI Layer##transform", &(leg::selTran->UILayer));
             ImGui::PushItemWidth(width);
             ImGui::InputFloat("X##TransformPos", &(leg::selTran->Position[0]));
             ImGui::SameLine();
@@ -74,7 +75,7 @@ namespace ForLeaseEngine
             ImGui::SameLine();
             ImGui::Text("Scale");
             ImGui::PopItemWidth();
-            ImGui::DragFloat("Rotation##Transform", &(leg::selTran->Rotation), 0.01, 0, 44.0 / 7);
+            ImGui::SliderAngle("Rotation##Transform", &(leg::selTran->Rotation), 0, 360);
             ImGui::InputInt("Z Order##Transform", &(leg::selTran->ZOrder));
         }
 
@@ -139,36 +140,30 @@ namespace ForLeaseEngine
                 leg::selModel = NULL;
             }
         }
-//        if (leg::selMusic && ImGui::CollapsingHeader("Background Music"))
-//        {
-//            ImGui::Text("Current Sound: %s", leg::selMusic->MusicName.c_str());
-//            static ImGuiTextFilter backSound;
-//            backSound.Draw("Trigger Sound", 250);
-//            ImGui::Text("Available Sounds");
-//            ImGui::Separator();
-//            ImGui::BeginChild("Sound", ImVec2(0, 100));
-//            for (std::string s : leg::soundNames)
-//            {
-//                if (backSound.PassFilter(s.c_str()))
-//                {
-//                    if (ImGui::MenuItem(s.c_str()))
-//                    {
-//                        leg::selMusic->MusicName = s;
-//                    }
-//                }
-//            }
-//            ImGui::EndChild();
-//            if (backSound.IsActive() && ImGui::IsKeyPressed(Keys::Return))
-//            {
-//                ForLease->Resources.LoadSound(backSound.InputBuf);
-//                leg::soundNames = ForLease->Resources.GetLoadedSoundNames();
-//            }
-//            if (ImGui::Button("Remove Background Music"))
-//            {
-//                leg::selection->DeleteComponent(ComponentType::BackgroundMusic);
-//                leg::selMusic = NULL;
-//            }
-//        }
+        if (leg::selMusic && ImGui::CollapsingHeader("Background Music"))
+        {
+            ImGui::Text("Current Sound: %s", leg::selMusic->MusicName.c_str());
+            static ImGuiTextFilter backSound;
+            backSound.Draw("##background", 250);
+            ImGui::Text("Available Sounds");
+            ImGui::BeginChild("Sound", ImVec2(0, 100), true);
+            for (std::string s : leg::soundNames)
+            {
+                if (backSound.PassFilter(s.c_str()))
+                {
+                    if (ImGui::MenuItem(s.c_str()))
+                    {
+                        leg::selMusic->MusicName = s;
+                    }
+                }
+            }
+            ImGui::EndChild();
+            if (ImGui::Button("Remove Background Music"))
+            {
+                leg::selection->DeleteComponent(ComponentType::BackgroundMusic);
+                leg::selMusic = NULL;
+            }
+        }
         if (leg::selCamera && ImGui::CollapsingHeader("Camera"))
         {
             ImGui::InputFloat("Size##Camera", &(leg::selCamera->Size));
@@ -195,28 +190,26 @@ namespace ForLeaseEngine
                 leg::selChange->TriggerObjectName = leg::changeObject;
 
             ImGui::PopItemWidth();
-//            ImGui::Text("Current Sound: %s", leg::selChange->TriggerSoundName.c_str());
-//            static ImGuiTextFilter changeSound;
-//            changeSound.Draw("Trigger Sound", 250);
-//            ImGui::Text("Available Sounds");
-//            ImGui::Separator();
-//            ImGui::BeginChild("Sound", ImVec2(0, 100));
-//            for (std::string s : leg::soundNames)
-//            {
-//                if (changeSound.PassFilter(s.c_str()))
-//                {
-//                    if (ImGui::MenuItem(s.c_str()))
-//                    {
-//                        leg::selChange->TriggerSoundName = s;
-//                    }
-//                }
-//            }
-//            ImGui::EndChild();
-//            if (changeSound.IsActive() && ImGui::IsKeyPressed(Keys::Return))
-//            {
-//                ForLease->Resources.LoadSound(changeSound.InputBuf);
-//                leg::soundNames = ForLease->Resources.GetLoadedSoundNames();
-//            }
+            ImGui::Text("Current Sound: %s", leg::selChange->TriggerSoundName.c_str());
+            static ImGuiTextFilter changeSound;
+            changeSound.Draw("##clocsound", 250);
+            ImGui::Text("Available Sounds");
+            ImGui::BeginChild("Sound", ImVec2(0, 100));
+            for (std::string s : leg::soundNames)
+            {
+                if (changeSound.PassFilter(s.c_str()))
+                {
+                    if (ImGui::MenuItem(s.c_str()))
+                    {
+                        leg::selChange->TriggerSoundName = s;
+                    }
+                }
+            }
+
+            ImGui::EndChild();
+
+            if (ImGui::Button("Clear Sound##cloc"))
+                leg::selChange->TriggerSoundName = "";
 
             if (ImGui::Button("Remove Change on Collide"))
             {
@@ -288,46 +281,56 @@ namespace ForLeaseEngine
             }
 
             ImGui::PopItemWidth();
-//            ImGui::Checkbox("Liked Sound", &(leg::setLiked));
-//            if (ImGui::IsItemHovered())
-//            {
-//                ImGui::BeginTooltip();
-//                ImGui::Text("%s", (leg::selEnemyAI->LikedSeenSound.c_str()));
-//                ImGui::EndTooltip();
-//            }
-//            ImGui::SameLine();
-//            ImGui::Checkbox("Hated Sound", &(leg::setHated));
-//            if (ImGui::IsItemHovered())
-//            {
-//                ImGui::BeginTooltip();
-//                ImGui::Text("%s", (leg::selEnemyAI->HatedSeenSound.c_str()));
-//                ImGui::EndTooltip();
-//            }
-//
-//            static ImGuiTextFilter sounds;
-//            sounds.Draw("Sound", 300);
-//            ImGui::Text("Available Sounds");
-//            ImGui::Separator();
-//            ImGui::BeginChild("Sounds", ImVec2(0, 100));
-//            for (std::string s : leg::soundNames)
-//            {
-//                if (sounds.PassFilter(s.c_str()))
-//                {
-//                    if (ImGui::MenuItem(s.c_str()))
-//                    {
-//                        if (leg::setHated)
-//                            leg::selEnemyAI->HatedSeenSound = s;
-//                        if (leg::setLiked)
-//                            leg::selEnemyAI->LikedSeenSound = s;
-//                    }
-//                }
-//            }
-//            ImGui::EndChild();
-//            if (sounds.IsActive() && ImGui::IsKeyPressed(Keys::Return))
-//            {
-//                ForLease->Resources.LoadSound(sounds.InputBuf);
-//                leg::soundNames = ForLease->Resources.GetLoadedSoundNames();
-//            }
+            if (ImGui::TreeNode("Edit Sound##enemyAI"))
+            {
+                static int selButton = 0;
+                ImGui::RadioButton("Hated Sound##enemyAI", &selButton, 0);
+                ImGui::SameLine();
+                ImGui::Text(": %s", leg::selEnemyAI->HatedSeenSound.c_str());
+                ImGui::RadioButton("Liked Sound##enemyAI", &selButton, 1);
+                ImGui::SameLine();
+                ImGui::Text(": %s", leg::selEnemyAI->LikedSeenSound.c_str());
+
+                static ImGuiTextFilter sounds;
+                sounds.Draw("##enemyAI", 300);
+                ImGui::Text("Available Sounds");
+                ImGui::BeginChild("Sounds", ImVec2(0, 100), true);
+                for (std::string s : leg::soundNames)
+                {
+                    if (sounds.PassFilter(s.c_str()))
+                    {
+                        if (ImGui::MenuItem(s.c_str()))
+                        {
+                            switch (selButton)
+                            {
+                            case 0:
+                                leg::selEnemyAI->HatedSeenSound = s;
+                                break;
+                            case 1:
+                                leg::selEnemyAI->LikedSeenSound = s;
+                                break;
+                            }
+                        }
+                    }
+                }
+                ImGui::EndChild();
+
+                if (ImGui::Button("Clear Sound##enemyAI"))
+                {
+                    switch (selButton)
+                    {
+                    case 0:
+                        leg::selEnemyAI->HatedSeenSound = "";
+                        break;
+                    case 1:
+                        leg::selEnemyAI->LikedSeenSound = "";
+                        break;
+                    }
+                }
+
+                ImGui::TreePop();
+            }
+
             if (ImGui::Button("Remove Enemy AI"))
             {
                 leg::selection->DeleteComponent(ComponentType::EnemyAI);
@@ -342,7 +345,7 @@ namespace ForLeaseEngine
             ImGui::Checkbox("Fade with Y##FWD", &(leg::selFade->YDirection));
             ImGui::DragFloat("Begin Distance##FWD", &(leg::selFade->FadeBeginDistance), 0.05, 0);
             ImGui::DragFloat("End Distance##FWD", &(leg::selFade->FadeEndDistance), 0.05, 0);
-            ImGui::Checkbox("Select Target##FWD", &leg::setTarget);
+            ImGui::Checkbox("Select Target##FWD", &leg::setFade);
             ImGui::PopItemWidth();
             if (ImGui::IsItemHovered())
             {
@@ -354,9 +357,37 @@ namespace ForLeaseEngine
             ImGui::Text("Current Target ID: %lu", leg::selFade->TrackedEntityID);
             if (ImGui::Button("Remove Fade with Distance"))
             {
-                leg::setTarget = false;
+                leg::setFade = false;
                 leg::selection->DeleteComponent(ComponentType::FadeWithDistance);
                 leg::selFade = NULL;
+            }
+        }
+        if (leg::selFollow && ImGui::CollapsingHeader("Follow"))
+        {
+            ImGui::Checkbox("Active##follow", &(leg::selFollow->Active));
+            ImGui::InputFloat("Begin Distance##follow", &(leg::selFollow->FollowBeginDistance));
+            ImGui::InputFloat("End Distance##follow", &(leg::selFollow->FollowEndDistance));
+            ImGui::PushItemWidth(width);
+            ImGui::InputFloat("X##follow", &(leg::selFollow->Offset[0]));
+            ImGui::SameLine();
+            ImGui::InputFloat("Y##follow", &(leg::selFollow->Offset[1]));
+            ImGui::SameLine();
+            ImGui::Text("Offset");
+            ImGui::PopItemWidth();
+            ImGui::Checkbox("Follow Target ID: ", &leg::setFollow);
+            if (ImGui::IsItemHovered())
+            {
+                ImGui::BeginTooltip();
+                ImGui::Text("Once this is checked, click the entity you want to select");
+                ImGui::EndTooltip();
+            }
+            ImGui::SameLine();
+            ImGui::Text("%lu", leg::selFollow->FollowEntityID);
+            if (ImGui::Button("Remove Follow"))
+            {
+                leg::setFollow = false;
+                leg::selection->DeleteComponent(ComponentType::Follow);
+                leg::selFollow = NULL;
             }
         }
         if (leg::selLight && ImGui::CollapsingHeader("Light"))
@@ -367,12 +398,10 @@ namespace ForLeaseEngine
             ImGui::Combo("Blending Mode##light", &leg::lightBlend, "None\0Alpha\0Additive\0Multiply\0\0");
             leg::selLight->LightMode = static_cast<BlendMode>(leg::lightBlend);
             ImGui::SliderAngle("Angle##Light", &(leg::selLight->Angle), 0, 180);
+            ImGui::SliderAngle("Direction##light", &leg::lightAngle, 0, 360);
+            leg::selLight->Direction[0] = cos(leg::lightAngle);
+            leg::selLight->Direction[1] = sin(leg::lightAngle);
             ImGui::PushItemWidth(width);
-            ImGui::DragFloat("X##LightDir", &(leg::selLight->Direction[0]), 0.05);
-            ImGui::SameLine();
-            ImGui::DragFloat("Y##LightDir", &(leg::selLight->Direction[1]), 0.05);
-            ImGui::SameLine();
-            ImGui::Text("Direction");
             ImGui::DragFloat("X##LightOffset", &(leg::selLight->Offset[0]), 0.05);
             ImGui::SameLine();
             ImGui::DragFloat("Y##LightOffset", &(leg::selLight->Offset[1]), 0.05);
@@ -396,6 +425,21 @@ namespace ForLeaseEngine
             {
                 leg::selection->DeleteComponent(ComponentType::Occluder);
                 leg::selOccluder = NULL;
+            }
+        }
+        if (leg::selPace && ImGui::CollapsingHeader("PaceAI"))
+        {
+            ImGui::InputFloat("Speed##pace", &(leg::selPace->PaceSpeed));
+            ImGui::InputFloat("Distance##pace", &(leg::selPace->MaxPaceDistance));
+            ImGui::InputFloat("Pause Timer##pace", &(leg::selPace->PauseTimer));
+            ImGui::InputFloat("Detection Delay##pace", &(leg::selPace->DetectionDelay));
+            ImGui::RadioButton("Horizontal", &(leg::selPace->Direction), 0);
+            ImGui::RadioButton("Vertical", &(leg::selPace->Direction), 1);
+
+            if (ImGui::Button("Remove PaceAI"))
+            {
+                leg::selection->DeleteComponent(ComponentType::EnemyPace);
+                leg::selPace = NULL;
             }
         }
         if (leg::selParallax && ImGui::CollapsingHeader("Parallax"))
@@ -504,6 +548,11 @@ namespace ForLeaseEngine
             ImGui::DragFloat("Y##PartEmmiterSize", &(leg::selPartEmitter->EmitterSize[1]), 0.01);
             ImGui::SameLine();
             ImGui::Text("Emitter Size");
+            ImGui::DragFloat("X##PartEmmiteroffset", &(leg::selPartEmitter->Offset[0]), 0.01);
+            ImGui::SameLine();
+            ImGui::DragFloat("Y##PartEmmiteroffset", &(leg::selPartEmitter->Offset[1]), 0.01);
+            ImGui::SameLine();
+            ImGui::Text("Offset");
             ImGui::PopItemWidth();
             ImGui::DragFloat("Rotational Velocity##PartEmitter", &(leg::selPartEmitter->RotationalVelocity), 0.01);
             ImGui::DragFloat("Rotational Vel Rand##PartEmitter", &(leg::selPartEmitter->RotationalVelocityRandom), 0.01);
@@ -627,46 +676,64 @@ namespace ForLeaseEngine
                 ImGui::EndChild();
                 ImGui::TreePop();
             }
-//            ImGui::Indent();
-//            if (ImGui::CollapsingHeader("Edit Sound"))
-//            {
-//                ImGui::Checkbox("Walk Sound", &leg::walkSound);
-//                ImGui::SameLine();
-//                ImGui::Text(": %s", leg::selController->WalkSound.c_str());
-//                ImGui::Checkbox("Jump Sound", &leg::jumpSound);
-//                ImGui::SameLine();
-//                ImGui::Text(": %s", leg::selController->JumpSound.c_str());
-//                ImGui::Checkbox("Land Sound", &leg::landSound);
-//                ImGui::SameLine();
-//                ImGui::Text(": %s", leg::selController->LandSound.c_str());
-//
-//                static ImGuiTextFilter controllerSounds;
-//                controllerSounds.Draw("Sound", 250);
-//                ImGui::Text("Available Sounds");
-//                ImGui::Separator();
-//                ImGui::BeginChild("Sounds", ImVec2(0, 100));
-//                for (std::string s : leg::soundNames)
-//                {
-//                    if (controllerSounds.PassFilter(s.c_str()))
-//                    {
-//                        if (ImGui::MenuItem(s.c_str()))
-//                        {
-//                            if (leg::walkSound)
-//                                leg::selController->WalkSound = s;
-//                            if (leg::landSound)
-//                                leg::selController->LandSound = s;
-//                            if (leg::jumpSound)
-//                                leg::selController->JumpSound = s;
-//                        }
-//                    }
-//                }
-//                ImGui::EndChild();
-//                if (controllerSounds.IsActive() && ImGui::IsKeyPressed(Keys::Return))
-//                {
-//                    ForLease->Resources.LoadSound(controllerSounds.InputBuf);
-//                    leg::soundNames = ForLease->Resources.GetLoadedSoundNames();
-//                }
-//            }
+            if (ImGui::TreeNode("Edit Sound##controller"))
+            {
+                static int selButton = 0;
+                ImGui::RadioButton("Walk Sound", &selButton, 0);
+                ImGui::SameLine();
+                ImGui::Text(": %s", leg::selController->WalkSound.c_str());
+                ImGui::RadioButton("Jump Sound", &selButton, 1);
+                ImGui::SameLine();
+                ImGui::Text(": %s", leg::selController->JumpSound.c_str());
+                ImGui::RadioButton("Land Sound", &selButton, 2);
+                ImGui::SameLine();
+                ImGui::Text(": %s", leg::selController->LandSound.c_str());
+
+                static ImGuiTextFilter controllerSounds;
+                controllerSounds.Draw("##controllersounds", 250);
+                ImGui::Text("Available Sounds");
+                ImGui::BeginChild("Sounds", ImVec2(0, 100), true);
+                for (std::string s : leg::soundNames)
+                {
+                    if (controllerSounds.PassFilter(s.c_str()))
+                    {
+                        if (ImGui::MenuItem(s.c_str()))
+                        {
+                            switch (selButton)
+                            {
+                            case 0:
+                                leg::selController->WalkSound = s;
+                                break;
+                            case 1:
+                                leg::selController->JumpSound = s;
+                                break;
+                            case 2:
+                                leg::selController->LandSound = s;
+                                break;
+                            }
+                        }
+                    }
+                }
+                ImGui::EndChild();
+
+                if (ImGui::Button("Clear Sound##controller"))
+                {
+                    switch (selButton)
+                    {
+                    case 0:
+                        leg::selController->WalkSound = "";
+                        break;
+                    case 1:
+                        leg::selController->JumpSound = "";
+                        break;
+                    case 2:
+                        leg::selController->LandSound = "";
+                        break;
+                    }
+                }
+
+                ImGui::TreePop();
+            }
             if (ImGui::TreeNode("Edit Animation##player"))
             {
                 static int selButton = 0;
@@ -676,18 +743,6 @@ namespace ForLeaseEngine
                 ImGui::RadioButton("Jump Animation##Player", &selButton, 1);
                 ImGui::SameLine();
                 ImGui::Text(": %s", leg::selController->JumpAnimation.c_str());
-                if (ImGui::Button("Clear Animation##player"))
-                {
-                    switch (selButton)
-                    {
-                    case 0:
-                        leg::selController->WalkAnimation = "";
-                        break;
-                    case 1:
-                        leg::selController->JumpAnimation = "";
-                        break;
-                    }
-                }
                 static ImGuiTextFilter controllerAni;
                 controllerAni.Draw("PlayerAnimation", 250);
                 ImGui::Text("Available Animations");
@@ -711,6 +766,18 @@ namespace ForLeaseEngine
                     }
                 }
                 ImGui::EndChild();
+                if (ImGui::Button("Clear Animation##player"))
+                {
+                    switch (selButton)
+                    {
+                    case 0:
+                        leg::selController->WalkAnimation = "";
+                        break;
+                    case 1:
+                        leg::selController->JumpAnimation = "";
+                        break;
+                    }
+                }
                 ImGui::TreePop();
             }
             if (ImGui::Button("Remove Controller"))
@@ -763,28 +830,26 @@ namespace ForLeaseEngine
                 ImGui::TreePop();
             }
             ImGui::PopItemWidth();
-//            ImGui::Text("Scale Sound: %s", leg::selScale->ScaleSound.c_str());
-//            static ImGuiTextFilter scaleSound;
-//            scaleSound.Draw("Trigger Sound", 250);
-//            ImGui::Text("Available Sounds");
-//            ImGui::Separator();
-//            ImGui::BeginChild("Sound", ImVec2(0, 100));
-//            for (std::string s : leg::soundNames)
-//            {
-//                if (scaleSound.PassFilter(s.c_str()))
-//                {
-//                    if (ImGui::MenuItem(s.c_str()))
-//                    {
-//                        leg::selScale->ScaleSound = s;
-//                    }
-//                }
-//            }
-//            ImGui::EndChild();
-//            if (scaleSound.IsActive() && ImGui::IsKeyPressed(Keys::Return))
-//            {
-//                ForLease->Resources.LoadSound(scaleSound.InputBuf);
-//                leg::soundNames = ForLease->Resources.GetLoadedSoundNames();
-//            }
+            ImGui::Text("Scale Sound: %s", leg::selScale->ScaleSound.c_str());
+            static ImGuiTextFilter scaleSound;
+            scaleSound.Draw("##swksound", 250);
+            ImGui::Text("Available Sounds");
+            ImGui::BeginChild("Sound", ImVec2(0, 100), true);
+            for (std::string s : leg::soundNames)
+            {
+                if (scaleSound.PassFilter(s.c_str()))
+                {
+                    if (ImGui::MenuItem(s.c_str()))
+                    {
+                        leg::selScale->ScaleSound = s;
+                    }
+                }
+            }
+            ImGui::EndChild();
+
+            if (ImGui::Button("Clear Sound##swk"))
+                leg::selScale->ScaleSound= "";
+
             if (ImGui::Button("Remove Scale with Keyboard"))
             {
                 leg::selection->DeleteComponent(ComponentType::ScaleWithKeyboard);
@@ -792,22 +857,14 @@ namespace ForLeaseEngine
             }
         }
 
-//        if (leg::selSound && ImGui::CollapsingHeader("Sound Emitter"))
-//        {
-//            ImGui::Checkbox("Looping", &(leg::selSound->Looping));
-//            ImGui::SameLine();
-//            ImGui::PushItemWidth(75);
-//            ImGui::InputInt("Loop Count", &(leg::selSound->LoopCount));
-//            ImGui::InputFloat("Volume", &(leg::selSound->Volume));
-//            ImGui::SameLine();
-//            ImGui::InputFloat("Pitch", &(leg::selSound->Pitch));
-//            ImGui::PopItemWidth();
-//            if (ImGui::Button("Remove Sound Emitter"))
-//            {
-//                leg::selection->DeleteComponent(ComponentType::SoundEmitter);
-//                leg::selSound = NULL;
-//            }
-//        }
+        if (leg::selSound && ImGui::CollapsingHeader("Sound Emitter"))
+        {
+            if (ImGui::Button("Remove Sound Emitter"))
+            {
+                leg::selection->DeleteComponent(ComponentType::SoundEmitter);
+                leg::selSound = NULL;
+            }
+        }
 
         if (leg::selSprite && ImGui::CollapsingHeader("Sprite"))
         {
@@ -891,28 +948,26 @@ namespace ForLeaseEngine
                 ImGui::EndChild();
                 ImGui::TreePop();
             }
-//            ImGui::Text("Sound: %s", leg::selTMC->TransformModeSound.c_str());
-//            static ImGuiTextFilter tmcSound;
-//            tmcSound.Draw("Trigger Sound", 250);
-//            ImGui::Text("Available Sounds");
-//            ImGui::Separator();
-//            ImGui::BeginChild("Sound", ImVec2(0, 100));
-//            for (std::string s : leg::soundNames)
-//            {
-//                if (tmcSound.PassFilter(s.c_str()))
-//                {
-//                    if (ImGui::MenuItem(s.c_str()))
-//                    {
-//                        leg::selTMC->TransformModeSound = s;
-//                    }
-//                }
-//            }
-//            ImGui::EndChild();
-//            if (tmcSound.IsActive() && ImGui::IsKeyPressed(Keys::Return))
-//            {
-//                ForLease->Resources.LoadSound(tmcSound.InputBuf);
-//                leg::soundNames = ForLease->Resources.GetLoadedSoundNames();
-//            }
+            ImGui::Text("Sound: %s", leg::selTMC->TransformModeSound.c_str());
+            static ImGuiTextFilter tmcSound;
+            tmcSound.Draw("##tmcsound", 250);
+            ImGui::Text("Available Sounds");
+            ImGui::BeginChild("Sound", ImVec2(0, 100), true);
+            for (std::string s : leg::soundNames)
+            {
+                if (tmcSound.PassFilter(s.c_str()))
+                {
+                    if (ImGui::MenuItem(s.c_str()))
+                    {
+                        leg::selTMC->TransformModeSound = s;
+                    }
+                }
+            }
+            ImGui::EndChild();
+
+            if (ImGui::Button("Clear Sound##tmc"))
+                leg::selTMC->TransformModeSound = "";
+
             if (ImGui::Button("Remove Transform Control"))
             {
                 leg::selection->DeleteComponent(ComponentType::TransformModeControls);
@@ -927,14 +982,10 @@ namespace ForLeaseEngine
             ImGui::Checkbox("Draw Outline##VisionCone", &(leg::selVision->DrawOutline));
             ImGui::SameLine();
             ImGui::Checkbox("Visible##VisionCone", &(leg::selVision->Visible));
-            ImGui::DragFloat("Angle##VisionCone", &(leg::selVision->Angle), 0.01);
-            ImGui::PushItemWidth(width);
-            ImGui::DragFloat("X##VisionCone", &(leg::selVision->Direction[0]), 0.01);
-            ImGui::SameLine();
-            ImGui::DragFloat("Y##VisionCone", &(leg::selVision->Direction[1]), 0.01);
-            ImGui::SameLine();
-            ImGui::Text("Direction");
-            ImGui::PopItemWidth();
+            ImGui::SliderAngle("Angle##VisionCone", &(leg::selVision->Angle), 0, 180);
+            ImGui::SliderAngle("Direction##VisionCone", &leg::visionAngle, 0, 360);
+            leg::selVision->Direction[0] = cos(leg::visionAngle);
+            leg::selVision->Direction[1] = sin(leg::visionAngle);
             ImGui::DragFloat("Radius##VisionCone", &(leg::selVision->Radius), 0.01);
             ImGui::PushItemWidth(200);
             ImGui::ColorEdit4("Indicator Color##VisionCone", const_cast<float*>(leg::selVision->IndicatorColor.GetAll()));

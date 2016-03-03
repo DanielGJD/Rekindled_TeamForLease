@@ -44,7 +44,7 @@ namespace ForLeaseEngine {
             Components::SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
             if(emitter && RightPressed != LeftPressed) {
                 Timer += ForLease->FrameRateController().GetDt();
-                std::cout << "Timer: " << Timer << std::endl;
+                //std::cout << "Timer: " << Timer << std::endl;
                 if(Timer >= 0.3) {
                     emitter->SetVolume(1.0f, WalkSound);
                     emitter->StopEvent(WalkSound);
@@ -71,7 +71,7 @@ namespace ForLeaseEngine {
             else {
                 JumpSoundTimer += ForLease->FrameRateController().GetDt();
             }
-            std::cout << JumpSoundTimer << std::endl;
+            //std::cout << JumpSoundTimer << std::endl;
 
             Vector accel;
             if(RightPressed) {
@@ -110,6 +110,7 @@ namespace ForLeaseEngine {
             if(key_e->Key == LeftKey)
             {
 
+//<<<<<<< HEAD
                 LeftPressed = true;
 
                 //if(model)
@@ -143,13 +144,18 @@ namespace ForLeaseEngine {
 //                    if(model)
 //                        model->SetAnimation(WalkAnimation);
 //                }
+//=======
+//>>>>>>> c66c221e9b974efcf0ec080ef8377ae1e364b2bd
             }
             else if(key_e->Key == JumpKey) {
                 Physics* Jbody = Parent.GetComponent<Physics>();
                // Collision* collider = Parent.GetComponent<Collision>();
                 if(CanJump) {
+//<<<<<<< HEAD
                     rbody->Velocity[1] = JumpSpeed;
                     SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
+//=======
+//>>>>>>> c66c221e9b974efcf0ec080ef8377ae1e364b2bd
                     //rbody->Velocity.Normalize();
                     //printf("JumpV: %f", rbody->Velocity[0]);
                     if (emitter) {

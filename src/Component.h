@@ -58,7 +58,8 @@ namespace ForLeaseEngine {
         Parallax               = 1 << 25,   //! Parallax scrolls the object
         Occluder               = 1 << 26,   //! Blocks light or vision
         Checkpoint             = 1 << 27,   //! Saves player position for later loading
-        Health                 = 1 << 28    //! Keeps track of health
+        Health                 = 1 << 28,   //! Keeps track of health
+        EnemyPace              = 1 << 29    //! Has an enemy pace back and forth
     };
 
     ComponentType operator|(const ComponentType& lhs, const ComponentType& rhs);

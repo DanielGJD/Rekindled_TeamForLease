@@ -306,6 +306,13 @@ namespace ForLeaseEngine
                 leg::selFade = NULL;
             return;
         }
+        if (!(component.compare("Follow")) && !leg::selFollow)
+        {
+            leg::selFollow = new Components::Follow(*leg::selection);
+            if (!leg::selection->AddComponent(leg::selFollow))
+                leg::selFollow = NULL;
+            return;
+        }
         if (!(component.compare("Light")) && !leg::selLight)
         {
             leg::selLight = new Components::Light(*leg::selection);
@@ -326,6 +333,15 @@ namespace ForLeaseEngine
             if (!leg::selection->AddComponent(leg::selOccluder))
                 leg::selOccluder = NULL;
             return;
+        }
+
+        if (!(component.compare("PaceAI")) && !leg::selPace)
+        {
+            leg::selPace = Components::EnemyPace::Create(*leg::selection);
+            if (!leg::selection->AddComponent(leg::selPace))
+                leg::selPace = NULL;
+            return;
+
         }
         if (!(component.compare("Parallax")) && !leg::selParallax)
         {

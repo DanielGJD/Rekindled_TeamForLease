@@ -61,6 +61,8 @@ namespace ForLeaseEngine
          Components::Parallax*               selParallax;
          Components::Occluder*               selOccluder;
          Components::Checkpoint*             selCheckpoint;
+         Components::Follow*                 selFollow;
+         Components::EnemyPace*              selPace;
 
 
 
@@ -88,9 +90,10 @@ namespace ForLeaseEngine
          bool selMode    = true;
          bool delobj     = false;
          bool copySet    = false;
-         bool setTarget  = false;
+         bool setFade    = false;
          bool startUp    = true;
          bool levelSaved = false;
+         bool setFollow  = false;
 
          char entName[128];
          char spriteTextBuf[512];
@@ -114,6 +117,8 @@ namespace ForLeaseEngine
          int particleBlend = 1;
          int modelBlend = 0;
          int lightBlend = 2;
+         float lightAngle = 3 * 3.1415 / 2;
+         float visionAngle = 0;
 
          std::string blueprintDir = "blueprints/";
          std::string levelDir     = "levels/";
@@ -132,6 +137,7 @@ namespace ForLeaseEngine
         comps.push_back(new Components::Collision(dummy));
         comps.push_back(Components::DragWithMouse::Create(dummy));
         comps.push_back(new Components::FadeWithDistance(dummy));
+        comps.push_back(new Components::Follow(dummy));
         comps.push_back(new Components::EnemyAI(dummy));
         comps.push_back(new Components::Light(dummy));
         comps.push_back(new Components::Model(dummy));
@@ -191,10 +197,12 @@ namespace ForLeaseEngine
             leg::componentNames.push_back("Collision");
             leg::componentNames.push_back("Drag with Mouse");
             leg::componentNames.push_back("Fade with Distance");
+            leg::componentNames.push_back("Follow");
             leg::componentNames.push_back("Enemy AI");
             leg::componentNames.push_back("Light");
             leg::componentNames.push_back("Model");
             leg::componentNames.push_back("Occluder");
+            leg::componentNames.push_back("PaceAI");
             leg::componentNames.push_back("Parallax");
             leg::componentNames.push_back("Particle Color");
             leg::componentNames.push_back("Particle Dynamics");
@@ -256,6 +264,9 @@ namespace ForLeaseEngine
         leg::selPartDynamics = leg::selection->GetComponent<Components::SimpleParticleDynamics>();
         leg::selParallax     = leg::selection->GetComponent<Components::Parallax>();
         leg::selOccluder     = leg::selection->GetComponent<Components::Occluder>();
+        leg::selCheckpoint   = leg::selection->GetComponent<Components::Checkpoint>();
+        leg::selFollow       = leg::selection->GetComponent<Components::Follow>();
+        leg::selPace         = leg::selection->GetComponent<Components::EnemyPace>();
 
         if (leg::selSprtxt)
             strcpy(leg::spriteTextBuf, leg::selSprtxt->Text.c_str());
@@ -283,6 +294,18 @@ namespace ForLeaseEngine
             strcpy(leg::enemyHateName, leg::selEnemyAI->HatedEntityName.c_str());
             strcpy(leg::enemyLikeName, leg::selEnemyAI->LikedEntityName.c_str());
         }
+        if (leg::selLight)
+        {
+            leg::lightAngle = atan2(leg::selLight->Direction[1], leg::selLight->Direction[0]);
+            if (leg::lightAngle < 0)
+                leg::lightAngle += 2 * 3.1415;
+        }
+        if (leg::selVision)
+        {
+            leg::visionAngle = atan2(leg::selVision->Direction[1], leg::selVision->Direction[0]);
+            if (leg::visionAngle < 0)
+                leg::visionAngle += 2 * 3.1415;
+        }
     }
 
     void LevelEditor::Input()
@@ -304,14 +327,25 @@ namespace ForLeaseEngine
             ent->AddComponent(new Components::Transform(*ent, leg::mousePos[0], leg::mousePos[1]));
         }
 
-        if (leg::setTarget && ImGui::IsMouseClicked(0) && !ImGui::IsMouseHoveringAnyWindow())
+        if (leg::setFade && ImGui::IsMouseClicked(0) && !ImGui::IsMouseHoveringAnyWindow())
         {
             GetMouse(leg::mousePos);
             Entity* ent = GetEntityAtPosition(leg::mousePos);
             if (ent)
             {
                 leg::selFade->TrackedEntityID = ent->GetID();
-                leg::setTarget = false;
+                leg::setFade = false;
+            }
+        }
+
+        else if (leg::setFollow && ImGui::IsMouseClicked(0) && !ImGui::IsMouseHoveringAnyWindow())
+        {
+            GetMouse(leg::mousePos);
+            Entity* ent = GetEntityAtPosition(leg::mousePos);
+            if (ent)
+            {
+                leg::selFollow->FollowEntityID = ent->GetID();
+                leg::setFollow = false;
             }
         }
 
