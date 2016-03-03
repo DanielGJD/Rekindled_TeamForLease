@@ -90,6 +90,8 @@ namespace ForLeaseEngine {
 
             virtual void DeserializeNonReference(Serializer root);
 
+            bool ResetToCheckpoint = false;
+
         protected:
             std::string Name;                               //! Name of the state
             std::vector<LevelComponent*> LevelComponents;   //! The level components in the state

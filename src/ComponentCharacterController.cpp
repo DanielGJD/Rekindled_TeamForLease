@@ -94,10 +94,11 @@ namespace ForLeaseEngine {
             physics->Acceleration = accel;
             if(!couldJump && CanJump && JumpSoundTimer > 0.1) {
                 SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
-                if(emitter)
+                if(emitter){
                     emitter->SetVolume(1.0f, LandSound);
                     emitter->StopEvent(LandSound);
                     emitter->PlayEvent(LandSound);
+                }
             }
         };
 
@@ -159,6 +160,7 @@ namespace ForLeaseEngine {
                     //rbody->Velocity.Normalize();
                     //printf("JumpV: %f", rbody->Velocity[0]);
                     if (emitter) {
+                        //printf("reach jump sound check");
                         emitter->SetVolume(1.0f, JumpSound);
                         emitter->StopEvent(JumpSound);
                         emitter->PlayEvent(JumpSound);

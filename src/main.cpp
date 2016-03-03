@@ -22,6 +22,8 @@
 #include "Filesystem.h"
 #include "Debug.h"
 #include "Exception.h"
+#include "DigiPenLogo.h"
+#include "Interpolation.h"
 
 #undef main
 
@@ -38,6 +40,7 @@ int Start(int argc = 0, char** argv = 0) {
     if (testingLevel.first)
         states = LoadSingleLevel(testingLevel.second, states);
     else if (ForLeaseEngine::Modules::Filesystem::PathExists("Game.json")) {
+        states.push_back(new DigiPenLogo());
         states.push_back(new Loading("Game.json"));
         states.push_back(new MainMenu());
         states = LoadLevels("Game.json", states);

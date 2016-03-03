@@ -69,9 +69,9 @@ void SeanState::Load() {
     character->AddComponent(new Components::Collision(*character, 2.0f, 2.0f, true, 0, 0));
     character->AddComponent(new Components::Model(*character, true, false, false, "1-1Block.json"));
     Components::CharacterController* charController = Components::CharacterController::Create(*character);
-    charController->JumpSpeed = 50;
-    charController->MoveSpeed = 50;
-    charController->maxSpeed = 200;
+//    charController->JumpSpeed = 50;
+//    charController->MoveSpeed = 50;
+//    charController->maxSpeed = 200;
     character->AddComponent(charController);
 
     //Entity* moving = AddEntity("Moving");
