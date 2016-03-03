@@ -88,6 +88,8 @@ void DigiPenLogo::Update() {
     Color currColor = lightComp->LightColor;
     float currAlpha = currColor.GetA();
 
+    LevelComponents::Light* lcLightComp = GetLevelComponent<LevelComponents::Light>();
+
     if (CurrentFadeState == FadeState::FadingIn) {
         currAlpha += (1 / FadeInTime) * dt;
         if (currAlpha >= 1) {
@@ -95,10 +97,12 @@ void DigiPenLogo::Update() {
             CurrentFadeState = FadeState::Hold;
         }
         lightComp->LightColor = Color(1, 1, 1, currAlpha);
+        lcLightComp->AmbientLight = Color(0, 0, 0, 1 - (currAlpha * .5));
     } else if (CurrentFadeState == FadeState::Hold) {
         HoldTime -= dt;
         if (HoldTime <= 0)
             CurrentFadeState = FadeState::FadingOut;
+        lcLightComp->AmbientLight = Color(0, 0, 0, 0.5);
     } else if (CurrentFadeState == FadeState::FadingOut) {
         currAlpha -= (1 / FadeOutTime) * dt;
         if (currAlpha <= 0) {
@@ -106,6 +110,7 @@ void DigiPenLogo::Update() {
             ForLease->GameStateManager().SetAction(ForLeaseEngine::Modules::StateAction::Next);
         }
         lightComp->LightColor = Color(1, 1, 1, currAlpha);
+        lcLightComp->AmbientLight = Color(0, 0, 0, 1 - (currAlpha * 0.5));
     }
 
     for (FLE::Entity* entity : Entities) {
