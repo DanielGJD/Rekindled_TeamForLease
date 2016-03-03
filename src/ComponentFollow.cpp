@@ -18,10 +18,10 @@ namespace ForLeaseEngine {
     namespace Components {
         Follow::Follow(Entity& parent, bool active,
                                          float followBeginDistance, float followEndDistance,
-                                         unsigned long followEntityID)
+                                         unsigned long followEntityID, Vector const& offset)
                                         : Component(parent, ComponentType::Transform),
                                           Active(active), FollowBeginDistance(followBeginDistance),
-                                          FollowEndDistance(followEndDistance), FollowEntityID(followEntityID) {}
+                                          FollowEndDistance(followEndDistance), FollowEntityID(followEntityID), Offset(offset) {}
 
 
         Follow::~Follow() {}
@@ -48,15 +48,27 @@ namespace ForLeaseEngine {
 //                float moveScale = Interpolation::PowerIn(2, 0, 1, t);
 //                Vector scaledMovement = Vector::Scale(fullMovement, moveScale * ForLease->FrameRateController().GetDt());
 //                myTrans->Position += scaledMovement;
-                Vector direction = followTrans->Position - myTrans->Position;
+                Vector direction = followTrans->Position - myTrans->Position + Offset;
                 myTrans->Position += direction * ForLease->FrameRateController().GetDt();
             }
         }
 
         void Follow::Serialize(Serializer& root) {
+            root.WriteUlonglong("Type", static_cast<unsigned long long>(Type));
+            Serializer follow = root.GetChild("Follow");
+            follow.WriteBool("Active", Active);
+            follow.WriteFloat("FollowBeginDistance", FollowBeginDistance);
+            follow.WriteFloat("FollowEndDistance", FollowEndDistance);
+            follow.WriteVec("Offset", Offset);
+            root.Append(follow, "Follow");
         }
 
         void Follow::Deserialize(Serializer& root) {
+            Serializer follow = root.GetChild("Follow");
+            follow.ReadBool("Active", Active);
+            follow.ReadFloat("FollowBeginDistance", FollowBeginDistance);
+            follow.ReadFloat("FollowEndDistance", FollowEndDistance);
+            follow.ReadVec("Offset", Offset);
         }
     }
 }

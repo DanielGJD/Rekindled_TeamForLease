@@ -92,6 +92,8 @@ namespace ForLeaseEngine {
                 GLuint CurrentTexture;
                 GLuint LightTexture;
                 GLuint LightFBO;
+                GLuint UITexture;
+                GLuint UIFBO;
 
                 float DebugPointSize;
                 float DebugLineWidth;

@@ -177,12 +177,14 @@ namespace ForLeaseEngine {
                     }
                 }
                 else if(entityName.compare(HatedEntityName) == 0) {
+                    //std::cout << "Hated entity in line of sight" << std::endl;
                     if(!lightSystem) {
                         willBeAngry = true;
                         hatedEntity = entity;
                     }
                     else {
                         if(lightSystem->CheckIfLit(multi_e->EntityIDs[i])) {
+                            //std::cout << "Hated entity lit" << std::endl;
                             willBeAngry = true;
                             hatedEntity = entity;
                         }

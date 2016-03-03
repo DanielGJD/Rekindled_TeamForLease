@@ -6,12 +6,12 @@
 
 namespace ForLeaseEngine {
     namespace Components {
-        ParticleEmitter::ParticleEmitter(Entity& parent, bool active, Vector const& emitterSize,
+        ParticleEmitter::ParticleEmitter(Entity& parent, bool active, Vector const& emitterSize, Vector const& offset,
                                          unsigned int emitCount, float emitRate, float emitRandom,
                                          float size, float sizeRandom, float life, float lifeRandom,
                                          float rotation, float rotationRandom, Vector const& velocity, Vector const& velocityRandom,
                                          float rotationalVelocity, float rotationalVelocityRandom)
-                                        : Component(parent, ComponentType::ParticleSystem), Active(active), EmitterSize(emitterSize),
+                                        : Component(parent, ComponentType::ParticleSystem), Active(active), EmitterSize(emitterSize), Offset(offset),
                                           EmitCount(emitCount), EmitRate(emitRate), EmitRandom(emitRandom),
                                           Size(size), SizeRandom(sizeRandom), Life(life), LifeRandom(lifeRandom),
                                           Rotation(rotation), RotationRandom(rotationRandom), Velocity(velocity), VelocityRandom(velocityRandom),
@@ -40,6 +40,7 @@ namespace ForLeaseEngine {
             emitter.WriteUint("Type", static_cast<unsigned int>(Type));
             emitter.WriteBool("Active", Active);
             emitter.WriteVec("EmitterSize", EmitterSize);
+            emitter.WriteVec("Offset", Offset);
             emitter.WriteUint("EmitCount", EmitCount);
             emitter.WriteFloat("EmitRate", EmitRate);
             emitter.WriteFloat("EmitRandom", EmitRandom);
@@ -60,6 +61,7 @@ namespace ForLeaseEngine {
             Serializer emitter = root.GetChild("ParticleEmitter");
             emitter.ReadBool("Active", Active);
             emitter.ReadVec("EmitterSize", EmitterSize);
+            emitter.ReadVec("Offset", Offset);
             emitter.ReadUint("EmitCount", EmitCount);
             emitter.ReadFloat("EmitRate", EmitRate);
             emitter.ReadFloat("EmitRandom", EmitRandom);
@@ -81,7 +83,7 @@ namespace ForLeaseEngine {
 
             for(unsigned int i = 0; i < count; ++i) {
                 Particle particle = Particle(Life + RandomFloat(-LifeRandom, LifeRandom),
-                                             Point(trans->Position[0] + RandomFloat(-EmitterSize[0], EmitterSize[0]), trans->Position[1] + RandomFloat(-EmitterSize[1], EmitterSize[1])),
+                                             Point(trans->Position[0] + RandomFloat(-EmitterSize[0], EmitterSize[0]) + Offset[0], trans->Position[1] + RandomFloat(-EmitterSize[1], EmitterSize[1]) + Offset[1]),
                                              Size + RandomFloat(-SizeRandom, SizeRandom),
                                              Rotation + RandomFloat(-RotationRandom, RotationRandom),
                                              system->StartingColor,
