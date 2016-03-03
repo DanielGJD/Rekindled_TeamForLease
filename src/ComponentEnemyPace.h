@@ -20,7 +20,8 @@ namespace ForLeaseEngine
                     PAUSE,
                     LEFT,
                     RIGHT,
-                    WATCH
+                    WATCH,
+                    RESUME
                 };
 
                 static EnemyPace* Create(Entity& owner);
@@ -53,7 +54,8 @@ namespace ForLeaseEngine
                 int NextAction;
                 Point& Position;
                 float Moved;
-                float timer;
+                float ptimer;
+                float dtimer;
         };
     }
   }

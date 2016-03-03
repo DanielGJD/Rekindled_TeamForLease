@@ -18,12 +18,14 @@ namespace ForLeaseEngine
                                                                                               PauseTimer(pause),
                                                                                               Position(Parent.GetComponent<Components::Transform>()->Position)
             {
-                DetectionDelay = 0.3;
+                MaxPaceDistance = 3.0;
+                DetectionDelay = 0.5;
                 CurrentAction = Action::LEFT;
                 NextAction = Action::PAUSE;
                 Direction = 0;
                 Moved = 0;
-                timer = 0;
+                ptimer = 0;
+                dtimer = 0;
                 playerDetected = false;
 
             }
@@ -37,7 +39,8 @@ namespace ForLeaseEngine
 
             EnemyPace::~EnemyPace()
             {
-                //ForLease->Dispatcher.Detach(this, "EntitiesSeen");
+                ForLease->Dispatcher.Detach(this, "PlayerSeen");
+                ForLease->Dispatcher.Detach(this, "PlayerNotSeen");
             }
 
             void EnemyPace::Initialize()
@@ -49,19 +52,23 @@ namespace ForLeaseEngine
             void EnemyPace::Update()
             {
                 float dt = ForLease->FrameRateController().GetDt();
-                switch (CurrentAction)
+                if (playerDetected)
+                    dtimer += dt;
+
+                if (dtimer <= DetectionDelay)
                 {
-                case Action::PAUSE:
-                    MovePause(dt);
-                    break;
-                case Action::LEFT:
-                    MoveLeft(dt);
-                    break;
-                case Action::RIGHT:
-                    MoveRight(dt);
-                    break;
-                case Action::WATCH:
-                    WatchPlayer(dt);
+                    switch (CurrentAction)
+                    {
+                    case Action::PAUSE:
+                        MovePause(dt);
+                        break;
+                    case Action::LEFT:
+                        MoveLeft(dt);
+                        break;
+                    case Action::RIGHT:
+                        MoveRight(dt);
+                        break;
+                    }
                 }
             }
 
@@ -94,12 +101,12 @@ namespace ForLeaseEngine
 
             void EnemyPace::MovePause(float dt)
             {
-                timer += dt;
-                if (timer >= PauseTimer)
+                ptimer += dt;
+                if (ptimer >= PauseTimer)
                 {
                     CurrentAction = NextAction;
                     NextAction = Action::PAUSE;
-                    timer = 0;
+                    ptimer = 0;
                     Components::Model* model = Parent.GetComponent<Components::Model>();
                     Components::VisionCone* vision = Parent.GetComponent<Components::VisionCone>();
                     if (model)
@@ -111,7 +118,9 @@ namespace ForLeaseEngine
 
             void EnemyPace::WatchPlayer(float dt)
             {
-                if (timer >= DetectionDelay)
+                if (ptimer >= DetectionDelay)
+                    return;
+
                 switch(NextAction)
                 {
                 case Action::LEFT:
@@ -121,15 +130,22 @@ namespace ForLeaseEngine
                     MoveRight(dt);
                     break;
                 }
-                timer += dt;
+                ptimer += dt;
             }
 
             void EnemyPace::OnPlayerSeen(Event const* e)
             {
-
+                std::cout << "player seen\n";
+                playerDetected = true;
             }
 
-            void
+            void EnemyPace::OnPlayerNotSeen(Event const* e)
+            {
+                std::cout << "player not seen\n";
+                playerDetected = false;
+                dtimer = 0;
+            }
+
             void EnemyPace::Serialize(Serializer& root)
             {
                 root.WriteUint("Type", static_cast<unsigned long long>(Type));

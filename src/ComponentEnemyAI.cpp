@@ -117,7 +117,7 @@ namespace ForLeaseEngine {
                 dispatchSeen = true;
                 dispatchNotSeen = false;
             }
-            else if (!dispatchNotSeen)
+            else if (!Angry && !dispatchNotSeen)
             {
                 ForLease->Dispatcher.DispatchToParent(new Event("PlayerNotSeen"), &Parent);
                 dispatchSeen = false;
