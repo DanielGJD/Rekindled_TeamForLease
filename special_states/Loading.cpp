@@ -56,6 +56,11 @@ void Loading::Initialize() {
     logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
     logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
 
+    Entity* player = AddEntity("Player");
+    player->AddComponent(new Components::Transform(*player, Point(-30,5), 5, 5));
+    Components::Model* model = new Components::Model(*player, true, false, false, "fox.json");
+    player->AddComponent(model);
+
     Entity* status = AddEntity("Status");
     status->AddComponent(new Components::Transform(*status, Point(0,0), 2, 2));
     status->AddComponent(new Components::SpriteText(*status, "Liberation_Serif.fnt"));
@@ -65,8 +70,10 @@ void Loading::Initialize() {
 
     LoadPaths = ForLease->Filesystem.GetAllAssetDirectoryListings();
 
-    if (LoadPaths.size() != 0)
+    if (LoadPaths.size() != 0) {
+        MovementPerFile = Vector(TotalMovement[0] / LoadPaths.size(), TotalMovement[1] / LoadPaths.size());
         RotationPerFile = 2 * PI / LoadPaths.size();
+    }
     NextToLoad = 0;
 }
 
@@ -86,7 +93,11 @@ void Loading::Update() {
 
     if (NextToLoad < LoadPaths.size()) {
         Entity* logo = GetEntityByName("Logo");
-        logo->GetComponent<FLE::Components::Transform>()->Rotation += RotationPerFile;
+        //logo->GetComponent<FLE::Components::Transform>()->Rotation += RotationPerFile;
+
+        Entity* player = GetEntityByName("Player");
+        player->GetComponent<FLE::Components::Transform>()->Position += MovementPerFile;
+
         ForLease->Filesystem.LoadAsset(LoadPaths[NextToLoad]);
         std::cout << "Loaded " << LoadPaths[NextToLoad].second << std::endl;
         ++NextToLoad;

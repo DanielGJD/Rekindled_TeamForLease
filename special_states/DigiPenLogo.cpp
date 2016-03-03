@@ -15,6 +15,7 @@
 #include "Mesh.h"
 #include "GameStateManager.h"
 #include "Ray.h"
+#include "MouseButtonEvent.h"
 
 #include <iostream>
 #include <string>
@@ -58,6 +59,8 @@ void DigiPenLogo::Initialize() {
     lightComp->LightColor = Color(1, 1, 1, 0);
 
     CurrentFadeState = FadingIn;
+
+    ForLease->Dispatcher.Attach(NULL, this, "MouseButtonDown", &DigiPenLogo::OnMouseButtonEvent, NULL);
 
 
     //Entity* menu = AddEntity("Menu");
@@ -129,6 +132,12 @@ void DigiPenLogo::Update() {
 void DigiPenLogo::Deinitialize() {
     DeleteAllEntities();
     DeleteAllLevelComponents();
+    ForLease->Dispatcher.Detach(this, "MouseButtonDown");
 }
 
 void DigiPenLogo::Unload() {}
+
+void DigiPenLogo::OnMouseButtonEvent(const ForLeaseEngine::Event* e) {
+    const MouseButtonEvent* mouse_e = reinterpret_cast<const MouseButtonEvent*>(e);
+    if (mouse_e->Button == 1) ForLease->GameStateManager().SetAction(ForLeaseEngine::Modules::StateAction::Next);
+}
