@@ -66,6 +66,15 @@ namespace ForLeaseEngine {
             return ScaledHeight() / 2;
         }
 
+        Vector Collision::Offset() {
+            return Vector(OffsetX, OffsetY);
+        }
+
+        Point Collision::Position() {
+            Components::Transform* transform = Parent.GetComponent<Components::Transform>(true);
+            return transform->Position + Offset();
+        }
+
         void Collision::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer collision = root.GetChild("Collision");

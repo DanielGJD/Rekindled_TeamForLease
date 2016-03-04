@@ -52,6 +52,8 @@ namespace ForLeaseEngine {
                 float HalfHeight();
                 float ScaledHalfWidth();
                 float ScaledHalfHeight();
+                Vector Offset();
+                Point Position();
 
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
