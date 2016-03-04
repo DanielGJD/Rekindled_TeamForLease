@@ -32,14 +32,18 @@ namespace ForLeaseEngine
         void Update();
         void Deinitialize();
         void Unload();
-        void SaveFiles();
         void LoadFiles();
         void Input();
 
     private:
         void DrawMainMenu();
+        void SaveLevel(std::string level);
+        void SpawnBluePrint(std::string blueprint);
+        void LoadLevel(std::string level);
+        std::string RequiredToolTip(std::string component);
         void DrawMainWindow();
         void DrawObjectWindow();
+        void MakeSelection();
         void GetMouse(Point& v);
         void AddComponent(const std::string& component);
     };

@@ -49,7 +49,8 @@ namespace ForLeaseEngine {
         }
 
         void Checkpoint::ResetToCheckpoint() {
-            Owner.DeserializeNonReference(LastCheckpointState);
+            //Owner.DeserializeNonReference(LastCheckpointState);
+            Owner.ResetToCheckpoint = true;
         }
 
         void Checkpoint::Serialize(Serializer& root) {

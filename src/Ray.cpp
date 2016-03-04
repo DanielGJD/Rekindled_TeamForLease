@@ -13,6 +13,7 @@
 #include "Entity.h"
 #include "Engine.h"
 #include "LevelComponentsInclude.h"
+#include <algorithm> // std::sort
 
 namespace ForLeaseEngine {
 
@@ -206,6 +207,29 @@ namespace ForLeaseEngine {
         }
 
         return colliding;
+    }
+
+    bool CollisionSort(const Ray::Collision& i, const Ray::Collision& j) {
+        return i.Distance < j.Distance;
+    }
+
+    std::vector<Ray::Collision> Ray::CheckCollisionsMultipleEntities(Ray& ray, std::vector<Entity *>& entities) {
+        std::vector<Ray::Collision> collisions;
+        float dist = ray.GetScaledVector().Magnitude();
+
+        for (Entity * entity : entities) {
+            if (ray.IsColliding(entity) && ray.GetScaledVector().Magnitude() > Epsilon) {
+                collisions.push_back(Collision(ray.GetScaledVector().Magnitude(), entity, ray.GetIntersectionPoint()));
+            }
+            ray.ResetLength();
+        }
+
+        std::sort(collisions.begin(), collisions.end(), CollisionSort);
+
+        if (collisions.size() > ray.Collisions)
+            collisions.resize(ray.Collisions);
+
+        return collisions;
     }
 
     float Cross(Vector v1, Vector v2) {

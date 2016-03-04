@@ -74,6 +74,7 @@ namespace ForLeaseEngine {
             case SDL_KEYDOWN:
                 if(!SDL_e.key.repeat) {
                     KeyboardEvent e = KeyboardEvent("KeyDown", SDL_e.key.keysym.sym, SDL_e.key.state);
+                    //std::cout << "KeyDown:" << e.Key << std::endl;
                     dispatcher->Dispatch(&e, this);
                 }
                 break;

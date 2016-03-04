@@ -109,6 +109,20 @@ namespace ForLeaseEngine {
 //                    DetectionTimer = 0;
 //                }
 //            }
+            static bool dispatchSeen = false;
+            static bool dispatchNotSeen = false;
+            if (Angry && !dispatchSeen)
+            {
+                ForLease->Dispatcher.DispatchToParent(new Event("PlayerSeen"), &Parent);
+                dispatchSeen = true;
+                dispatchNotSeen = false;
+            }
+            else if (!Angry && !dispatchNotSeen)
+            {
+                ForLease->Dispatcher.DispatchToParent(new Event("PlayerNotSeen"), &Parent);
+                dispatchSeen = false;
+                dispatchNotSeen = true;
+            }
         }
 
         void EnemyAI::Serialize(Serializer& root) {
@@ -177,12 +191,14 @@ namespace ForLeaseEngine {
                     }
                 }
                 else if(entityName.compare(HatedEntityName) == 0) {
+                    //std::cout << "Hated entity in line of sight" << std::endl;
                     if(!lightSystem) {
                         willBeAngry = true;
                         hatedEntity = entity;
                     }
                     else {
                         if(lightSystem->CheckIfLit(multi_e->EntityIDs[i])) {
+                            //std::cout << "Hated entity lit" << std::endl;
                             willBeAngry = true;
                             hatedEntity = entity;
                         }
@@ -196,9 +212,13 @@ namespace ForLeaseEngine {
             Components::SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
             if(emitter) {
                 if(!wasHappy && Happy) {
+                    emitter->SetVolume(1.0f, LikedSeenSound);
+                    emitter->StopEvent(LikedSeenSound);
                     emitter->PlayEvent(LikedSeenSound);
                 }
                 else if(!wasAngry && Angry) {
+                    emitter->SetVolume(1.0f,HatedSeenSound);
+                    emitter->StopEvent(HatedSeenSound);
                     emitter->PlayEvent(HatedSeenSound);
                 }
             }

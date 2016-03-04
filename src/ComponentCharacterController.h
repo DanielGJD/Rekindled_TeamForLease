@@ -32,12 +32,12 @@ namespace ForLeaseEngine {
                 int LeftKey;
                 int JumpKey;
 
-                float MoveSpeed;
+                float Acceleration;
                 float JumpSpeed;
 
                 float Drag;
-                float maxSpeed;
-                float Friction;
+                //float maxSpeed;
+                //float Friction;
                 std::string WalkSound;
                 std::string JumpSound;
                 std::string LandSound;
@@ -57,8 +57,11 @@ namespace ForLeaseEngine {
 
             private:
                 bool CanJump;
-                bool CheckMove;
+                bool RightPressed;
+                bool LeftPressed;
                 unsigned int LastAnimationFrame;
+                float Timer;
+                float JumpSoundTimer;
         };
     }
 }

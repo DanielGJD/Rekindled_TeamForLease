@@ -64,6 +64,7 @@ namespace ForLeaseEngine
         void ReadBoolArray(const std::string& path, bool* a) const;
 
         bool Empty() const;
+        void Clear();
 
         virtual Serializer& operator=(const Serializer& rhs);
         Serializer GetChild(const std::string& path) const;

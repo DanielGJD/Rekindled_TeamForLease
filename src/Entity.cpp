@@ -355,6 +355,9 @@ namespace ForLeaseEngine {
                 component = new Components::Health(entity);
                 component->Initialize();
                 break;
+            case ComponentType::EnemyPace:
+                component = Components::EnemyPace::Create(entity);
+                break;
             default:
                 std::cout << "Unknown Type: " << type << std::endl;
                 return 0;

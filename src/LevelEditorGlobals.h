@@ -5,9 +5,10 @@ namespace ForLeaseEngine
         extern SDL_Window* window;
         extern Point       mousePos;
 
-        extern LevelComponents::Renderer* render;
-        extern LevelComponents::Physics*  levelPhysics;
-        extern LevelComponents::Light*    levelLight;
+        extern LevelComponents::Renderer*   render;
+        extern LevelComponents::Physics*    levelPhysics;
+        extern LevelComponents::Light*      levelLight;
+        extern LevelComponents::Checkpoint* levelCheckpoint;
         extern Vector gravity;
 
         extern Entity*                             selection;
@@ -36,6 +37,10 @@ namespace ForLeaseEngine
         extern Components::SimpleParticleDynamics* selPartDynamics;
         extern Components::Parallax*               selParallax;
         extern Components::Occluder*               selOccluder;
+        extern Components::Checkpoint*             selCheckpoint;
+        extern Components::Follow*                 selFollow;
+        extern Components::EnemyPace*              selPace;
+        extern Components::Health*                 selHealth;
 
         extern Entity*                levelCamera;
         extern Entity*                camera;
@@ -49,30 +54,20 @@ namespace ForLeaseEngine
         extern std::vector<std::string> fontNames;
         extern std::vector<std::string> animationNames;
         extern std::vector<std::string> textureNames;
+        extern std::vector<std::string> keyCodes;
 
-        extern std::map<std::string, ComponentType> reqMap;
+        extern std::unordered_map<std::string, ComponentType> reqMap;
         extern Serializer copyEntity;
 
         extern bool clickAdd;
-        extern bool newSelect;
         extern bool moveMode;
-        extern bool showWindow;
         extern bool selMade;
-        extern bool archSpawn;
         extern bool selMode;
-        extern bool toSave;
-        extern bool toLoad;
         extern bool delobj;
         extern bool copySet;
-        extern bool setLiked;
-        extern bool setHated;
-        extern bool setTarget;
-        extern bool walkSound;
-        extern bool jumpSound;
-        extern bool landSound;
-        extern bool walkAni;
-        extern bool jumpAni;
-        extern bool setName;
+        extern bool setFade;
+        extern bool levelSaved;
+        extern bool setFollow;
 
         extern char entName[128];
         extern char spriteTextBuf[512];
@@ -98,6 +93,13 @@ namespace ForLeaseEngine
         extern const char* archToSpawn;
         extern int eCount;
         extern int maxParticles;
-        extern float timeScale;
+        extern int particleBlend;
+        extern int modelBlend;
+        extern int lightBlend;
+        extern float lightAngle;
+        extern float visionAngle;
+
+        extern std::string levelDir;
+        extern std::string blueprintDir;
     }
 }

@@ -45,7 +45,7 @@ SoundManager::SoundManager() : /*ISystem(),*/ m_Sys(nullptr), m_MasterBank(nullp
 
     //load bank file from initialize()
     //SoundManager* FS;
-    Initialize("sounds/Master Bank.bank", "sounds/Master Bank.strings.bank");
+    Initialize("sounds/Master\ Bank.bank", "sounds/Master\ Bank.strings.bank");
 
 	return;
 }
@@ -127,7 +127,7 @@ std::vector<std::string>SoundManager::GetName()
     // Not the actual function to read GUIDs.txt
 	std::string temptext;
     std::vector<std::string> SoundsList;
-    std::ifstream readfile("GUIDs.txt");
+    std::ifstream readfile("sounds/GUIDs.txt");
 
     while(std::getline(readfile,temptext))
     {

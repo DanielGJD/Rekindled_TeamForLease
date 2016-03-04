@@ -8,14 +8,14 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
-#include <map>
+#include <unordered_map>
 namespace ForLeaseEngine
 {
     namespace leg = LevelEditorGlobals;
 
     void LevelEditor::DrawObjectWindow()
     {
-        float width = ImGui::GetWindowWidth() / 3;
+        float width = 100;
         ImGui::Begin("Object Editor");
 
         if (ImGui::InputText("Name##Object", leg::entName, 128, ImGuiInputTextFlags_EnterReturnsTrue))
@@ -24,9 +24,9 @@ namespace ForLeaseEngine
         ImGui::InputText("Blueprint Name##Blueprint", leg::archetypefile, 128);
         if (ImGui::Button("Save Blueprint"))
         {
-            std::string s = leg::archetypefile;
-            leg::selection->CreateArchetype(leg::archetypefile);
-            if (std::find(leg::archetypeNames.begin(), leg::archetypeNames.end(), s) == leg::archetypeNames.end())
+            std::string s = leg::blueprintDir + leg::archetypefile;
+            leg::selection->CreateArchetype(s);
+            if (std::find(leg::archetypeNames.begin(), leg::archetypeNames.end(), leg::archetypefile) == leg::archetypeNames.end())
             {
                 leg::archetypeNames.push_back(leg::archetypefile);
             }
@@ -48,6 +48,13 @@ namespace ForLeaseEngine
                     {
                         AddComponent(leg::componentNames[i]);
                     }
+                    if (ImGui::IsItemHovered())
+                    {
+                        std::string tooltip = RequiredToolTip(leg::componentNames[i]);
+                        ImGui::BeginTooltip();
+                        ImGui::Text("%s", tooltip.c_str());
+                        ImGui::EndTooltip();
+                    }
                 }
             }
             ImGui::EndChild();
@@ -55,10 +62,11 @@ namespace ForLeaseEngine
 
         if (leg::selTran && ImGui::CollapsingHeader("Transform"))
         {
-            ImGui::PushItemWidth(width * 2);
-            ImGui::InputFloat("X##TransformPos", &(leg::selTran->Position[0]), 0.5, 1);
+            ImGui::Checkbox("UI Layer##transform", &(leg::selTran->UILayer));
+            ImGui::PushItemWidth(width);
+            ImGui::InputFloat("X##TransformPos", &(leg::selTran->Position[0]));
             ImGui::SameLine();
-            ImGui::InputFloat("Y##TransformPos", &(leg::selTran->Position[1]), 0.5, 1);
+            ImGui::InputFloat("Y##TransformPos", &(leg::selTran->Position[1]));
             ImGui::SameLine();
             ImGui::Text("Position");
             ImGui::DragFloat("X##TransformScale", &(leg::selTran->ScaleX), 0.01);
@@ -67,7 +75,7 @@ namespace ForLeaseEngine
             ImGui::SameLine();
             ImGui::Text("Scale");
             ImGui::PopItemWidth();
-            ImGui::DragFloat("Rotation##Transform", &(leg::selTran->Rotation), 0.01, 0, 44.0 / 7);
+            ImGui::SliderAngle("Rotation##Transform", &(leg::selTran->Rotation), 0, 360);
             ImGui::InputInt("Z Order##Transform", &(leg::selTran->ZOrder));
         }
 
@@ -76,15 +84,18 @@ namespace ForLeaseEngine
             ImGui::Checkbox("Flip X##Model", &(leg::selModel->FlipX));
             ImGui::SameLine();
             ImGui::Checkbox("Flip Y##Model", &(leg::selModel->FlipY));
-            ImGui::Indent();
-            if (ImGui::CollapsingHeader("Change Mesh"))
+            ImGui::Combo("Blending Mode##model", &leg::modelBlend, "None\0Alpha\0Additive\0Multiply\0\0");
+            ImGui::ColorEdit4("Color##model", const_cast<float*>(leg::selModel->ModelColor.GetAll()));
+            leg::selModel->BlendingMode = static_cast<BlendMode>(leg::modelBlend);
+            if (ImGui::TreeNode("Edit Mesh##model"))
             {
                 static ImGuiTextFilter meshFilter;
                 ImGui::Text("Current Mesh: %s", leg::selModel->ModelMesh.c_str());
-                meshFilter.Draw("Mesh", 250.0f);
+                if (ImGui::Button("Clear Mesh"))
+                    leg::selModel->ModelMesh = "";
+                meshFilter.Draw("##Mesh", 250.0f);
                 ImGui::Text("Available Meshes");
-                ImGui::Separator();
-                ImGui::BeginChild("Meshes", ImVec2(0, 100), false, ImGuiWindowFlags_HorizontalScrollbar);
+                ImGui::BeginChild("Meshes", ImVec2(0, 100), true);
                 for(unsigned i = 0; i < leg::meshNames.size(); i++)
                 {
                     if(meshFilter.PassFilter((leg::meshNames[i]).c_str()))
@@ -96,26 +107,21 @@ namespace ForLeaseEngine
                     }
                 }
                 ImGui::EndChild();
-
-                if (meshFilter.IsActive() && ImGui::IsKeyPressed(Keys::Return))
-                {
-                    ForLease->Resources.LoadMesh(meshFilter.InputBuf);
-                    leg::meshNames = ForLease->Resources.GetLoadedMeshNames();
-                }
-
+                ImGui::TreePop();
             }
 
-            if (ImGui::CollapsingHeader("Edit Animation"))
+            if (ImGui::TreeNode("Edit Animation##model"))
             {
                 ImGui::Checkbox("Active##Model", &(leg::selModel->AnimationActive));
                 ImGui::Checkbox("Looping##Model", &(leg::selModel->Looping));
                 ImGui::InputFloat("Frame Rate##Model", &(leg::selModel->FrameRate));
                 ImGui::Text("Current Animation: %s", leg::selModel->GetAnimation().c_str());
+                if (ImGui::Button("Clear Animation##model"))
+                    leg::selModel->SetAnimation("");
                 static ImGuiTextFilter animations;
-                animations.Draw("Animation", 300);
+                animations.Draw("##Animation", 250);
                 ImGui::Text("Available Animations");
-                ImGui::Separator();
-                ImGui::BeginChild("Animations", ImVec2(0, 100));
+                ImGui::BeginChild("Animations", ImVec2(0, 100), true);
                 for (std::string s : leg::animationNames)
                 {
                     if (animations.PassFilter(s.c_str()))
@@ -125,8 +131,8 @@ namespace ForLeaseEngine
                     }
                 }
                 ImGui::EndChild();
+                ImGui::TreePop();
             }
-            ImGui::Unindent();
 
             if (ImGui::Button("Remove Model"))
             {
@@ -134,41 +140,35 @@ namespace ForLeaseEngine
                 leg::selModel = NULL;
             }
         }
-//        if (leg::selMusic && ImGui::CollapsingHeader("Background Music"))
-//        {
-//            ImGui::Text("Current Sound: %s", leg::selMusic->MusicName.c_str());
-//            static ImGuiTextFilter backSound;
-//            backSound.Draw("Trigger Sound", 250);
-//            ImGui::Text("Available Sounds");
-//            ImGui::Separator();
-//            ImGui::BeginChild("Sound", ImVec2(0, 100));
-//            for (std::string s : leg::soundNames)
-//            {
-//                if (backSound.PassFilter(s.c_str()))
-//                {
-//                    if (ImGui::MenuItem(s.c_str()))
-//                    {
-//                        leg::selMusic->MusicName = s;
-//                    }
-//                }
-//            }
-//            ImGui::EndChild();
-//            if (backSound.IsActive() && ImGui::IsKeyPressed(Keys::Return))
-//            {
-//                ForLease->Resources.LoadSound(backSound.InputBuf);
-//                leg::soundNames = ForLease->Resources.GetLoadedSoundNames();
-//            }
-//            if (ImGui::Button("Remove Background Music"))
-//            {
-//                leg::selection->DeleteComponent(ComponentType::BackgroundMusic);
-//                leg::selMusic = NULL;
-//            }
-//        }
+        if (leg::selMusic && ImGui::CollapsingHeader("Background Music"))
+        {
+            ImGui::Text("Current Sound: %s", leg::selMusic->MusicName.c_str());
+            static ImGuiTextFilter backSound;
+            backSound.Draw("##background", 250);
+            ImGui::Text("Available Sounds");
+            ImGui::BeginChild("Sound", ImVec2(0, 100), true);
+            for (std::string s : leg::soundNames)
+            {
+                if (backSound.PassFilter(s.c_str()))
+                {
+                    if (ImGui::MenuItem(s.c_str()))
+                    {
+                        leg::selMusic->MusicName = s;
+                    }
+                }
+            }
+            ImGui::EndChild();
+            if (ImGui::Button("Remove Background Music"))
+            {
+                leg::selection->DeleteComponent(ComponentType::BackgroundMusic);
+                leg::selMusic = NULL;
+            }
+        }
         if (leg::selCamera && ImGui::CollapsingHeader("Camera"))
         {
             ImGui::InputFloat("Size##Camera", &(leg::selCamera->Size));
             if (ImGui::Button("Set Camera"))
-                leg::render->SetCamera(*leg::selection);
+                leg::levelCamera = leg::selection;
 
             if (ImGui::Button("Remove Camera"))
             {
@@ -178,42 +178,51 @@ namespace ForLeaseEngine
         }
         if (leg::selChange && ImGui::CollapsingHeader("Change Level on Collide"))
         {
+            ImGui::PushItemWidth(width * 2);
             ImGui::Checkbox("Active##CLoC", &(leg::selChange->Active));
             ImGui::InputFloat("On Switch Time Scale##CLoC", &(leg::selChange->OnSwitchTimeScale));
             ImGui::InputFloat("Fade Out Time##CLoC", &(leg::selChange->FadeOutTime));
             ImGui::Text("Level Name: %s", leg::selChange->LevelName.c_str());
-            if (ImGui::InputText("##CLoC", leg::changeLevel, 70, ImGuiInputTextFlags_EnterReturnsTrue))
+            if (ImGui::InputText("##CLoC", leg::changeLevel, 128, ImGuiInputTextFlags_EnterReturnsTrue))
                 leg::selChange->LevelName = leg::changeLevel;
             ImGui::Text("Trigger Object Name: %s", leg::selChange->TriggerObjectName.c_str());
-            if (ImGui::InputText("##CLoCObject", leg::changeObject, 70, ImGuiInputTextFlags_EnterReturnsTrue))
+            if (ImGui::InputText("##CLoCObject", leg::changeObject, 128, ImGuiInputTextFlags_EnterReturnsTrue))
                 leg::selChange->TriggerObjectName = leg::changeObject;
 
-//            ImGui::Text("Current Sound: %s", leg::selChange->TriggerSoundName.c_str());
-//            static ImGuiTextFilter changeSound;
-//            changeSound.Draw("Trigger Sound", 250);
-//            ImGui::Text("Available Sounds");
-//            ImGui::Separator();
-//            ImGui::BeginChild("Sound", ImVec2(0, 100));
-//            for (std::string s : leg::soundNames)
-//            {
-//                if (changeSound.PassFilter(s.c_str()))
-//                {
-//                    if (ImGui::MenuItem(s.c_str()))
-//                    {
-//                        leg::selChange->TriggerSoundName = s;
-//                    }
-//                }
-//            }
-//            ImGui::EndChild();
-//            if (changeSound.IsActive() && ImGui::IsKeyPressed(Keys::Return))
-//            {
-//                ForLease->Resources.LoadSound(changeSound.InputBuf);
-//                leg::soundNames = ForLease->Resources.GetLoadedSoundNames();
-//            }
+            ImGui::PopItemWidth();
+            ImGui::Text("Current Sound: %s", leg::selChange->TriggerSoundName.c_str());
+            static ImGuiTextFilter changeSound;
+            changeSound.Draw("##clocsound", 250);
+            ImGui::Text("Available Sounds");
+            ImGui::BeginChild("Sound", ImVec2(0, 100));
+            for (std::string s : leg::soundNames)
+            {
+                if (changeSound.PassFilter(s.c_str()))
+                {
+                    if (ImGui::MenuItem(s.c_str()))
+                    {
+                        leg::selChange->TriggerSoundName = s;
+                    }
+                }
+            }
+
+            ImGui::EndChild();
+
+            if (ImGui::Button("Clear Sound##cloc"))
+                leg::selChange->TriggerSoundName = "";
+
             if (ImGui::Button("Remove Change on Collide"))
             {
                 leg::selection->DeleteComponent(ComponentType::ChangeLevelOnCollide);
                 leg::selChange = NULL;
+            }
+        }
+        if (leg::selCheckpoint && ImGui::CollapsingHeader("Checkpoint"))
+        {
+            if (ImGui::Button("Remove Checkpoint"))
+            {
+                leg::selection->DeleteComponent(ComponentType::Checkpoint);
+                leg::selCheckpoint = NULL;
             }
         }
         if (leg::selCollision && ImGui::CollapsingHeader("Collision"))
@@ -244,7 +253,7 @@ namespace ForLeaseEngine
 
         if (leg::selEnemyAI && ImGui::CollapsingHeader("Enemy AI"))
         {
-            ImGui::PushItemWidth(width * 3);
+            ImGui::PushItemWidth(width * 2);
             ImGui::Checkbox("Active##EnemyAI", &(leg::selEnemyAI->Active));
             ImGui::InputFloat("Detection Delay##EnemyAI", &(leg::selEnemyAI->DetectionDelay));
             ImGui::ColorEdit4("Happy Color##EnemyAI", const_cast<float*>(leg::selEnemyAI->HappyColor.GetAll()));
@@ -254,49 +263,74 @@ namespace ForLeaseEngine
             if (ImGui::InputText("Hated Entity Name##EnemyAI", leg::enemyHateName, 128, ImGuiInputTextFlags_EnterReturnsTrue))
                 leg::selEnemyAI->HatedEntityName = leg::enemyHateName;
 
+            if (ImGui::IsItemHovered())
+            {
+                ImGui::BeginTooltip();
+                ImGui::Text("Press ENTER to set");
+                ImGui::EndTooltip();
+            }
+
             if (ImGui::InputText("Liked Entity Name##EnemyAI", leg::enemyLikeName, 128, ImGuiInputTextFlags_EnterReturnsTrue))
                 leg::selEnemyAI->LikedEntityName = leg::enemyLikeName;
+
+            if (ImGui::IsItemHovered())
+            {
+                ImGui::BeginTooltip();
+                ImGui::Text("Press ENTER to set");
+                ImGui::EndTooltip();
+            }
+
             ImGui::PopItemWidth();
-//            ImGui::Checkbox("Liked Sound", &(leg::setLiked));
-//            if (ImGui::IsItemHovered())
-//            {
-//                ImGui::BeginTooltip();
-//                ImGui::Text("%s", (leg::selEnemyAI->LikedSeenSound.c_str()));
-//                ImGui::EndTooltip();
-//            }
-//            ImGui::SameLine();
-//            ImGui::Checkbox("Hated Sound", &(leg::setHated));
-//            if (ImGui::IsItemHovered())
-//            {
-//                ImGui::BeginTooltip();
-//                ImGui::Text("%s", (leg::selEnemyAI->HatedSeenSound.c_str()));
-//                ImGui::EndTooltip();
-//            }
-//
-//            static ImGuiTextFilter sounds;
-//            sounds.Draw("Sound", 300);
-//            ImGui::Text("Available Sounds");
-//            ImGui::Separator();
-//            ImGui::BeginChild("Sounds", ImVec2(0, 100));
-//            for (std::string s : leg::soundNames)
-//            {
-//                if (sounds.PassFilter(s.c_str()))
-//                {
-//                    if (ImGui::MenuItem(s.c_str()))
-//                    {
-//                        if (leg::setHated)
-//                            leg::selEnemyAI->HatedSeenSound = s;
-//                        if (leg::setLiked)
-//                            leg::selEnemyAI->LikedSeenSound = s;
-//                    }
-//                }
-//            }
-//            ImGui::EndChild();
-//            if (sounds.IsActive() && ImGui::IsKeyPressed(Keys::Return))
-//            {
-//                ForLease->Resources.LoadSound(sounds.InputBuf);
-//                leg::soundNames = ForLease->Resources.GetLoadedSoundNames();
-//            }
+            if (ImGui::TreeNode("Edit Sound##enemyAI"))
+            {
+                static int selButton = 0;
+                ImGui::RadioButton("Hated Sound##enemyAI", &selButton, 0);
+                ImGui::SameLine();
+                ImGui::Text(": %s", leg::selEnemyAI->HatedSeenSound.c_str());
+                ImGui::RadioButton("Liked Sound##enemyAI", &selButton, 1);
+                ImGui::SameLine();
+                ImGui::Text(": %s", leg::selEnemyAI->LikedSeenSound.c_str());
+
+                static ImGuiTextFilter sounds;
+                sounds.Draw("##enemyAI", 300);
+                ImGui::Text("Available Sounds");
+                ImGui::BeginChild("Sounds", ImVec2(0, 100), true);
+                for (std::string s : leg::soundNames)
+                {
+                    if (sounds.PassFilter(s.c_str()))
+                    {
+                        if (ImGui::MenuItem(s.c_str()))
+                        {
+                            switch (selButton)
+                            {
+                            case 0:
+                                leg::selEnemyAI->HatedSeenSound = s;
+                                break;
+                            case 1:
+                                leg::selEnemyAI->LikedSeenSound = s;
+                                break;
+                            }
+                        }
+                    }
+                }
+                ImGui::EndChild();
+
+                if (ImGui::Button("Clear Sound##enemyAI"))
+                {
+                    switch (selButton)
+                    {
+                    case 0:
+                        leg::selEnemyAI->HatedSeenSound = "";
+                        break;
+                    case 1:
+                        leg::selEnemyAI->LikedSeenSound = "";
+                        break;
+                    }
+                }
+
+                ImGui::TreePop();
+            }
+
             if (ImGui::Button("Remove Enemy AI"))
             {
                 leg::selection->DeleteComponent(ComponentType::EnemyAI);
@@ -305,13 +339,14 @@ namespace ForLeaseEngine
         }
         if (leg::selFade && ImGui::CollapsingHeader("Fade with Distance"))
         {
+            ImGui::PushItemWidth(width * 2);
             ImGui::Checkbox("Active##FWD", &(leg::selFade->Active));
             ImGui::Checkbox("Fade with X##FWD", &(leg::selFade->XDirection));
             ImGui::Checkbox("Fade with Y##FWD", &(leg::selFade->YDirection));
             ImGui::DragFloat("Begin Distance##FWD", &(leg::selFade->FadeBeginDistance), 0.05, 0);
             ImGui::DragFloat("End Distance##FWD", &(leg::selFade->FadeEndDistance), 0.05, 0);
-            ImGui::Checkbox("Select Target##FWD", &leg::setTarget);
-
+            ImGui::Checkbox("Select Target##FWD", &leg::setFade);
+            ImGui::PopItemWidth();
             if (ImGui::IsItemHovered())
             {
                 ImGui::BeginTooltip();
@@ -322,8 +357,47 @@ namespace ForLeaseEngine
             ImGui::Text("Current Target ID: %lu", leg::selFade->TrackedEntityID);
             if (ImGui::Button("Remove Fade with Distance"))
             {
+                leg::setFade = false;
                 leg::selection->DeleteComponent(ComponentType::FadeWithDistance);
                 leg::selFade = NULL;
+            }
+        }
+        if (leg::selFollow && ImGui::CollapsingHeader("Follow"))
+        {
+            ImGui::Checkbox("Active##follow", &(leg::selFollow->Active));
+            ImGui::InputFloat("Begin Distance##follow", &(leg::selFollow->FollowBeginDistance));
+            ImGui::InputFloat("End Distance##follow", &(leg::selFollow->FollowEndDistance));
+            ImGui::PushItemWidth(width);
+            ImGui::InputFloat("X##follow", &(leg::selFollow->Offset[0]));
+            ImGui::SameLine();
+            ImGui::InputFloat("Y##follow", &(leg::selFollow->Offset[1]));
+            ImGui::SameLine();
+            ImGui::Text("Offset");
+            ImGui::PopItemWidth();
+            ImGui::Checkbox("Follow Target ID: ", &leg::setFollow);
+            if (ImGui::IsItemHovered())
+            {
+                ImGui::BeginTooltip();
+                ImGui::Text("Once this is checked, click the entity you want to select");
+                ImGui::EndTooltip();
+            }
+            ImGui::SameLine();
+            ImGui::Text("%lu", leg::selFollow->FollowEntityID);
+            if (ImGui::Button("Remove Follow"))
+            {
+                leg::setFollow = false;
+                leg::selection->DeleteComponent(ComponentType::Follow);
+                leg::selFollow = NULL;
+            }
+        }
+        if (leg::selHealth && ImGui::CollapsingHeader("Health"))
+        {
+            ImGui::InputFloat("Max Health", &(leg::selHealth->MaxHealth));
+
+            if (ImGui::Button("Remove Health"))
+            {
+                leg::selection->DeleteComponent(ComponentType::Health);
+                leg::selHealth = NULL;
             }
         }
         if (leg::selLight && ImGui::CollapsingHeader("Light"))
@@ -331,13 +405,13 @@ namespace ForLeaseEngine
             ImGui::Checkbox("Active##Light", &(leg::selLight->Active));
             ImGui::Checkbox("Visible##Light", &(leg::selLight->Visible));
             ImGui::Checkbox("Draw Outline##Light", &(leg::selLight->DrawOutline));
-            ImGui::DragFloat("Angle##Light", &(leg::selLight->Angle), 0.001, 0.0001, 22/7);
+            ImGui::Combo("Blending Mode##light", &leg::lightBlend, "None\0Alpha\0Additive\0Multiply\0\0");
+            leg::selLight->LightMode = static_cast<BlendMode>(leg::lightBlend);
+            ImGui::SliderAngle("Angle##Light", &(leg::selLight->Angle), 0, 180);
+            ImGui::SliderAngle("Direction##light", &leg::lightAngle, 0, 360);
+            leg::selLight->Direction[0] = cos(leg::lightAngle);
+            leg::selLight->Direction[1] = sin(leg::lightAngle);
             ImGui::PushItemWidth(width);
-            ImGui::DragFloat("X##LightDir", &(leg::selLight->Direction[0]), 0.05);
-            ImGui::SameLine();
-            ImGui::DragFloat("Y##LightDir", &(leg::selLight->Direction[1]), 0.05);
-            ImGui::SameLine();
-            ImGui::Text("Direction");
             ImGui::DragFloat("X##LightOffset", &(leg::selLight->Offset[0]), 0.05);
             ImGui::SameLine();
             ImGui::DragFloat("Y##LightOffset", &(leg::selLight->Offset[1]), 0.05);
@@ -352,7 +426,43 @@ namespace ForLeaseEngine
                 leg::selLight = NULL;
             }
         }
+        if (leg::selOccluder && ImGui::CollapsingHeader("Occluder"))
+        {
+            ImGui::Checkbox("Blocks Light##occluder", &(leg::selOccluder->BlocksLight));
+            ImGui::Checkbox("Blocks Vision##occluder", &(leg::selOccluder->BlocksVision));
 
+            if (ImGui::Button("Remove Occluder"))
+            {
+                leg::selection->DeleteComponent(ComponentType::Occluder);
+                leg::selOccluder = NULL;
+            }
+        }
+        if (leg::selPace && ImGui::CollapsingHeader("PaceAI"))
+        {
+            ImGui::InputFloat("Speed##pace", &(leg::selPace->PaceSpeed));
+            ImGui::InputFloat("Distance##pace", &(leg::selPace->MaxPaceDistance));
+            ImGui::InputFloat("Pause Timer##pace", &(leg::selPace->PauseTimer));
+            ImGui::InputFloat("Detection Delay##pace", &(leg::selPace->DetectionDelay));
+            ImGui::RadioButton("Horizontal", &(leg::selPace->Direction), 0);
+            ImGui::RadioButton("Vertical", &(leg::selPace->Direction), 1);
+
+            if (ImGui::Button("Remove PaceAI"))
+            {
+                leg::selection->DeleteComponent(ComponentType::EnemyPace);
+                leg::selPace = NULL;
+            }
+        }
+        if (leg::selParallax && ImGui::CollapsingHeader("Parallax"))
+        {
+            ImGui::Checkbox("Active", &(leg::selParallax->Active));
+            ImGui::Checkbox("Repeating", &(leg::selParallax->Repeating));
+
+            if (ImGui::Button("Remove Parallax"))
+            {
+                leg::selection->DeleteComponent(ComponentType::Parallax);
+                leg::selParallax = NULL;
+            }
+        }
         if (leg::selPartColor && ImGui::CollapsingHeader("Particle Color"))
         {
             ImGui::Checkbox("Active##PartColor", &(leg::selPartColor->Active));
@@ -392,9 +502,13 @@ namespace ForLeaseEngine
         if (leg::selPartDynamics && ImGui::CollapsingHeader("Particle Dynamics"))
         {
             ImGui::Checkbox("Active##PartDynamics", &(leg::selPartDynamics->Active));
+            ImGui::PushItemWidth(width);
             ImGui::InputFloat("X##PartDynamics", &(leg::selPartDynamics->Force[0]));
             ImGui::SameLine();
             ImGui::InputFloat("Y##PartDynamics", &(leg::selPartDynamics->Force[1]));
+            ImGui::SameLine();
+            ImGui::Text("Force");
+            ImGui::PopItemWidth();
             ImGui::DragFloat("Torque##PartDynamics", &(leg::selPartDynamics->Torque), 0.01);
             ImGui::DragFloat("Growth##PartDynamics", &(leg::selPartDynamics->Growth), 0.01);
             ImGui::DragFloat("Drag##PartDynamics", &(leg::selPartDynamics->Drag), 0.01);
@@ -412,14 +526,14 @@ namespace ForLeaseEngine
             if (ImGui::InputInt("Emit Count##PartEmitter", &leg::eCount, 1, 1, ImGuiInputTextFlags_EnterReturnsTrue) && leg::eCount > 0)
                 leg::selPartEmitter->EmitCount = leg::eCount;
 
-            if (ImGui::IsItemActive())
+            if (ImGui::IsItemHovered())
             {
                 ImGui::BeginTooltip();
-                ImGui::Text("Press Enter to set");
+                ImGui::Text("Press ENTER to set");
                 ImGui::EndTooltip();
             }
 
-
+            ImGui::PushItemWidth(width * 2);
             ImGui::DragFloat("Emit Rate##PartEmitter", &(leg::selPartEmitter->EmitRate), 0.01);
             ImGui::DragFloat("Emit Random##PartEmitter", &(leg::selPartEmitter->EmitRandom), 0.01);
             ImGui::DragFloat("Size##PartEmitter", &(leg::selPartEmitter->Size), 0.01);
@@ -428,21 +542,31 @@ namespace ForLeaseEngine
             ImGui::DragFloat("Life Random##PartEmitter", &(leg::selPartEmitter->LifeRandom), 0.01);
             ImGui::DragFloat("Rotation##PartEmitter", &(leg::selPartEmitter->Rotation), 0.01);
             ImGui::DragFloat("Rotation Random##PartEmitter", &(leg::selPartEmitter->RotationRandom), 0.01);
-            ImGui::PushItemWidth(ImGui::GetWindowWidth()/4);
+            ImGui::PushItemWidth(width);
             ImGui::DragFloat("X##PartEmmiterVel", &(leg::selPartEmitter->Velocity[0]), 0.01);
             ImGui::SameLine();
             ImGui::DragFloat("Y##PartEmmiterVel", &(leg::selPartEmitter->Velocity[1]), 0.01);
+            ImGui::SameLine();
+            ImGui::Text("Velocity");
             ImGui::DragFloat("X##PartEmmiterVelRand", &(leg::selPartEmitter->VelocityRandom[0]), 0.01);
             ImGui::SameLine();
             ImGui::DragFloat("Y##PartEmmiterVelRand", &(leg::selPartEmitter->VelocityRandom[1]), 0.01);
+            ImGui::SameLine();
+            ImGui::Text("Random Velocity");
             ImGui::DragFloat("X##PartEmmiterSize", &(leg::selPartEmitter->EmitterSize[0]), 0.01);
             ImGui::SameLine();
             ImGui::DragFloat("Y##PartEmmiterSize", &(leg::selPartEmitter->EmitterSize[1]), 0.01);
             ImGui::SameLine();
             ImGui::Text("Emitter Size");
+            ImGui::DragFloat("X##PartEmmiteroffset", &(leg::selPartEmitter->Offset[0]), 0.01);
+            ImGui::SameLine();
+            ImGui::DragFloat("Y##PartEmmiteroffset", &(leg::selPartEmitter->Offset[1]), 0.01);
+            ImGui::SameLine();
+            ImGui::Text("Offset");
             ImGui::PopItemWidth();
             ImGui::DragFloat("Rotational Velocity##PartEmitter", &(leg::selPartEmitter->RotationalVelocity), 0.01);
-            ImGui::DragFloat("Rotational Velocity Random##PartEmitter", &(leg::selPartEmitter->RotationalVelocityRandom), 0.01);
+            ImGui::DragFloat("Rotational Vel Rand##PartEmitter", &(leg::selPartEmitter->RotationalVelocityRandom), 0.01);
+            ImGui::PopItemWidth();
 
             if (ImGui::Button("Remove Particle Emitter"))
             {
@@ -454,20 +578,33 @@ namespace ForLeaseEngine
         if (leg::selPartSystem && ImGui::CollapsingHeader("Particle System"))
         {
             ImGui::Checkbox("Visible##PartSystem", &(leg::selPartSystem->Visible));
-            ImGui::PushItemWidth(250);
+            ImGui::PushItemWidth(width * 2);
             ImGui::ColorEdit4("Color##PartSystem", const_cast<float*>(leg::selPartSystem->StartingColor.GetAll()));
-            ImGui::PopItemWidth();
 
             if (ImGui::InputInt("Max Number of Particles##PartSystem", &leg::maxParticles, 1, 1, ImGuiInputTextFlags_EnterReturnsTrue) && leg::maxParticles > 0)
                 leg::selPartSystem->MaxParticles = leg::maxParticles;
+
+            if (ImGui::IsItemHovered())
+            {
+                ImGui::BeginTooltip();
+                ImGui::Text("Press ENTER to set");
+                ImGui::EndTooltip();
+            }
+
+            ImGui::Combo("Blending Mode##partsystem", &leg::particleBlend, "None\0Alpha\0Additive\0Multiply\0\0");
+            leg::selPartSystem->BlendingMode = static_cast<BlendMode>(leg::particleBlend);
+
+            ImGui::PopItemWidth();
+            ImGui::PushItemWidth(width);
             ImGui::InputFloat("X##PartSystemSize", &(leg::selPartSystem->SystemSize[0]));
             ImGui::SameLine();
             ImGui::InputFloat("Y##PartSystemSize", &(leg::selPartSystem->SystemSize[1]));
             ImGui::SameLine();
             ImGui::Text("System Size");
+            ImGui::PopItemWidth();
             ImGui::Text("Current Sprite Source: %s", leg::selPartSystem->SpriteSource.c_str());
             static ImGuiTextFilter partTextures;
-            partTextures.Draw("##PartSystem", 300);
+            partTextures.Draw("##PartSystem", 250);
             ImGui::Text("Available Sprite Sources");
             ImGui::Separator();
             ImGui::BeginChild("ParticleTextures", ImVec2(0,100));
@@ -503,80 +640,154 @@ namespace ForLeaseEngine
 
         if (leg::selController && ImGui::CollapsingHeader("Player Controller"))
         {
-            ImGui::InputInt("Jump Key##Player", &(leg::selController->JumpKey));
-            ImGui::InputInt("Move Left Key##Player", &(leg::selController->LeftKey));
-            ImGui::InputInt("Move Right Key##Player", &(leg::selController->RightKey));
             ImGui::InputFloat("Jump Speed##Player", &(leg::selController->JumpSpeed));
-            ImGui::InputFloat("Move Speed##Player", &(leg::selController->MoveSpeed));
-//            ImGui::Indent();
-//            if (ImGui::CollapsingHeader("Edit Sound"))
-//            {
-//                ImGui::Checkbox("Walk Sound", &leg::walkSound);
-//                ImGui::SameLine();
-//                ImGui::Text(": %s", leg::selController->WalkSound.c_str());
-//                ImGui::Checkbox("Jump Sound", &leg::jumpSound);
-//                ImGui::SameLine();
-//                ImGui::Text(": %s", leg::selController->JumpSound.c_str());
-//                ImGui::Checkbox("Land Sound", &leg::landSound);
-//                ImGui::SameLine();
-//                ImGui::Text(": %s", leg::selController->LandSound.c_str());
-//
-//                static ImGuiTextFilter controllerSounds;
-//                controllerSounds.Draw("Sound", 250);
-//                ImGui::Text("Available Sounds");
-//                ImGui::Separator();
-//                ImGui::BeginChild("Sounds", ImVec2(0, 100));
-//                for (std::string s : leg::soundNames)
-//                {
-//                    if (controllerSounds.PassFilter(s.c_str()))
-//                    {
-//                        if (ImGui::MenuItem(s.c_str()))
-//                        {
-//                            if (leg::walkSound)
-//                                leg::selController->WalkSound = s;
-//                            if (leg::landSound)
-//                                leg::selController->LandSound = s;
-//                            if (leg::jumpSound)
-//                                leg::selController->JumpSound = s;
-//                        }
-//                    }
-//                }
-//                ImGui::EndChild();
-//                if (controllerSounds.IsActive() && ImGui::IsKeyPressed(Keys::Return))
-//                {
-//                    ForLease->Resources.LoadSound(controllerSounds.InputBuf);
-//                    leg::soundNames = ForLease->Resources.GetLoadedSoundNames();
-//                }
-//            }
-            if (ImGui::CollapsingHeader("Edit Animation"))
+            ImGui::InputFloat("Acceleration##Player", &(leg::selController->Acceleration));
+            ImGui::InputFloat("Drag##Player", &(leg::selController->Drag));
+            if (ImGui::TreeNode("Edit Controls##Player"))
             {
-                ImGui::Checkbox("Walk Animation##Player", &leg::walkAni);
+                static int selButton = 0;
+                ImGui::RadioButton("Jump Key: ##player", &selButton, 0);
+                ImGui::SameLine();
+                ImGui::Text("%d", leg::selController->JumpKey);
+                ImGui::RadioButton("Left Key: ##player", &selButton, 1);
+                ImGui::SameLine();
+                ImGui::Text("%d", leg::selController->LeftKey);
+                ImGui::RadioButton("Right Key: ##player", &selButton, 2);
+                ImGui::SameLine();
+                ImGui::Text("%d", leg::selController->RightKey);
+
+                static ImGuiTextFilter keyFilter;
+                keyFilter.Draw("##player", 250);
+                ImGui::Text("Available Keys");
+                ImGui::BeginChild("PlayerKeys", ImVec2(0, 100), true);
+                for (std::string s : leg::keyCodes)
+                {
+                    if (keyFilter.PassFilter(s.c_str()))
+                    {
+                        if (ImGui::MenuItem(s.c_str()))
+                        {
+                            switch (selButton)
+                            {
+                            case 0:
+                                leg::selController->JumpKey = Keys::GetKeyFromString(s);
+                                break;
+                            case 1:
+                                leg::selController->LeftKey = Keys::GetKeyFromString(s);
+                                break;
+                            case 2:
+                                leg::selController->RightKey = Keys::GetKeyFromString(s);
+                                break;
+                            }
+                        }
+                    }
+                }
+                ImGui::EndChild();
+                ImGui::TreePop();
+            }
+            if (ImGui::TreeNode("Edit Sound##controller"))
+            {
+                static int selButton = 0;
+                ImGui::RadioButton("Walk Sound", &selButton, 0);
+                ImGui::SameLine();
+                ImGui::Text(": %s", leg::selController->WalkSound.c_str());
+                ImGui::RadioButton("Jump Sound", &selButton, 1);
+                ImGui::SameLine();
+                ImGui::Text(": %s", leg::selController->JumpSound.c_str());
+                ImGui::RadioButton("Land Sound", &selButton, 2);
+                ImGui::SameLine();
+                ImGui::Text(": %s", leg::selController->LandSound.c_str());
+
+                static ImGuiTextFilter controllerSounds;
+                controllerSounds.Draw("##controllersounds", 250);
+                ImGui::Text("Available Sounds");
+                ImGui::BeginChild("Sounds", ImVec2(0, 100), true);
+                for (std::string s : leg::soundNames)
+                {
+                    if (controllerSounds.PassFilter(s.c_str()))
+                    {
+                        if (ImGui::MenuItem(s.c_str()))
+                        {
+                            switch (selButton)
+                            {
+                            case 0:
+                                leg::selController->WalkSound = s;
+                                break;
+                            case 1:
+                                leg::selController->JumpSound = s;
+                                break;
+                            case 2:
+                                leg::selController->LandSound = s;
+                                break;
+                            }
+                        }
+                    }
+                }
+                ImGui::EndChild();
+
+                if (ImGui::Button("Clear Sound##controller"))
+                {
+                    switch (selButton)
+                    {
+                    case 0:
+                        leg::selController->WalkSound = "";
+                        break;
+                    case 1:
+                        leg::selController->JumpSound = "";
+                        break;
+                    case 2:
+                        leg::selController->LandSound = "";
+                        break;
+                    }
+                }
+
+                ImGui::TreePop();
+            }
+            if (ImGui::TreeNode("Edit Animation##player"))
+            {
+                static int selButton = 0;
+                ImGui::RadioButton("Walk Animation##Player", &selButton, 0);
                 ImGui::SameLine();
                 ImGui::Text(": %s", leg::selController->WalkAnimation.c_str());
-                ImGui::Checkbox("Jump Animation##Player", &leg::jumpAni);
+                ImGui::RadioButton("Jump Animation##Player", &selButton, 1);
                 ImGui::SameLine();
                 ImGui::Text(": %s", leg::selController->JumpAnimation.c_str());
                 static ImGuiTextFilter controllerAni;
                 controllerAni.Draw("PlayerAnimation", 250);
                 ImGui::Text("Available Animations");
-                ImGui::Separator();
-                ImGui::BeginChild("PlayerAni", ImVec2(0, 100));
+                ImGui::BeginChild("PlayerAni", ImVec2(0, 100), true);
                 for (std::string s : leg::animationNames)
                 {
                     if (controllerAni.PassFilter(s.c_str()))
                     {
                         if(ImGui::MenuItem(s.c_str()))
                         {
-                            if (leg::walkAni)
+                            switch (selButton)
+                            {
+                            case 0:
                                 leg::selController->WalkAnimation = s;
-                            if (leg::jumpAni)
+                                break;
+                            case 1:
                                 leg::selController->JumpAnimation = s;
+                                break;
+                            }
                         }
                     }
                 }
                 ImGui::EndChild();
+                if (ImGui::Button("Clear Animation##player"))
+                {
+                    switch (selButton)
+                    {
+                    case 0:
+                        leg::selController->WalkAnimation = "";
+                        break;
+                    case 1:
+                        leg::selController->JumpAnimation = "";
+                        break;
+                    }
+                }
+                ImGui::TreePop();
             }
-            ImGui::Unindent();
             if (ImGui::Button("Remove Controller"))
             {
                 leg::selection->DeleteComponent(ComponentType::PlayerController);
@@ -586,35 +797,67 @@ namespace ForLeaseEngine
 
         if (leg::selScale && ImGui::CollapsingHeader("Scale with Keyboard"))
         {
+            ImGui::PushItemWidth(width * 2);
             ImGui::Checkbox("Active##SWK", &(leg::selScale->Active));
             ImGui::InputFloat("Scale Speed##SWK", &(leg::selScale->ScaleSpeed));
-            ImGui::InputInt("Scale up Key##SWK", &(leg::selScale->ScaleUpKey));
-            ImGui::InputInt("Scale down Key##SWK", &(leg::selScale->ScaleDownKey));
             ImGui::InputFloat("Max X##SWK", &(leg::selScale->MaxXScale));
             ImGui::InputFloat("Max Y##SWK", &(leg::selScale->MaxYScale));
             ImGui::DragFloat("Scale##SWK", &(leg::selScale->Scale), 0.01, 0, 1);
-//            ImGui::Text("Scale Sound: %s", leg::selScale->ScaleSound.c_str());
-//            static ImGuiTextFilter scaleSound;
-//            scaleSound.Draw("Trigger Sound", 250);
-//            ImGui::Text("Available Sounds");
-//            ImGui::Separator();
-//            ImGui::BeginChild("Sound", ImVec2(0, 100));
-//            for (std::string s : leg::soundNames)
-//            {
-//                if (scaleSound.PassFilter(s.c_str()))
-//                {
-//                    if (ImGui::MenuItem(s.c_str()))
-//                    {
-//                        leg::selScale->ScaleSound = s;
-//                    }
-//                }
-//            }
-//            ImGui::EndChild();
-//            if (scaleSound.IsActive() && ImGui::IsKeyPressed(Keys::Return))
-//            {
-//                ForLease->Resources.LoadSound(scaleSound.InputBuf);
-//                leg::soundNames = ForLease->Resources.GetLoadedSoundNames();
-//            }
+            if (ImGui::TreeNode("Edit Controls##swk"))
+            {
+                static int selButton = 0;
+                ImGui::RadioButton("Scale Down", &selButton, 0);
+                ImGui::SameLine();
+                ImGui::Text(": %d", leg::selScale->ScaleDownKey);
+                ImGui::RadioButton("Scale Up", &selButton, 1);
+                ImGui::SameLine();
+                ImGui::Text(": %d", leg::selScale->ScaleUpKey);
+                static ImGuiTextFilter keyFilter;
+                keyFilter.Draw("##swk", 250);
+                ImGui::Text("Available Keys");
+                ImGui::BeginChild("swkkeys", ImVec2(0, 100), true);
+                for (std::string s : leg::keyCodes)
+                {
+                    if (keyFilter.PassFilter(s.c_str()))
+                    {
+                        if (ImGui::MenuItem(s.c_str()))
+                        {
+                            switch (selButton)
+                            {
+                            case 0:
+                                leg::selScale->ScaleDownKey = Keys::GetKeyFromString(s);
+                                break;
+                            case 1:
+                                leg::selScale->ScaleUpKey = Keys::GetKeyFromString(s);
+                                break;
+                            }
+                        }
+                    }
+                }
+                ImGui::EndChild();
+                ImGui::TreePop();
+            }
+            ImGui::PopItemWidth();
+            ImGui::Text("Scale Sound: %s", leg::selScale->ScaleSound.c_str());
+            static ImGuiTextFilter scaleSound;
+            scaleSound.Draw("##swksound", 250);
+            ImGui::Text("Available Sounds");
+            ImGui::BeginChild("Sound", ImVec2(0, 100), true);
+            for (std::string s : leg::soundNames)
+            {
+                if (scaleSound.PassFilter(s.c_str()))
+                {
+                    if (ImGui::MenuItem(s.c_str()))
+                    {
+                        leg::selScale->ScaleSound = s;
+                    }
+                }
+            }
+            ImGui::EndChild();
+
+            if (ImGui::Button("Clear Sound##swk"))
+                leg::selScale->ScaleSound= "";
+
             if (ImGui::Button("Remove Scale with Keyboard"))
             {
                 leg::selection->DeleteComponent(ComponentType::ScaleWithKeyboard);
@@ -622,31 +865,23 @@ namespace ForLeaseEngine
             }
         }
 
-//        if (leg::selSound && ImGui::CollapsingHeader("Sound Emitter"))
-//        {
-//            ImGui::Checkbox("Looping", &(leg::selSound->Looping));
-//            ImGui::SameLine();
-//            ImGui::PushItemWidth(75);
-//            ImGui::InputInt("Loop Count", &(leg::selSound->LoopCount));
-//            ImGui::InputFloat("Volume", &(leg::selSound->Volume));
-//            ImGui::SameLine();
-//            ImGui::InputFloat("Pitch", &(leg::selSound->Pitch));
-//            ImGui::PopItemWidth();
-//            if (ImGui::Button("Remove Sound Emitter"))
-//            {
-//                leg::selection->DeleteComponent(ComponentType::SoundEmitter);
-//                leg::selSound = NULL;
-//            }
-//        }
+        if (leg::selSound && ImGui::CollapsingHeader("Sound Emitter"))
+        {
+            if (ImGui::Button("Remove Sound Emitter"))
+            {
+                leg::selection->DeleteComponent(ComponentType::SoundEmitter);
+                leg::selSound = NULL;
+            }
+        }
 
         if (leg::selSprite && ImGui::CollapsingHeader("Sprite"))
         {
-            ImGui::Checkbox("Visible", &(leg::selSprite->Visible));
-            ImGui::Checkbox("Flip X", &(leg::selSprite->FlipX));
+            ImGui::Checkbox("Visible##sprite", &(leg::selSprite->Visible));
+            ImGui::Checkbox("Flip X##sprite", &(leg::selSprite->FlipX));
             ImGui::SameLine();
-            ImGui::Checkbox("Flip Y", &(leg::selSprite->FlipY));
+            ImGui::Checkbox("Flip Y##sprite", &(leg::selSprite->FlipY));
             ImGui::PushItemWidth(250);
-            ImGui::ColorEdit4("Sprite Color", const_cast<float*>(leg::selSprite->SpriteColor.GetAll()));
+            ImGui::ColorEdit4("Color##sprite", const_cast<float*>(leg::selSprite->SpriteColor.GetAll()));
             ImGui::Text("Current Sprite Source: %s", leg::selSprite->GetSourceName().c_str());
             static ImGuiTextFilter textures;
             textures.Draw("##Sprite", 300);
@@ -664,11 +899,6 @@ namespace ForLeaseEngine
                 }
             }
             ImGui::EndChild();
-            if (textures.IsActive() && ImGui::IsKeyPressed(Keys::Return))
-            {
-                ForLease->Resources.LoadTexture(textures.InputBuf);
-                leg::textureNames = ForLease->Resources.GetLoadedTextureNames();
-            }
 
             if (ImGui::Button("Remove Sprite"))
             {
@@ -679,10 +909,17 @@ namespace ForLeaseEngine
 
         if (leg::selSprtxt && ImGui::CollapsingHeader("Sprite Text"))
         {
-            if (ImGui::InputText("Text", leg::spriteTextBuf, 500, ImGuiInputTextFlags_EnterReturnsTrue))
+            if (ImGui::InputTextMultiline("Text##sprtxt", leg::spriteTextBuf, 512, ImVec2(), ImGuiInputTextFlags_EnterReturnsTrue))
                 leg::selSprtxt->Text = leg::spriteTextBuf;
-            ImGui::PushItemWidth(300);
-            ImGui::ColorEdit4("Color", const_cast<float*>(leg::selSprtxt->TextColor.GetAll()));
+
+            if (ImGui::IsItemHovered())
+            {
+                ImGui::BeginTooltip();
+                ImGui::Text("Press CTRL + ENTER to set");
+                ImGui::EndTooltip();
+            }
+            ImGui::PushItemWidth(width * 2);
+            ImGui::ColorEdit4("Color##sprtxt", const_cast<float*>(leg::selSprtxt->TextColor.GetAll()));
             ImGui::PopItemWidth();
 
             if (ImGui::Button("Remove Sprite Text"))
@@ -694,33 +931,51 @@ namespace ForLeaseEngine
 
         if (leg::selTMC && ImGui::CollapsingHeader("Transform Control"))
         {
-            ImGui::PushItemWidth(200);
-            ImGui::InputInt("Toggle Key", &(leg::selTMC->ModeToggleKey));
-            ImGui::InputFloat("Normal Speed", &(leg::selTMC->NormalSpeed));
-            ImGui::InputFloat("Slow Motion Speed", &(leg::selTMC->SlowMotionSpeed));
+            ImGui::PushItemWidth(width * 2);
+            ImGui::InputFloat("Normal Speed##TMC", &(leg::selTMC->NormalSpeed));
+            ImGui::InputFloat("Slow Motion Speed##TMC", &(leg::selTMC->SlowMotionSpeed));
+            ImGui::InputFloat("Influence Radius##TMC", &(leg::selTMC->InfluenceRadius));
             ImGui::PopItemWidth();
-//            ImGui::Text("Sound: %s", leg::selTMC->TransformModeSound.c_str());
-//            static ImGuiTextFilter tmcSound;
-//            tmcSound.Draw("Trigger Sound", 250);
-//            ImGui::Text("Available Sounds");
-//            ImGui::Separator();
-//            ImGui::BeginChild("Sound", ImVec2(0, 100));
-//            for (std::string s : leg::soundNames)
-//            {
-//                if (tmcSound.PassFilter(s.c_str()))
-//                {
-//                    if (ImGui::MenuItem(s.c_str()))
-//                    {
-//                        leg::selTMC->TransformModeSound = s;
-//                    }
-//                }
-//            }
-//            ImGui::EndChild();
-//            if (tmcSound.IsActive() && ImGui::IsKeyPressed(Keys::Return))
-//            {
-//                ForLease->Resources.LoadSound(tmcSound.InputBuf);
-//                leg::soundNames = ForLease->Resources.GetLoadedSoundNames();
-//            }
+            if (ImGui::TreeNode("Edit Controls##tmc"))
+            {
+                ImGui::Text("Toggle Key: %d", leg::selTMC->ModeToggleKey);
+                static ImGuiTextFilter keyFilter;
+                keyFilter.Draw("##tmckey", 250);
+                ImGui::Text("Available Keys");
+                ImGui::BeginChild("tmckeys", ImVec2(0, 100), true);
+                for (std::string s : leg::keyCodes)
+                {
+                    if (keyFilter.PassFilter(s.c_str()))
+                    {
+                        if (ImGui::MenuItem(s.c_str()))
+                        {
+                            leg::selTMC->ModeToggleKey = Keys::GetKeyFromString(s);
+                        }
+                    }
+                }
+                ImGui::EndChild();
+                ImGui::TreePop();
+            }
+            ImGui::Text("Sound: %s", leg::selTMC->TransformModeSound.c_str());
+            static ImGuiTextFilter tmcSound;
+            tmcSound.Draw("##tmcsound", 250);
+            ImGui::Text("Available Sounds");
+            ImGui::BeginChild("Sound", ImVec2(0, 100), true);
+            for (std::string s : leg::soundNames)
+            {
+                if (tmcSound.PassFilter(s.c_str()))
+                {
+                    if (ImGui::MenuItem(s.c_str()))
+                    {
+                        leg::selTMC->TransformModeSound = s;
+                    }
+                }
+            }
+            ImGui::EndChild();
+
+            if (ImGui::Button("Clear Sound##tmc"))
+                leg::selTMC->TransformModeSound = "";
+
             if (ImGui::Button("Remove Transform Control"))
             {
                 leg::selection->DeleteComponent(ComponentType::TransformModeControls);
@@ -735,14 +990,10 @@ namespace ForLeaseEngine
             ImGui::Checkbox("Draw Outline##VisionCone", &(leg::selVision->DrawOutline));
             ImGui::SameLine();
             ImGui::Checkbox("Visible##VisionCone", &(leg::selVision->Visible));
-            ImGui::DragFloat("Angle##VisionCone", &(leg::selVision->Angle), 0.01);
-            ImGui::PushItemWidth(width);
-            ImGui::DragFloat("X##VisionCone", &(leg::selVision->Direction[0]), 0.01);
-            ImGui::SameLine();
-            ImGui::DragFloat("Y##VisionCone", &(leg::selVision->Direction[1]), 0.01);
-            ImGui::SameLine();
-            ImGui::Text("Direction");
-            ImGui::PopItemWidth();
+            ImGui::SliderAngle("Angle##VisionCone", &(leg::selVision->Angle), 0, 180);
+            ImGui::SliderAngle("Direction##VisionCone", &leg::visionAngle, 0, 360);
+            leg::selVision->Direction[0] = cos(leg::visionAngle);
+            leg::selVision->Direction[1] = sin(leg::visionAngle);
             ImGui::DragFloat("Radius##VisionCone", &(leg::selVision->Radius), 0.01);
             ImGui::PushItemWidth(200);
             ImGui::ColorEdit4("Indicator Color##VisionCone", const_cast<float*>(leg::selVision->IndicatorColor.GetAll()));
@@ -756,6 +1007,8 @@ namespace ForLeaseEngine
         }
 
         ImGui::Separator();
+        if (ImGui::Button("Set Checkpoint Trigger"))
+            leg::levelCheckpoint->TriggerEntityID = leg::selection->GetID();
         if (ImGui::Button("Delete Object"))
             leg::delobj = true;
 

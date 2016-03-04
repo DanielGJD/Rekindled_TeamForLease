@@ -20,7 +20,7 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
-#include <map>
+#include <unordered_map>
 namespace ForLeaseEngine
 {
     namespace LevelEditorGlobals
@@ -28,9 +28,10 @@ namespace ForLeaseEngine
          SDL_Window* window;
          Point       mousePos;
 
-         LevelComponents::Renderer* render;
-         LevelComponents::Physics*  levelPhysics;
-         LevelComponents::Light*    levelLight;
+         LevelComponents::Renderer*   render;
+         LevelComponents::Physics*    levelPhysics;
+         LevelComponents::Light*      levelLight;
+         LevelComponents::Checkpoint* levelCheckpoint;
          Vector gravity;
 
          Entity*                             selection;
@@ -59,6 +60,10 @@ namespace ForLeaseEngine
          Components::SimpleParticleDynamics* selPartDynamics;
          Components::Parallax*               selParallax;
          Components::Occluder*               selOccluder;
+         Components::Checkpoint*             selCheckpoint;
+         Components::Follow*                 selFollow;
+         Components::EnemyPace*              selPace;
+         Components::Health*                 selHealth;
 
 
 
@@ -74,30 +79,22 @@ namespace ForLeaseEngine
          std::vector<std::string> fontNames;
          std::vector<std::string> animationNames;
          std::vector<std::string> textureNames;
+         std::vector<std::string> keyCodes;
+         std::unordered_map<std::string, ComponentType> reqMap;
 
-         std::map<std::string, ComponentType> reqMap;
          Serializer copyEntity;
 
          bool clickAdd   = false;
          bool newSelect  = false;
          bool moveMode   = false;
-         bool showWindow = false;
          bool selMade    = false;
-         bool archSpawn  = false;
          bool selMode    = true;
-         bool toSave     = false;
-         bool toLoad     = false;
          bool delobj     = false;
          bool copySet    = false;
-         bool setLiked   = false;
-         bool setHated   = false;
-         bool setTarget  = false;
-         bool walkSound  = false;
-         bool jumpSound  = false;
-         bool landSound  = false;
-         bool walkAni    = false;
-         bool jumpAni    = false;
-         bool setName    = false;
+         bool setFade    = false;
+         bool startUp    = true;
+         bool levelSaved = false;
+         bool setFollow  = false;
 
          char entName[128];
          char spriteTextBuf[512];
@@ -118,7 +115,14 @@ namespace ForLeaseEngine
          const char* archToSpawn = NULL;
          int eCount = 0;
          int maxParticles = 0;
-         float timeScale = 0;
+         int particleBlend = 1;
+         int modelBlend = 0;
+         int lightBlend = 2;
+         float lightAngle = 3 * 3.1415 / 2;
+         float visionAngle = 0;
+
+         std::string blueprintDir = "blueprints/";
+         std::string levelDir     = "levels/";
     }
 
     namespace leg = LevelEditorGlobals;
@@ -127,18 +131,27 @@ namespace ForLeaseEngine
     {
         std::vector<Component*> comps;
         Entity dummy;
-        Components::DragWithMouse* dwm;
         comps.push_back(new Components::BackgroundMusic(dummy));
         comps.push_back(new Components::Camera(dummy, 0, 0, 0));
         comps.push_back(new Components::ChangeLevelOnCollide(dummy));
+        comps.push_back(new Components::Checkpoint(dummy));
         comps.push_back(new Components::Collision(dummy));
-        comps.push_back(dwm->Create(dummy));
-        comps.push_back(new Components::FadeWithDistance(dummy));
+        comps.push_back(Components::DragWithMouse::Create(dummy));
         comps.push_back(new Components::EnemyAI(dummy));
+        comps.push_back(new Components::FadeWithDistance(dummy));
+        comps.push_back(new Components::Follow(dummy));
+        comps.push_back(new Components::Health(dummy));
         comps.push_back(new Components::Light(dummy));
         comps.push_back(new Components::Model(dummy));
+        comps.push_back(new Components::Occluder(dummy));
+        comps.push_back(Components::EnemyPace::Create(dummy));
+        comps.push_back(new Components::Parallax(dummy));
+        comps.push_back(new Components::ParticleColorAnimator(dummy));
+        comps.push_back(new Components::SimpleParticleDynamics(dummy));
+        comps.push_back(new Components::ParticleEmitter(dummy));
+        comps.push_back(new Components::ParticleSystem(dummy));
         comps.push_back(new Components::Physics(dummy));
-        comps.push_back(new Components::CharacterController(dummy));
+        comps.push_back(Components::CharacterController::Create(dummy));
         comps.push_back(new Components::ScaleWithKeyboard(dummy));
         comps.push_back(new Components::SoundEmitter(dummy));
         comps.push_back(new Components::Sprite(dummy));
@@ -148,14 +161,13 @@ namespace ForLeaseEngine
 
         for (unsigned i = 0; i < comps.size(); i++)
         {
-            //unsigned long long ull = comps[i]->GetRequired();
             leg::reqMap[leg::componentNames[i]] = comps[i]->GetRequired();
+            delete comps[i];
         }
     }
 
     void LevelEditor::Load()
     {
-        leg::timeScale = ForLease->FrameRateController().TimeScaling();
         leg::render = new LevelComponents::Renderer(*this);
         leg::camera = AddEntity("LevelEditorCamera");
         leg::camTrans = new Components::Transform(*leg::camera);
@@ -165,38 +177,53 @@ namespace ForLeaseEngine
         leg::levelCamera = leg::camera;
         leg::render->SetCamera(*leg::camera);
         leg::levelPhysics = new LevelComponents::Physics(*this);
+        Serializer root;
+        leg::levelCheckpoint = new LevelComponents::Checkpoint(*this, root);
         AddLevelComponent(leg::render);
         AddLevelComponent(leg::levelPhysics);
         AddLevelComponent(new LevelComponents::Menu(*this));
         AddLevelComponent(new LevelComponents::Collision(*this));
+        AddLevelComponent(leg::levelCheckpoint);
         leg::gravity = leg::levelPhysics->GetGravity();
         leg::window = ForLease->GameWindow->DangerousGetRawWindow();
         strcpy(leg::statename, Name.c_str());
-        LoadFiles();
-        leg::componentNames.push_back("Background Music");
-        leg::componentNames.push_back("Camera");
-        leg::componentNames.push_back("Change Level on Collide");
-        leg::componentNames.push_back("Collision");
-        leg::componentNames.push_back("Drag with Mouse");
-        leg::componentNames.push_back("Fade with Distance");
-        leg::componentNames.push_back("Enemy AI");
-        leg::componentNames.push_back("Light");
-        leg::componentNames.push_back("Model");
-        leg::componentNames.push_back("Occluder");
-        leg::componentNames.push_back("Parallax");
-        leg::componentNames.push_back("Particle Color");
-        leg::componentNames.push_back("Particle Dynamics");
-        leg::componentNames.push_back("Particle Emitter");
-        leg::componentNames.push_back("Particle System");
-        leg::componentNames.push_back("Physics");
-        leg::componentNames.push_back("Player Controller");
-        leg::componentNames.push_back("Scale with Keyboard");
-        leg::componentNames.push_back("Sound");
-        leg::componentNames.push_back("Sprite");
-        leg::componentNames.push_back("Sprite Text");
-        leg::componentNames.push_back("Transform Control");
-        leg::componentNames.push_back("Vision Cone");
-        //PopulateMap();
+        if (leg::startUp)
+        {
+            Keys::InitKeymap();
+            leg::keyCodes = Keys::GetKeyStrings();
+            std::sort(leg::keyCodes.begin(), leg::keyCodes.end());
+            LoadFiles();
+            leg::componentNames.push_back("Background Music");
+            leg::componentNames.push_back("Camera");
+            leg::componentNames.push_back("Change Level on Collide");
+            leg::componentNames.push_back("Checkpoint");
+            leg::componentNames.push_back("Collision");
+            leg::componentNames.push_back("Drag with Mouse");
+            leg::componentNames.push_back("Enemy AI");
+            leg::componentNames.push_back("Fade with Distance");
+            leg::componentNames.push_back("Follow");
+            leg::componentNames.push_back("Health");
+            leg::componentNames.push_back("Light");
+            leg::componentNames.push_back("Model");
+            leg::componentNames.push_back("Occluder");
+            leg::componentNames.push_back("PaceAI");
+            leg::componentNames.push_back("Parallax");
+            leg::componentNames.push_back("Particle Color");
+            leg::componentNames.push_back("Particle Dynamics");
+            leg::componentNames.push_back("Particle Emitter");
+            leg::componentNames.push_back("Particle System");
+            leg::componentNames.push_back("Physics");
+            leg::componentNames.push_back("Player Controller");
+            leg::componentNames.push_back("Scale with Keyboard");
+            leg::componentNames.push_back("Sound");
+            leg::componentNames.push_back("Sprite");
+            leg::componentNames.push_back("Sprite Text");
+            leg::componentNames.push_back("Transform Control");
+            leg::componentNames.push_back("Vision Cone");
+            leg::startUp = false;
+        }
+
+        PopulateMap();
     }
 
     void LevelEditor::Initialize()
@@ -210,6 +237,80 @@ namespace ForLeaseEngine
         v[0] = screen.x;
         v[1] = ForLease->GameWindow->GetYResolution() - screen.y;
         v = leg::render->ScreenToWorld(v);
+    }
+
+    void LevelEditor::MakeSelection()
+    {
+        std::string name = leg::selection->GetName();
+        strcpy(leg::entName, name.c_str());
+        leg::selCamera       = leg::selection->GetComponent<Components::Camera>();
+        leg::selTran         = leg::selection->GetComponent<Components::Transform>();
+        leg::selMenu         = leg::selection->GetComponent<Components::Menu>();
+        leg::selVision       = leg::selection->GetComponent<Components::VisionCone>();
+        leg::selDrag         = leg::selection->GetComponent<Components::DragWithMouse>();
+        leg::selScale        = leg::selection->GetComponent<Components::ScaleWithKeyboard>();
+        leg::selTMC          = leg::selection->GetComponent<Components::TransformModeControls>();
+        leg::selModel        = leg::selection->GetComponent<Components::Model>();
+        leg::selCollision    = leg::selection->GetComponent<Components::Collision>();
+        leg::selPhysics      = leg::selection->GetComponent<Components::Physics>();
+        leg::selSound        = leg::selection->GetComponent<Components::SoundEmitter>();
+        leg::selSprite       = leg::selection->GetComponent<Components::Sprite>();
+        leg::selSprtxt       = leg::selection->GetComponent<Components::SpriteText>();
+        leg::selController   = leg::selection->GetComponent<Components::CharacterController>();
+        leg::selEnemyAI      = leg::selection->GetComponent<Components::EnemyAI>();
+        leg::selLight        = leg::selection->GetComponent<Components::Light>();
+        leg::selFade         = leg::selection->GetComponent<Components::FadeWithDistance>();
+        leg::selChange       = leg::selection->GetComponent<Components::ChangeLevelOnCollide>();
+        leg::selMusic        = leg::selection->GetComponent<Components::BackgroundMusic>();
+        leg::selPartColor    = leg::selection->GetComponent<Components::ParticleColorAnimator>();
+        leg::selPartEmitter  = leg::selection->GetComponent<Components::ParticleEmitter>();
+        leg::selPartSystem   = leg::selection->GetComponent<Components::ParticleSystem>();
+        leg::selPartDynamics = leg::selection->GetComponent<Components::SimpleParticleDynamics>();
+        leg::selParallax     = leg::selection->GetComponent<Components::Parallax>();
+        leg::selOccluder     = leg::selection->GetComponent<Components::Occluder>();
+        leg::selCheckpoint   = leg::selection->GetComponent<Components::Checkpoint>();
+        leg::selFollow       = leg::selection->GetComponent<Components::Follow>();
+        leg::selPace         = leg::selection->GetComponent<Components::EnemyPace>();
+        leg::selHealth       = leg::selection->GetComponent<Components::Health>();
+
+        if (leg::selSprtxt)
+            strcpy(leg::spriteTextBuf, leg::selSprtxt->Text.c_str());
+
+        if (leg::selChange)
+        {
+            strcpy(leg::changeLevel, leg::selChange->LevelName.c_str());
+            strcpy(leg::changeObject, leg::selChange->TriggerObjectName.c_str());
+        }
+
+        if (leg::selModel)
+            leg::modelBlend = leg::selModel->BlendingMode;
+
+        if (leg::selPartEmitter)
+            leg::eCount = leg::selPartEmitter->EmitCount;
+
+        if (leg::selPartSystem)
+        {
+            leg::maxParticles = leg::selPartSystem->MaxParticles;
+            leg::particleBlend = leg::selPartSystem->BlendingMode;
+        }
+
+        if (leg::selEnemyAI)
+        {
+            strcpy(leg::enemyHateName, leg::selEnemyAI->HatedEntityName.c_str());
+            strcpy(leg::enemyLikeName, leg::selEnemyAI->LikedEntityName.c_str());
+        }
+        if (leg::selLight)
+        {
+            leg::lightAngle = atan2(leg::selLight->Direction[1], leg::selLight->Direction[0]);
+            if (leg::lightAngle < 0)
+                leg::lightAngle += 2 * 3.1415;
+        }
+        if (leg::selVision)
+        {
+            leg::visionAngle = atan2(leg::selVision->Direction[1], leg::selVision->Direction[0]);
+            if (leg::visionAngle < 0)
+                leg::visionAngle += 2 * 3.1415;
+        }
     }
 
     void LevelEditor::Input()
@@ -231,81 +332,38 @@ namespace ForLeaseEngine
             ent->AddComponent(new Components::Transform(*ent, leg::mousePos[0], leg::mousePos[1]));
         }
 
-        if (leg::setTarget && ImGui::IsMouseClicked(0) && !ImGui::IsMouseHoveringAnyWindow())
+        if (leg::setFade && ImGui::IsMouseClicked(0) && !ImGui::IsMouseHoveringAnyWindow())
         {
             GetMouse(leg::mousePos);
             Entity* ent = GetEntityAtPosition(leg::mousePos);
             if (ent)
             {
                 leg::selFade->TrackedEntityID = ent->GetID();
-                leg::setTarget = false;
+                leg::setFade = false;
             }
         }
+
+        else if (leg::setFollow && ImGui::IsMouseClicked(0) && !ImGui::IsMouseHoveringAnyWindow())
+        {
+            GetMouse(leg::mousePos);
+            Entity* ent = GetEntityAtPosition(leg::mousePos);
+            if (ent)
+            {
+                leg::selFollow->FollowEntityID = ent->GetID();
+                leg::setFollow = false;
+            }
+        }
+
         else if (leg::selMode && ImGui::IsMouseClicked(0) && !ImGui::IsMouseHoveringAnyWindow())
         {
             GetMouse(leg::mousePos);
-            //std::vector<Entity*> ents = GetEntitiesAtPosition(leg::mousePos);
             leg::selection = GetEntityAtPosition(leg::mousePos);
 
-            //for (unsigned i = 0; i < ents.size(); i++)
-            //{
-                if (leg::selection)
-                {
-                    //leg::selection = ents[i];
-                    std::string name = leg::selection->GetName();
-                    strcpy(leg::entName, name.c_str());
-                    leg::selCamera       = leg::selection->GetComponent<Components::Camera>();
-                    leg::selTran         = leg::selection->GetComponent<Components::Transform>();
-                    leg::selMenu         = leg::selection->GetComponent<Components::Menu>();
-                    leg::selVision       = leg::selection->GetComponent<Components::VisionCone>();
-                    leg::selDrag         = leg::selection->GetComponent<Components::DragWithMouse>();
-                    leg::selScale        = leg::selection->GetComponent<Components::ScaleWithKeyboard>();
-                    leg::selTMC          = leg::selection->GetComponent<Components::TransformModeControls>();
-                    leg::selModel        = leg::selection->GetComponent<Components::Model>();
-                    leg::selCollision    = leg::selection->GetComponent<Components::Collision>();
-                    leg::selPhysics      = leg::selection->GetComponent<Components::Physics>();
-                    leg::selSound        = leg::selection->GetComponent<Components::SoundEmitter>();
-                    leg::selSprite       = leg::selection->GetComponent<Components::Sprite>();
-                    leg::selSprtxt       = leg::selection->GetComponent<Components::SpriteText>();
-                    leg::selController   = leg::selection->GetComponent<Components::CharacterController>();
-                    leg::selEnemyAI      = leg::selection->GetComponent<Components::EnemyAI>();
-                    leg::selLight        = leg::selection->GetComponent<Components::Light>();
-                    leg::selFade         = leg::selection->GetComponent<Components::FadeWithDistance>();
-                    leg::selChange       = leg::selection->GetComponent<Components::ChangeLevelOnCollide>();
-                    leg::selMusic        = leg::selection->GetComponent<Components::BackgroundMusic>();
-                    leg::selPartColor    = leg::selection->GetComponent<Components::ParticleColorAnimator>();
-                    leg::selPartEmitter  = leg::selection->GetComponent<Components::ParticleEmitter>();
-                    leg::selPartSystem   = leg::selection->GetComponent<Components::ParticleSystem>();
-                    leg::selPartDynamics = leg::selection->GetComponent<Components::SimpleParticleDynamics>();
-                    leg::selParallax     = leg::selection->GetComponent<Components::Parallax>();
-                    leg::selOccluder     = leg::selection->GetComponent<Components::Occluder>();
-
-                    if (leg::selSprtxt)
-                        strcpy(leg::spriteTextBuf, leg::selSprtxt->Text.c_str());
-
-                    if (leg::selChange)
-                    {
-                        strcpy(leg::changeLevel, leg::selChange->LevelName.c_str());
-                        strcpy(leg::changeObject, leg::selChange->TriggerObjectName.c_str());
-                    }
-
-                    if (leg::selPartEmitter)
-                        leg::eCount = leg::selPartEmitter->EmitCount;
-
-                    if (leg::selPartSystem)
-                    {
-                        leg::maxParticles = leg::selPartSystem->MaxParticles;
-                    }
-
-                    if (leg::selEnemyAI)
-                    {
-                        strcpy(leg::enemyHateName, leg::selEnemyAI->HatedEntityName.c_str());
-                        strcpy(leg::enemyLikeName, leg::selEnemyAI->LikedEntityName.c_str());
-                    }
-                    leg::selMade = true;
-                    //break;
-                }
-            //}
+            if (leg::selection)
+            {
+                MakeSelection();
+                leg::selMade = true;
+            }
         }
 
         if (leg::selMade && ImGui::IsMouseDown(0) && ImGui::IsMouseDragging(0))
@@ -319,6 +377,7 @@ namespace ForLeaseEngine
 
         if (leg::selection && ImGui::GetIO().KeyCtrl && ImGui::IsKeyPressed(Keys::C))
         {
+            leg::copyEntity.Clear();
             leg::selection->Serialize(leg::copyEntity);
             leg::copySet = true;
         }
@@ -332,6 +391,73 @@ namespace ForLeaseEngine
             trans->Position = leg::mousePos;
         }
 
+        if (leg::selection && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
+        {
+            leg::delobj = true;
+        }
+
+    }
+
+    void LevelEditor::SaveLevel(std::string level)
+    {
+        std::string file = leg::levelDir + level;
+        if (leg::levelCamera && leg::levelCamera->HasComponent(ComponentType::Camera))
+            leg::render->SetCamera(*leg::levelCamera);
+        Serializer root;
+        Serialize(root);
+        root.WriteFile(file);
+        leg::render->SetCamera(*leg::camera);
+        leg::levelSaved = true;
+    }
+
+    void LevelEditor::LoadLevel(std::string level)
+    {
+        Serializer root;
+        std::string file = leg::levelDir + level;
+        if (root.ReadFile(file))
+        {
+            Deserialize(root);
+            strcpy(leg::statename, GetName().c_str());
+            LevelComponents::Menu* levelmenu = GetLevelComponent<LevelComponents::Menu>();
+            LevelComponents::Collision* levelcol = GetLevelComponent<LevelComponents::Collision>();
+            leg::levelPhysics = GetLevelComponent<LevelComponents::Physics>();
+            leg::levelLight = GetLevelComponent<LevelComponents::Light>();
+            leg::render = GetLevelComponent<LevelComponents::Renderer>();
+            leg::levelLight = GetLevelComponent<LevelComponents::Light>();
+            if (!leg::render)
+            {
+                leg::render = new LevelComponents::Renderer(*this);
+                AddLevelComponent(leg::render);
+            }
+            unsigned long camID = leg::render->GetCameraID();
+            leg::levelCamera = GetEntityByID(camID);
+            leg::camera = GetEntityByName("LevelEditorCamera", true);
+            leg::camTrans = leg::camera->GetComponent<Components::Transform>();
+            leg::camCamera = leg::camera->GetComponent<Components::Camera>();
+            leg::render->SetCamera(*leg::camera);
+            if (!leg::levelPhysics)
+            {
+                leg::levelPhysics = new LevelComponents::Physics(*this);
+                AddLevelComponent(leg::levelPhysics);
+            }
+            if (!levelcol)
+            {
+                levelcol = new LevelComponents::Collision(*this);
+                AddLevelComponent(levelcol);
+            }
+            if (!levelmenu)
+            {
+                levelmenu = new LevelComponents::Menu(*this);
+                AddLevelComponent(levelmenu);
+            }
+            leg::selection = NULL;
+        }
+    }
+
+    void LevelEditor::SpawnBluePrint(std::string blueprint)
+    {
+        std::string file = leg::blueprintDir + blueprint;
+        SpawnArchetype(file, leg::camTrans->Position);
     }
 
     void LevelEditor::Update()
@@ -345,71 +471,15 @@ namespace ForLeaseEngine
             DrawObjectWindow();
         }
 
-        if (leg::toSave)
-        {
-            Serializer root;
-            Serialize(root);
-            root.WriteFile(leg::statefile);
-            leg::toSave = false;
-        }
-
-        if (leg::toLoad)
-        {
-            Serializer root;
-            if (root.ReadFile(leg::statefile))
-            {
-                Deserialize(root);
-                strcpy(leg::statename, GetName().c_str());
-                LevelComponents::Menu* levelmenu = GetLevelComponent<LevelComponents::Menu>();
-                LevelComponents::Collision* levelcol = GetLevelComponent<LevelComponents::Collision>();
-                leg::levelPhysics = GetLevelComponent<LevelComponents::Physics>();
-                leg::levelLight = GetLevelComponent<LevelComponents::Light>();
-                leg::render = GetLevelComponent<LevelComponents::Renderer>();
-                leg::levelLight = GetLevelComponent<LevelComponents::Light>();
-                if (!leg::render)
-                {
-                    leg::render = new LevelComponents::Renderer(*this);
-                    AddLevelComponent(leg::render);
-                }
-                leg::camera = GetEntityByName("Level Camera", true);
-                leg::camTrans = leg::camera->GetComponent<Components::Transform>();
-                leg::camCamera = leg::camera->GetComponent<Components::Camera>();
-                leg::render->SetCamera(*leg::camera);
-                if (!leg::levelPhysics)
-                {
-                    leg::levelPhysics = new LevelComponents::Physics(*this);
-                    AddLevelComponent(leg::levelPhysics);
-                }
-                if (!levelcol)
-                {
-                    levelcol = new LevelComponents::Collision(*this);
-                    AddLevelComponent(levelcol);
-                }
-                if (!levelmenu)
-                {
-                    levelmenu = new LevelComponents::Menu(*this);
-                    AddLevelComponent(levelmenu);
-                }
-                leg::selection = NULL;
-            }
-            leg::toLoad = false;
-        }
 
         if (leg::delobj)
         {
             DeleteEntity(leg::selection);
+            if (leg::levelCamera == leg::selection)
+                leg::levelCamera = leg::camera;
             leg::selection = NULL;
             leg::delobj = false;
         }
-
-        if (leg::archToSpawn)
-        {
-            SpawnArchetype(leg::archToSpawn);
-            leg::archToSpawn = NULL;
-        }
-
-        if (leg::setName)
-            SetName(leg::statename);
 
         Input();
 
@@ -417,6 +487,7 @@ namespace ForLeaseEngine
             leg::levelLight->Update(Entities);
 
         leg::render->Update(Entities);
+
         for(Entity* it : Entities)
         {
             if (it->HasComponent(ComponentType::VisionCone))
@@ -444,11 +515,20 @@ namespace ForLeaseEngine
             leg::selPartSystem->Update();
             leg::selPartDynamics->Update();
         }
-        ImGui::Render();
+
         if (leg::selection)
         {
-            leg::render->SetDrawingColor(1, 0, 0);
-            leg::render->DrawRectangle(leg::selTran->Position, leg::selTran->ScaleX * 2, leg::selTran->ScaleY * 2, leg::selTran->Rotation);
+            if (leg::selection->HasComponent(ComponentType::Collision))
+            {
+                leg::render->SetDrawingColor(Color(0, 0, 1));
+                leg::selection->GetComponent<Components::Collision>()->DebugDraw();
+            }
+            else
+            {
+                leg::render->SetDrawingColor(Color(1, 0, 0));
+                leg::render->DrawRectangle(leg::selTran->Position, leg::selTran->ScaleX * 2, leg::selTran->ScaleY * 2, leg::selTran->Rotation);
+
+            }
             if (leg::selFade)
             {
                 Entity* ent = GetEntityByID(leg::selFade->TrackedEntityID);
@@ -460,6 +540,8 @@ namespace ForLeaseEngine
                 }
             }
         }
+
+        ImGui::Render();
         ForLease->GameWindow->UpdateGameWindow();
     }
 
@@ -470,27 +552,12 @@ namespace ForLeaseEngine
 
     void LevelEditor::Unload()
     {
-        SaveFiles();
-    }
-
-    void LevelEditor::SaveFiles()
-    {
-        Serializer root;
-        root.WriteStringArray("Meshes", &(leg::meshNames[0]), leg::meshNames.size());
-        root.WriteStringArray("Archetypes", &(leg::archetypeNames[0]), leg::archetypeNames.size());
- //       root.WriteStringArray("Sounds", &(leg::soundNames[0]), leg::soundNames.size());
-        root.WriteStringArray("Animations", &(leg::animationNames[0]), leg::animationNames.size());
-        root.WriteStringArray("Fonts", &(leg::fontNames[0]), leg::fontNames.size());
-        root.WriteStringArray("Textures", &(leg::textureNames[0]), leg::textureNames.size());
-        root.WriteFile("LevelEditorData.json");
+        //SaveFiles();
     }
 
     void LevelEditor::LoadFiles()
     {
-        Serializer root;
-        if (root.ReadFile("LevelEditorData.json"))
-            root.ReadStringArray("Archetypes", leg::archetypeNames);
-
+        leg::archetypeNames = ForLease->Filesystem.GetAllFilesInFolder(leg::blueprintDir);
         ForLease->Filesystem.LoadAllAssets();
         leg::meshNames = ForLease->Resources.GetLoadedMeshNames();
         leg::soundNames = ForLease->sound->GetName();

@@ -1,3 +1,4 @@
+
 /*!
     \file   SeanState.cpp
     \author Sean McGeer
@@ -90,7 +91,7 @@ void SeanState::Load() {
 
     Entity* platform = AddEntity("Platform");
     platform->AddComponent(new Components::Transform(*platform, Point(12, 10), 1, 1));
-    platform->AddComponent(new Components::Collision(*platform, 2.0f, 2.0f, true, 0, 0));
+    platform->AddComponent(new Components::Collision(*platform, 2.0f, 2.0f, true, -2, -2));
     platform->AddComponent(new Components::Model(*platform, true, false, false, "1-1Block.json"));
 
     Serializer serial;

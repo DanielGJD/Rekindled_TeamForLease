@@ -232,8 +232,14 @@ namespace {
     to the level editor.  I would highly recommend placing both the editor and
     the game binary in the same directory in the repo.
 */
-void SpawnNewLevelProcess(const std::string& level) {
+void SpawnNewLevelProcess(const std::string& level, bool debugDraw) {
     std::stringstream args;
     args << "-level " << level;
+
+    if (debugDraw)
+    {
+        args << " -dDrawCollision";
+    }
+
     SpawnProcess("Blisstopia.exe", args.str(), "");
 }
