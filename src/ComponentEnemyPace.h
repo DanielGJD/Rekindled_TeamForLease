@@ -44,6 +44,8 @@ namespace ForLeaseEngine
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
 
+                Vector LastMovement(bool scaleDt = true);
+
             private:
                 bool playerDetected;
                 void MoveLeft(float dt);
@@ -52,7 +54,7 @@ namespace ForLeaseEngine
                 void WatchPlayer(float dt);
                 int CurrentAction;
                 int NextAction;
-                Point& Position;
+                Vector& Position;
                 float Moved;
                 float ptimer;
                 float dtimer;

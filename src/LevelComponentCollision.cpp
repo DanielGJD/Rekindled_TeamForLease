@@ -90,10 +90,10 @@ namespace ForLeaseEngine {
         bool Collision::CheckCollision(Entity* entity1, Entity* entity2) {
             Components::Transform* entity1Transform = entity1->GetComponent<Components::Transform>();
             Components::Transform* entity2Transform = entity2->GetComponent<Components::Transform>();
-            Point entity1Position = entity1Transform->Position;
-            Point entity2Position = entity2Transform->Position;
             Components::Collision* entity1Collision = entity1->GetComponent<Components::Collision>();
             Components::Collision* entity2Collision = entity2->GetComponent<Components::Collision>();
+            Point entity1Position = entity1Collision->Position();
+            Point entity2Position = entity2Collision->Position();
 
             //if (entity1Collision->CollidedLastFrame || entity2Collision->CollidedLastFrame) return false;
 
@@ -106,10 +106,10 @@ namespace ForLeaseEngine {
 
             //renderer->DrawRectangle(entity1Position, entity1Collision->Width * entity1Transform->ScaleX, entity1Collision->Height * entity1Transform->ScaleY);
 
-            entity1Position[0] += entity1Collision->OffsetX;
-            entity1Position[1] += entity1Collision->OffsetY;
-            entity2Position[0] += entity2Collision->OffsetX;
-            entity2Position[1] += entity2Collision->OffsetY;
+//            entity1Position[0] += entity1Collision->OffsetX;
+//            entity1Position[1] += entity1Collision->OffsetY;
+//            entity2Position[0] += entity2Collision->OffsetX;
+//            entity2Position[1] += entity2Collision->OffsetY;
 
             bool collided =
                   !(entity2Position[0] - ent2HalfWidth > entity1Position[0] + ent1HalfWidth ||
@@ -193,6 +193,13 @@ namespace ForLeaseEngine {
             // No physics on either entity--not going to resolve.
             if (entity1HasPhysics == false) return;
 
+            if (entity1Collision->IsPacingPlatform()) {
+                ResolveCollisionOneEntityOnly(entity2, entity1);
+            }
+            else if (entity2Collision->IsPacingPlatform()) {
+                ResolveCollisionOneEntityOnly(entity1, entity2);
+            }
+
             // Both entities have physics.  We'll try to resolve the collision on both.
             // We'll do it stupidly for now
             ResolveCollisionOneEntityOnly(entity1, entity2);
@@ -222,8 +229,9 @@ namespace ForLeaseEngine {
             Components::Transform* otherTransform = other->GetComponent<Components::Transform>(true);
             Components::Collision* otherCollision = other->GetComponent<Components::Collision>(true);
 
-            if (toResolveCollision->InheritMomentum && other->HasComponent(ComponentType::Physics)) {
+            if (otherCollision->IsPacingPlatform()) {
                 toResolvePhysics->Velocity += other->GetComponent<Components::Physics>()->Velocity;
+                //toResolvePhysics->Velocity = toResolvePhysics->Velocity - other->GetComponent<Components::EnemyPace>()->LastMovement(true);
             }
 
             Vector velocity = toResolvePhysics->Velocity * ForLease->FrameRateController().GetDt();

@@ -11,12 +11,12 @@ namespace ForLeaseEngine
 {
     namespace Components
     {
-            EnemyPace::EnemyPace(Entity& owner, float speed, float maxDistance, float pause): Component(owner),
+            EnemyPace::EnemyPace(Entity& owner, float speed, float maxDistance, float pause): Component(owner, ComponentType::Physics),
                                                                                               PaceSound(""),
                                                                                               PaceSpeed(speed),
                                                                                               MaxPaceDistance(maxDistance),
                                                                                               PauseTimer(pause),
-                                                                                              Position(Parent.GetComponent<Components::Transform>()->Position)
+                                                                                              Position(Parent.GetComponent<Components::Physics>()->Velocity)
             {
                 MaxPaceDistance = 3.0;
                 DetectionDelay = 0.5;
@@ -75,7 +75,7 @@ namespace ForLeaseEngine
 
             void EnemyPace::MoveLeft(float dt)
             {
-                Position[Direction] -= PaceSpeed * dt;
+                Position[Direction] = -PaceSpeed;
                 Moved += PaceSpeed * dt;
 
                 if (Moved >= MaxPaceDistance)
@@ -88,7 +88,7 @@ namespace ForLeaseEngine
 
             void EnemyPace::MoveRight(float dt)
             {
-                Position[Direction] += PaceSpeed * dt;
+                Position[Direction] = PaceSpeed;
                 Moved += PaceSpeed * dt;
 
                 if (Moved >= MaxPaceDistance)
@@ -102,6 +102,7 @@ namespace ForLeaseEngine
             void EnemyPace::MovePause(float dt)
             {
                 ptimer += dt;
+                Position[Direction] = 0;
                 if (ptimer >= PauseTimer)
                 {
                     CurrentAction = NextAction;
@@ -168,7 +169,21 @@ namespace ForLeaseEngine
                 pace.ReadInt("Direction", Direction);
             }
 
+            Vector EnemyPace::LastMovement(bool scaleDt) {
+                Vector movement(0,0);
 
+                float dt;
+                if (scaleDt)
+                    dt = ForLease->FrameRateController().GetDt();
+                else
+                    dt = 1.0f;
 
+                if (CurrentAction == Action::LEFT)
+                    movement[Direction] = -(PaceSpeed * dt);
+                else if (CurrentAction == Action::RIGHT)
+                    movement[Direction] = (PaceSpeed * dt);
+
+                return movement;
+            }
     }
 }
