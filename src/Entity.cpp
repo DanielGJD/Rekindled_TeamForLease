@@ -68,7 +68,10 @@ namespace ForLeaseEngine {
         entity.ReadUint("ID", id);
         entity.ReadString("Name", Name);
         ID = id;
-        IDs.insert(id);
+        auto insertion = IDs.insert(id);
+        if (!insertion.second) {
+            GetNewID();
+        }
         ArraySerializer jsonComponents(entity);
         jsonComponents = entity.GetChild("Components");
         for (unsigned i = 0; i < jsonComponents.Size(); ++i) {
