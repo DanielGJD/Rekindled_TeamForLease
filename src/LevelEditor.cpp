@@ -386,7 +386,7 @@ namespace ForLeaseEngine
         {
             GetMouse(leg::mousePos);
             Entity* ent = AddEntity();
-            ent->Deserialize(leg::copyEntity);
+            ent->DeserializeWithoutID(leg::copyEntity);
             Components::Transform* trans = ent->GetComponent<Components::Transform>();
             trans->Position = leg::mousePos;
         }

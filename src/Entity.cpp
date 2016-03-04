@@ -70,7 +70,7 @@ namespace ForLeaseEngine {
         ID = id;
         auto insertion = IDs.insert(id);
         if (!insertion.second) {
-            GetNewID();
+            ID = GetNewID();
         }
         ArraySerializer jsonComponents(entity);
         jsonComponents = entity.GetChild("Components");
