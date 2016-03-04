@@ -31,7 +31,8 @@ namespace ForLeaseEngine {
         float halfWidth = collision->ScaledHalfWidth();
         float halfHeight = collision->ScaledHalfHeight();
 
-        position[0] =
+        position[0] += collision->OffsetX;
+        position[1] += collision->OffsetY;
 
 
         Point topLeft(position[0] - halfWidth, position[1] + halfHeight);
