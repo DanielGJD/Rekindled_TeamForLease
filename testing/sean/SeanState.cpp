@@ -46,17 +46,35 @@ void SeanState::Load() {
     Entity* floor = AddEntity("Floor");
     floor->AddComponent(new Components::Transform(*floor, Point(0,-4), 20, 1, 0, 0));
     floor->AddComponent(new Components::Collision(*floor, 2, 2));
+    floor->AddComponent(new Components::EnemyPace(*floor, 3, 20, 2));
     floor->AddComponent(new Components::Model(*floor, true, false, false, "1-1Block.json"));
+
+    Entity* floor2 = AddEntity("Floor2");
+    floor2->AddComponent(new Components::Transform(*floor2, Point(0, -8), 20, 1, 0, 0));
+    floor2->AddComponent(new Components::Collision(*floor2, 2, 2));
+    floor2->AddComponent(new Components::Model(*floor2, true, false, false, "1-1Block.json"));
+
+    Entity* floor3 = AddEntity("Floor3");
+    floor3->AddComponent(new Components::Transform(*floor3, Point(0, -12), 20, 1, 0, 0));
+    floor3->AddComponent(new Components::Collision(*floor3, 2, 2));
+    floor3->AddComponent(new Components::Model(*floor3, true, false, false, "1-1Block.json"));
+
+    Entity* floor4 = AddEntity("Floor4");
+    floor4->AddComponent(new Components::Transform(*floor4, Point(0, -16), 20, 1, 0, 0));
+    floor4->AddComponent(new Components::Collision(*floor4, 2, 2));
+    floor4->AddComponent(new Components::Model(*floor4, true, false, false, "1-1Block.json"));
 
     Entity* character = AddEntity("Character");
     character->AddComponent(new Components::Transform(*character, Point(0, 4), 5, 5));
     character->AddComponent(new Components::Physics(*character));
-    character->AddComponent(new Components::Collision(*character, 2.0f, 2.0f, true, 0, 0));
+    character->AddComponent(new Components::Collision(*character, 2.0f, 2.0f, true, 20, 20));
     character->AddComponent(new Components::Model(*character, true, false, false, "1-1Block.json"));
     Components::CharacterController* charController = Components::CharacterController::Create(*character);
-    charController->JumpSpeed = 50;
-    charController->MoveSpeed = 50;
-    charController->maxSpeed = 200;
+    charController->Acceleration = 60;
+    charController->JumpSpeed = 20;
+//    charController->JumpSpeed = 50;
+//    charController->MoveSpeed = 50;
+//    charController->maxSpeed = 200;
     character->AddComponent(charController);
 
     //Entity* moving = AddEntity("Moving");
@@ -104,6 +122,27 @@ void SeanState::Update() {
     for (FLE::LevelComponent* levelComponent : LevelComponents) {
         levelComponent->Update(Entities);
     }
+
+    FLE::Point testPos = FLE::Point(-5, 0);
+    FLE::Ray   testRay = FLE::Ray(testPos, Vector(1, -1), 20, FLE::Ray::Unlimited);
+
+    std::vector<FLE::Ray::Collision> collisions = FLE::Ray::CheckCollisionsMultipleEntities(testRay, Entities);
+
+    FLE::LevelComponents::Renderer* renderer = GetLevelComponent<FLE::LevelComponents::Renderer>();
+
+    renderer->SetDrawingColor(Color(1, 0, 0));
+
+    //renderer->DrawRectangleFilled(testPos, 1, 1, 0);
+    renderer->DrawArrow(testPos, testRay.GetScaledVector());
+
+    //std::cout << "============" << std::endl;
+
+    for (FLE::Ray::Collision collision : collisions) {
+        renderer->DrawRectangleFilled(collision.Point, 1, 1, 0);
+    }
+
+    //std::cout << "============" << std::endl;
+
 
     UpdateDebug();
 

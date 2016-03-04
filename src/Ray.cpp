@@ -25,11 +25,13 @@ namespace ForLeaseEngine {
         if (!entity->HasComponent(ComponentType::Collision)) return false;
         Point endPoint = Start + Direction * Scale;
         Components::Transform* transform = entity->GetComponent<Components::Transform>();
-        if (!transform) return false;
+        if (!transform) return false; // This is super redundant, but also doesn't do any harm.
         Point position = transform->Position;
         Components::Collision* collision = entity->GetComponent<Components::Collision>();
-        float halfWidth = collision->Width / 2 * transform->ScaleX;
-        float halfHeight = collision->Height / 2 * transform->ScaleY;
+        float halfWidth = collision->ScaledHalfWidth();
+        float halfHeight = collision->ScaledHalfHeight();
+
+        position[0] =
 
 
         Point topLeft(position[0] - halfWidth, position[1] + halfHeight);

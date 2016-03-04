@@ -252,16 +252,16 @@ namespace ForLeaseEngine {
             //std::cout << "X: " << numVertsX << " | Y: " << numVertsY << std::endl;
 
             for (unsigned i = 0; i < numVertsX; ++i) {
-                Point toResolve(toResolvePosition[0] - toResolveHalfWidth + (i * xSpacing), toResolvePosition[1] - toResolveHalfHeight);
+                Point toResolve(toResolvePosition[0] - toResolveHalfWidth + (i * xSpacing) + toResolveCollision->OffsetX, toResolvePosition[1] - toResolveHalfHeight + toResolveCollision->OffsetY);
                 CheckRay(toResolve, velocity, other, side, dist);
-                toResolve[1] = toResolvePosition[1] + toResolveHalfHeight;
+                toResolve[1] = toResolvePosition[1] + toResolveHalfHeight + toResolveCollision->OffsetY;
                 CheckRay(toResolve, velocity, other, side, dist);
             }
 
             for (unsigned i = 0; i < numVertsY; ++i) {
-                Point toResolve(toResolvePosition[0] - toResolveHalfWidth, toResolvePosition[1] - toResolveHalfHeight + (i * ySpacing));
+                Point toResolve(toResolvePosition[0] - toResolveHalfWidth + toResolveCollision->OffsetX, toResolvePosition[1] - toResolveHalfHeight + (i * ySpacing) + toResolveCollision->OffsetY);
                 CheckRay(toResolve, velocity, other, side, dist);
-                toResolve[0] = toResolvePosition[0] + toResolveHalfWidth;
+                toResolve[0] = toResolvePosition[0] + toResolveHalfWidth + toResolveCollision->OffsetX;
                 CheckRay(toResolve, velocity, other, side, dist);
             }
 
@@ -300,7 +300,7 @@ namespace ForLeaseEngine {
 
         void Collision::CheckRay(Point point, Vector velocity, Entity* other, Components::Collision::Side& side, float& dist) {
             //ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->DrawRectangleFilled(point, 0.25, 0.25, 0);
-            
+
             Ray toResolveRay(point, velocity, velocity.Magnitude(), 1);
 
             if (toResolveRay.IsColliding(other) && toResolveRay.GetLastDistance() < dist && toResolveRay.GetLastDistance() > Epsilon) {
