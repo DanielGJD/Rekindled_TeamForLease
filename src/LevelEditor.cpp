@@ -500,7 +500,7 @@ namespace ForLeaseEngine
                 Components::Transform* tran  = it->GetComponent<Components::Transform>();
                 Components::Model*     model = it->GetComponent<Components::Model>();
                 leg::render->SetDrawingColor(1,1,1,1);
-                if (tran != NULL && (!model || model->ModelMesh.empty()))
+                if (tran)
                 {
                     leg::render->DrawRectangle(tran->Position, 2, 2, tran->Rotation);
                 }

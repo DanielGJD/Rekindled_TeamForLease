@@ -219,7 +219,6 @@ namespace ForLeaseEngine
         if (ImGui::CollapsingHeader("Object List"))
         {
             std::vector<unsigned long> entityIDs;
-            //std::vector<std::string> entityIDs;
             for (Entity* e : Entities)
                 entityIDs.push_back(e->GetID());
 
@@ -227,18 +226,17 @@ namespace ForLeaseEngine
             objectFilter.Draw("Name##objects", 200);
             ImGui::BeginChild("Objects##objects", ImVec2(0, 150), true);
 
-            //for (std::string id : entityIDs)
             for (unsigned long id : entityIDs)
             {
                 std::stringstream name;
-                name << GetEntityByID(id)->GetName() << "[" << id << "]";
-                //name << id;
+                name << GetEntityByID(id)->GetName() << " [" << id << "]";
+
                 if (objectFilter.PassFilter(name.str().c_str()))
                 {
                     if (ImGui::MenuItem(name.str().c_str()))
                     {
                         leg::selection = GetEntityByID(id);
-                        //leg::selection = GetEntityByName(id);
+
                         if (leg::selection)
                         {
                             MakeSelection();
