@@ -193,19 +193,19 @@ namespace ForLeaseEngine {
             // No physics on either entity--not going to resolve.
             if (entity1HasPhysics == false) return;
 
-            if (entity1Collision->IsPacingPlatform()) {
-                ResolveCollisionOneEntityOnly(entity2, entity1);
-            }
-            else if (entity2Collision->IsPacingPlatform()) {
-                ResolveCollisionOneEntityOnly(entity1, entity2);
-            }
+            //if (entity1Collision->IsPacingPlatform()) {
+            //    ResolveCollisionOneEntityOnly(entity2, entity1);
+            //}
+            //else if (entity2Collision->IsPacingPlatform()) {
+            //    ResolveCollisionOneEntityOnly(entity1, entity2);
+            //}
 
-            else {
+            /*else {*/
                 // Both entities have physics.  We'll try to resolve the collision on both.
                 // We'll do it stupidly for now
                 ResolveCollisionOneEntityOnly(entity1, entity2);
                 ResolveCollisionOneEntityOnly(entity2, entity1);
-            }
+            //}
         }
 
 
@@ -231,13 +231,20 @@ namespace ForLeaseEngine {
             Components::Transform* otherTransform = other->GetComponent<Components::Transform>(true);
             Components::Collision* otherCollision = other->GetComponent<Components::Collision>(true);
 
-            if (otherCollision->IsPacingPlatform()) {
+            if (toResolveCollision->IsPacingPlatform() && other->HasComponent(ComponentType::Physics)) {
+                otherTransform->Position += toResolve->GetComponent<Components::EnemyPace>()->LastMovement(true);
+                other->GetComponent<Components::Physics>()->Velocity += toResolvePhysics->Velocity;
+                return;
+            }
+
+            //if (otherCollision->IsPacingPlatform()) {
                 //toResolveTransform->Position = toResolveTransform->Position + other->GetComponent<Components::EnemyPace>()->LastMovement(true);
                 //toResolvePhysics->Acceleration = other->GetComponent<Components::EnemyPace>()->LastMovement(true) * (1/ForLease->FrameRateController().GetDt());
-                toResolvePhysics->Velocity += other->GetComponent<Components::Physics>()->Velocity;
-                std::cout << "Here" << std::endl;
-                toResolveCollision->VelocityModifier = other->GetComponent<Components::Physics>()->Velocity;
-            }
+
+                //toResolvePhysics->Velocity += other->GetComponent<Components::Physics>()->Velocity;
+                //std::cout << "Here" << std::endl;
+                //toResolveCollision->VelocityModifier = other->GetComponent<Components::Physics>()->Velocity;
+            //}
 
             Vector velocity = toResolvePhysics->Velocity * ForLease->FrameRateController().GetDt();
             toResolveTransform->Position -= velocity;

@@ -16,7 +16,7 @@ namespace ForLeaseEngine
                                                                                               PaceSpeed(speed),
                                                                                               MaxPaceDistance(maxDistance),
                                                                                               PauseTimer(pause),
-                                                                                              Position(Parent.GetComponent<Components::Physics>()->Velocity)
+                                                                                              Position(Parent.GetComponent<Components::Transform>()->Position)
             {
                 MaxPaceDistance = 3.0;
                 DetectionDelay = 0.5;
@@ -75,7 +75,7 @@ namespace ForLeaseEngine
 
             void EnemyPace::MoveLeft(float dt)
             {
-                Position[Direction] = -PaceSpeed;
+                Position[Direction] += -PaceSpeed * dt;
                 Moved += PaceSpeed * dt;
 
                 if (Moved >= MaxPaceDistance)
@@ -88,7 +88,7 @@ namespace ForLeaseEngine
 
             void EnemyPace::MoveRight(float dt)
             {
-                Position[Direction] = PaceSpeed;
+                Position[Direction] += PaceSpeed * dt;
                 Moved += PaceSpeed * dt;
 
                 if (Moved >= MaxPaceDistance)
@@ -102,7 +102,7 @@ namespace ForLeaseEngine
             void EnemyPace::MovePause(float dt)
             {
                 ptimer += dt;
-                Position[Direction] = 0;
+                //Position[Direction] = 0;
                 if (ptimer >= PauseTimer)
                 {
                     CurrentAction = NextAction;

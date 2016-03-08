@@ -54,7 +54,7 @@ namespace ForLeaseEngine
                 void WatchPlayer(float dt);
                 int CurrentAction;
                 int NextAction;
-                Vector& Position;
+                Point& Position;
                 float Moved;
                 float ptimer;
                 float dtimer;

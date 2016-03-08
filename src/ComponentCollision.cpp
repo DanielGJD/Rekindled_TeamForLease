@@ -29,7 +29,7 @@ namespace ForLeaseEngine {
         Collision::Collision(Entity& owner, float width, float height, bool resolve, float offsetX, float offsetY, bool pacingPlatform)
             : Component(owner, ComponentType::Transform), Width(width), Height(height),
             OffsetX(offsetX), OffsetY(offsetY), CollidedLastFrame(false), CollidedWith(0), ResolveCollisions(resolve),
-            PacingPlatform(pacingPlatform && owner.HasComponent(ComponentType::EnemyPace)), VelocityModifier(0,0) {}
+            PacingPlatform(pacingPlatform && owner.HasComponent(ComponentType::EnemyPace)) {}
 
         void Collision::Initialize() {
             std::cout << Parent.GetName() << " collision init." << std::endl;

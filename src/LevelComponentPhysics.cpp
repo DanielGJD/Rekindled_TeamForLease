@@ -96,10 +96,6 @@ namespace ForLeaseEngine {
             physicsComponent->Acceleration[1] = 0;
             physicsComponent->Force[0] = 0;
             physicsComponent->Force[1] = 0;
-            if (entity->HasComponent(ComponentType::Collision)) {
-                physicsComponent->Velocity = physicsComponent->Velocity - entity->GetComponent<Components::Collision>()->VelocityModifier;
-                entity->GetComponent<Components::Collision>()->VelocityModifier = Vector(0, 0);
-            }
         }
 
         /*!
