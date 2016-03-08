@@ -231,14 +231,15 @@ namespace ForLeaseEngine {
             Components::Transform* otherTransform = other->GetComponent<Components::Transform>(true);
             Components::Collision* otherCollision = other->GetComponent<Components::Collision>(true);
 
-            Vector velocity = toResolvePhysics->Velocity * ForLease->FrameRateController().GetDt();
-
             if (otherCollision->IsPacingPlatform()) {
-                velocity += other->GetComponent<Components::Physics>()->Velocity * -1;
-                //toResolvePhysics->Velocity = toResolvePhysics->Velocity - other->GetComponent<Components::EnemyPace>()->LastMovement(true);
+                //toResolveTransform->Position = toResolveTransform->Position + other->GetComponent<Components::EnemyPace>()->LastMovement(true);
+                //toResolvePhysics->Acceleration = other->GetComponent<Components::EnemyPace>()->LastMovement(true) * (1/ForLease->FrameRateController().GetDt());
+                toResolvePhysics->Velocity += other->GetComponent<Components::Physics>()->Velocity;
+                std::cout << "Here" << std::endl;
+                toResolveCollision->VelocityModifier = other->GetComponent<Components::Physics>()->Velocity;
             }
 
-            
+            Vector velocity = toResolvePhysics->Velocity * ForLease->FrameRateController().GetDt();
             toResolveTransform->Position -= velocity;
             Point toResolvePosition = toResolveTransform->Position;
             //toResolvePosition -= velocity;

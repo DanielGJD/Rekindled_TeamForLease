@@ -44,6 +44,11 @@ void SeanState::Load() {
     //checkpoint->AddComponent(Components::Checkpoint::Create(*checkpoint));
     //checkpoint->AddComponent(new Components::Model(*checkpoint, true, false, false, "1-1Block.json"));
 
+    Entity* block = AddEntity("Block");
+    block->AddComponent(new Components::Transform(*block));
+    block->AddComponent(new Components::Physics(*block));
+    block->AddComponent(new Components::Collision(*block, 2, 2));
+
     Entity* floor = AddEntity("Floor");
     floor->AddComponent(new Components::Transform(*floor, Point(0,-4), 20, 1, 0, 0));
     floor->AddComponent(new Components::Physics(*floor, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));

@@ -69,6 +69,7 @@ namespace ForLeaseEngine {
                 Entity* CollidedWith;     //! The last entity this entity collided with
                 Side CollidedWithSide;    //! The side of the last entity this entity collided with
                 bool ResolveCollisions;   //! Whether we want to resolve collisions by moving entities
+                Vector VelocityModifier;
 
         private:
 
