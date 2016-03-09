@@ -44,6 +44,9 @@ namespace ForLeaseEngine {
 
                 virtual void Serialize(Serializer& root);
                 virtual void Deserialize(Serializer& root);
+
+                void PhysicsCompute(Entity* entity);
+                void PhysicsCleanup(Entity* entity);
             private:
                 void ResolveCollisionBoundingBox(Entity* toResolve, Entity* other);
                 void ResolveCollisionMesh(Entity* toResolve, Entity* other);

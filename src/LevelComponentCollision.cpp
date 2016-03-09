@@ -52,6 +52,13 @@ namespace ForLeaseEngine {
 
                 entity->GetComponent<Components::Collision>()->CollidedLastFrame = false;
                 entity->GetComponent<Components::Collision>()->CollidedWith = 0;
+
+                bool hasPhysics = entity->HasComponent(ComponentType::Physics);
+
+                if (hasPhysics) {
+                    PhysicsCompute(entity);
+                    PhysicsCleanup(entity);
+                }
             }
 
             for (Entity* entity1 : entities) {
@@ -181,8 +188,8 @@ namespace ForLeaseEngine {
 
 //            std::cout << "Resolving collision." << std::endl;
 
-            bool entity1HasPhysics = static_cast<bool>(entity1->GetComponentMask() & ComponentType::Physics);
-            bool entity2HasPhysics = static_cast<bool>(entity2->GetComponentMask() & ComponentType::Physics);
+            bool entity1HasPhysics = entity1->HasComponent(ComponentType::Physics);
+            bool entity2HasPhysics = entity2->HasComponent(ComponentType::Physics);
 
             // Only one entity has physics--only going to resolve on one entity
             if (entity1HasPhysics != entity2HasPhysics) {
@@ -368,6 +375,29 @@ namespace ForLeaseEngine {
             }
 
             return 0;
+        }
+
+        void Collision::PhysicsCompute(Entity* entity) {
+            Components::Physics* physicsComponent = entity->GetComponent<Components::Physics>();
+            Components::Transform* transformComponent = entity->GetComponent<Components::Transform>();
+
+            float dt;
+
+            if (physicsComponent->UnaffectedByTimeScaling) // This moves the same amount, no matter what time scaling is at
+                dt = ForLease->FrameRateController().GetUnscaledDt();
+            else                                           // This slows down as the world does
+                dt = ForLease->FrameRateController().GetDt();
+
+            physicsComponent->Velocity += physicsComponent->Acceleration * dt;
+            transformComponent->Position += physicsComponent->Velocity * dt;
+        }
+
+        void Collision::PhysicsCleanup(Entity* entity) {
+            Components::Physics* physicsComponent = entity->GetComponent<Components::Physics>();
+            physicsComponent->Acceleration[0] = 0;
+            physicsComponent->Acceleration[1] = 0;
+            physicsComponent->Force[0] = 0;
+            physicsComponent->Force[1] = 0;
         }
 
         void Collision::Serialize(Serializer& root) {

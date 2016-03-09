@@ -43,8 +43,10 @@ namespace ForLeaseEngine {
             for (Entity* entity : entities) {
                 if (CheckEntityCompatibility(entity)) {
                     ApplyGravity(entity);
-                    if (!entity->HasComponent(ComponentType::Collision)) Compute(entity);
-                    Cleanup(entity);
+                    if (!entity->HasComponent(ComponentType::Collision)) {
+                        Compute(entity);
+                        Cleanup(entity);
+                    }
                 }
             }
 
