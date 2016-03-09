@@ -26,7 +26,7 @@ namespace ForLeaseEngine
 
                 static EnemyPace* Create(Entity& owner);
                 static const ComponentType Type = ComponentType::EnemyPace;
-                EnemyPace(Entity & owner, float speed = 3.0, float maxDistance = 5.0, float pause = 2.0);
+                EnemyPace(Entity & owner, float speed = 3.0, float maxDistance = 5.0, float pause = 2.0, unsigned direction = 0);
                 ~EnemyPace();
                 virtual ComponentType GetType() { return Type; }
 

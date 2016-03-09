@@ -11,18 +11,19 @@ namespace ForLeaseEngine
 {
     namespace Components
     {
-            EnemyPace::EnemyPace(Entity& owner, float speed, float maxDistance, float pause): Component(owner, ComponentType::Physics),
+            EnemyPace::EnemyPace(Entity& owner, float speed, float maxDistance, float pause, unsigned direction): Component(owner),
                                                                                               PaceSound(""),
                                                                                               PaceSpeed(speed),
                                                                                               MaxPaceDistance(maxDistance),
                                                                                               PauseTimer(pause),
-                                                                                              Position(Parent.GetComponent<Components::Transform>()->Position)
+                                                                                              Position(Parent.GetComponent<Components::Transform>()->Position),
+                                                                                              Direction(direction)
             {
                 MaxPaceDistance = 3.0;
                 DetectionDelay = 0.5;
                 CurrentAction = Action::LEFT;
                 NextAction = Action::PAUSE;
-                Direction = 0;
+                //Direction = 0;
                 Moved = 0;
                 ptimer = 0;
                 dtimer = 0;

@@ -174,6 +174,11 @@ namespace ForLeaseEngine {
 
             if (!(entity1Collision->ResolveCollisions) || !(entity2Collision->ResolveCollisions)) return;
 
+            if (entity1->HasComponent(ComponentType::EnemyPace)) {
+                entity2->GetComponent<Components::Transform>()->Position += entity1->GetComponent<Components::EnemyPace>()->LastMovement(true) * (1 + Epsilon);
+                return;
+            }
+
 //            std::cout << "Resolving collision." << std::endl;
 
             bool entity1HasPhysics = static_cast<bool>(entity1->GetComponentMask() & ComponentType::Physics);
@@ -231,11 +236,11 @@ namespace ForLeaseEngine {
             Components::Transform* otherTransform = other->GetComponent<Components::Transform>(true);
             Components::Collision* otherCollision = other->GetComponent<Components::Collision>(true);
 
-            if (toResolveCollision->IsPacingPlatform() && other->HasComponent(ComponentType::Physics)) {
-                otherTransform->Position += toResolve->GetComponent<Components::EnemyPace>()->LastMovement(true);
-                other->GetComponent<Components::Physics>()->Velocity += toResolvePhysics->Velocity;
-                return;
-            }
+            //if (toResolveCollision->IsPacingPlatform() && other->HasComponent(ComponentType::Physics)) {
+            //    otherTransform->Position += toResolve->GetComponent<Components::EnemyPace>()->LastMovement(true);
+            //    other->GetComponent<Components::Physics>()->Velocity += toResolvePhysics->Velocity;
+            //    return;
+            //}
 
             //if (otherCollision->IsPacingPlatform()) {
                 //toResolveTransform->Position = toResolveTransform->Position + other->GetComponent<Components::EnemyPace>()->LastMovement(true);

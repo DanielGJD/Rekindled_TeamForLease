@@ -51,25 +51,26 @@ void SeanState::Load() {
 
     Entity* floor = AddEntity("Floor");
     floor->AddComponent(new Components::Transform(*floor, Point(0,-4), 20, 1, 0, 0));
-    floor->AddComponent(new Components::Physics(*floor, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
+    //floor->AddComponent(new Components::Physics(*floor, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
     floor->AddComponent(new Components::EnemyPace(*floor, 3, 20, 0));
     floor->AddComponent(new Components::Collision(*floor, 2, 2, true, 0, 0, true));
     floor->AddComponent(new Components::Model(*floor, true, false, false, "1-1Block.json"));
 
-    Entity* floor2 = AddEntity("Floor2");
-    floor2->AddComponent(new Components::Transform(*floor2, Point(0, -8), 20, 1, 0, 0));
-    floor2->AddComponent(new Components::Collision(*floor2, 2, 2));
-    floor2->AddComponent(new Components::Model(*floor2, true, false, false, "1-1Block.json"));
+    //Entity* floor2 = AddEntity("Floor2");
+    //floor2->AddComponent(new Components::Transform(*floor2, Point(0, -8), 20, 1, 0, 0));
+    //floor2->AddComponent(new Components::Collision(*floor2, 2, 2));
+    //floor2->AddComponent(new Components::EnemyPace(*floor2, 3, 20, 2, 1));
+    //floor2->AddComponent(new Components::Model(*floor2, true, false, false, "1-1Block.json"));
 
-    Entity* floor3 = AddEntity("Floor3");
-    floor3->AddComponent(new Components::Transform(*floor3, Point(0, -12), 20, 1, 0, 0));
-    floor3->AddComponent(new Components::Collision(*floor3, 2, 2));
-    floor3->AddComponent(new Components::Model(*floor3, true, false, false, "1-1Block.json"));
+    //Entity* floor3 = AddEntity("Floor3");
+    //floor3->AddComponent(new Components::Transform(*floor3, Point(0, -12), 20, 1, 0, 0));
+    //floor3->AddComponent(new Components::Collision(*floor3, 2, 2));
+    //floor3->AddComponent(new Components::Model(*floor3, true, false, false, "1-1Block.json"));
 
-    Entity* floor4 = AddEntity("Floor4");
-    floor4->AddComponent(new Components::Transform(*floor4, Point(0, -16), 20, 1, 0, 0));
-    floor4->AddComponent(new Components::Collision(*floor4, 2, 2));
-    floor4->AddComponent(new Components::Model(*floor4, true, false, false, "1-1Block.json"));
+    //Entity* floor4 = AddEntity("Floor4");
+    //floor4->AddComponent(new Components::Transform(*floor4, Point(0, -16), 20, 1, 0, 0));
+    //floor4->AddComponent(new Components::Collision(*floor4, 2, 2));
+    //floor4->AddComponent(new Components::Model(*floor4, true, false, false, "1-1Block.json"));
 
     Entity* character = AddEntity("Character");
     character->AddComponent(new Components::Transform(*character, Point(0, 4), 5, 5));
@@ -96,7 +97,7 @@ void SeanState::Load() {
     //wall->AddComponent(new Components::Model(*wall, true, false, false, "1-1Block.json"));
 
     Entity* platform = AddEntity("Platform");
-    platform->AddComponent(new Components::Transform(*platform, Point(12, 10), 1, 1));
+    platform->AddComponent(new Components::Transform(*platform, Point(12, 5), 1, 1));
     platform->AddComponent(new Components::Collision(*platform, 2.0f, 2.0f, true, -2, -2));
     platform->AddComponent(new Components::Model(*platform, true, false, false, "1-1Block.json"));
 
