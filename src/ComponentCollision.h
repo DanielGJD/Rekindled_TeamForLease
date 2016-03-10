@@ -35,7 +35,8 @@ namespace ForLeaseEngine {
                     Left,
                     Right,
                     Top,
-                    Bottom
+                    Bottom,
+                    None
                 };
 
                 static const ComponentType Type = ComponentType::Collision;

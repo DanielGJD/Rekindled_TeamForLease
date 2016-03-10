@@ -194,11 +194,13 @@ namespace ForLeaseEngine {
         else return HalfPlane::CollisionInterval(0, ti);
     }
 
-    Entity* Ray::CheckCollisions(Ray& ray, std::vector<Entity *>& entities) {
+    Entity* Ray::CheckCollisions(Ray& ray, std::vector<Entity *>& entities, Entity* ignore) {
         Entity* colliding = 0;
         float dist = ray.GetScaledVector().Magnitude();
 
         for (Entity* entity : entities) {
+            if (entity == ignore) continue;
+
             if (ray.IsColliding(entity)) {
                 if (dist > ray.GetScaledVector().Magnitude()) {
                     dist = ray.GetScaledVector().Magnitude();
@@ -214,11 +216,13 @@ namespace ForLeaseEngine {
         return i.Distance < j.Distance;
     }
 
-    std::vector<Ray::Collision> Ray::CheckCollisionsMultipleEntities(Ray& ray, std::vector<Entity *>& entities) {
+    std::vector<Ray::Collision> Ray::CheckCollisionsMultipleEntities(Ray& ray, std::vector<Entity *>& entities, Entity* ignore) {
         std::vector<Ray::Collision> collisions;
         float dist = ray.GetScaledVector().Magnitude();
 
         for (Entity * entity : entities) {
+            if (entity == ignore) continue;
+
             if (ray.IsColliding(entity) && ray.GetScaledVector().Magnitude() > Epsilon) {
                 collisions.push_back(Collision(ray.GetScaledVector().Magnitude(), entity, ray.GetIntersectionPoint()));
             }

@@ -10,6 +10,7 @@
 */
 
 #include "ComponentPhysics.h"
+#include "Engine.h"
 // #include "Entity.h"
 
 namespace ForLeaseEngine {
@@ -43,6 +44,17 @@ namespace ForLeaseEngine {
               Mass(mass), Velocity(velocity), Acceleration(acceleration),
               Force(force), UnaffectedByTimeScaling(unaffectedByTimeScaling),
               UnaffectedByGravity(unaffectedByGravity) {}
+
+        Vector Physics::GetFrameVelocity() {
+            float dt;
+
+            if (UnaffectedByTimeScaling) // This moves the same amount, no matter what time scaling is at
+                dt = ForLease->FrameRateController().GetUnscaledDt();
+            else                                           // This slows down as the world does
+                dt = ForLease->FrameRateController().GetDt();
+
+            return Velocity * dt;
+        }
 
         void Physics::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));

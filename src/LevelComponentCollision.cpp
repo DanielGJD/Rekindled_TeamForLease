@@ -33,7 +33,7 @@ namespace ForLeaseEngine {
             \param owner
                 The State instance that created this Collision LevelComponent.
         */
-        Collision::Collision(State& owner) : LevelComponent(owner, ComponentType::Collision) {}
+        Collision::Collision(State& owner, float vertexSpacing) : LevelComponent(owner, ComponentType::Collision), VertexSpacing(vertexSpacing) {}
 
         /*!
             Update function.  Loops through all entities and checks collisions.
@@ -55,13 +55,14 @@ namespace ForLeaseEngine {
 
                 bool hasPhysics = entity->HasComponent(ComponentType::Physics);
 
-                if (hasPhysics) {
-                    PhysicsCompute(entity);
-                    PhysicsCleanup(entity);
-                }
+                if (!hasPhysics) continue;
+
+                PhysicsCompute(entity);
+                PhysicsCleanup(entity);
+                CheckAndResolveCollision(entity, entities);
             }
 
-            for (Entity* entity1 : entities) {
+            /*for (Entity* entity1 : entities) {
                 if (!CheckEntityCompatibility(entity1)) continue;
 
                 for (Entity* entity2 : entities) {
@@ -76,7 +77,116 @@ namespace ForLeaseEngine {
                     }
 
                 }
+            }*/
+        }
+
+        void Collision::CheckAndResolveCollision(Entity* entity, std::vector<Entity *>& entities) {
+            Components::Transform* transform = entity->GetComponent<Components::Transform>();
+            Components::Collision* collision = entity->GetComponent<Components::Collision>();
+            Components::Physics* physics = entity->GetComponent<Components::Physics>();
+
+            // Set up rays
+            unsigned numVertsX = ceil(collision->ScaledWidth() / VertexSpacing) + 1;
+            unsigned numVertsY = ceil(collision->ScaledHeight() / VertexSpacing) + 1;
+
+            // Make sure we have at least the default # of verts per side (2, one for each corner)
+            numVertsX = numVertsX < DefaultVertsPerSide ? DefaultVertsPerSide : numVertsX;
+            numVertsY = numVertsY < DefaultVertsPerSide ? DefaultVertsPerSide : numVertsY;
+
+            float xSpacing = collision->ScaledWidth() / (numVertsX - 1);
+            float ySpacing = collision->ScaledHeight() / (numVertsY - 1);
+
+            Point position = collision->Position();
+            Vector halfDimensions = Vector(collision->ScaledHalfWidth(), collision->ScaledHalfHeight());
+            Vector velocity = physics->GetFrameVelocity();
+
+            Components::Collision::Side side = Components::Collision::Side::None;
+            float dist = 9999;
+            Entity* collidedWith = 0;
+
+            for (unsigned i = 0; i < numVertsX; ++i) {
+                Point point(position[0] - halfDimensions[0] + (i * xSpacing), position[1] - halfDimensions[1]);
+                Ray ray1(point, velocity, velocity.Magnitude(), 1);
+                Entity* collision1 = Ray::CheckCollisions(ray1, entities, entity);
+
+                point[1] = position[1] + halfDimensions[1];
+                Ray ray2(point, velocity, velocity.Magnitude(), 1);
+                Entity* collision2 = Ray::CheckCollisions(ray2, entities, entity);
+
+                if (collision1) {
+                    if (ray1.GetLastDistance() < dist && ray1.GetLastDistance() > 0) {
+                        dist = ray1.GetLastDistance();
+                        side = ray1.GetLastSide();
+                        collidedWith = collision1;
+                    }
+                }
+
+                if (collision2) {
+                    if (ray2.GetLastDistance() < dist && ray2.GetLastDistance() > 0) {
+                        dist = ray2.GetLastDistance();
+                        side = ray2.GetLastSide();
+                        collidedWith = collision2;
+                    }
+                }
             }
+
+            for (unsigned i = 0; i < numVertsY; ++i) {
+                //Point toResolve(toResolvePosition[0] - toResolveHalfWidth + toResolveCollision->OffsetX, toResolvePosition[1] - toResolveHalfHeight + (i * ySpacing) + toResolveCollision->OffsetY);
+                //CheckRay(toResolve, velocity, other, side, dist);
+                //toResolve[0] = toResolvePosition[0] + toResolveHalfWidth + toResolveCollision->OffsetX;
+                //CheckRay(toResolve, velocity, other, side, dist);
+
+                Point point(position[0] - halfDimensions[0], position[1] - halfDimensions[1] + (i * ySpacing));
+                Ray ray1(point, velocity, velocity.Magnitude(), 1);
+                Entity* collision1 = Ray::CheckCollisions(ray1, entities, entity);
+
+                point[0] = position[0] + halfDimensions[0];
+                Ray ray2(point, velocity, velocity.Magnitude(), 1);
+                Entity* collision2 = Ray::CheckCollisions(ray2, entities, entity);
+
+                if (collision1) {
+                    if (ray1.GetLastDistance() < dist && ray1.GetLastDistance() > 0) {
+                        dist = ray1.GetLastDistance();
+                        side = ray1.GetLastSide();
+                        collidedWith = collision1;
+                    }
+                }
+
+                if (collision2) {
+                    if (ray2.GetLastDistance() < dist && ray2.GetLastDistance() > 0) {
+                        dist = ray2.GetLastDistance();
+                        side = ray2.GetLastSide();
+                        collidedWith = collision2;
+                    }
+                }
+            }
+
+            collision->CollidedWithSide = side;
+
+            if (side == Components::Collision::Side::Bottom || side == Components::Collision::Side::Top) {
+                velocity[1] = 0.0f;
+                physics->Velocity[1] = 0.0f;
+            }
+            else if (side == Components::Collision::Side::Left || side == Components::Collision::Side::Right) {
+                velocity[0] = 0.0f;
+                physics->Velocity[0] = 0.0f;
+            }
+
+            if (dist > 1) dist = 1;
+            if (dist < 0) // This shit shouldn't happen
+                return;
+
+            transform->Position += velocity * dist;
+
+            //Vector correction = (velocity * dist) - (velocity * Epsilon * 10);
+
+            collision->CollidedLastFrame = true;
+            collision->CollidedWith = collidedWith;
+
+            ForLease->Dispatcher.DispatchToParent(new CollisionEvent(collidedWith), entity);
+            ForLease->Dispatcher.DispatchToParent(new CollisionEvent(entity), collidedWith);
+
+            //transform->Position += correction;
         }
 
         /*!
@@ -389,15 +499,13 @@ namespace ForLeaseEngine {
                 dt = ForLease->FrameRateController().GetDt();
 
             physicsComponent->Velocity += physicsComponent->Acceleration * dt;
-            transformComponent->Position += physicsComponent->Velocity * dt;
+            //transformComponent->Position += physicsComponent->Velocity * dt;
         }
 
         void Collision::PhysicsCleanup(Entity* entity) {
             Components::Physics* physicsComponent = entity->GetComponent<Components::Physics>();
-            physicsComponent->Acceleration[0] = 0;
-            physicsComponent->Acceleration[1] = 0;
-            physicsComponent->Force[0] = 0;
-            physicsComponent->Force[1] = 0;
+            physicsComponent->Acceleration = Vector(0, 0);
+            physicsComponent->Force = Vector(0, 0);
         }
 
         void Collision::Serialize(Serializer& root) {

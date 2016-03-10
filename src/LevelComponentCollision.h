@@ -34,8 +34,9 @@ namespace ForLeaseEngine {
             public:
                 static const ComponentType Type = ComponentType::Collision;
                 virtual ComponentType GetType() { return Type; }
-                Collision(State& owner);
+                Collision(State& owner, float vertexSpacing = 0.25);
                 void Update(std::vector<Entity *>& entities);
+                void CheckAndResolveCollision(Entity* entity, std::vector<Entity *>& entities);
                 bool CheckCollision(Entity* entity1, Entity* entity2);
                 void ResolveCollision(Entity* entity1, Entity* entity2);
                 void ResolveCollisionOneEntityOnly(Entity* toResolve, Entity* other);
@@ -52,6 +53,7 @@ namespace ForLeaseEngine {
                 void ResolveCollisionMesh(Entity* toResolve, Entity* other);
                 void CheckRay(Point point, Vector velocity, Entity* other, Components::Collision::Side& side, float& dist);
                 static const unsigned DefaultVertsPerSide = 2;
+                float VertexSpacing;
         };
 
     } // LevelComponents

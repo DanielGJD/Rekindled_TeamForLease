@@ -37,6 +37,7 @@ namespace ForLeaseEngine {
                     Vector acceleration = Vector(0,0), Vector force = Vector(0,0),
                     bool unaffectedByTimeScaling = false, bool unaffectedByGravity = false);
                 void Update() {}
+                Vector GetFrameVelocity();
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
                 float  Mass;                    //! The mass of the owning entity.

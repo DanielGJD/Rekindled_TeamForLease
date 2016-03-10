@@ -35,7 +35,7 @@ namespace ForLeaseEngine {
             Components::Collision::Side GetLastSide();
             Point GetIntersectionPoint();
             HalfPlane::CollisionInterval GetHalfPlaneInterval(const HalfPlane& halfPlane);
-            static Entity* CheckCollisions(Ray& ray, std::vector<Entity *>& entities);
+            static Entity* CheckCollisions(Ray& ray, std::vector<Entity *>& entities, Entity* ignore = 0);
 
             class Collision {
                 public:
@@ -46,7 +46,7 @@ namespace ForLeaseEngine {
                     ForLeaseEngine::Point Point;
             };
 
-            static std::vector<Collision> CheckCollisionsMultipleEntities(Ray& ray, std::vector<Entity *>& entities);
+            static std::vector<Collision> CheckCollisionsMultipleEntities(Ray& ray, std::vector<Entity *>& entities, Entity* ignore = 0);
         private:
             Point Start;
             Vector Direction;

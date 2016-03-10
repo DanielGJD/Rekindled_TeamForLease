@@ -75,7 +75,7 @@ void SeanState::Load() {
     Entity* character = AddEntity("Character");
     character->AddComponent(new Components::Transform(*character, Point(0, 4), 5, 5));
     character->AddComponent(new Components::Physics(*character));
-    character->AddComponent(new Components::Collision(*character, 2.0f, 2.0f, true, 20, 20));
+    character->AddComponent(new Components::Collision(*character, 2.0f, 2.0f, true/*, 20, 20*/));
     character->AddComponent(new Components::Model(*character, true, false, false, "1-1Block.json"));
     Components::CharacterController* charController = Components::CharacterController::Create(*character);
     charController->Acceleration = 60;
@@ -98,7 +98,7 @@ void SeanState::Load() {
 
     Entity* platform = AddEntity("Platform");
     platform->AddComponent(new Components::Transform(*platform, Point(12, 5), 1, 1));
-    platform->AddComponent(new Components::Collision(*platform, 2.0f, 2.0f, true, -2, -2));
+    platform->AddComponent(new Components::Collision(*platform, 2.0f, 2.0f, true/*, -2, -2*/));
     platform->AddComponent(new Components::Model(*platform, true, false, false, "1-1Block.json"));
 
     Serializer serial;
@@ -133,6 +133,9 @@ void SeanState::Update() {
 
     FLE::Point testPos = FLE::Point(-5, 0);
     FLE::Ray   testRay = FLE::Ray(testPos, Vector(1, -1), 20, FLE::Ray::Unlimited);
+
+    Entity* player = GetEntityByName("Character");
+    std::cout << player->GetComponent<Components::Transform>()->Position << std::endl;
 
     std::vector<FLE::Ray::Collision> collisions = FLE::Ray::CheckCollisionsMultipleEntities(testRay, Entities);
 
