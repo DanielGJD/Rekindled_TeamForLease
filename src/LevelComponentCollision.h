@@ -36,6 +36,20 @@ namespace ForLeaseEngine {
                 virtual ComponentType GetType() { return Type; }
                 Collision(State& owner, float vertexSpacing = 0.25);
                 void Update(std::vector<Entity *>& entities);
+                void CheckAndResolveSweptCollisions(Entity* entity, std::vector<Entity *>& entities);
+
+                class SweptCollision {
+                    public:
+                        Vector Normal;
+                        float Distance;
+                        Components::Collision::Side Side;
+
+                        SweptCollision(Vector normal = Vector(0,0), float distance = 999999, Components::Collision::Side side = Components::Collision::Side::None)
+                            : Normal(normal), Distance(distance), Side(side) {}
+                };
+
+                SweptCollision CheckIndividualSweptCollision(Entity* resolve, Entity* against);
+
                 void CheckAndResolveCollision(Entity* entity, std::vector<Entity *>& entities);
                 bool CheckCollision(Entity* entity1, Entity* entity2);
                 void ResolveCollision(Entity* entity1, Entity* entity2);

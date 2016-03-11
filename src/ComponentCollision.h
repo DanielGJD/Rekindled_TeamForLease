@@ -53,6 +53,12 @@ namespace ForLeaseEngine {
                 float HalfHeight();
                 float ScaledHalfWidth();
                 float ScaledHalfHeight();
+
+                Point TopLeft();
+                Point TopRight();
+                Point BotLeft();
+                Point BotRight();
+
                 Vector Offset();
                 Point Position();
 

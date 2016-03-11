@@ -20,6 +20,8 @@
 #include "Ray.h"
 #include "LevelComponentRenderer.h"
 #include "HalfPlane.h"
+#include <limits>
+#include <algorithm>
 
 int i = 0;
 
@@ -47,19 +49,24 @@ namespace ForLeaseEngine {
             then.
         */
         void Collision::Update(std::vector<Entity *>& entities) {
+            std::vector<Entity *> collisionEntities;
+
+            // Pre-screen entities for the collision component
             for (Entity* entity : entities) {
-                if (!CheckEntityCompatibility(entity)) continue;
+                if (entity->HasComponent(ComponentType::Collision)) {
+                    entity->GetComponent<Components::Collision>()->CollidedLastFrame = false;
+                    entity->GetComponent<Components::Collision>()->CollidedWith = 0;
 
-                entity->GetComponent<Components::Collision>()->CollidedLastFrame = false;
-                entity->GetComponent<Components::Collision>()->CollidedWith = 0;
+                    collisionEntities.push_back(entity);
+                }
+            }
 
-                bool hasPhysics = entity->HasComponent(ComponentType::Physics);
-
-                if (!hasPhysics) continue;
+            for (Entity* entity : collisionEntities) {
+                if (!entity->HasComponent(ComponentType::Physics)) continue;
 
                 PhysicsCompute(entity);
                 PhysicsCleanup(entity);
-                CheckAndResolveCollision(entity, entities);
+                CheckAndResolveSweptCollisions(entity, collisionEntities);
             }
 
             /*for (Entity* entity1 : entities) {
@@ -78,6 +85,90 @@ namespace ForLeaseEngine {
 
                 }
             }*/
+        }
+
+        void Collision::CheckAndResolveSweptCollisions(Entity* entity, std::vector<Entity *>& entities) {
+            SweptCollision firstCollision;
+            Components::Transform* transform = entity->GetComponent<Components::Transform>();
+            Components::Physics* physics = entity->GetComponent<Components::Physics>();
+
+            for (Entity* checkAgainst : entities) {
+                if (entity == checkAgainst) continue;
+                SweptCollision collision = CheckIndividualSweptCollision(entity, checkAgainst);
+                if (collision.Distance < firstCollision.Distance) firstCollision = collision;
+            }
+
+            transform->Position += physics->Velocity * firstCollision.Distance * ForLease->FrameRateController().GetDt();
+        }
+
+        /*!
+            Adapted from http://www.gamedev.net/page/resources/_/technical/game-programming/swept-aabb-collision-detection-and-response-r3084
+        */
+        Collision::SweptCollision Collision::CheckIndividualSweptCollision(Entity* resolve, Entity* against) {
+            Components::Transform* rTransform = resolve->GetComponent<Components::Transform>();
+            Components::Collision* rCollision = resolve->GetComponent<Components::Collision>();
+            Components::Physics* rPhysics = resolve->GetComponent<Components::Physics>();
+            Vector rVelocity = rPhysics->Velocity * ForLease->FrameRateController().GetDt();
+
+            Components::Transform* aTransform = against->GetComponent<Components::Transform>();
+            Components::Collision* aCollision = against->GetComponent<Components::Collision>();
+
+            // Get distances of edges
+            Vector possEntry;
+            Vector possExit;
+
+            if (rVelocity.x > 0) {
+                possEntry.x = aCollision->TopLeft().x - rCollision->TopRight().x;
+                possExit.x = aCollision->TopRight().x - rCollision->TopLeft().x;
+            } else {
+                possEntry.x = aCollision->TopRight().x - rCollision->TopLeft().x;
+                possExit.x = aCollision->TopLeft().x - rCollision->TopRight().x;
+            }
+
+            if (rVelocity.y < 0.0f)
+            {
+                possEntry.y = aCollision->TopLeft().y - rCollision->BotRight().y;
+                possExit.y = aCollision->BotRight().y - rCollision->TopLeft().y;
+            }
+            else
+            {
+                possEntry.y = aCollision->BotRight().y - rCollision->TopLeft().y;
+                possExit.y = aCollision->TopLeft().y - rCollision->BotRight().y;
+            }
+
+            // Get entry/exit values
+            Vector entry;
+            Vector exit;
+
+            if (rVelocity.x == 0.0f)
+            {
+                entry.x = -std::numeric_limits<float>::infinity();
+                exit.x = std::numeric_limits<float>::infinity();
+            }
+            else
+            {
+                entry.x = possEntry.x / rVelocity.x;
+                exit.x = possExit.y / rVelocity.x;
+            }
+
+            if (rVelocity.y == 0.0f)
+            {
+                entry.y = -std::numeric_limits<float>::infinity();
+                exit.y = std::numeric_limits<float>::infinity();
+            }
+            else
+            {
+                entry.y = possEntry.y / rVelocity.y;
+                exit.y = possExit.y / rVelocity.y;
+            }
+
+            float entryTime = std::max(entry.x, entry.y);
+            float exitTime = std::min(exit.x, exit.y);
+
+            if (entryTime > exitTime || (entry.x < 0 && entry.y < 0) || (entry.x > 1 || entry.y > 1))
+                return SweptCollision(Vector(0, 0), 1, Components::Collision::Side::None);
+
+            return SweptCollision(Vector(0, 0), 0, Components::Collision::Side::Top);
         }
 
         void Collision::CheckAndResolveCollision(Entity* entity, std::vector<Entity *>& entities) {

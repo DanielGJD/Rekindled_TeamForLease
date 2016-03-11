@@ -27,9 +27,11 @@ namespace ForLeaseEngine {
 	*/
 	class Hcoord
 	{
+    public:
+        float x, y;
 	protected:
-		//! X, Y, and W coordinates
-		float x, y, w;
+		//! W coordinate
+		float w;
 
 	public:
 		Hcoord();

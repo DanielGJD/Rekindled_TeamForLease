@@ -67,6 +67,46 @@ namespace ForLeaseEngine {
             return ScaledHeight() / 2;
         }
 
+        Point Collision::TopLeft() {
+            Point toReturn = Position();
+            toReturn.x -= ScaledHalfWidth();
+            toReturn.y += ScaledHalfHeight();
+
+            ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->DrawRectangleFilled(toReturn, 1, 1);
+
+            return toReturn;
+        }
+
+        Point Collision::TopRight() {
+            Point toReturn = Position();
+            toReturn.x += ScaledHalfWidth();
+            toReturn.y += ScaledHalfHeight();
+
+            ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->DrawRectangleFilled(toReturn, 1, 1);
+
+            return toReturn;
+        }
+
+        Point Collision::BotLeft() {
+            Point toReturn = Position();
+            toReturn.x -= ScaledHalfWidth();
+            toReturn.y -= ScaledHalfHeight();
+
+            ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->DrawRectangleFilled(toReturn, 1, 1);
+
+            return toReturn;
+        }
+
+        Point Collision::BotRight() {
+            Point toReturn = Position();
+            toReturn.x += ScaledHalfWidth();
+            toReturn.y -= ScaledHalfHeight();
+
+            ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->DrawRectangleFilled(toReturn, 1, 1);
+
+            return toReturn;
+        }
+
         Vector Collision::Offset() {
             return Vector(OffsetX, OffsetY);
         }
