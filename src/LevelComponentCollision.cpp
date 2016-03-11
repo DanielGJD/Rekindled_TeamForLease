@@ -89,16 +89,30 @@ namespace ForLeaseEngine {
 
         void Collision::CheckAndResolveSweptCollisions(Entity* entity, std::vector<Entity *>& entities) {
             SweptCollision firstCollision;
+            Entity* collidedAgainst = 0;
             Components::Transform* transform = entity->GetComponent<Components::Transform>();
+            Components::Collision* collision = entity->GetComponent<Components::Collision>();
             Components::Physics* physics = entity->GetComponent<Components::Physics>();
 
             for (Entity* checkAgainst : entities) {
                 if (entity == checkAgainst) continue;
-                SweptCollision collision = CheckIndividualSweptCollision(entity, checkAgainst);
-                if (collision.Distance < firstCollision.Distance) firstCollision = collision;
+                SweptCollision newCollision = CheckIndividualSweptCollision(entity, checkAgainst);
+                if (newCollision.Distance < firstCollision.Distance) {
+                    firstCollision = newCollision;
+                    collidedAgainst = checkAgainst;
+                }
             }
 
+            if (collidedAgainst) {
+                ForLease->Dispatcher.DispatchToParent(&CollisionEvent(entity), collidedAgainst);
+                ForLease->Dispatcher.DispatchToParent(&CollisionEvent(collidedAgainst), entity);
+                collision->CollidedLastFrame = true;
+                collision->CollidedWith = collidedAgainst;
+            }
+
+            //ResolveIndividualSweptCollision(entity, firstCollision);
             transform->Position += physics->Velocity * firstCollision.Distance * ForLease->FrameRateController().GetDt();
+            collision->CollidedWithSide = firstCollision.Side;
         }
 
         /*!
@@ -114,26 +128,26 @@ namespace ForLeaseEngine {
             Components::Collision* aCollision = against->GetComponent<Components::Collision>();
 
             // Get distances of edges
-            Vector possEntry;
-            Vector possExit;
+            Vector inverseEntry;
+            Vector inverseExit;
 
             if (rVelocity.x > 0) {
-                possEntry.x = aCollision->TopLeft().x - rCollision->TopRight().x;
-                possExit.x = aCollision->TopRight().x - rCollision->TopLeft().x;
+                inverseEntry.x = aCollision->TopLeft().x - rCollision->TopRight().x;
+                inverseExit.x = aCollision->TopRight().x - rCollision->TopLeft().x;
             } else {
-                possEntry.x = aCollision->TopRight().x - rCollision->TopLeft().x;
-                possExit.x = aCollision->TopLeft().x - rCollision->TopRight().x;
+                inverseEntry.x = aCollision->TopRight().x - rCollision->TopLeft().x;
+                inverseExit.x = aCollision->TopLeft().x - rCollision->TopRight().x;
             }
 
-            if (rVelocity.y < 0.0f)
+            if (rVelocity.y < 0)
             {
-                possEntry.y = aCollision->TopLeft().y - rCollision->BotRight().y;
-                possExit.y = aCollision->BotRight().y - rCollision->TopLeft().y;
+                inverseEntry.y = aCollision->TopLeft().y - rCollision->BotRight().y;
+                inverseExit.y = aCollision->BotRight().y - rCollision->TopLeft().y;
             }
             else
             {
-                possEntry.y = aCollision->BotRight().y - rCollision->TopLeft().y;
-                possExit.y = aCollision->TopLeft().y - rCollision->BotRight().y;
+                inverseEntry.y = aCollision->BotRight().y - rCollision->TopLeft().y;
+                inverseExit.y = aCollision->TopLeft().y - rCollision->BotRight().y;
             }
 
             // Get entry/exit values
@@ -147,8 +161,8 @@ namespace ForLeaseEngine {
             }
             else
             {
-                entry.x = possEntry.x / rVelocity.x;
-                exit.x = possExit.y / rVelocity.x;
+                entry.x = inverseEntry.x / rVelocity.x;
+                exit.x = inverseExit.y / rVelocity.x;
             }
 
             if (rVelocity.y == 0.0f)
@@ -158,17 +172,49 @@ namespace ForLeaseEngine {
             }
             else
             {
-                entry.y = possEntry.y / rVelocity.y;
-                exit.y = possExit.y / rVelocity.y;
+                entry.y = inverseEntry.y / rVelocity.y;
+                exit.y = inverseExit.y / rVelocity.y;
             }
 
             float entryTime = std::max(entry.x, entry.y);
             float exitTime = std::min(exit.x, exit.y);
 
-            if (entryTime > exitTime || (entry.x < 0 && entry.y < 0) || (entry.x > 1 || entry.y > 1))
-                return SweptCollision(Vector(0, 0), 1, Components::Collision::Side::None);
+            Vector normal(0, 0);
+            float dist = 1;
+            Components::Collision::Side side = Components::Collision::Side::None;
 
-            return SweptCollision(Vector(0, 0), 0, Components::Collision::Side::Top);
+            // No collision
+            if (entryTime > exitTime || (entry.x < 0 && entry.y < 0) || (entry.x > 1 || entry.y > 1))
+                return SweptCollision(normal, 1, side);
+
+            if (entry.x > entry.y) {
+                if (inverseEntry.x < 0) {
+                    normal = Vector(1, 0);
+                    side = Components::Collision::Side::Right;
+                } else {
+                    normal = Vector(-1, 0);
+                    side = Components::Collision::Side::Left;
+                }
+            } else {
+                if (inverseEntry.y > 0) {
+                    normal = Vector(0, -1);
+                    side = Components::Collision::Side::Bottom;
+                } else {
+                    normal = Vector(0, 1);
+                    side = Components::Collision::Side::Top;
+                }
+            }
+
+            dist = entryTime;
+
+            return SweptCollision(normal, dist, side);
+        }
+
+        void Collision::ResolveIndividualSweptCollision(Entity* resolve, SweptCollision collision) {
+            Components::Physics* rPhysics = resolve->GetComponent<Components::Physics>();
+            float dotprod = (rPhysics->Velocity.x * collision.Normal.y + rPhysics->Velocity.y * collision.Normal.x) * (1 - collision.Distance);
+            rPhysics->Velocity.x = dotprod * collision.Normal.y;
+            rPhysics->Velocity.y = dotprod * collision.Normal.x;
         }
 
         void Collision::CheckAndResolveCollision(Entity* entity, std::vector<Entity *>& entities) {

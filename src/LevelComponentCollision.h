@@ -49,6 +49,7 @@ namespace ForLeaseEngine {
                 };
 
                 SweptCollision CheckIndividualSweptCollision(Entity* resolve, Entity* against);
+                void ResolveIndividualSweptCollision(Entity* resolve, SweptCollision collision);
 
                 void CheckAndResolveCollision(Entity* entity, std::vector<Entity *>& entities);
                 bool CheckCollision(Entity* entity1, Entity* entity2);

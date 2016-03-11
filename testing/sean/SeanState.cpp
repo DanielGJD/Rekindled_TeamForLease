@@ -52,7 +52,7 @@ void SeanState::Load() {
     Entity* floor = AddEntity("Floor");
     floor->AddComponent(new Components::Transform(*floor, Point(0,-4), 20, 1, 0, 0));
     //floor->AddComponent(new Components::Physics(*floor, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
-    floor->AddComponent(new Components::EnemyPace(*floor, 3, 20, 0));
+    //floor->AddComponent(new Components::EnemyPace(*floor, 3, 20, 0));
     floor->AddComponent(new Components::Collision(*floor, 2, 2, true, 0, 0, true));
     floor->AddComponent(new Components::Model(*floor, true, false, false, "1-1Block.json"));
 
@@ -96,10 +96,10 @@ void SeanState::Load() {
     //wall->AddComponent(new Components::Collision(*wall, 2.0f, 2.0f, true, 0, 0));
     //wall->AddComponent(new Components::Model(*wall, true, false, false, "1-1Block.json"));
 
-    Entity* platform = AddEntity("Platform");
-    platform->AddComponent(new Components::Transform(*platform, Point(12, 5), 1, 1));
-    platform->AddComponent(new Components::Collision(*platform, 2.0f, 2.0f, true/*, -2, -2*/));
-    platform->AddComponent(new Components::Model(*platform, true, false, false, "1-1Block.json"));
+    //Entity* platform = AddEntity("Platform");
+    //platform->AddComponent(new Components::Transform(*platform, Point(12, 5), 1, 1));
+    //platform->AddComponent(new Components::Collision(*platform, 2.0f, 2.0f, true/*, -2, -2*/));
+    //platform->AddComponent(new Components::Model(*platform, true, false, false, "1-1Block.json"));
 
     Serializer serial;
     LevelComponents::Checkpoint* lcCheckpoint = new LevelComponents::Checkpoint(*this, serial);
