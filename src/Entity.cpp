@@ -361,6 +361,9 @@ namespace ForLeaseEngine {
             case ComponentType::EnemyPace:
                 component = Components::EnemyPace::Create(entity);
                 break;
+            case ComponentType::OwlAI:
+                component = Components::OwlAI::Create(entity);
+                break;
             default:
                 std::cout << "Unknown Type: " << type << std::endl;
                 return 0;

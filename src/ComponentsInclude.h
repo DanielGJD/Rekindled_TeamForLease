@@ -41,5 +41,6 @@
 #include "ComponentCheckpoint.h"
 #include "ComponentHealth.h"
 #include "ComponentEnemyPace.h"
+#include "ComponentOwlAI.h"
 
 #endif

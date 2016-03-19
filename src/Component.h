@@ -59,7 +59,8 @@ namespace ForLeaseEngine {
         Occluder               = 1 << 26,   //! Blocks light or vision
         Checkpoint             = 1 << 27,   //! Saves player position for later loading
         Health                 = 1 << 28,   //! Keeps track of health
-        EnemyPace              = 1 << 29    //! Has an enemy pace back and forth
+        EnemyPace              = 1 << 29,   //! Has an enemy pace back and forth
+        OwlAI                  = 1 << 30    //! Moves the vision cone from place to place
     };
 
     ComponentType operator|(const ComponentType& lhs, const ComponentType& rhs);
