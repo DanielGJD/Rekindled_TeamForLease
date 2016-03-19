@@ -22,8 +22,6 @@ namespace ForLeaseEngine
             else
                 modelFlip = false;
 
-            Components::VisionCone* vision = Parent.GetComponent<Components::VisionCone>();
-            vision->Direction = Direction1;
         }
 
         OwlAI* OwlAI::Create(Entity& owner)
@@ -43,6 +41,8 @@ namespace ForLeaseEngine
         {
             ForLease->Dispatcher.Attach(NULL, this, "ObjectSeen", &OwlAI::OnObjectSeen, &Parent);
             ForLease->Dispatcher.Attach(NULL, this, "ObjectNotSeen", &OwlAI::OnObjectNotSeen, &Parent);
+             Components::VisionCone* vision = Parent.GetComponent<Components::VisionCone>();
+             vision->Direction = Direction1;
         }
 
         void OwlAI::Update()
@@ -131,8 +131,8 @@ namespace ForLeaseEngine
             Serializer owl = root.GetChild("OwlAI");
             owl.ReadFloat("BlinkTime", BlinkTime);
             owl.ReadFloat("LookTime", WatchTime);
-            owl.WriteVec("Direction1", Direction1);
-            owl.WriteVec("Direction2", Direction2);
+            owl.ReadVec("Direction1", Direction1);
+            owl.ReadVec("Direction2", Direction2);
 
             if ((Direction1[0] < 0 && Direction2[0] > 0) || (Direction1[0] > 0 && Direction2[0] < 0))
                 modelFlip = true;

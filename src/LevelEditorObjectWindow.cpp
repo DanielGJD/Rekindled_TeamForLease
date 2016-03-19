@@ -437,6 +437,26 @@ namespace ForLeaseEngine
                 leg::selOccluder = NULL;
             }
         }
+
+        if (leg::selOwl && ImGui::CollapsingHeader("OwlAI"))
+        {
+            ImGui::InputFloat("Blink Time##OwlAI", &(leg::selOwl->BlinkTime));
+            ImGui::InputFloat("Watch Time##OwlAI", &(leg::selOwl->WatchTime));
+            ImGui::SliderAngle("Direction 1##owlAI", &leg::owlDir1, 0, 360);
+            leg::selOwl->Direction1[0] = cos(leg::owlDir1);
+            leg::selOwl->Direction1[1] = sin(leg::owlDir1);
+            leg::selVision->Direction = leg::selOwl->Direction1;
+            ImGui::SliderAngle("Direction 2##owlAI", &leg::owlDir2, 0, 360);
+            leg::selOwl->Direction2[0] = cos(leg::owlDir2);
+            leg::selOwl->Direction2[1] = sin(leg::owlDir2);
+
+            if (ImGui::Button("Remove OwlAI"))
+            {
+                leg::selection->DeleteComponent(ComponentType::OwlAI);
+                leg::selOwl = NULL;
+            }
+        }
+
         if (leg::selPace && ImGui::CollapsingHeader("PaceAI"))
         {
             ImGui::InputFloat("Speed##pace", &(leg::selPace->PaceSpeed));

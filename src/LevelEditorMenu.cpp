@@ -347,14 +347,19 @@ namespace ForLeaseEngine
                 leg::selOccluder = NULL;
             return;
         }
-
+        if (!(component.compare("OwlAI")) && !leg::selOwl)
+        {
+            leg::selOwl = Components::OwlAI::Create(*leg::selection);
+            if (!leg::selection->AddComponent(leg::selOwl))
+                leg::selOwl = NULL;
+            return;
+        }
         if (!(component.compare("PaceAI")) && !leg::selPace)
         {
             leg::selPace = Components::EnemyPace::Create(*leg::selection);
             if (!leg::selection->AddComponent(leg::selPace))
                 leg::selPace = NULL;
             return;
-
         }
         if (!(component.compare("Parallax")) && !leg::selParallax)
         {
@@ -486,6 +491,13 @@ namespace ForLeaseEngine
             if (counter)
                 tooltip += ", ";
             tooltip += "Particle System";
+            ++counter;
+        }
+        if (static_cast<unsigned long long>(reqMask & ComponentType::VisionCone) != 0)
+        {
+            if (counter)
+                tooltip += ", ";
+            tooltip += "Vision Cone";
             ++counter;
         }
 
