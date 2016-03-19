@@ -7,23 +7,27 @@
 namespace ForLeaseEngine {
     namespace Components {
         class Health : public Component {
-          public:
-            static const ComponentType Type = ComponentType::Health;
-            virtual ComponentType GetType() { return Type; }
+            public:
+                static const ComponentType Type = ComponentType::Health;
+                virtual ComponentType GetType() { return Type; }
 
-            float MaxHealth;
-            float CurrentHealth;
+                float MaxHealth;
+                float CurrentHealth;
+                float DamageScale;
+                float RegenScale;
 
-            Health(Entity& parent, float maxHealth, float health);
-            Health(Entity& parent, float maxHealth = 0);
-            ~Health();
+                Health(Entity& parent, float maxHealth, float health, float damageScale = 1, float regenScale = 1);
+                Health(Entity& parent, float maxHealth = 0);
+                ~Health();
 
-            void Initialize();
-            void Update();
-            void Serialize(Serializer& root);
-            void Deserialize(Serializer& root);
+                void Initialize();
+                void Update();
+                void Serialize(Serializer& root);
+                void Deserialize(Serializer& root);
 
-            void OnDamage(const Event* e);
+                void OnDamage(const Event* e);
+            private:
+                bool TookDamage;
         };
     }
 }

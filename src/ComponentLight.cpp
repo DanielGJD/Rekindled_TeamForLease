@@ -56,7 +56,7 @@ namespace ForLeaseEngine {
             LightMesh.ClearData();
             Vector normalized = Vector(Direction);
             normalized.Normalize();
-            Vector start = Vector::Rotate(normalized, -Angle / 2);
+            //Vector start = Vector::Rotate(normalized, -Angle / 2);
 
             // Check for observed objects
             Components::Transform* trans = Parent.GetComponent<Components::Transform>();
@@ -115,7 +115,7 @@ namespace ForLeaseEngine {
                 for(unsigned int i = 0; i < detected.size();) {
                     Components::Occluder* occluder = detected[i]->GetComponent<Components::Occluder>();
                     // Object must have an occluder
-                    if(!occluder || !occluder->BlocksLight) {
+                    if(!occluder) {
                         detected.erase(detected.begin() + i);
                         continue;
                     }
@@ -157,7 +157,7 @@ namespace ForLeaseEngine {
                 //std::cout << detected.size() << " OCCLUDING ENTITIES" << std::endl;
 
                 //render->SetDrawingColor(Color(0, 1, 0));
-                const float angleOffset = 0.001;
+                //const float angleOffset = 0.001;
                 // This whole thing should be adjusted to only do 1 ray cast when ray casting can return more than one entity
                 for(std::vector<Point>::iterator i = castingPoints.begin(); i != castingPoints.end(); ++i) {
                     Point point = (*i);
@@ -169,26 +169,38 @@ namespace ForLeaseEngine {
                     Point prePoint = point + offset * 0.001;
                     Point postPoint = point - offset * 0.001;
 
-                    Ray preRay = Ray(castingPoint, prePoint - castingPoint, 9999);
-                    Ray ray = Ray(castingPoint, point - castingPoint, 9999);
-                    Ray postRay = Ray(castingPoint, postPoint - castingPoint, 9999);
+                    Ray preRay = Ray(castingPoint, prePoint - castingPoint, 9999, -1);
+                    Ray ray = Ray(castingPoint, point - castingPoint, 9999, -1);
+                    Ray postRay = Ray(castingPoint, postPoint - castingPoint, 9999, -1);
 
-                    Entity* preHit = Ray::CheckCollisions(preRay, detected);
-                    Entity* hit = Ray::CheckCollisions(ray, detected);
-                    Entity* postHit = Ray::CheckCollisions(postRay, detected);
+                    //Entity* preHit = Ray::CheckCollisions(preRay, detected);
+                    //Entity* hit = Ray::CheckCollisions(ray, detected);
+                    //Entity* postHit = Ray::CheckCollisions(postRay, detected);
+                    std::vector<Ray::Collision> preHit = Ray::CheckCollisionsMultipleEntities(preRay, detected);
+                    std::vector<Ray::Collision> hit = Ray::CheckCollisionsMultipleEntities(ray, detected);
+                    std::vector<Ray::Collision> postHit = Ray::CheckCollisionsMultipleEntities(postRay, detected);
 
-                    if(preHit) {
-                        //render->SetDrawingColor(Color(1, 0, 0));
-                        litEntitiyIDs.insert(preHit->GetID());
-                        //render->DrawArrow(trans->Position, preRay.GetScaledVector());
 
-                        float preAngle = Vector::AngleBetween(zeroAngleVector, preRay.GetIntersectionPoint() - castingPoint);
-                        if(preAngle < 0)
-                            preAngle += 2 * PI;
-                        collisionPoints.insert(std::make_pair(preAngle, preRay.GetIntersectionPoint()));
-                        //->DrawLine(castingPoint, preRay.GetScaledVector());
+                    for(unsigned i = 0; i < preHit.size(); ++i) {
+                        render->SetDrawingColor(1, 0, 0, 1);
+                        render->SetDebugPointSize(8);
+                        render->DrawPoint(preHit[i].Point);
+                        if(preHit[i].Entity->HasComponent(ComponentType::Occluder)) {
+                            litEntitiyIDs.insert(preHit[i].Entity->GetID());
+
+                            if(preHit[i].Entity->GetComponent<Components::Occluder>()->BlocksLight) {
+                                float preAngle = Vector::AngleBetween(zeroAngleVector, preHit[i].Point - castingPoint);
+
+                                if(preAngle < 0) {
+                                    preAngle += 2 * PI;
+                                }
+
+                                collisionPoints.insert(std::make_pair(preAngle, preHit[i].Point));
+                                break;
+                            }
+                        }
                     }
-                    else {
+                    if(preHit.empty()) {
                         Point collision = CheckRayAgainstWindow(preRay, camCorners[0], camCorners[1], camCorners[2], camCorners[3], cameraTrans->Position);
                         float preAngle = Vector::AngleBetween(zeroAngleVector, collision - castingPoint);
                         if(preAngle < 0)
@@ -196,42 +208,115 @@ namespace ForLeaseEngine {
                         collisionPoints.insert(std::make_pair(preAngle, collision));
                     }
 
-                    if(hit) {
-                        //render->SetDrawingColor(Color(0, 1, 0));
-                        litEntitiyIDs.insert(hit->GetID());
-                        //render->DrawArrow(trans->Position, ray.GetScaledVector());
+                    for(unsigned i = 0; i < postHit.size(); ++i) {
+                        render->SetDrawingColor(1, 0, 0, 1);
+                        render->SetDebugPointSize(8);
+                        render->DrawPoint(postHit[i].Point);
+                        if(postHit[i].Entity->HasComponent(ComponentType::Occluder)) {
+                            litEntitiyIDs.insert(postHit[i].Entity->GetID());
 
-                        float angle = Vector::AngleBetween(zeroAngleVector, ray.GetIntersectionPoint() - castingPoint);
-                        if(angle < 0)
-                            angle += 2 * PI;
-                        collisionPoints.insert(std::make_pair(angle, ray.GetIntersectionPoint()));
-                        //render->DrawLine(castingPoint, ray.GetScaledVector());
-                    }
-                    else {
-                        Point collision = CheckRayAgainstWindow(ray, camCorners[0], camCorners[1], camCorners[2], camCorners[3], cameraTrans->Position);
-                        float preAngle = Vector::AngleBetween(zeroAngleVector, collision - castingPoint);
-                        if(preAngle < 0)
-                            preAngle += 2 * PI;
-                        collisionPoints.insert(std::make_pair(preAngle, collision));
-                    }
+                            if(postHit[i].Entity->GetComponent<Components::Occluder>()->BlocksLight) {
+                                float postAngle = Vector::AngleBetween(zeroAngleVector, postHit[i].Point - castingPoint);
 
-                    if(postHit) {
-                        //render->SetDrawingColor(Color(0, 0, 1));
-                        litEntitiyIDs.insert(postHit->GetID());
-                        //render->DrawArrow(trans->Position, postRay.GetScaledVector());
-                        float postAngle = Vector::AngleBetween(zeroAngleVector, postRay.GetIntersectionPoint() - castingPoint);
+                                if(postAngle < 0) {
+                                    postAngle += 2 * PI;
+                                }
+
+                                collisionPoints.insert(std::make_pair(postAngle, postHit[i].Point));
+                                break;
+                            }
+                        }
+                    }
+                    if(postHit.empty()) {
+                        Point collision = CheckRayAgainstWindow(postRay, camCorners[0], camCorners[1], camCorners[2], camCorners[3], cameraTrans->Position);
+                        float postAngle = Vector::AngleBetween(zeroAngleVector, collision - castingPoint);
                         if(postAngle < 0)
                             postAngle += 2 * PI;
-                        collisionPoints.insert(std::make_pair(postAngle, postRay.GetIntersectionPoint()));
-                        //render->DrawLine(castingPoint, postRay.GetScaledVector());
+                        collisionPoints.insert(std::make_pair(postAngle, collision));
                     }
-                    else {
-                        Point collision = CheckRayAgainstWindow(postRay, camCorners[0], camCorners[1], camCorners[2], camCorners[3], cameraTrans->Position);
-                        float preAngle = Vector::AngleBetween(zeroAngleVector, collision - castingPoint);
-                        if(preAngle < 0)
-                            preAngle += 2 * PI;
-                        collisionPoints.insert(std::make_pair(preAngle, collision));
+
+                    for(unsigned i = 0; i < hit.size(); ++i) {
+                        render->SetDrawingColor(1, 0, 0, 1);
+                        render->SetDebugPointSize(8);
+                        render->DrawPoint(hit[i].Point);
+                        if(hit[i].Entity->HasComponent(ComponentType::Occluder)) {
+                            litEntitiyIDs.insert(hit[i].Entity->GetID());
+
+                            if(hit[i].Entity->GetComponent<Components::Occluder>()->BlocksLight) {
+                                float angle = Vector::AngleBetween(zeroAngleVector, hit[i].Point - castingPoint);
+
+                                if(angle < 0) {
+                                    angle += 2 * PI;
+                                }
+
+                                collisionPoints.insert(std::make_pair(angle, hit[i].Point));
+                                break;
+                            }
+                        }
                     }
+                    if(hit.empty()) {
+                        Point collision = CheckRayAgainstWindow(ray, camCorners[0], camCorners[1], camCorners[2], camCorners[3], cameraTrans->Position);
+                        float angle = Vector::AngleBetween(zeroAngleVector, collision - castingPoint);
+                        if(angle < 0)
+                            angle += 2 * PI;
+                        collisionPoints.insert(std::make_pair(angle, collision));
+                    }
+
+//                    if(preHit) {
+//                        //render->SetDrawingColor(Color(1, 0, 0));
+//                        //litEntitiyIDs.insert(preHit->GetID());
+//                        //render->DrawArrow(trans->Position, preRay.GetScaledVector());
+//
+//                        //float preAngle = Vector::AngleBetween(zeroAngleVector, preRay.GetIntersectionPoint() - castingPoint);
+//                        //if(preAngle < 0)
+//                            //preAngle += 2 * PI;
+//                        //collisionPoints.insert(std::make_pair(preAngle, preRay.GetIntersectionPoint()));
+//                        //->DrawLine(castingPoint, preRay.GetScaledVector());
+//                    }
+//                    else {
+//                        Point collision = CheckRayAgainstWindow(preRay, camCorners[0], camCorners[1], camCorners[2], camCorners[3], cameraTrans->Position);
+//                        float preAngle = Vector::AngleBetween(zeroAngleVector, collision - castingPoint);
+//                        if(preAngle < 0)
+//                            preAngle += 2 * PI;
+//                        collisionPoints.insert(std::make_pair(preAngle, collision));
+//                    }
+//
+//                    if(hit) {
+//                        //render->SetDrawingColor(Color(0, 1, 0));
+//                        //litEntitiyIDs.insert(hit->GetID());
+//                        //render->DrawArrow(trans->Position, ray.GetScaledVector());
+//
+//                        //float angle = Vector::AngleBetween(zeroAngleVector, ray.GetIntersectionPoint() - castingPoint);
+//                        //if(angle < 0)
+//                            //angle += 2 * PI;
+//                        //collisionPoints.insert(std::make_pair(angle, ray.GetIntersectionPoint()));
+//                        //render->DrawLine(castingPoint, ray.GetScaledVector());
+//                    }
+//                    else {
+//                        Point collision = CheckRayAgainstWindow(ray, camCorners[0], camCorners[1], camCorners[2], camCorners[3], cameraTrans->Position);
+//                        float preAngle = Vector::AngleBetween(zeroAngleVector, collision - castingPoint);
+//                        if(preAngle < 0)
+//                            preAngle += 2 * PI;
+//                        collisionPoints.insert(std::make_pair(preAngle, collision));
+//                    }
+//
+//                    if(postHit) {
+//                        //render->SetDrawingColor(Color(0, 0, 1));
+//                        //litEntitiyIDs.insert(postHit->GetID());
+//                        //render->DrawArrow(trans->Position, postRay.GetScaledVector());
+//                        //float postAngle = Vector::AngleBetween(zeroAngleVector, postRay.GetIntersectionPoint() - castingPoint);
+//                        //if(postAngle < 0)
+//                            //postAngle += 2 * PI;
+//                        //collisionPoints.insert(std::make_pair(postAngle, postRay.GetIntersectionPoint()));
+//                        //render->DrawLine(castingPoint, postRay.GetScaledVector());
+//                    }
+//                    else {
+//                        Point collision = CheckRayAgainstWindow(postRay, camCorners[0], camCorners[1], camCorners[2], camCorners[3], cameraTrans->Position);
+//                        float preAngle = Vector::AngleBetween(zeroAngleVector, collision - castingPoint);
+//                        if(preAngle < 0)
+//                            preAngle += 2 * PI;
+//                        collisionPoints.insert(std::make_pair(preAngle, collision));
+//                    }
                 }
 
                 //std::cout << litEntitiyIDs.size() << " LIT ENTITIES" << std::endl;

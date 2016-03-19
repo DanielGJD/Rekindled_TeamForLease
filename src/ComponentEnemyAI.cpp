@@ -210,18 +210,38 @@ namespace ForLeaseEngine {
             }
 
             Components::SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
-            if(emitter) {
-                if(!wasHappy && Happy) {
+
+            if(!wasHappy && Happy) {
+                if(emitter) {
                     emitter->SetVolume(1.0f, LikedSeenSound);
                     emitter->StopEvent(LikedSeenSound);
                     emitter->PlayEvent(LikedSeenSound);
                 }
-                else if(!wasAngry && Angry) {
+                //std::cout << "Object Seen" << std::endl;
+                Event e = Event("ObjectSeen");
+                ForLease->Dispatcher.DispatchToParent(&e, &Parent);
+            }
+            else if(wasHappy && !Happy) {
+                //std::cout << "Object not Seen" << std::endl;
+                Event e = Event("ObjectNotSeen");
+                ForLease->Dispatcher.DispatchToParent(&e, &Parent);
+            }
+            else if(!wasAngry && Angry) {
+                if(emitter) {
                     emitter->SetVolume(1.0f,HatedSeenSound);
                     emitter->StopEvent(HatedSeenSound);
                     emitter->PlayEvent(HatedSeenSound);
                 }
+                //std::cout << "Object Seen" << std::endl;
+                Event e = Event("ObjectSeen");
+                ForLease->Dispatcher.DispatchToParent(&e, &Parent);
             }
+            else if(wasAngry && !Angry) {
+                //std::cout << "Object not Seen" << std::endl;
+                Event e = Event("ObjectNotSeen");
+                ForLease->Dispatcher.DispatchToParent(&e, &Parent);
+            }
+
 
             if(!Happy && hatedEntity) {
                 //std::cout << "Sending " << damage.Damage << " to " << hatedEntity->GetName() << " : " << hatedEntity << std::endl;
