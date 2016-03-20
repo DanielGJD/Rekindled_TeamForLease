@@ -86,8 +86,8 @@ namespace ForLeaseEngine {
 
                 // Get half planes for vision cone
                 Point mid = castingPoint + normalized;
-                Point bot = castingPoint + Vector::Rotate(normalized, Angle / 2);
-                Point top = castingPoint + Vector::Rotate(normalized, -Angle / 2);
+                Point bot = castingPoint + Vector::Rotate(Direction, Angle / 2);
+                Point top = castingPoint + Vector::Rotate(Direction, -Angle / 2);
                 HalfPlane hp1 = HalfPlane(castingPoint, top, mid);
                 HalfPlane hp2 = HalfPlane(castingPoint, bot, mid);
                 //Vector zeroAngleVector = top - castingPoint;
@@ -129,21 +129,41 @@ namespace ForLeaseEngine {
                     Point br = Point(colliderCenter[0] + halfWidth, colliderCenter[1] - halfHeight);
                     Point bl = Point(colliderCenter[0] - halfWidth, colliderCenter[1] - halfHeight);
 
-                    if(hp1.Dot(tl) < 0 && hp2.Dot(tl) < 0) {
-                        castingPoints.push_back(tl);
-                        //render->DrawPoint(tl);
+                    if(Angle <= PI) {
+                        if(hp1.Dot(tl) < 0 && hp2.Dot(tl) < 0) {
+                            castingPoints.push_back(tl);
+                            //render->DrawPoint(tl);
+                        }
+                        if(hp1.Dot(tr) < 0 && hp2.Dot(tr) < 0) {
+                            castingPoints.push_back(tr);
+                            //render->DrawPoint(tr);
+                        }
+                        if(hp1.Dot(br) < 0 && hp2.Dot(br) < 0) {
+                            castingPoints.push_back(br);
+                            //render->DrawPoint(br);
+                        }
+                        if(hp1.Dot(bl) < 0 && hp2.Dot(bl) < 0) {
+                            castingPoints.push_back(bl);
+                            //render->DrawPoint(bl);
+                        }
                     }
-                    if(hp1.Dot(tr) < 0 && hp2.Dot(tr) < 0) {
-                        castingPoints.push_back(tr);
-                        //render->DrawPoint(tr);
-                    }
-                    if(hp1.Dot(br) < 0 && hp2.Dot(br) < 0) {
-                        castingPoints.push_back(br);
-                        //render->DrawPoint(br);
-                    }
-                    if(hp1.Dot(bl) < 0 && hp2.Dot(bl) < 0) {
-                        castingPoints.push_back(bl);
-                        //render->DrawPoint(bl);
+                    else {
+                        if(hp1.Dot(tl) < 0 || hp2.Dot(tl) < 0) {
+                            castingPoints.push_back(tl);
+                            //render->DrawPoint(tl);
+                        }
+                        if(hp1.Dot(tr) < 0 || hp2.Dot(tr) < 0) {
+                            castingPoints.push_back(tr);
+                            //render->DrawPoint(tr);
+                        }
+                        if(hp1.Dot(br) < 0 || hp2.Dot(br) < 0) {
+                            castingPoints.push_back(br);
+                            //render->DrawPoint(br);
+                        }
+                        if(hp1.Dot(bl) < 0 || hp2.Dot(bl) < 0) {
+                            castingPoints.push_back(bl);
+                            //render->DrawPoint(bl);
+                        }
                     }
 
                     ++i;
@@ -191,9 +211,9 @@ namespace ForLeaseEngine {
                             if(preHit[i].Entity->GetComponent<Components::Occluder>()->BlocksLight) {
                                 float preAngle = Vector::AngleBetween(zeroAngleVector, preHit[i].Point - castingPoint);
 
-                                if(preAngle < 0) {
-                                    preAngle += 2 * PI;
-                                }
+                                //if(preAngle < 0) {
+                                    //preAngle += 2 * PI;
+                                //}
 
                                 collisionPoints.insert(std::make_pair(preAngle, preHit[i].Point));
                                 break;
@@ -203,8 +223,8 @@ namespace ForLeaseEngine {
                     if(preHit.empty()) {
                         Point collision = CheckRayAgainstWindow(preRay, camCorners[0], camCorners[1], camCorners[2], camCorners[3], cameraTrans->Position);
                         float preAngle = Vector::AngleBetween(zeroAngleVector, collision - castingPoint);
-                        if(preAngle < 0)
-                            preAngle += 2 * PI;
+                        //if(preAngle < 0)
+                            //preAngle += 2 * PI;
                         collisionPoints.insert(std::make_pair(preAngle, collision));
                     }
 
@@ -218,9 +238,9 @@ namespace ForLeaseEngine {
                             if(postHit[i].Entity->GetComponent<Components::Occluder>()->BlocksLight) {
                                 float postAngle = Vector::AngleBetween(zeroAngleVector, postHit[i].Point - castingPoint);
 
-                                if(postAngle < 0) {
-                                    postAngle += 2 * PI;
-                                }
+                                //if(postAngle < 0) {
+                                    //postAngle += 2 * PI;
+                                //}
 
                                 collisionPoints.insert(std::make_pair(postAngle, postHit[i].Point));
                                 break;
@@ -230,8 +250,8 @@ namespace ForLeaseEngine {
                     if(postHit.empty()) {
                         Point collision = CheckRayAgainstWindow(postRay, camCorners[0], camCorners[1], camCorners[2], camCorners[3], cameraTrans->Position);
                         float postAngle = Vector::AngleBetween(zeroAngleVector, collision - castingPoint);
-                        if(postAngle < 0)
-                            postAngle += 2 * PI;
+                        //if(postAngle < 0)
+                            //postAngle += 2 * PI;
                         collisionPoints.insert(std::make_pair(postAngle, collision));
                     }
 
@@ -245,9 +265,9 @@ namespace ForLeaseEngine {
                             if(hit[i].Entity->GetComponent<Components::Occluder>()->BlocksLight) {
                                 float angle = Vector::AngleBetween(zeroAngleVector, hit[i].Point - castingPoint);
 
-                                if(angle < 0) {
-                                    angle += 2 * PI;
-                                }
+                                //if(angle < 0) {
+                                //    angle += 2 * PI;
+                                //}
 
                                 collisionPoints.insert(std::make_pair(angle, hit[i].Point));
                                 break;
@@ -257,8 +277,8 @@ namespace ForLeaseEngine {
                     if(hit.empty()) {
                         Point collision = CheckRayAgainstWindow(ray, camCorners[0], camCorners[1], camCorners[2], camCorners[3], cameraTrans->Position);
                         float angle = Vector::AngleBetween(zeroAngleVector, collision - castingPoint);
-                        if(angle < 0)
-                            angle += 2 * PI;
+                        //if(angle < 0)
+                          //  angle += 2 * PI;
                         collisionPoints.insert(std::make_pair(angle, collision));
                     }
 
@@ -339,6 +359,9 @@ namespace ForLeaseEngine {
                 // Create Faces
                 for(int i = 2; i < LightMesh.GetVertexCount(); ++i) {
                     LightMesh.AddFace(IndexedFace(0, i - 1, i), LightColor);
+                }
+                if(Angle > PI) {
+                    LightMesh.AddFace(IndexedFace(0, 1, LightMesh.GetVertexCount() - 1), LightColor);
                 }
 
                 // Add edges
