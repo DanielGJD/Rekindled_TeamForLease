@@ -124,6 +124,13 @@ namespace ForLeaseEngine {
             }
         }
 
+        bool Collision::BroadphaseSweptCollision(Entity* resolve, Entity* against, float remainingTime) {
+            Point bpPosition;
+            Vector bpDimension;
+
+            //bpPosition = 
+        }
+
         /*!
             Adapted from http://www.gamedev.net/page/resources/_/technical/game-programming/swept-aabb-collision-detection-and-response-r3084
         */

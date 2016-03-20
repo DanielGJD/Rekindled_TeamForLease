@@ -67,6 +67,7 @@ namespace ForLeaseEngine {
                         }
                 };
 
+                bool BroadphaseSweptCollision(Entity* resolve, Entity* against, float remainingTime);
                 SweptCollision CheckIndividualSweptCollision(Entity* resolve, Entity* against, float remainingTime);
                 void ResolveIndividualSweptCollision(Entity* resolve, SweptCollision collision, float remainingTime);
 
