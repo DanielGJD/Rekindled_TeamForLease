@@ -110,8 +110,7 @@ namespace ForLeaseEngine {
                 collision->CollidedWith = collidedAgainst;
             }
 
-            //ResolveIndividualSweptCollision(entity, firstCollision);
-            transform->Position += physics->Velocity * firstCollision.Distance * ForLease->FrameRateController().GetDt();
+            ResolveIndividualSweptCollision(entity, firstCollision);
             collision->CollidedWithSide = firstCollision.Side;
         }
 
@@ -211,10 +210,20 @@ namespace ForLeaseEngine {
         }
 
         void Collision::ResolveIndividualSweptCollision(Entity* resolve, SweptCollision collision) {
+            Components::Transform* rTransform = resolve->GetComponent<Components::Transform>();
             Components::Physics* rPhysics = resolve->GetComponent<Components::Physics>();
-            float dotprod = (rPhysics->Velocity.x * collision.Normal.y + rPhysics->Velocity.y * collision.Normal.x) * (1 - collision.Distance);
-            rPhysics->Velocity.x = dotprod * collision.Normal.y;
-            rPhysics->Velocity.y = dotprod * collision.Normal.x;
+            float dt = ForLease->FrameRateController().GetDt();
+            float remainingTime = 1.0f - collision.Distance;
+
+            rTransform->Position += rPhysics->Velocity * collision.Distance * dt;
+
+            if (collision.Side != Components::Collision::Side::None) {
+                float dotprod = (rPhysics->Velocity.x * collision.Normal.y + rPhysics->Velocity.y * collision.Normal.x) * remainingTime;
+                rPhysics->Velocity.x = dotprod * collision.Normal.y;
+                rPhysics->Velocity.y = dotprod * collision.Normal.x;
+            }
+
+            rTransform->Position += rPhysics->Velocity * remainingTime * dt;
         }
 
         void Collision::CheckAndResolveCollision(Entity* entity, std::vector<Entity *>& entities) {
