@@ -72,7 +72,7 @@ namespace ForLeaseEngine {
             toReturn.x -= ScaledHalfWidth();
             toReturn.y += ScaledHalfHeight();
 
-            ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->DrawRectangleFilled(toReturn, 1, 1);
+            //ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->DrawRectangleFilled(toReturn, 1, 1);
 
             return toReturn;
         }
@@ -82,7 +82,7 @@ namespace ForLeaseEngine {
             toReturn.x += ScaledHalfWidth();
             toReturn.y += ScaledHalfHeight();
 
-            ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->DrawRectangleFilled(toReturn, 1, 1);
+            //ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->DrawRectangleFilled(toReturn, 1, 1);
 
             return toReturn;
         }
@@ -92,7 +92,7 @@ namespace ForLeaseEngine {
             toReturn.x -= ScaledHalfWidth();
             toReturn.y -= ScaledHalfHeight();
 
-            ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->DrawRectangleFilled(toReturn, 1, 1);
+            //ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->DrawRectangleFilled(toReturn, 1, 1);
 
             return toReturn;
         }
@@ -102,7 +102,7 @@ namespace ForLeaseEngine {
             toReturn.x += ScaledHalfWidth();
             toReturn.y -= ScaledHalfHeight();
 
-            ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->DrawRectangleFilled(toReturn, 1, 1);
+            //ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->DrawRectangleFilled(toReturn, 1, 1);
 
             return toReturn;
         }

@@ -56,25 +56,25 @@ void SeanState::Load() {
     floor->AddComponent(new Components::Collision(*floor, 2, 2, true, 0, 0, true));
     floor->AddComponent(new Components::Model(*floor, true, false, false, "1-1Block.json"));
 
-    Entity* ceil = AddEntity("Ceiling");
-    ceil->AddComponent(new Components::Transform(*ceil, Point(0, 15), 20, 1, 0, 0));
-    //floor->AddComponent(new Components::Physics(*floor, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
-    //floor->AddComponent(new Components::EnemyPace(*floor, 3, 20, 0));
-    ceil->AddComponent(new Components::Collision(*ceil, 2, 2, true, 0, 0, true));
-    ceil->AddComponent(new Components::Model(*ceil, true, false, false, "1-1Block.json"));
+    //Entity* ceil = AddEntity("Ceiling");
+    //ceil->AddComponent(new Components::Transform(*ceil, Point(0, 15), 20, 1, 0, 0));
+    ////floor->AddComponent(new Components::Physics(*floor, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
+    ////floor->AddComponent(new Components::EnemyPace(*floor, 3, 20, 0));
+    //ceil->AddComponent(new Components::Collision(*ceil, 2, 2, true, 0, 0, true));
+    //ceil->AddComponent(new Components::Model(*ceil, true, false, false, "1-1Block.json"));
 
-    Entity* lWall = AddEntity("LeftWall");
-    lWall->AddComponent(new Components::Transform(*lWall, Point(-10, 0), 1, 20, 0, 0));
-    //floor->AddComponent(new Components::Physics(*floor, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
-    //floor->AddComponent(new Components::EnemyPace(*floor, 3, 20, 0));
-    lWall->AddComponent(new Components::Collision(*lWall, 2, 2, true, 0, 0, true));
-    lWall->AddComponent(new Components::Model(*lWall, true, false, false, "1-1Block.json"));
+    //Entity* lWall = AddEntity("LeftWall");
+    //lWall->AddComponent(new Components::Transform(*lWall, Point(-10, 0), 1, 20, 0, 0));
+    ////floor->AddComponent(new Components::Physics(*floor, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
+    ////floor->AddComponent(new Components::EnemyPace(*floor, 3, 20, 0));
+    //lWall->AddComponent(new Components::Collision(*lWall, 2, 2, true, 0, 0, true));
+    //lWall->AddComponent(new Components::Model(*lWall, true, false, false, "1-1Block.json"));
 
     Entity* rWall = AddEntity("RightWall");
     rWall->AddComponent(new Components::Transform(*rWall, Point(10, 0), 1, 20, 0, 0));
     //floor->AddComponent(new Components::Physics(*floor, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
     //floor->AddComponent(new Components::EnemyPace(*floor, 3, 20, 0));
-    rWall->AddComponent(new Components::Collision(*rWall, 2, 2, true, 0, 0, true));
+    rWall->AddComponent(new Components::Collision(*rWall, 2, 2, false, 0, 0, true));
     rWall->AddComponent(new Components::Model(*rWall, true, false, false, "1-1Block.json"));
 
     //Entity* floor2 = AddEntity("Floor2");

@@ -116,7 +116,8 @@ namespace ForLeaseEngine {
 
                 time -= firstCollision.Distance;
 
-                ResolveIndividualSweptCollision(entity, firstCollision, time);
+                if (collidedAgainst->GetComponent<Components::Collision>()->ResolveCollisions)
+                    ResolveIndividualSweptCollision(entity, firstCollision, time);
 
                 if (firstCollision.Side != Components::Collision::Side::None)
                     collision->CollidedWithSide = firstCollision.Side;
