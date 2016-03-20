@@ -35,6 +35,7 @@ namespace ForLeaseEngine
                 float MaxPaceDistance;
                 float PauseTimer;
                 float DetectionDelay;
+                float ResumeTime;
                 int Direction;
 
                 void Initialize();
@@ -56,6 +57,7 @@ namespace ForLeaseEngine
                 float Moved;
                 float ptimer;
                 float dtimer;
+                float rtimer;
         };
     }
   }

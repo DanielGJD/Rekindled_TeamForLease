@@ -20,6 +20,7 @@ namespace ForLeaseEngine
         {
             MaxPaceDistance = 3.0;
             DetectionDelay = 0.5;
+            ResumeTime = 2.0;
             CurrentAction = Action::LEFT;
             NextAction = Action::PAUSE;
             Direction = 0;
@@ -39,14 +40,14 @@ namespace ForLeaseEngine
 
         EnemyPace::~EnemyPace()
         {
-            ForLease->Dispatcher.Detach(this, "PlayerSeen");
-            ForLease->Dispatcher.Detach(this, "PlayerNotSeen");
+            ForLease->Dispatcher.Detach(this, "ObjectSeen");
+            ForLease->Dispatcher.Detach(this, "ObjectNotSeen");
         }
 
         void EnemyPace::Initialize()
         {
-            ForLease->Dispatcher.Attach(NULL, this, "PlayerSeen", &EnemyPace::OnPlayerSeen, &Parent);
-            ForLease->Dispatcher.Attach(NULL, this, "PlayerNotSeen", &EnemyPace::OnPlayerNotSeen, &Parent);
+            ForLease->Dispatcher.Attach(NULL, this, "ObjectSeen", &EnemyPace::OnPlayerSeen, &Parent);
+            ForLease->Dispatcher.Attach(NULL, this, "ObjectNotSeen", &EnemyPace::OnPlayerNotSeen, &Parent);
         }
 
         void EnemyPace::Update()
@@ -54,8 +55,11 @@ namespace ForLeaseEngine
             float dt = ForLease->FrameRateController().GetDt();
             if (playerDetected)
                 dtimer += dt;
+            else
+                rtimer += dt;
 
-            if (dtimer <= DetectionDelay)
+            if ((dtimer <= DetectionDelay && playerDetected) ||
+                (rtimer > ResumeTime && !playerDetected))
             {
                 switch (CurrentAction)
                 {
@@ -137,6 +141,7 @@ namespace ForLeaseEngine
         {
             std::cout << "player seen\n";
             playerDetected = true;
+            //rtimer = 0;
         }
 
         void EnemyPace::OnPlayerNotSeen(Event const* e)
@@ -144,6 +149,7 @@ namespace ForLeaseEngine
             std::cout << "player not seen\n";
             playerDetected = false;
             dtimer = 0;
+            rtimer = 0;
         }
 
         void EnemyPace::Serialize(Serializer& root)
@@ -153,7 +159,10 @@ namespace ForLeaseEngine
             pace.WriteFloat("MaxPaceDistance", MaxPaceDistance);
             pace.WriteFloat("PaceSpeed", PaceSpeed);
             pace.WriteFloat("PauseTimer", PauseTimer);
+            pace.WriteFloat("ResumeTime", ResumeTime);
             pace.WriteInt("Direction", Direction);
+            pace.WriteInt("CurrentAction", CurrentAction);
+            pace.WriteInt("NextAction", NextAction);
             pace.WriteUlonglong("Type", static_cast<unsigned long long>(Type));
             root.Append(pace, "EnemyPace");
         }
@@ -165,7 +174,11 @@ namespace ForLeaseEngine
             pace.ReadFloat("MaxPaceDistance", MaxPaceDistance);
             pace.ReadFloat("PaceSpeed", PaceSpeed);
             pace.ReadFloat("PauseTimer", PauseTimer);
+            pace.ReadFloat("ResumeTime", ResumeTime);
+            pace.ReadInt("CurrentAction", CurrentAction);
+            pace.ReadInt("NextAction", NextAction);
             pace.ReadInt("Direction", Direction);
+            rtimer = ResumeTime;
         }
     }
 }

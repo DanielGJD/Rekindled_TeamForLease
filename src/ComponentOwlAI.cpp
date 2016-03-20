@@ -41,8 +41,8 @@ namespace ForLeaseEngine
         {
             ForLease->Dispatcher.Attach(NULL, this, "ObjectSeen", &OwlAI::OnObjectSeen, &Parent);
             ForLease->Dispatcher.Attach(NULL, this, "ObjectNotSeen", &OwlAI::OnObjectNotSeen, &Parent);
-             Components::VisionCone* vision = Parent.GetComponent<Components::VisionCone>();
-             vision->Direction = Direction1;
+            Components::VisionCone* vision = Parent.GetComponent<Components::VisionCone>();
+            vision->Direction = Direction1;
         }
 
         void OwlAI::Update()
@@ -96,6 +96,7 @@ namespace ForLeaseEngine
                 if (modelFlip)
                 {
                     Components::Model* model = Parent.GetComponent<Components::Model>();
+                    vision->Offset[0] *= -1;
 
                     if (model)
                         model->FlipY = !(model->FlipY);

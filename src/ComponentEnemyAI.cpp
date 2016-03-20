@@ -109,20 +109,6 @@ namespace ForLeaseEngine {
 //                    DetectionTimer = 0;
 //                }
 //            }
-            static bool dispatchSeen = false;
-            static bool dispatchNotSeen = false;
-            if (Angry && !dispatchSeen)
-            {
-                ForLease->Dispatcher.DispatchToParent(new Event("PlayerSeen"), &Parent);
-                dispatchSeen = true;
-                dispatchNotSeen = false;
-            }
-            else if (!Angry && !dispatchNotSeen)
-            {
-                ForLease->Dispatcher.DispatchToParent(new Event("PlayerNotSeen"), &Parent);
-                dispatchSeen = false;
-                dispatchNotSeen = true;
-            }
         }
 
         void EnemyAI::Serialize(Serializer& root) {
