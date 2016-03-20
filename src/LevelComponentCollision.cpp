@@ -88,40 +88,49 @@ namespace ForLeaseEngine {
         }
 
         void Collision::CheckAndResolveSweptCollisions(Entity* entity, std::vector<Entity *>& entities) {
-            SweptCollision firstCollision;
-            Entity* collidedAgainst = 0;
+            float time = 1.0f;
+            
             Components::Transform* transform = entity->GetComponent<Components::Transform>();
             Components::Collision* collision = entity->GetComponent<Components::Collision>();
             Components::Physics* physics = entity->GetComponent<Components::Physics>();
 
-            for (Entity* checkAgainst : entities) {
-                if (entity == checkAgainst) continue;
-                SweptCollision newCollision = CheckIndividualSweptCollision(entity, checkAgainst);
-                if (newCollision.Distance < firstCollision.Distance) {
-                    firstCollision = newCollision;
-                    collidedAgainst = checkAgainst;
+            while (time > Epsilon) {
+                Entity* collidedAgainst = 0;
+                SweptCollision firstCollision;
+
+                for (Entity* checkAgainst : entities) {
+                    if (entity == checkAgainst) continue;
+                    SweptCollision newCollision = CheckIndividualSweptCollision(entity, checkAgainst, time);
+                    if (newCollision.Distance < firstCollision.Distance) {
+                        firstCollision = newCollision;
+                        collidedAgainst = checkAgainst;
+                    }
                 }
-            }
 
-            if (collidedAgainst) {
-                ForLease->Dispatcher.DispatchToParent(&CollisionEvent(entity), collidedAgainst);
-                ForLease->Dispatcher.DispatchToParent(&CollisionEvent(collidedAgainst), entity);
-                collision->CollidedLastFrame = true;
-                collision->CollidedWith = collidedAgainst;
-            }
+                if (collidedAgainst) {
+                    ForLease->Dispatcher.DispatchToParent(&CollisionEvent(entity, firstCollision.SelfSide), collidedAgainst);
+                    ForLease->Dispatcher.DispatchToParent(&CollisionEvent(collidedAgainst, firstCollision.Side), entity);
+                    collision->CollidedLastFrame = true;
+                    collision->CollidedWith = collidedAgainst;
+                }
 
-            ResolveIndividualSweptCollision(entity, firstCollision);
-            collision->CollidedWithSide = firstCollision.Side;
+                time -= firstCollision.Distance;
+
+                ResolveIndividualSweptCollision(entity, firstCollision, time);
+
+                if (firstCollision.Side != Components::Collision::Side::None)
+                    collision->CollidedWithSide = firstCollision.Side;
+            }
         }
 
         /*!
             Adapted from http://www.gamedev.net/page/resources/_/technical/game-programming/swept-aabb-collision-detection-and-response-r3084
         */
-        Collision::SweptCollision Collision::CheckIndividualSweptCollision(Entity* resolve, Entity* against) {
+        Collision::SweptCollision Collision::CheckIndividualSweptCollision(Entity* resolve, Entity* against, float remainingTime) {
             Components::Transform* rTransform = resolve->GetComponent<Components::Transform>();
             Components::Collision* rCollision = resolve->GetComponent<Components::Collision>();
             Components::Physics* rPhysics = resolve->GetComponent<Components::Physics>();
-            Vector rVelocity = rPhysics->Velocity * ForLease->FrameRateController().GetDt();
+            Vector rVelocity = rPhysics->Velocity * ForLease->FrameRateController().GetDt() * remainingTime;
 
             Components::Transform* aTransform = against->GetComponent<Components::Transform>();
             Components::Collision* aCollision = against->GetComponent<Components::Collision>();
@@ -209,11 +218,11 @@ namespace ForLeaseEngine {
             return SweptCollision(normal, dist, side);
         }
 
-        void Collision::ResolveIndividualSweptCollision(Entity* resolve, SweptCollision collision) {
+        void Collision::ResolveIndividualSweptCollision(Entity* resolve, SweptCollision collision, float remainingTime) {
             Components::Transform* rTransform = resolve->GetComponent<Components::Transform>();
             Components::Physics* rPhysics = resolve->GetComponent<Components::Physics>();
             float dt = ForLease->FrameRateController().GetDt();
-            float remainingTime = 1.0f - collision.Distance;
+            //float remainingTime = time - collision.Distance;
 
             rTransform->Position += rPhysics->Velocity * collision.Distance * dt;
 
@@ -223,7 +232,7 @@ namespace ForLeaseEngine {
                 rPhysics->Velocity.y = dotprod * collision.Normal.x;
             }
 
-            rTransform->Position += rPhysics->Velocity * remainingTime * dt;
+            //rTransform->Position += rPhysics->Velocity * remainingTime * dt;
         }
 
         void Collision::CheckAndResolveCollision(Entity* entity, std::vector<Entity *>& entities) {

@@ -156,7 +156,8 @@ void SeanState::Update() {
     FLE::Ray   testRay = FLE::Ray(testPos, Vector(1, -1), 20, FLE::Ray::Unlimited);
 
     Entity* player = GetEntityByName("Character");
-    std::cout << player->GetComponent<Components::Transform>()->Position << std::endl;
+    //std::cout << player->GetComponent<Components::Transform>()->Position << std::endl;
+    std::cout << ForLease->FrameRateController().GetDt() << std::endl;
 
     std::vector<FLE::Ray::Collision> collisions = FLE::Ray::CheckCollisionsMultipleEntities(testRay, Entities);
 

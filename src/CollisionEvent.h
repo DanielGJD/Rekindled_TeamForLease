@@ -16,6 +16,7 @@
 
 #include "Event.h"
 #include "Entity.h"
+#include "ComponentCollision.h"
 #include <utility>
 
 namespace ForLeaseEngine {
@@ -30,8 +31,9 @@ namespace ForLeaseEngine {
     class CollisionEvent : public Event {
         public:
             Entity* With;
+            Components::Collision::Side Side;
 
-            CollisionEvent(Entity* with);
+            CollisionEvent(Entity* with, Components::Collision::Side side = Components::Collision::Side::None);
 
         private:
             CollisionEvent() = delete;
