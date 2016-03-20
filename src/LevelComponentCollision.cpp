@@ -162,7 +162,7 @@ namespace ForLeaseEngine {
             else
             {
                 entry.x = inverseEntry.x / rVelocity.x;
-                exit.x = inverseExit.y / rVelocity.x;
+                exit.x = inverseExit.x / rVelocity.x;
             }
 
             if (rVelocity.y == 0.0f)
@@ -184,7 +184,7 @@ namespace ForLeaseEngine {
             Components::Collision::Side side = Components::Collision::Side::None;
 
             // No collision
-            if (entryTime > exitTime || (entry.x < 0 && entry.y < 0) || (entry.x > 1 || entry.y > 1))
+            if (entryTime > exitTime || (entry.x < 0.0f && entry.y < 0.0f) || (entry.x > 1.0f || entry.y > 1.0f))
                 return SweptCollision(normal, 1, side);
 
             if (entry.x > entry.y) {
