@@ -101,6 +101,15 @@ namespace ForLeaseEngine {
                 for (Entity* checkAgainst : entities) {
                     if (entity == checkAgainst) continue;
                     if (!BroadphaseSweptCollision(entity, checkAgainst, time)) continue;
+
+                    if (!checkAgainst->GetComponent<Components::Collision>()->ResolveCollisions) {
+                        ForLease->Dispatcher.DispatchToParent(&CollisionEvent(entity), checkAgainst);
+                        ForLease->Dispatcher.DispatchToParent(&CollisionEvent(checkAgainst), entity);
+                        //collision->CollidedLastFrame = true;
+                        //collision->CollidedWith = collidedAgainst;
+                        continue;
+                    }
+
                     SweptCollision newCollision = CheckIndividualSweptCollision(entity, checkAgainst, time);
                     if (newCollision.Distance < firstCollision.Distance) {
                         firstCollision = newCollision;
