@@ -289,7 +289,14 @@ namespace ForLeaseEngine {
                     if(entity->HasComponent(ComponentType::Light)) {
                         Components::Light* light = entity->GetComponent<Components::Light>();
                         SetBlendMode(light->LightMode);
-                        SetTexture(NULL);
+                        if(light->LightTexture.empty()) {
+                            SetTexture(NULL);
+                        }
+                        else {
+                            SetTexture(ForLease->Resources.GetTexture(light->LightTexture));
+                            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+                            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+                        }
                         ModelView = Matrix::Translation(trans->Position);
                         glBindFramebuffer(GL_FRAMEBUFFER, LightFBO);
                         DrawMesh(light->GetLightMesh(), light->DrawOutline, false);
@@ -760,9 +767,15 @@ namespace ForLeaseEngine {
                     if(i < mesh->GetFaceCount() && (it == SortedEdges.end() || i <= (*it).first)) {
                         SetDrawingColor(faceColors[i]);
                         IndexedFace face = mesh->GetIndexedFace(i);
+                        Point uv0 = mesh->GetUV(face.Indices[0]);
+                        Point uv1 = mesh->GetUV(face.Indices[1]);
+                        Point uv2 = mesh->GetUV(face.Indices[2]);
                         glBegin(GL_TRIANGLES);
+                            glTexCoord2f(uv0[0], uv0[1]);
                             glVertex2f(transformed[face.Indices[0]][0], transformed[face.Indices[0]][1]);
+                            glTexCoord2f(uv1[0], uv1[1]);
                             glVertex2f(transformed[face.Indices[1]][0], transformed[face.Indices[1]][1]);
+                            glTexCoord2f(uv2[0], uv2[1]);
                             glVertex2f(transformed[face.Indices[2]][0], transformed[face.Indices[2]][1]);
                         glEnd();
                         ++TriCount;
@@ -786,6 +799,8 @@ namespace ForLeaseEngine {
                         IndexedFace face = mesh->GetIndexedFace(i);
                         SetDrawingColor(faceColors[i]);
                         for(int j = 0; j < 3; ++j) {
+                            Point uv = mesh->GetUV(face.Indices[j]);
+                            glTexCoord2f(uv[0], uv[1]);
                             glVertex2f(transformed[face.Indices[j]][0], transformed[face.Indices[j]][1]);
                         }
                         ++TriCount;

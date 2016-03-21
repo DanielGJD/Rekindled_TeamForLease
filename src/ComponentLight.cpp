@@ -25,12 +25,11 @@
 namespace ForLeaseEngine {
 
     namespace Components {
-
         Light::Light(Entity& parent, bool active, bool visible, bool drawOutline, Vector offset,
-                     Vector direction, float angle, Color lightColor, BlendMode lightMode) :
+                     Vector direction, float angle, Color lightColor, BlendMode lightMode, float radius, std::string lightTexture) :
                      Component(parent),
                      Active(active), Visible(visible), DrawOutline(drawOutline), Offset(offset),
-                     Direction(direction), Angle(angle), LightColor(lightColor), LightMode(lightMode) {}
+                     Direction(direction), Angle(angle), LightColor(lightColor), LightMode(lightMode), Radius(radius), LightTexture(lightTexture) {}
 
         Light::~Light() {}
 
@@ -107,8 +106,14 @@ namespace ForLeaseEngine {
                 castingPoints.push_back(bot);
 
                 for(unsigned int i = 0; i < 4; ++i) {
-                    if(hp1.Dot(camCorners[i]) < 0 && hp2.Dot(camCorners[i]) < 0)
-                        castingPoints.push_back(camCorners[i]);
+                    if(Angle <= PI) {
+                        if(hp1.Dot(camCorners[i]) < 0 && hp2.Dot(camCorners[i]) < 0)
+                            castingPoints.push_back(camCorners[i]);
+                    }
+                    else {
+                        if(hp1.Dot(camCorners[i]) < 0 || hp2.Dot(camCorners[i]) < 0)
+                            castingPoints.push_back(camCorners[i]);
+                    }
                 }
 
                 // Get all casting points
@@ -343,9 +348,25 @@ namespace ForLeaseEngine {
                // std::cout << collisionPoints.size() << " COLLISION POINTS" << std::endl;
 
                 // Add vertices to mesh
-                LightMesh.AddVertex(0, 0, 0, 0);
+                LightMesh.AddVertex(0, 0, 0.5, 0.5);
+                float textureScale = 1 / (2 * Radius);
+                Vector toLightSpace = Point() - castingPoint;
+                //std::cout << textureScale << std::endl;
                 for(std::map<float, Point>::iterator i = collisionPoints.begin(); i != collisionPoints.end(); ++i) {
-                    LightMesh.AddVertex((*i).second + worldToModel, Point(0, 0));
+                    Point uv;
+                    if(LightTexture.compare("") != 0) {
+                        Point inLightSpace = (*i).second + toLightSpace;
+                        Vector uvVec = inLightSpace - Point();
+                        float dist = uvVec.Magnitude();
+                        float newDist = dist * textureScale;
+                        uvVec.Normalize();
+                        uvVec = uvVec * newDist;
+                        uv = Point() + uvVec;
+                        //Matrix toUV = Matrix::Translation(Vector(0.5, 0.5));
+                        uv = uv + Vector(0.5, 0.5);
+                    }
+
+                    LightMesh.AddVertex((*i).second + worldToModel, uv);
                 }
 
                 // Debug drawing
@@ -377,6 +398,14 @@ namespace ForLeaseEngine {
 
                 //std::cout << "I see " << multi_e.EntityIDs.size() << " entities" << std::endl;
                 //ForLease->Dispatcher.DispatchToParent(&multi_e, &Parent);
+                static bool write = true;
+                if(Parent.GetName().compare("GreenLight") == 0 && write) {
+                    Serializer lightMeshWrite;
+                    LightMesh.Serialize(lightMeshWrite);
+                    lightMeshWrite.WriteFile("LightMesh.json");
+                    write = false;
+                }
+
                 return litEntitiyIDs;
             }
         }
@@ -395,6 +424,8 @@ namespace ForLeaseEngine {
             LightColor.Serialize(lightColor);
             light.Append(lightColor, "LightColor");
             light.WriteInt("LightMode", LightMode);
+            light.WriteFloat("Radius", Radius);
+            light.WriteString("LightTexture", LightTexture);
             root.Append(light, "Light");
         }
 
@@ -411,6 +442,8 @@ namespace ForLeaseEngine {
             int lightMode;
             light.ReadInt("LightMode", lightMode);
             lightMode = lightMode;
+            light.ReadFloat("Radius", Radius);
+            light.ReadString("LightTexture", LightTexture);
         }
 
         Mesh* Light::GetLightMesh() {
