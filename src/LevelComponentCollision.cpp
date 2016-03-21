@@ -96,10 +96,11 @@ namespace ForLeaseEngine {
 
             while (time > Epsilon) {
                 Entity* collidedAgainst = 0;
-                SweptCollision firstCollision;
+                SweptCollision firstCollision(Vector(0,0), 1.0f, Components::Collision::Side::None);
 
                 for (Entity* checkAgainst : entities) {
                     if (entity == checkAgainst) continue;
+                    if (!BroadphaseSweptCollision(entity, checkAgainst, time)) continue;
                     SweptCollision newCollision = CheckIndividualSweptCollision(entity, checkAgainst, time);
                     if (newCollision.Distance < firstCollision.Distance) {
                         firstCollision = newCollision;
@@ -116,7 +117,7 @@ namespace ForLeaseEngine {
 
                 time -= firstCollision.Distance;
 
-                if (collidedAgainst->GetComponent<Components::Collision>()->ResolveCollisions)
+                //if (collidedAgainst && collidedAgainst->GetComponent<Components::Collision>()->ResolveCollisions)
                     ResolveIndividualSweptCollision(entity, firstCollision, time);
 
                 if (firstCollision.Side != Components::Collision::Side::None)
@@ -125,10 +126,44 @@ namespace ForLeaseEngine {
         }
 
         bool Collision::BroadphaseSweptCollision(Entity* resolve, Entity* against, float remainingTime) {
-            Point bpPosition;
-            Vector bpDimension;
+            Components::Collision* rCollision = resolve->GetComponent<Components::Collision>();
+            Components::Physics* rPhysics = resolve->GetComponent<Components::Physics>();
+            Components::Collision* aCollision = against->GetComponent<Components::Collision>();
+            float dt = ForLease->FrameRateController().GetDt();
+            Vector rVelocity = rPhysics->Velocity * dt * remainingTime;
 
-            //bpPosition = 
+            Point bpPositionTL = rCollision->TopLeft();
+            Point bpPositionBR = rCollision->BotRight();
+            //Vector bpDimension;
+            //bpDimension.x = rCollision->ScaledWidth();
+            //bpDimension.y = rCollision->ScaledHeight();
+            
+            if (rVelocity.x < 0) bpPositionTL.x += rVelocity.x;
+            else bpPositionBR.x += rVelocity.x;
+
+            if (rVelocity.y < 0) bpPositionBR.y += rVelocity.y;
+            else bpPositionTL.y += rVelocity.y;
+
+            Point aPositionTL = aCollision->TopLeft();
+            Point aPositionBR = aCollision->BotRight();
+
+            //if (rVelocity.x > 0) {
+            //    bpDimension.x += rVelocity.x;
+            //} else {
+            //    bpPositionTL.x += rVelocity.x;
+            //    bpDimension.x -= rVelocity.x;
+            //}
+
+            //if (rVelocity.y > 0) {
+            //    bpDimension.y += rVelocity.y;
+            //} else {
+            //    bpPositionTL.y += rVelocity.y;
+            //    bpDimension.y -= rVelocity.y;
+            //}
+
+            //Point bpPositionBR = bpPositionTL + bpDimension;
+
+            return !(bpPositionBR.x < aPositionTL.x || bpPositionTL.x > aPositionBR.x || bpPositionBR.y > aPositionTL.y || bpPositionTL.y < aPositionBR.y);
         }
 
         /*!
