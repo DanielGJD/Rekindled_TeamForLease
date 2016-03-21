@@ -89,7 +89,7 @@ namespace ForLeaseEngine {
 
         void Collision::CheckAndResolveSweptCollisions(Entity* entity, std::vector<Entity *>& entities) {
             float time = 1.0f;
-            
+
             Components::Transform* transform = entity->GetComponent<Components::Transform>();
             Components::Collision* collision = entity->GetComponent<Components::Collision>();
             Components::Physics* physics = entity->GetComponent<Components::Physics>();
@@ -103,8 +103,10 @@ namespace ForLeaseEngine {
                     if (!BroadphaseSweptCollision(entity, checkAgainst, time)) continue;
 
                     if (!checkAgainst->GetComponent<Components::Collision>()->ResolveCollisions) {
-                        ForLease->Dispatcher.DispatchToParent(&CollisionEvent(entity), checkAgainst);
-                        ForLease->Dispatcher.DispatchToParent(&CollisionEvent(checkAgainst), entity);
+                        CollisionEvent toCA = CollisionEvent(entity);
+                        CollisionEvent toEntity = CollisionEvent(checkAgainst);
+                        ForLease->Dispatcher.DispatchToParent(&toCA, checkAgainst);
+                        ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
                         //collision->CollidedLastFrame = true;
                         //collision->CollidedWith = collidedAgainst;
                         continue;
@@ -118,8 +120,10 @@ namespace ForLeaseEngine {
                 }
 
                 if (collidedAgainst) {
-                    ForLease->Dispatcher.DispatchToParent(&CollisionEvent(entity, firstCollision.SelfSide), collidedAgainst);
-                    ForLease->Dispatcher.DispatchToParent(&CollisionEvent(collidedAgainst, firstCollision.Side), entity);
+                    CollisionEvent toCA = CollisionEvent(entity, firstCollision.SelfSide);
+                    CollisionEvent toEntity = CollisionEvent(collidedAgainst, firstCollision.Side);
+                    ForLease->Dispatcher.DispatchToParent(&toCA, collidedAgainst);
+                    ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
                     collision->CollidedLastFrame = true;
                     collision->CollidedWith = collidedAgainst;
                 }
@@ -146,7 +150,7 @@ namespace ForLeaseEngine {
             //Vector bpDimension;
             //bpDimension.x = rCollision->ScaledWidth();
             //bpDimension.y = rCollision->ScaledHeight();
-            
+
             if (rVelocity.x < 0) bpPositionTL.x += rVelocity.x;
             else bpPositionBR.x += rVelocity.x;
 
