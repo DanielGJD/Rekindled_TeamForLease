@@ -126,6 +126,10 @@ namespace ForLeaseEngine {
                     ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
                     collision->CollidedLastFrame = true;
                     collision->CollidedWith = collidedAgainst;
+
+                    if (collidedAgainst->GetComponent<Components::Collision>()->IsPacingPlatform()) {
+                        entity->GetComponent<Components::Transform>()->Position += collidedAgainst->GetComponent<Components::EnemyPace>()->LastMovement();
+                    }
                 }
 
                 time -= firstCollision.Distance;
