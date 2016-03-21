@@ -429,43 +429,85 @@ namespace ForLeaseEngine {
 //                    render->DrawPoint(bot);
 //                    render->DrawPoint(mid);
 
-                    // Check if closest point is in cone
-                    if(hp1.Dot(closest) < 0 && hp2.Dot(closest) < 0) {
-//                        render->SetDrawingColor(1, 1, 1, 1);
-//                        render->DrawLine(position, closest);
-                        detected.push_back(*i);
+                    if(angle <= 3.1415927) {
+                        // Check if closest point is in cone
+                        if(hp1.Dot(closest) < 0 && hp2.Dot(closest) < 0) {
+    //                        render->SetDrawingColor(1, 1, 1, 1);
+    //                        render->DrawLine(position, closest);
+                            detected.push_back(*i);
+                        }
+                        // Check if cone end points are in bb
+                        else if(top[0] > bbleft && top[0] < bbright && top[1] > bbbottom && top[1] < bbtop) {
+    //                        render->SetDrawingColor(1, 1, 1, 1);
+    //                        render->DrawLine(position, top);
+                            detected.push_back(*i);
+                        }
+                        else if(bot[0] > bbleft && bot[0] < bbright && bot[1] > bbbottom && bot[1] < bbtop) {
+    //                        render->SetDrawingColor(1, 1, 1, 1);
+    //                        render->DrawLine(position, bot);
+                            detected.push_back(*i);
+                        }
+                        // Check if any bb corners are in cone
+                        else if(hp1.Dot(Point(bbright, bbtop)) < 0 && hp2.Dot(Point(bbright, bbtop)) < 0) {
+    //                        render->SetDrawingColor(1, 1, 1, 1);
+    //                        render->DrawLine(position, Point(bbright, bbtop));
+                            detected.push_back(*i);
+                        }
+                        else if(hp1.Dot(Point(bbright, bbbottom)) < 0 && hp2.Dot(Point(bbright, bbbottom)) < 0) {
+    //                        render->SetDrawingColor(1, 1, 1, 1);
+    //                        render->DrawLine(position, Point(bbright, bbbottom));
+                            detected.push_back(*i);
+                        }
+                        else if(hp1.Dot(Point(bbleft, bbbottom)) < 0 && hp2.Dot(Point(bbleft, bbbottom)) < 0) {
+    //                        render->SetDrawingColor(1, 1, 1, 1);
+    //                        render->DrawLine(position, Point(bbleft, bbbottom));
+                            detected.push_back(*i);
+                        }
+                        else if(hp1.Dot(Point(bbleft, bbtop))  < 0 && hp2.Dot(Point(bbleft, bbtop)) < 0) {
+    //                        render->SetDrawingColor(1, 1, 1, 1);
+    //                        render->DrawLine(position, Point(bbleft, bbtop));
+                            detected.push_back(*i);
+                        }
                     }
-                    // Check if cone end points are in bb
-                    else if(top[0] > bbleft && top[0] < bbright && top[1] > bbbottom && top[1] < bbtop) {
-//                        render->SetDrawingColor(1, 1, 1, 1);
-//                        render->DrawLine(position, top);
-                        detected.push_back(*i);
-                    }
-                    else if(bot[0] > bbleft && bot[0] < bbright && bot[1] > bbbottom && bot[1] < bbtop) {
-//                        render->SetDrawingColor(1, 1, 1, 1);
-//                        render->DrawLine(position, bot);
-                        detected.push_back(*i);
-                    }
-                    // Check if any bb corners are in cone
-                    else if(hp1.Dot(Point(bbright, bbtop)) < 0 && hp2.Dot(Point(bbright, bbtop)) < 0) {
-//                        render->SetDrawingColor(1, 1, 1, 1);
-//                        render->DrawLine(position, Point(bbright, bbtop));
-                        detected.push_back(*i);
-                    }
-                    else if(hp1.Dot(Point(bbright, bbbottom)) < 0 && hp2.Dot(Point(bbright, bbbottom)) < 0) {
-//                        render->SetDrawingColor(1, 1, 1, 1);
-//                        render->DrawLine(position, Point(bbright, bbbottom));
-                        detected.push_back(*i);
-                    }
-                    else if(hp1.Dot(Point(bbleft, bbbottom)) < 0 && hp2.Dot(Point(bbleft, bbbottom)) < 0) {
-//                        render->SetDrawingColor(1, 1, 1, 1);
-//                        render->DrawLine(position, Point(bbleft, bbbottom));
-                        detected.push_back(*i);
-                    }
-                    else if(hp1.Dot(Point(bbleft, bbtop))  < 0 && hp2.Dot(Point(bbleft, bbtop)) < 0) {
-//                        render->SetDrawingColor(1, 1, 1, 1);
-//                        render->DrawLine(position, Point(bbleft, bbtop));
-                        detected.push_back(*i);
+                    else {
+                        // Check if closest point is in cone
+                        if(hp1.Dot(closest) < 0 || hp2.Dot(closest) < 0) {
+    //                        render->SetDrawingColor(1, 1, 1, 1);
+    //                        render->DrawLine(position, closest);
+                            detected.push_back(*i);
+                        }
+                        // Check if cone end points are in bb
+                        else if(top[0] > bbleft && top[0] < bbright && top[1] > bbbottom && top[1] < bbtop) {
+    //                        render->SetDrawingColor(1, 1, 1, 1);
+    //                        render->DrawLine(position, top);
+                            detected.push_back(*i);
+                        }
+                        else if(bot[0] > bbleft && bot[0] < bbright && bot[1] > bbbottom && bot[1] < bbtop) {
+    //                        render->SetDrawingColor(1, 1, 1, 1);
+    //                        render->DrawLine(position, bot);
+                            detected.push_back(*i);
+                        }
+                        // Check if any bb corners are in cone
+                        else if(hp1.Dot(Point(bbright, bbtop)) < 0 || hp2.Dot(Point(bbright, bbtop)) < 0) {
+    //                        render->SetDrawingColor(1, 1, 1, 1);
+    //                        render->DrawLine(position, Point(bbright, bbtop));
+                            detected.push_back(*i);
+                        }
+                        else if(hp1.Dot(Point(bbright, bbbottom)) < 0 || hp2.Dot(Point(bbright, bbbottom)) < 0) {
+    //                        render->SetDrawingColor(1, 1, 1, 1);
+    //                        render->DrawLine(position, Point(bbright, bbbottom));
+                            detected.push_back(*i);
+                        }
+                        else if(hp1.Dot(Point(bbleft, bbbottom)) < 0 || hp2.Dot(Point(bbleft, bbbottom)) < 0) {
+    //                        render->SetDrawingColor(1, 1, 1, 1);
+    //                        render->DrawLine(position, Point(bbleft, bbbottom));
+                            detected.push_back(*i);
+                        }
+                        else if(hp1.Dot(Point(bbleft, bbtop))  < 0 || hp2.Dot(Point(bbleft, bbtop)) < 0) {
+    //                        render->SetDrawingColor(1, 1, 1, 1);
+    //                        render->DrawLine(position, Point(bbleft, bbtop));
+                            detected.push_back(*i);
+                        }
                     }
                 }
             }
