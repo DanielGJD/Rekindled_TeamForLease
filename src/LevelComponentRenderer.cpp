@@ -299,7 +299,7 @@ namespace ForLeaseEngine {
                         }
                         ModelView = Matrix::Translation(trans->Position);
                         glBindFramebuffer(GL_FRAMEBUFFER, LightFBO);
-                        DrawMesh(light->GetLightMesh(), light->DrawOutline, false);
+                        DrawMesh(light->GetLightMesh(), light->DrawOutline, true);
                         if(trans->UILayer) {
                             glBindFramebuffer(GL_FRAMEBUFFER, UIFBO);
                         }

@@ -65,11 +65,16 @@ namespace ForLeaseEngine {
 //            render->DrawArrow(trans->Position, Vector::Rotate(Direction * 4, Angle / 2));
 //            render->DrawArrow(trans->Position, Vector::Rotate(Direction * 4, -Angle / 2));
 
-            std::vector<Entity*> detected = ForLease->GameStateManager().CurrentState().GetEntitiesInCone(trans->Position + Offset, 0, normalized, Angle);
-            for(std::vector<Entity*>::iterator i = detected.begin(); i != detected.end(); ++i) {
-                if(*i == &Parent) {
-                    detected.erase(i);
-                    break;
+            std::vector<Entity*> broadDetected = ForLease->GameStateManager().CurrentState().GetEntitiesInCone(trans->Position + Offset, 0, normalized, Angle);
+            std::vector<Entity*> detected;
+            for(std::vector<Entity*>::iterator i = broadDetected.begin(); i != broadDetected.end(); ++i) {
+//                if(*i == &Parent) {
+//                    detected.erase(i);
+//                    break;
+//                }
+                Components::Occluder* occluder = (*i)->GetComponent<Components::Occluder>();
+                if(*i != &Parent && occluder && occluder->BlocksLight) {
+                    detected.push_back(*i);
                 }
             }
             //std::cout << detected.size() << " POTENTIAL ENTITIES" << std::endl;
