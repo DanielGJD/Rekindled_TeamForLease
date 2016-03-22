@@ -26,7 +26,9 @@ namespace ForLeaseEngine {
 
         Filesystem::Filesystem(std::string gameFile) {
             Preinitialize();
+            PreinitializePlatforms();
             Initialize(gameFile);
+            CreateSaveLocation();
         }
 
         void Filesystem::Preinitialize() {
@@ -37,7 +39,20 @@ namespace ForLeaseEngine {
             if (PathExists("animations/")) AssetPaths.insert({ AssetType::Animation, "animations/" });
             if (PathExists("images/")) AssetPaths.insert({ AssetType::Image, "images/" });
             if (PathExists("fonts/")) AssetPaths.insert({ AssetType::Font, "fonts/" });
+            AssetPaths.insert({ AssetType::SaveFolderName, "Blisstopia/" });
         }
+
+        void Filesystem::PreinitializePlatforms() {
+            #ifdef FLE_WINDOWS
+                char* userProfile = getenv("USERPROFILE");
+
+                std::stringstream ss;
+                ss << userProfile << "/Documents/";
+                
+                if (PathExists(ss.str())) AssetPaths.insert({ AssetType::UserData, ss.str() });
+            #endif
+        }
+
         /*!
             If we constructed the Filesystem instance already, but want to fix it
             with a game file.
@@ -57,6 +72,14 @@ namespace ForLeaseEngine {
                 if (oldPath != AssetPaths.end()) oldPath->second = newPath.second;
                 else AssetPaths.insert({ newPath.first, newPath.second });
             }
+        }
+
+        void Filesystem::CreateSaveLocation() {
+            #ifdef FLE_WINDOWS
+                std::stringstream saveLocation;
+                saveLocation << AssetDirectory(AssetType::UserData) << AssetDirectory(AssetType::SaveFolderName);
+                CreateDirectory(saveLocation.str().c_str(), NULL);
+            #endif
         }
 
         #ifdef FLE_WINDOWS
