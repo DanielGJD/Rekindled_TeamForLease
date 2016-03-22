@@ -79,6 +79,17 @@ namespace ForLeaseEngine
                 Position[Direction] += -PaceSpeed * dt;
                 Moved += PaceSpeed * dt;
 
+                Components::Collision* collision = Parent.GetComponent<Components::Collision>();
+                if (collision) {
+                    std::vector<Entity*> entities = ForLease->GameStateManager().CurrentState().GetEntitiesInBox(Position, collision->ScaledWidth(), collision->ScaledHeight());
+                    for (Entity* entity : entities) {
+                        if (entity->HasComponent(ComponentType::Physics)) {
+                            entity->GetComponent<Components::Physics>()->Velocity[Direction] = 0;
+                            entity->GetComponent<Components::Transform>()->Position += LastMovement();
+                        }
+                    }
+                }
+
                 if (Moved >= MaxPaceDistance)
                 {
                     CurrentAction = NextAction;
@@ -91,6 +102,17 @@ namespace ForLeaseEngine
             {
                 Position[Direction] += PaceSpeed * dt;
                 Moved += PaceSpeed * dt;
+
+                Components::Collision* collision = Parent.GetComponent<Components::Collision>();
+                if (collision) {
+                    std::vector<Entity*> entities = ForLease->GameStateManager().CurrentState().GetEntitiesInBox(Position, collision->ScaledWidth(), collision->ScaledHeight());
+                    for (Entity* entity : entities) {
+                        if (entity->HasComponent(ComponentType::Physics)) {
+                            entity->GetComponent<Components::Physics>()->Velocity[Direction] = 0;
+                            entity->GetComponent<Components::Transform>()->Position += LastMovement();
+                        }
+                    }
+                }
 
                 if (Moved >= MaxPaceDistance)
                 {
