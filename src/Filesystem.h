@@ -48,8 +48,7 @@ namespace ForLeaseEngine {
                     Image,
                     Font,
                     UserData,
-                    Save,
-                    SaveFolderName
+                    Save
                 };
 
                 typedef std::pair<AssetType, std::string> AssetPath;

@@ -39,7 +39,7 @@ namespace ForLeaseEngine {
             if (PathExists("animations/")) AssetPaths.insert({ AssetType::Animation, "animations/" });
             if (PathExists("images/")) AssetPaths.insert({ AssetType::Image, "images/" });
             if (PathExists("fonts/")) AssetPaths.insert({ AssetType::Font, "fonts/" });
-            AssetPaths.insert({ AssetType::SaveFolderName, "Blisstopia/" });
+            AssetPaths.insert({ AssetType::Save, "Blisstopia/" });
         }
 
         void Filesystem::PreinitializePlatforms() {
@@ -77,8 +77,13 @@ namespace ForLeaseEngine {
         void Filesystem::CreateSaveLocation() {
             #ifdef FLE_WINDOWS
                 std::stringstream saveLocation;
-                saveLocation << AssetDirectory(AssetType::UserData) << AssetDirectory(AssetType::SaveFolderName);
+                saveLocation << AssetDirectory(AssetType::UserData) << AssetDirectory(AssetType::Save);
                 CreateDirectory(saveLocation.str().c_str(), NULL);
+
+                auto save = AssetPaths.find(AssetType::Save);
+
+                if (save != AssetPaths.end()) save->second = saveLocation.str();
+                else AssetPaths.insert({ AssetType::Save, saveLocation.str() });
             #endif
         }
 
