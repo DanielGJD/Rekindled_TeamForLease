@@ -409,10 +409,11 @@ namespace ForLeaseEngine
             ImGui::Checkbox("Draw Outline##Light", &(leg::selLight->DrawOutline));
             ImGui::Combo("Blending Mode##light", &leg::lightBlend, "None\0Alpha\0Additive\0Multiply\0\0");
             leg::selLight->LightMode = static_cast<BlendMode>(leg::lightBlend);
-            ImGui::SliderAngle("Angle##Light", &(leg::selLight->Angle), 0, 180);
+            ImGui::SliderAngle("Angle##Light", &(leg::selLight->Angle), 0, 360);
             ImGui::SliderAngle("Direction##light", &leg::lightAngle, 0, 360);
             leg::selLight->Direction[0] = cos(leg::lightAngle);
             leg::selLight->Direction[1] = sin(leg::lightAngle);
+            ImGui::DragFloat("Radius##light", &(leg::selLight->Radius), 0.01);
             ImGui::PushItemWidth(width);
             ImGui::DragFloat("X##LightOffset", &(leg::selLight->Offset[0]), 0.05);
             ImGui::SameLine();
@@ -421,7 +422,33 @@ namespace ForLeaseEngine
             ImGui::Text("Offset");
             ImGui::PopItemWidth();
             ImGui::ColorEdit4("Light Color", const_cast<float*>(leg::selLight->LightColor.GetAll()));
+            if (ImGui::TreeNode("Edit Texture##light"))
+            {
+                ImGui::Text("Current Texture: %s", leg::selLight->LightTexture.c_str());
 
+                static ImGuiTextFilter textures;
+                textures.Draw("##light", 300);
+                ImGui::Text("Available Textures");
+                ImGui::BeginChild("textures", ImVec2(0, 100), true);
+                for (std::string s : leg::textureNames)
+                {
+                    if (textures.PassFilter(s.c_str()))
+                    {
+                        if (ImGui::MenuItem(s.c_str()))
+                        {
+                            leg::selLight->LightTexture = s;
+                        }
+                    }
+                }
+                ImGui::EndChild();
+
+                if (ImGui::Button("Clear Sound##enemyAI"))
+                {
+                    leg::selLight->LightTexture = "";
+                }
+
+                ImGui::TreePop();
+            }
             if (ImGui::Button("Remove Light"))
             {
                 leg::selection->DeleteComponent(ComponentType::Light);
