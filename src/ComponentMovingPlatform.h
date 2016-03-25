@@ -30,25 +30,27 @@ namespace ForLeaseEngine
                 enum class Action : char
                 {
                     Pause,
-                    Left,
-                    Right,
+                    Away,
+                    Back,
                     Resume
                 };
 
-                static MovingPlatform* Create(Entity& owner);
+                enum class Axis : char
+                {
+                    Horizontal,
+                    Vertical
+                };
+
                 static const ComponentType Type = ComponentType::MovingPlatform;
-                MovingPlatform(Entity & owner, float speed = 3.0, float maxDistance = 5.0, float pause = 2.0, unsigned direction = 0);
+                MovingPlatform(Entity & owner, float speed = 3.0, float maxDistance = 5.0, float pause = 2.0, Axis direction = Axis::Horizontal);
                 ~MovingPlatform();
                 virtual ComponentType GetType() { return Type; }
 
-                std::string PaceSound;
-                float PaceSpeed;
-                float MaxPaceDistance;
+                float Speed;
+                float MaxMove;
                 float PauseTimer;
-                float DetectionDelay;
-                int Direction;
+                Axis Direction;
 
-                void Initialize();
                 void Update();
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
@@ -56,12 +58,11 @@ namespace ForLeaseEngine
                 Vector LastMovement(bool scaleDt = true);
 
             private:
-                void MoveLeft(float dt);
-                void MoveRight(float dt);
+                void MoveAway(float dt);
+                void MoveBack(float dt);
                 void MovePause(float dt);
                 Action CurrentAction;
                 Action NextAction;
-                //Point& Position;
                 float Moved;
                 float CurrentPauseTimer;
         };

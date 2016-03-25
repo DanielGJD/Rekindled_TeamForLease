@@ -364,6 +364,9 @@ namespace ForLeaseEngine {
             case ComponentType::OwlAI:
                 component = Components::OwlAI::Create(entity);
                 break;
+            case ComponentType::MovingPlatform:
+                component = new Components::MovingPlatform(entity);
+                break;
             default:
                 std::cout << "Unknown Type: " << type << std::endl;
                 return 0;

@@ -23,40 +23,20 @@ namespace ForLeaseEngine
 {
     namespace Components
     {
-            MovingPlatform::MovingPlatform(Entity& owner, float speed, float maxDistance, float pause, unsigned direction): Component(owner, ComponentType::Transform | ComponentType::Collision | ComponentType::Physics),
-                                                                                              PaceSound(""),
-                                                                                              PaceSpeed(speed),
-                                                                                              MaxPaceDistance(maxDistance),
+            MovingPlatform::MovingPlatform(Entity& owner, float speed, float maxDistance, float pause, Axis direction) : Component(owner, ComponentType::Transform | ComponentType::Collision | ComponentType::Physics),
+                                                                                              Speed(speed),
+                                                                                              MaxMove(maxDistance),
                                                                                               PauseTimer(pause),
-                                                                                              //Position(Parent.GetComponent<Components::Transform>()->Position),
                                                                                               Direction(direction)
             {
-                MaxPaceDistance = 3.0;
-                DetectionDelay = 0.5;
-                CurrentAction = Action::Left;
-                NextAction = Action::Pause;
-                //Direction = 0;
+                CurrentAction = Action::Away;
+                NextAction = Action::Away;
                 Moved = 0;
                 CurrentPauseTimer = 0;
             }
 
-            MovingPlatform * MovingPlatform::Create(Entity& owner)
-            {
-                MovingPlatform * pace = new MovingPlatform(owner);
-                pace->Initialize();
-                return pace;
-            }
-
             MovingPlatform::~MovingPlatform()
             {
-                ForLease->Dispatcher.Detach(this, "PlayerSeen");
-                ForLease->Dispatcher.Detach(this, "PlayerNotSeen");
-            }
-
-            void MovingPlatform::Initialize()
-            {
-                ForLease->Dispatcher.Attach(NULL, this, "PlayerSeen", &EnemyPace::OnPlayerSeen, &Parent);
-                ForLease->Dispatcher.Attach(NULL, this, "PlayerNotSeen", &EnemyPace::OnPlayerNotSeen, &Parent);
             }
 
             void MovingPlatform::Update()
@@ -68,20 +48,27 @@ namespace ForLeaseEngine
                 case Action::Pause:
                     MovePause(dt);
                     break;
-                case Action::Left:
-                    MoveLeft(dt);
+                case Action::Away:
+                    MoveAway(dt);
                     break;
-                case Action::Right:
-                    MoveRight(dt);
+                case Action::Back:
+                    MoveBack(dt);
                     break;
                 }
             }
 
 
-            void MovingPlatform::MoveLeft(float dt)
+            void MovingPlatform::MoveAway(float dt)
             {
-                //Position[Direction] += -PaceSpeed * dt;
-                Moved += PaceSpeed * dt;
+                Components::Physics* physics = Parent.GetComponent<Components::Physics>();
+
+                if (Direction == Axis::Horizontal)
+                    physics->Velocity[0] = -Speed * dt;
+                else
+                    physics->Velocity[1] = -Speed * dt;
+
+                //[Direction] += -Speed * dt;
+                Moved += Speed * dt;
 
                 //Components::Collision* collision = Parent.GetComponent<Components::Collision>();
                 //if (collision) {
@@ -94,18 +81,25 @@ namespace ForLeaseEngine
                 //    }
                 //}
 
-                if (Moved >= MaxPaceDistance)
+                if (Moved >= MaxMove)
                 {
                     CurrentAction = NextAction;
-                    NextAction = Action::Right;
-                    Moved = -MaxPaceDistance;
+                    NextAction = Action::Back;
+                    Moved = -MaxMove;
                 }
             }
 
-            void MovingPlatform::MoveRight(float dt)
+            void MovingPlatform::MoveBack(float dt)
             {
+                Components::Physics* physics = Parent.GetComponent<Components::Physics>();
+
+                if (Direction == Axis::Horizontal)
+                    physics->Velocity[0] = Speed * dt;
+                else
+                    physics->Velocity[1] = Speed * dt;
+
                 //Position[Direction] += PaceSpeed * dt;
-                Moved += PaceSpeed * dt;
+                Moved += Speed * dt;
 
                 //Components::Collision* collision = Parent.GetComponent<Components::Collision>();
                 //if (collision) {
@@ -118,11 +112,11 @@ namespace ForLeaseEngine
                 //    }
                 //}
 
-                if (Moved >= MaxPaceDistance)
+                if (Moved >= MaxMove)
                 {
                     CurrentAction = NextAction;
-                    NextAction = Action::Left;
-                    Moved = -MaxPaceDistance;
+                    NextAction = Action::Away;
+                    Moved = -MaxMove;
                 }
             }
 
@@ -148,10 +142,10 @@ namespace ForLeaseEngine
             {
                 root.WriteUlonglong("Type", static_cast<unsigned long long>(Type));
                 Serializer plat = root.GetChild("MovingPlatform");
-                plat.WriteFloat("MaxPaceDistance", MaxPaceDistance);
-                plat.WriteFloat("PaceSpeed", PaceSpeed);
+                plat.WriteFloat("MaxMove", MaxMove);
+                plat.WriteFloat("Speed", Speed);
                 plat.WriteFloat("PauseTimer", PauseTimer);
-                plat.WriteInt("Direction", Direction);
+                plat.WriteInt("Direction", static_cast<int>(Direction));
                 plat.WriteUlonglong("Type", static_cast<unsigned long long>(Type));
                 root.Append(plat, "MovingPlatform");
             }
@@ -159,15 +153,20 @@ namespace ForLeaseEngine
             void MovingPlatform::Deserialize(Serializer& root)
             {
                 Serializer plat = root.GetChild("MovingPlatform");
-                plat.ReadFloat("MaxPaceDistance", MaxPaceDistance);
-                plat.ReadFloat("MaxPaceDistance", MaxPaceDistance);
-                plat.ReadFloat("PaceSpeed", PaceSpeed);
+                plat.ReadFloat("MaxMove", MaxMove);
+                plat.ReadFloat("Speed", Speed);
                 plat.ReadFloat("PauseTimer", PauseTimer);
-                plat.ReadInt("Direction", Direction);
+                int direction;
+                plat.ReadInt("Direction", direction);
+                Direction = static_cast<Axis>(direction);
             }
 
             Vector MovingPlatform::LastMovement(bool scaleDt) {
                 Vector movement(0,0);
+                unsigned direction;
+
+                if (Direction == Axis::Horizontal) direction = 0;
+                else direction = 1;
 
                 float dt;
                 if (scaleDt)
@@ -175,10 +174,10 @@ namespace ForLeaseEngine
                 else
                     dt = 1.0f;
 
-                if (CurrentAction == Action::Left)
-                    movement[Direction] = -(PaceSpeed * dt);
-                else if (CurrentAction == Action::Right)
-                    movement[Direction] = (PaceSpeed * dt);
+                if (CurrentAction == Action::Away)
+                    movement[direction] = -(Speed * dt);
+                else if (CurrentAction == Action::Back)
+                    movement[direction] = (Speed * dt);
 
                 return movement;
             }

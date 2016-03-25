@@ -60,8 +60,9 @@ namespace ForLeaseEngine {
         Checkpoint             = 1 << 27,   //! Saves player position for later loading
         Health                 = 1 << 28,   //! Keeps track of health
         EnemyPace              = 1 << 29,   //! Has an enemy pace back and forth
-        MovingPlatform         = 1 << 30,   //! Similar to EnemyPace, but moves a platform instead
-        OwlAI                  = 1 << 31    //! Moves the vision cone from place to place
+        OwlAI                  = 1 << 30,   //! Moves the vision cone from place to place
+        MovingPlatform         = 1 << 31    //! Similar to EnemyPace, but moves a platform instead
+
     };
 
     ComponentType operator|(const ComponentType& lhs, const ComponentType& rhs);
