@@ -259,7 +259,8 @@ namespace ForLeaseEngine {
             Angle between the vectors
     */
     float Vector::AngleBetween(Vector const& vec1, Vector const& vec2) {
-        float angle = atan2(vec2[1], vec2[0]) - atan2(vec1[1], vec1[0]);
+        //float angle = atan2(vec2[1], vec2[0]) - atan2(vec1[1], vec1[0]);
+        float angle = atan2(vec1[0] * vec2[1] - vec1[1] * vec2[0], vec1[0] * vec2[0] + vec1[1] * vec2[1]);
         return angle;
     }
 

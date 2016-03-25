@@ -21,15 +21,16 @@
 #include <vector>
 #include <unordered_set>
 #include <map>
+#include <fstream>
 
 namespace ForLeaseEngine {
 
     namespace Components {
         Light::Light(Entity& parent, bool active, bool visible, bool drawOutline, Vector offset,
-                     Vector direction, float angle, Color lightColor, BlendMode lightMode, float radius, std::string lightTexture) :
+                     Vector direction, float angle, Color lightColor, BlendMode lightMode, float radius, std::string lightTexture, bool pointLight) :
                      Component(parent),
                      Active(active), Visible(visible), DrawOutline(drawOutline), Offset(offset),
-                     Direction(direction), Angle(angle), LightColor(lightColor), LightMode(lightMode), Radius(radius), LightTexture(lightTexture) {}
+                     Direction(direction), Angle(angle), LightColor(lightColor), LightMode(lightMode), Radius(radius), LightTexture(lightTexture), PointLight(pointLight) {}
 
         Light::~Light() {}
 
@@ -65,7 +66,14 @@ namespace ForLeaseEngine {
 //            render->DrawArrow(trans->Position, Vector::Rotate(Direction * 4, Angle / 2));
 //            render->DrawArrow(trans->Position, Vector::Rotate(Direction * 4, -Angle / 2));
 
-            std::vector<Entity*> broadDetected = ForLease->GameStateManager().CurrentState().GetEntitiesInCone(trans->Position + Offset, 0, normalized, Angle);
+            std::vector<Entity*> broadDetected;
+            if(!PointLight) {
+                broadDetected = ForLease->GameStateManager().CurrentState().GetEntitiesInCone(trans->Position + Offset, 0, normalized, Angle);
+            }
+            else {
+                //broadDetected = ForLease->GameStateManager().CurrentState().GetEntitiesInRadius(trans->Position + Offset, Radius);
+                broadDetected = ForLease->GameStateManager().CurrentState().GetAllEntities();
+            }
             std::vector<Entity*> detected;
             for(std::vector<Entity*>::iterator i = broadDetected.begin(); i != broadDetected.end(); ++i) {
 //                if(*i == &Parent) {
@@ -94,30 +102,28 @@ namespace ForLeaseEngine {
                 Point top = castingPoint + Vector::Rotate(Direction, -Angle / 2);
                 HalfPlane hp1 = HalfPlane(castingPoint, top, mid);
                 HalfPlane hp2 = HalfPlane(castingPoint, bot, mid);
-                //Vector zeroAngleVector = top - castingPoint;
-                Vector zeroAngleVector;
-                if(Direction[0] < 0)
-                    zeroAngleVector = Vector(1, 0);
-                else
-                    zeroAngleVector = Vector(-1, 0);
-                //float radius2 = Radius * Radius;
+                Vector zeroAngleVector = Direction;
                 Vector worldToModel = Point(0, 0) - trans->Position;
 
-                //render->SetDrawingColor(0, 0, 1);
-                //render->SetDebugPointSize(8);
-                // Add corners of screen, skipping for now
-
-                castingPoints.push_back(top);
-                castingPoints.push_back(bot);
+                if(!PointLight) {
+                    castingPoints.push_back(top);
+                    castingPoints.push_back(bot);
+                }
 
                 for(unsigned int i = 0; i < 4; ++i) {
-                    if(Angle <= PI) {
-                        if(hp1.Dot(camCorners[i]) < 0 && hp2.Dot(camCorners[i]) < 0)
-                            castingPoints.push_back(camCorners[i]);
+                    if(!PointLight) {
+                        if(Angle <= PI) {
+                            if(hp1.Dot(camCorners[i]) < 0 && hp2.Dot(camCorners[i]) < 0)
+                                castingPoints.push_back(camCorners[i]);
+                        }
+                        else {
+                            if(hp1.Dot(camCorners[i]) < 0 || hp2.Dot(camCorners[i]) < 0)
+                                castingPoints.push_back(camCorners[i]);
+                                //std::cout << "Adding cam corner " << i << std::endl;
+                        }
                     }
                     else {
-                        if(hp1.Dot(camCorners[i]) < 0 || hp2.Dot(camCorners[i]) < 0)
-                            castingPoints.push_back(camCorners[i]);
+                        castingPoints.push_back(camCorners[i]);
                     }
                 }
 
@@ -139,41 +145,49 @@ namespace ForLeaseEngine {
                     Point br = Point(colliderCenter[0] + halfWidth, colliderCenter[1] - halfHeight);
                     Point bl = Point(colliderCenter[0] - halfWidth, colliderCenter[1] - halfHeight);
 
-                    if(Angle <= PI) {
-                        if(hp1.Dot(tl) < 0 && hp2.Dot(tl) < 0) {
-                            castingPoints.push_back(tl);
-                            //render->DrawPoint(tl);
+                    if(!PointLight) {
+                        if(Angle <= PI) {
+                            if(hp1.Dot(tl) <= 0 && hp2.Dot(tl) <= 0) {
+                                castingPoints.push_back(tl);
+                                //render->DrawPoint(tl);
+                            }
+                            if(hp1.Dot(tr) <= 0 && hp2.Dot(tr) <= 0) {
+                                castingPoints.push_back(tr);
+                                //render->DrawPoint(tr);
+                            }
+                            if(hp1.Dot(br) <= 0 && hp2.Dot(br) <= 0) {
+                                castingPoints.push_back(br);
+                                //render->DrawPoint(br);
+                            }
+                            if(hp1.Dot(bl) <= 0 && hp2.Dot(bl) <= 0) {
+                                castingPoints.push_back(bl);
+                                //render->DrawPoint(bl);
+                            }
                         }
-                        if(hp1.Dot(tr) < 0 && hp2.Dot(tr) < 0) {
-                            castingPoints.push_back(tr);
-                            //render->DrawPoint(tr);
-                        }
-                        if(hp1.Dot(br) < 0 && hp2.Dot(br) < 0) {
-                            castingPoints.push_back(br);
-                            //render->DrawPoint(br);
-                        }
-                        if(hp1.Dot(bl) < 0 && hp2.Dot(bl) < 0) {
-                            castingPoints.push_back(bl);
-                            //render->DrawPoint(bl);
+                        else {
+                            if(hp1.Dot(tl) <= 0 || hp2.Dot(tl) <= 0) {
+                                castingPoints.push_back(tl);
+                                render->DrawPoint(tl);
+                            }
+                            if(hp1.Dot(tr) <= 0 || hp2.Dot(tr) <= 0) {
+                                castingPoints.push_back(tr);
+                                render->DrawPoint(tr);
+                            }
+                            if(hp1.Dot(br) <= 0 || hp2.Dot(br) <= 0) {
+                                castingPoints.push_back(br);
+                                render->DrawPoint(br);
+                            }
+                            if(hp1.Dot(bl) <= 0 || hp2.Dot(bl) <= 0) {
+                                castingPoints.push_back(bl);
+                                render->DrawPoint(bl);
+                            }
                         }
                     }
                     else {
-                        if(hp1.Dot(tl) < 0 || hp2.Dot(tl) < 0) {
-                            castingPoints.push_back(tl);
-                            //render->DrawPoint(tl);
-                        }
-                        if(hp1.Dot(tr) < 0 || hp2.Dot(tr) < 0) {
-                            castingPoints.push_back(tr);
-                            //render->DrawPoint(tr);
-                        }
-                        if(hp1.Dot(br) < 0 || hp2.Dot(br) < 0) {
-                            castingPoints.push_back(br);
-                            //render->DrawPoint(br);
-                        }
-                        if(hp1.Dot(bl) < 0 || hp2.Dot(bl) < 0) {
-                            castingPoints.push_back(bl);
-                            //render->DrawPoint(bl);
-                        }
+                        castingPoints.push_back(tl);
+                        castingPoints.push_back(tr);
+                        castingPoints.push_back(br);
+                        castingPoints.push_back(bl);
                     }
 
                     ++i;
@@ -221,9 +235,9 @@ namespace ForLeaseEngine {
                             if(preHit[i].Entity->GetComponent<Components::Occluder>()->BlocksLight) {
                                 float preAngle = Vector::AngleBetween(zeroAngleVector, preHit[i].Point - castingPoint);
 
-                                //if(preAngle < 0) {
-                                    //preAngle += 2 * PI;
-                                //}
+//                                if(preAngle < 0) {
+//                                    preAngle += 2 * PI;
+//                                }
 
                                 collisionPoints.insert(std::make_pair(preAngle, preHit[i].Point));
                                 break;
@@ -233,8 +247,8 @@ namespace ForLeaseEngine {
                     if(preHit.empty()) {
                         Point collision = CheckRayAgainstWindow(preRay, camCorners[0], camCorners[1], camCorners[2], camCorners[3], cameraTrans->Position);
                         float preAngle = Vector::AngleBetween(zeroAngleVector, collision - castingPoint);
-                        //if(preAngle < 0)
-                            //preAngle += 2 * PI;
+//                        if(preAngle < 0)
+//                            preAngle += 2 * PI;
                         collisionPoints.insert(std::make_pair(preAngle, collision));
                     }
 
@@ -248,9 +262,9 @@ namespace ForLeaseEngine {
                             if(postHit[i].Entity->GetComponent<Components::Occluder>()->BlocksLight) {
                                 float postAngle = Vector::AngleBetween(zeroAngleVector, postHit[i].Point - castingPoint);
 
-                                //if(postAngle < 0) {
-                                    //postAngle += 2 * PI;
-                                //}
+//                                if(postAngle < 0) {
+//                                    postAngle += 2 * PI;
+//                                }
 
                                 collisionPoints.insert(std::make_pair(postAngle, postHit[i].Point));
                                 break;
@@ -260,8 +274,8 @@ namespace ForLeaseEngine {
                     if(postHit.empty()) {
                         Point collision = CheckRayAgainstWindow(postRay, camCorners[0], camCorners[1], camCorners[2], camCorners[3], cameraTrans->Position);
                         float postAngle = Vector::AngleBetween(zeroAngleVector, collision - castingPoint);
-                        //if(postAngle < 0)
-                            //postAngle += 2 * PI;
+//                        if(postAngle < 0)
+//                            postAngle += 2 * PI;
                         collisionPoints.insert(std::make_pair(postAngle, collision));
                     }
 
@@ -275,9 +289,9 @@ namespace ForLeaseEngine {
                             if(hit[i].Entity->GetComponent<Components::Occluder>()->BlocksLight) {
                                 float angle = Vector::AngleBetween(zeroAngleVector, hit[i].Point - castingPoint);
 
-                                //if(angle < 0) {
-                                //    angle += 2 * PI;
-                                //}
+//                                if(angle < 0) {
+//                                    angle += 2 * PI;
+//                                }
 
                                 collisionPoints.insert(std::make_pair(angle, hit[i].Point));
                                 break;
@@ -287,8 +301,8 @@ namespace ForLeaseEngine {
                     if(hit.empty()) {
                         Point collision = CheckRayAgainstWindow(ray, camCorners[0], camCorners[1], camCorners[2], camCorners[3], cameraTrans->Position);
                         float angle = Vector::AngleBetween(zeroAngleVector, collision - castingPoint);
-                        //if(angle < 0)
-                          //  angle += 2 * PI;
+//                        if(angle < 0)
+//                            angle += 2 * PI;
                         collisionPoints.insert(std::make_pair(angle, collision));
                     }
 
@@ -374,6 +388,19 @@ namespace ForLeaseEngine {
                     LightMesh.AddVertex((*i).second + worldToModel, uv);
                 }
 
+//                static bool writeLight = true;
+//                if(writeLight && Parent.GetName().compare("GreenLight") == 0) {
+//                    writeLight = false;
+//                    std::ofstream out(Parent.GetName(), std::ofstream::out);
+//                    out << collisionPoints.size() << std::endl;
+//                    out << "[" << castingPoint[0] << "," << castingPoint[1] << "]" << std::endl;
+//                    for(std::map<float, Point>::iterator i = collisionPoints.begin(); i != collisionPoints.end(); ++i) {
+//                        Point p = (*i).second;
+//                        out << (*i).first << ":[" << p[0] << "," << p[1] << "]" <<  std::endl;
+//                    }
+//                    out.close();
+//                }
+
                 // Debug drawing
 //                render->SetDrawingColor(1, 0, 0);
 //                for(int i = 1; i < LightMesh.GetVertexCount(); ++i) {
@@ -386,15 +413,17 @@ namespace ForLeaseEngine {
                 for(int i = 2; i < LightMesh.GetVertexCount(); ++i) {
                     LightMesh.AddFace(IndexedFace(0, i - 1, i), LightColor);
                 }
-                if(Angle > PI) {
+                if(PointLight) {
                     LightMesh.AddFace(IndexedFace(0, 1, LightMesh.GetVertexCount() - 1), LightColor);
                 }
 
                 // Add edges
-                for(int i = 1; i < LightMesh.GetVertexCount(); ++i) {
-                    LightMesh.AddEdge(i - 1, i);
-                }
-                LightMesh.AddEdge(LightMesh.GetVertexCount() - 1, 0);
+//                for(int i = 1; i < LightMesh.GetVertexCount(); ++i) {
+//                    LightMesh.AddEdge(i - 1, i);
+//                }
+//                LightMesh.AddEdge(LightMesh.GetVertexCount() - 1, 0);
+                //LightMesh.AddEdge(IndexedEdge(0, 1), 100);
+                //LightMesh.AddEdge(IndexedEdge(0, LightMesh.GetVertexCount() - 1), 100);
 
                 //render->SetModelView(trans);
                 //render->DrawMesh(&LightMesh, false, false);
@@ -403,13 +432,13 @@ namespace ForLeaseEngine {
 
                 //std::cout << "I see " << multi_e.EntityIDs.size() << " entities" << std::endl;
                 //ForLease->Dispatcher.DispatchToParent(&multi_e, &Parent);
-                static bool write = true;
-                if(Parent.GetName().compare("GreenLight") == 0 && write) {
-                    Serializer lightMeshWrite;
-                    LightMesh.Serialize(lightMeshWrite);
-                    lightMeshWrite.WriteFile("LightMesh.json");
-                    write = false;
-                }
+//                static bool write = true;
+//                if(Parent.GetName().compare("GreenLight") == 0 && write) {
+//                    Serializer lightMeshWrite;
+//                    LightMesh.Serialize(lightMeshWrite);
+//                    lightMeshWrite.WriteFile("LightMesh.json");
+//                    write = false;
+//                }
 
                 return litEntitiyIDs;
             }
@@ -431,6 +460,7 @@ namespace ForLeaseEngine {
             light.WriteInt("LightMode", LightMode);
             light.WriteFloat("Radius", Radius);
             light.WriteString("LightTexture", LightTexture);
+            light.WriteBool("PointLight", PointLight);
             root.Append(light, "Light");
         }
 
@@ -449,6 +479,7 @@ namespace ForLeaseEngine {
             lightMode = lightMode;
             light.ReadFloat("Radius", Radius);
             light.ReadString("LightTexture", LightTexture);
+            light.ReadBool("PointLight", PointLight);
         }
 
         Mesh* Light::GetLightMesh() {
