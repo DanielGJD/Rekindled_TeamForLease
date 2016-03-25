@@ -55,10 +55,10 @@ namespace ForLeaseEngine {
         }
 
         bool Light::CheckIfLit(unsigned long id) {
-            if(LitEntities.find(id) != LitEntities.end())
-                return true;
+            //if(LitEntities.find(id) != LitEntities.end())
+            //    return true;
 
-            return false;
+            return true;
         }
     }
 
