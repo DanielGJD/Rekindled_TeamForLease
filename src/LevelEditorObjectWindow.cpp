@@ -407,6 +407,7 @@ namespace ForLeaseEngine
             ImGui::Checkbox("Active##Light", &(leg::selLight->Active));
             ImGui::Checkbox("Visible##Light", &(leg::selLight->Visible));
             ImGui::Checkbox("Draw Outline##Light", &(leg::selLight->DrawOutline));
+            ImGui::Checkbox("Angle = 360", &(leg::selLight->PointLight));
             ImGui::Combo("Blending Mode##light", &leg::lightBlend, "None\0Alpha\0Additive\0Multiply\0\0");
             leg::selLight->LightMode = static_cast<BlendMode>(leg::lightBlend);
             ImGui::SliderAngle("Angle##Light", &(leg::selLight->Angle), 0, 360);
@@ -442,7 +443,7 @@ namespace ForLeaseEngine
                 }
                 ImGui::EndChild();
 
-                if (ImGui::Button("Clear Sound##enemyAI"))
+                if (ImGui::Button("Clear Texture##light"))
                 {
                     leg::selLight->LightTexture = "";
                 }
