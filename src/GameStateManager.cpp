@@ -55,9 +55,12 @@ namespace ForLeaseEngine {
                     bool frozenLastFrame = false;
 
                     do {
-                        Parent.FrameRateController().Start();               // Start the current frame
-                        if (!frozenLastFrame) States[StateIndex]->Update(); // Do all the game stuff
-                        Parent.FrameRateController().End();                 // End the current frame
+                        Parent.FrameRateController().Start();   // Start the current frame
+                        if (!frozenLastFrame) {
+                            States[StateIndex]->Update();       // Do all the game stuff
+                            frozenLastFrame = false;
+                        }
+                        Parent.FrameRateController().End();     // End the current frame
 
                         while (Action == StateAction::Freeze) {
                             ForLease->OSInput.ProcessAllInput();
