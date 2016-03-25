@@ -75,6 +75,9 @@ namespace ForLeaseEngine {
                 void UpdateGameWindow();
                 int GetXResolution();
                 int GetYResolution();
+                bool GetFullscreen();
+                void SetResolution(int x, int y);
+                void SetFullscreen(bool fullscreen);
 
                 SDL_Window* DangerousGetRawWindow();
 

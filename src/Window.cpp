@@ -17,6 +17,7 @@
 #include <GL/glew.h>
 #include "GraphicsException.h"
 #include "Window.h"
+#include "Engine.h"
 
 namespace ForLeaseEngine {
     namespace Systems {
@@ -180,6 +181,50 @@ namespace ForLeaseEngine {
         */
         int Window::GetYResolution() { return currentProperties.yResolution; }
 
+        bool Window::GetFullscreen() { return currentProperties.fullscreen; }
+
+        void Window::SetResolution(int x, int y) {
+            SDL_DisplayMode mode;
+            SDL_DisplayMode currentMode;
+            SDL_GetDisplayMode(0, 0, &mode);
+            mode.format = currentMode.format;
+            mode.w = x;
+            mode.h = y;
+
+            currentProperties.xResolution = x;
+            currentProperties.yResolution = y;
+
+            int windowOptions = SDL_WINDOW_OPENGL;
+
+            if(currentProperties.visible)
+                windowOptions |= SDL_WINDOW_SHOWN;
+            if(currentProperties.fullscreen)
+                windowOptions |= SDL_WINDOW_FULLSCREEN;
+            if(currentProperties.borderless)
+                windowOptions |= SDL_WINDOW_BORDERLESS;
+            if(currentProperties.resizeable)
+                windowOptions |= SDL_WINDOW_RESIZABLE;
+            if(currentProperties.mouseConstrained)
+                windowOptions |= SDL_WINDOW_INPUT_GRABBED;
+
+//            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,
+//                                FLE_GL_MAJOR_VERSION);
+//            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,
+//                                FLE_GL_MINOR_VERSION);
+            //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+            //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+//            SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+            SDL_DestroyWindow(window);
+            window = SDL_CreateWindow(currentProperties.windowTitle.c_str(),
+                                      SDL_WINDOWPOS_UNDEFINED,
+                                      SDL_WINDOWPOS_UNDEFINED,
+                                      currentProperties.xResolution,
+                                      currentProperties.yResolution,
+                                      windowOptions);
+            SDL_GL_MakeCurrent(window, context);
+            glViewport(0, 0, x, y);
+        }
+
         /*!
             \brief
                 Initializes SDL Video, creates a window, and creates an OpenGL context
@@ -274,6 +319,8 @@ namespace ForLeaseEngine {
             window = NULL;
             SDL_QuitSubSystem(SDL_INIT_VIDEO);
         }
+
+
 
         /*!
             \brief
