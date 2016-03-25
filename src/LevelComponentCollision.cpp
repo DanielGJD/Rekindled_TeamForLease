@@ -129,9 +129,9 @@ namespace ForLeaseEngine {
                     collidedWithThisFrame.insert(collidedAgainst);
                     //collision->CollidedWith = collidedAgainst;
 
-                    //if (collidedAgainst->GetComponent<Components::Collision>()->IsPacingPlatform()) {
-                    //    entity->GetComponent<Components::Transform>()->Position += collidedAgainst->GetComponent<Components::EnemyPace>()->LastMovement();
-                    //}
+                    if (collidedAgainst->HasComponent(ComponentType::MovingPlatform)) {
+                        entity->GetComponent<Components::Transform>()->Position += collidedAgainst->GetComponent<Components::MovingPlatform>()->LastMovement();
+                    }
                 }
 
                 time -= firstCollision.Distance;
