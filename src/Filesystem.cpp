@@ -22,6 +22,8 @@ namespace ForLeaseEngine {
         */
         Filesystem::Filesystem() {
             Preinitialize();
+            PreinitializePlatforms();
+            CreateSaveLocation();
         }
 
         Filesystem::Filesystem(std::string gameFile) {
