@@ -52,15 +52,17 @@ namespace ForLeaseEngine {
 
                     Action = StateAction::Continue; // Set the action so we won't get booted unless otherwise told
 
-                    do {
+                    bool frozenLastFrame = false;
 
-                        Parent.FrameRateController().Start(); // Start the current frame
-                        States[StateIndex]->Update();         // Do all the game stuff
-                        Parent.FrameRateController().End();   // End the current frame
+                    do {
+                        Parent.FrameRateController().Start();               // Start the current frame
+                        if (!frozenLastFrame) States[StateIndex]->Update(); // Do all the game stuff
+                        Parent.FrameRateController().End();                 // End the current frame
 
                         while (Action == StateAction::Freeze) {
                             ForLease->OSInput.ProcessAllInput();
                             Parent.FrameRateController().SleepFor(0.1);
+                            frozenLastFrame = true;
                         }
 
                         if (Action == StateAction::Pause) {
@@ -78,6 +80,7 @@ namespace ForLeaseEngine {
                                 while (Action == StateAction::Freeze) {
                                     ForLease->OSInput.ProcessAllInput();
                                     Parent.FrameRateController().SleepFor(0.1);
+                                    frozenLastFrame = true;
                                 }
                             }
 
