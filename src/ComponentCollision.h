@@ -15,6 +15,7 @@
 #include "Component.h"
 #include "ComponentTransform.h"
 #include "Event.h"
+#include <unordered_set>
 
 namespace ForLeaseEngine {
 
@@ -46,6 +47,8 @@ namespace ForLeaseEngine {
                 void Initialize();
                 void Update() {};
                 void OnCollide(const Event* e);
+                bool CollidedWith(Entity* entity);
+                bool CollidedWith(std::string name);
 
                 float ScaledWidth();
                 float ScaledHeight();
@@ -65,21 +68,18 @@ namespace ForLeaseEngine {
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
                 void DebugDraw();
-                bool IsPacingPlatform();
-                bool SetPacingPlatform(bool setPacing = true, bool throwOnFail = false);
 
                 float Width;              //! Width of the collision box
                 float Height;             //! Height of the collision box
                 float OffsetX;            //! Offset of the collision box on the X axis
                 float OffsetY;            //! Offset of the collision box on the Y axis
                 bool CollidedLastFrame;   //! Whether or not the entity collided on the last frame.  This should be handled by an event.
-                Entity* CollidedWith;     //! The last entity this entity collided with
+                //Entity* CollidedWith;   //! The last entity this entity collided with
+                std::unordered_set<Entity *> CollidedWithLastFrame;
                 Side CollidedWithSide;    //! The side of the last entity this entity collided with
                 bool ResolveCollisions;   //! Whether we want to resolve collisions by moving entities
 
         private:
-
-                bool PacingPlatform;
                 Collision() = delete;
         };
 

@@ -23,4 +23,12 @@ namespace ForLeaseEngine {
     */
     CollisionEvent::CollisionEvent(Entity* with, Components::Collision::Side side) : Event("Collision"), With(with), Side(side) {}
 
+    CollisionStartedEvent::CollisionStartedEvent(Entity* with) : Event("CollisionStarted"), With(with) {
+        //std::cout << "Started colliding with " << with->GetName() << std::endl;
+    }
+
+    CollisionEndedEvent::CollisionEndedEvent(Entity* with) : Event("CollisionEnded"), With(with) {
+        //std::cout << "Stopped colliding with " << with->GetName() << std::endl;
+    }
+
 } // ForLeaseEngine

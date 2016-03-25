@@ -44,7 +44,7 @@ namespace ForLeaseEngine {
             }
             else {
                 Collision* collider = Parent.GetComponent<Collision>();
-                if(collider->CollidedWith && collider->CollidedWith->GetName().compare(TriggerObjectName) == 0) {
+                if(collider->CollidedWith(TriggerObjectName)) {
                     Switching = true;
                     SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
                     if(TriggerSoundName.compare("") && emitter) {

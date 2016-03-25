@@ -39,6 +39,22 @@ namespace ForLeaseEngine {
             CollisionEvent() = delete;
     };
 
+    class CollisionStartedEvent : public Event {
+        public:
+            Entity* With;
+            CollisionStartedEvent(Entity* with);
+        private:
+            CollisionStartedEvent() = delete;
+    };
+
+    class CollisionEndedEvent : public Event {
+        public:
+            Entity* With;
+            CollisionEndedEvent(Entity* with);
+        private:
+            CollisionEndedEvent() = delete;
+    };
+
 } // ForLeaseEngine
 
 #endif // COLLISIONEVENT_H

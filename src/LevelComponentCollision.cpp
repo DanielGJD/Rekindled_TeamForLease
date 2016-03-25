@@ -22,6 +22,7 @@
 #include "HalfPlane.h"
 #include <limits>
 #include <algorithm>
+#include <iterator>
 
 int i = 0;
 
@@ -55,7 +56,7 @@ namespace ForLeaseEngine {
             for (Entity* entity : entities) {
                 if (entity->HasComponent(ComponentType::Collision)) {
                     entity->GetComponent<Components::Collision>()->CollidedLastFrame = false;
-                    entity->GetComponent<Components::Collision>()->CollidedWith = 0;
+                    //entity->GetComponent<Components::Collision>()->CollidedWith = 0;
 
                     collisionEntities.push_back(entity);
                 }
@@ -93,6 +94,7 @@ namespace ForLeaseEngine {
             Components::Transform* transform = entity->GetComponent<Components::Transform>();
             Components::Collision* collision = entity->GetComponent<Components::Collision>();
             Components::Physics* physics = entity->GetComponent<Components::Physics>();
+            std::unordered_set<Entity *> collidedWithThisFrame;
 
             while (time > Epsilon) {
                 Entity* collidedAgainst = 0;
@@ -107,8 +109,7 @@ namespace ForLeaseEngine {
                         CollisionEvent toEntity = CollisionEvent(checkAgainst);
                         ForLease->Dispatcher.DispatchToParent(&toCA, checkAgainst);
                         ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
-                        //collision->CollidedLastFrame = true;
-                        //collision->CollidedWith = collidedAgainst;
+                        collidedWithThisFrame.insert(checkAgainst);
                         continue;
                     }
 
@@ -125,11 +126,12 @@ namespace ForLeaseEngine {
                     ForLease->Dispatcher.DispatchToParent(&toCA, collidedAgainst);
                     ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
                     collision->CollidedLastFrame = true;
-                    collision->CollidedWith = collidedAgainst;
+                    collidedWithThisFrame.insert(collidedAgainst);
+                    //collision->CollidedWith = collidedAgainst;
 
-                    if (collidedAgainst->GetComponent<Components::Collision>()->IsPacingPlatform()) {
-                        entity->GetComponent<Components::Transform>()->Position += collidedAgainst->GetComponent<Components::EnemyPace>()->LastMovement();
-                    }
+                    //if (collidedAgainst->GetComponent<Components::Collision>()->IsPacingPlatform()) {
+                    //    entity->GetComponent<Components::Transform>()->Position += collidedAgainst->GetComponent<Components::EnemyPace>()->LastMovement();
+                    //}
                 }
 
                 time -= firstCollision.Distance;
@@ -140,6 +142,33 @@ namespace ForLeaseEngine {
                 if (firstCollision.Side != Components::Collision::Side::None)
                     collision->CollidedWithSide = firstCollision.Side;
             }
+
+            std::vector<Entity *> collisionStarted;
+            std::vector<Entity *> collisionEnded;
+
+            std::set_difference(collidedWithThisFrame.begin(), collidedWithThisFrame.end(),
+                collision->CollidedWithLastFrame.begin(), collidedWithThisFrame.end(),
+                std::inserter(collisionStarted, collisionStarted.begin()));
+
+            std::set_difference(collision->CollidedWithLastFrame.begin(), collision->CollidedWithLastFrame.end(),
+                collidedWithThisFrame.begin(), collidedWithThisFrame.end(),
+                std::inserter(collisionEnded, collisionEnded.begin()));
+
+            for (Entity* collided : collisionStarted) {
+                CollisionStartedEvent toCA = CollisionStartedEvent(entity);
+                CollisionStartedEvent toEntity = CollisionStartedEvent(collided);
+                ForLease->Dispatcher.DispatchToParent(&toCA, collided);
+                ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
+            }
+
+            for (Entity* collided : collisionEnded) {
+                CollisionEndedEvent toCA = CollisionEndedEvent(entity);
+                CollisionEndedEvent toEntity = CollisionEndedEvent(collided);
+                ForLease->Dispatcher.DispatchToParent(&toCA, collided);
+                ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
+            }
+
+            collision->CollidedWithLastFrame = collidedWithThisFrame;
         }
 
         bool Collision::BroadphaseSweptCollision(Entity* resolve, Entity* against, float remainingTime) {
@@ -396,7 +425,7 @@ namespace ForLeaseEngine {
             //Vector correction = (velocity * dist) - (velocity * Epsilon * 10);
 
             collision->CollidedLastFrame = true;
-            collision->CollidedWith = collidedWith;
+            //collision->CollidedWith = collidedWith;
 
             ForLease->Dispatcher.DispatchToParent(new CollisionEvent(collidedWith), entity);
             ForLease->Dispatcher.DispatchToParent(new CollisionEvent(entity), collidedWith);
@@ -454,8 +483,8 @@ namespace ForLeaseEngine {
             entity1Collision->CollidedLastFrame = true;
             entity2Collision->CollidedLastFrame = true;
 
-            entity1Collision->CollidedWith = entity2;
-            entity2Collision->CollidedWith = entity1;
+            //entity1Collision->CollidedWith = entity2;
+            //entity2Collision->CollidedWith = entity1;
 
             return true;
 

@@ -28,8 +28,8 @@ namespace ForLeaseEngine {
         */
         Collision::Collision(Entity& owner, float width, float height, bool resolve, float offsetX, float offsetY, bool pacingPlatform)
             : Component(owner, ComponentType::Transform), Width(width), Height(height),
-            OffsetX(offsetX), OffsetY(offsetY), CollidedLastFrame(false), CollidedWith(0), ResolveCollisions(resolve),
-            PacingPlatform(pacingPlatform && owner.HasComponent(ComponentType::EnemyPace)) {}
+            OffsetX(offsetX), OffsetY(offsetY), CollidedLastFrame(false), /*CollidedWith(0),*/ ResolveCollisions(resolve)/*,
+            PacingPlatform(pacingPlatform && owner.HasComponent(ComponentType::EnemyPace))*/ {}
 
         void Collision::Initialize() {
             std::cout << Parent.GetName() << " collision init." << std::endl;
@@ -39,6 +39,22 @@ namespace ForLeaseEngine {
         void Collision::OnCollide(const Event* e) {
             //const CollisionEvent* event = static_cast<const CollisionEvent *>(e);
             //std::cout << Parent.GetName() << " collided with " << event->Other->GetName() << std::endl;
+        }
+
+        bool Collision::CollidedWith(Entity* entity) {
+            auto collided = CollidedWithLastFrame.find(entity);
+            if (collided != CollidedWithLastFrame.end())
+                return true;
+            else
+                return false;
+        }
+
+        bool Collision::CollidedWith(std::string name) {
+            for (Entity* collided : CollidedWithLastFrame) {
+                if (collided->GetName().compare(name) == 0) return true;
+            }
+
+            return false;
         }
 
         float Collision::ScaledWidth() {
@@ -124,7 +140,7 @@ namespace ForLeaseEngine {
             collision.WriteFloat("OffsetX", OffsetX);
             collision.WriteFloat("OffsetY", OffsetY);
             collision.WriteBool("ResolveCollisions", ResolveCollisions);
-            collision.WriteBool("PacingPlatform", PacingPlatform);
+            //collision.WriteBool("PacingPlatform", PacingPlatform);
             collision.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(collision, "Collision");
         }
@@ -136,7 +152,7 @@ namespace ForLeaseEngine {
             collision.ReadFloat("OffsetX", OffsetX);
             collision.ReadFloat("OffsetY", OffsetY);
             collision.ReadBool("ResolveCollisions", ResolveCollisions);
-            collision.ReadBool("PacingPlatform", PacingPlatform);
+            //collision.ReadBool("PacingPlatform", PacingPlatform);
             CollidedLastFrame = false;
         }
 
@@ -148,27 +164,6 @@ namespace ForLeaseEngine {
             position[0] += OffsetX;
             position[1] += OffsetY;
             renderer->DrawRectangle(position, ScaledWidth(), ScaledHeight(), transform->Rotation);
-        }
-
-        bool Collision::IsPacingPlatform() {
-            return PacingPlatform;
-        }
-
-        bool Collision::SetPacingPlatform(bool setPacing, bool throwOnFail) {
-            if (setPacing) {
-                if (Parent.HasComponent(ComponentType::EnemyPace)) {
-                    PacingPlatform = true;
-                    return true;
-                }
-                else if (throwOnFail)
-                    throw Exception("No enemy pace component on this!");
-                else
-                    return false;
-            }
-            else {
-                PacingPlatform = false;
-                return true;
-            }
         }
     } // Components
 
