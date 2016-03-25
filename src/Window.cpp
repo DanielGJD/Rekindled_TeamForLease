@@ -18,6 +18,7 @@
 #include "GraphicsException.h"
 #include "Window.h"
 #include "Engine.h"
+#include "Filesystem.h"
 
 namespace ForLeaseEngine {
     namespace Systems {
@@ -28,10 +29,10 @@ namespace ForLeaseEngine {
                 Creates a WindowProperties containing the default properties
         */
         WindowProperties::WindowProperties() : windowTitle("For Lease Engine") {
-            xResolution = 800;
-            yResolution = 600;
+            xResolution = 1280;
+            yResolution = 720;
             visible = true;
-            fullscreen = false;
+            fullscreen = true;
             borderless = false;
             resizeable = false;
             mouseConstrained = false;
@@ -39,7 +40,7 @@ namespace ForLeaseEngine {
 
         void WindowProperties::WriteCfg() {
             std::ofstream out;
-            out.open(DEFAULT_FILENAME, std::ofstream::out);
+            out.open(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Save).append(DEFAULT_FILENAME), std::ofstream::out);
             out << windowTitle << "\n"
                 << xResolution << "\n"
                 << yResolution << "\n"
@@ -48,6 +49,8 @@ namespace ForLeaseEngine {
                 << borderless << "\n"
                 << resizeable << "\n"
                 << mouseConstrained;
+
+            std::cout << "Writing window config to " << ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Save).append(DEFAULT_FILENAME);
         }
 
         void WindowProperties::ReadCfg() {
@@ -63,7 +66,7 @@ namespace ForLeaseEngine {
             in >> mouseConstrained;
             in.close();
 
-            WriteCfg();
+            //WriteCfg();
         }
 
         /*!
@@ -74,6 +77,7 @@ namespace ForLeaseEngine {
             WindowProperties properties = WindowProperties();
             currentProperties = properties;
             InitGameWindow(properties);
+            currentProperties.WriteCfg();
         }
 
         /*!
@@ -86,6 +90,7 @@ namespace ForLeaseEngine {
         Window::Window(WindowProperties& properties) : currentProperties(properties) {
             //properties.ReadCfg();
             InitGameWindow(properties);
+            currentProperties.WriteCfg();
         }
 
         /*!
