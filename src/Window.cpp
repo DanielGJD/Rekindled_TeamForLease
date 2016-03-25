@@ -225,6 +225,17 @@ namespace ForLeaseEngine {
             glViewport(0, 0, x, y);
         }
 
+        void Window::SetFullscreen(bool fullscreen) {
+            currentProperties.fullscreen = fullscreen;
+
+            if(fullscreen) {
+                SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+            }
+            else {
+                SDL_SetWindowFullscreen(window, 0);
+            }
+        }
+
         /*!
             \brief
                 Initializes SDL Video, creates a window, and creates an OpenGL context

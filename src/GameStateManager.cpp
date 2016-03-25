@@ -58,6 +58,8 @@ namespace ForLeaseEngine {
                         Parent.FrameRateController().Start();   // Start the current frame
                         if (!frozenLastFrame) {
                             States[StateIndex]->Update();       // Do all the game stuff
+                        }
+                        else {
                             frozenLastFrame = false;
                         }
                         Parent.FrameRateController().End();     // End the current frame
@@ -69,7 +71,7 @@ namespace ForLeaseEngine {
                         }
 
                         if (Action == StateAction::Pause) {
-                            
+
                             StateCurrentlyExecuting = PauseScreen;
 
                             PauseScreen->Load();
