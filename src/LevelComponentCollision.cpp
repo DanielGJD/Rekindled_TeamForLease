@@ -146,13 +146,17 @@ namespace ForLeaseEngine {
             std::vector<Entity *> collisionStarted;
             std::vector<Entity *> collisionEnded;
 
-            std::set_difference(collidedWithThisFrame.begin(), collidedWithThisFrame.end(),
-                collision->CollidedWithLastFrame.begin(), collidedWithThisFrame.end(),
-                std::inserter(collisionStarted, collisionStarted.begin()));
+            for (Entity* collided : collidedWithThisFrame) {
+                auto collidedLast = collision->CollidedWithLastFrame.find(collided);
+                if (collidedLast == collision->CollidedWithLastFrame.end())
+                    collisionStarted.push_back(collided);
+            }
 
-            std::set_difference(collision->CollidedWithLastFrame.begin(), collision->CollidedWithLastFrame.end(),
-                collidedWithThisFrame.begin(), collidedWithThisFrame.end(),
-                std::inserter(collisionEnded, collisionEnded.begin()));
+            for (Entity* collidedLast : collision->CollidedWithLastFrame) {
+                auto collided = collidedWithThisFrame.find(collidedLast);
+                if (collided == collidedWithThisFrame.end())
+                    collisionEnded.push_back(collidedLast);
+            }
 
             for (Entity* collided : collisionStarted) {
                 CollisionStartedEvent toCA = CollisionStartedEvent(entity);
