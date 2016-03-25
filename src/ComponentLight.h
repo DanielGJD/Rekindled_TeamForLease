@@ -46,10 +46,11 @@ namespace ForLeaseEngine {
                 BlendMode LightMode;
                 float Radius;
                 std::string LightTexture;
+                bool PointLight;
 
                 Light(Entity& owner, bool active = true, bool visible = true, bool drawOutline = false,
                       Vector offset = Vector(), Vector direction = Vector(0, -1), float angle = PI / 2 ,
-                      Color lightColor = Color(1, 1, 1, 1), BlendMode lightMode = BlendMode::ADDITIVE, float radius = 5, std::string lightTexture = "");
+                      Color lightColor = Color(1, 1, 1, 1), BlendMode lightMode = BlendMode::ADDITIVE, float radius = 5, std::string lightTexture = "", bool pointLight = false);
                 ~Light();
                 void Update();
                 void Serialize(Serializer& root);
