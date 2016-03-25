@@ -393,6 +393,8 @@ namespace ForLeaseEngine
         if (leg::selHealth && ImGui::CollapsingHeader("Health"))
         {
             ImGui::InputFloat("Max Health", &(leg::selHealth->MaxHealth));
+            ImGui::InputFloat("Damage Scale", &(leg::selHealth->DamageScale));
+            ImGui::InputFloat("Regen Scale", &(leg::selHealth->RegenScale));
 
             if (ImGui::Button("Remove Health"))
             {
@@ -437,12 +439,33 @@ namespace ForLeaseEngine
                 leg::selOccluder = NULL;
             }
         }
+
+        if (leg::selOwl && ImGui::CollapsingHeader("OwlAI"))
+        {
+            ImGui::InputFloat("Blink Time##OwlAI", &(leg::selOwl->BlinkTime));
+            ImGui::InputFloat("Watch Time##OwlAI", &(leg::selOwl->WatchTime));
+            ImGui::SliderAngle("Direction 1##owlAI", &leg::owlDir1, 0, 360);
+            leg::selOwl->Direction1[0] = cos(leg::owlDir1);
+            leg::selOwl->Direction1[1] = sin(leg::owlDir1);
+            leg::selVision->Direction = leg::selOwl->Direction1;
+            ImGui::SliderAngle("Direction 2##owlAI", &leg::owlDir2, 0, 360);
+            leg::selOwl->Direction2[0] = cos(leg::owlDir2);
+            leg::selOwl->Direction2[1] = sin(leg::owlDir2);
+
+            if (ImGui::Button("Remove OwlAI"))
+            {
+                leg::selection->DeleteComponent(ComponentType::OwlAI);
+                leg::selOwl = NULL;
+            }
+        }
+
         if (leg::selPace && ImGui::CollapsingHeader("PaceAI"))
         {
             ImGui::InputFloat("Speed##pace", &(leg::selPace->PaceSpeed));
             ImGui::InputFloat("Distance##pace", &(leg::selPace->MaxPaceDistance));
             ImGui::InputFloat("Pause Timer##pace", &(leg::selPace->PauseTimer));
             ImGui::InputFloat("Detection Delay##pace", &(leg::selPace->DetectionDelay));
+            ImGui::InputFloat("Resume Delay##pace", &(leg::selPace->ResumeTime));
             ImGui::RadioButton("Horizontal", &(leg::selPace->Direction), 0);
             ImGui::RadioButton("Vertical", &(leg::selPace->Direction), 1);
 
@@ -994,6 +1017,12 @@ namespace ForLeaseEngine
             ImGui::SliderAngle("Direction##VisionCone", &leg::visionAngle, 0, 360);
             leg::selVision->Direction[0] = cos(leg::visionAngle);
             leg::selVision->Direction[1] = sin(leg::visionAngle);
+            ImGui::PushItemWidth(width);
+            ImGui::DragFloat("X##visionoffset", &(leg::selVision->Offset[0]), 0.01);
+            ImGui::SameLine();
+            ImGui::DragFloat("Y##visionoffset", &(leg::selVision->Offset[1]), 0.01);
+            ImGui::Text("Offset");
+            ImGui::PopItemWidth();
             ImGui::DragFloat("Radius##VisionCone", &(leg::selVision->Radius), 0.01);
             ImGui::PushItemWidth(200);
             ImGui::ColorEdit4("Indicator Color##VisionCone", const_cast<float*>(leg::selVision->IndicatorColor.GetAll()));

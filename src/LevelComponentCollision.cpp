@@ -535,10 +535,10 @@ namespace ForLeaseEngine {
 
             if (!(entity1Collision->ResolveCollisions) || !(entity2Collision->ResolveCollisions)) return;
 
-            if (entity1->HasComponent(ComponentType::EnemyPace)) {
-                entity2->GetComponent<Components::Transform>()->Position += entity1->GetComponent<Components::EnemyPace>()->LastMovement(true) * (1 + Epsilon);
-                return;
-            }
+            //if (entity1->HasComponent(ComponentType::EnemyPace)) {
+            //    entity2->GetComponent<Components::Transform>()->Position += entity1->GetComponent<Components::EnemyPace>()->LastMovement(true) * (1 + Epsilon);
+            //    return;
+            //}
 
 //            std::cout << "Resolving collision." << std::endl;
 

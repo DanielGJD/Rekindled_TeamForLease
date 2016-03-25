@@ -41,6 +41,7 @@ namespace ForLeaseEngine
         extern Components::Follow*                 selFollow;
         extern Components::EnemyPace*              selPace;
         extern Components::Health*                 selHealth;
+        extern Components::OwlAI*                  selOwl;
 
         extern Entity*                levelCamera;
         extern Entity*                camera;
@@ -98,6 +99,8 @@ namespace ForLeaseEngine
         extern int lightBlend;
         extern float lightAngle;
         extern float visionAngle;
+        extern float owlDir1;
+        extern float owlDir2;
 
         extern std::string levelDir;
         extern std::string blueprintDir;

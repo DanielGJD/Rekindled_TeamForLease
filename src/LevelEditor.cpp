@@ -64,6 +64,7 @@ namespace ForLeaseEngine
          Components::Follow*                 selFollow;
          Components::EnemyPace*              selPace;
          Components::Health*                 selHealth;
+         Components::OwlAI*                  selOwl;
 
 
 
@@ -120,6 +121,8 @@ namespace ForLeaseEngine
          int lightBlend = 2;
          float lightAngle = 3 * 3.1415 / 2;
          float visionAngle = 0;
+         float owlDir1 = 0;
+         float owlDir2 = 0;
 
          std::string blueprintDir = "blueprints/";
          std::string levelDir     = "levels/";
@@ -144,6 +147,7 @@ namespace ForLeaseEngine
         comps.push_back(new Components::Light(dummy));
         comps.push_back(new Components::Model(dummy));
         comps.push_back(new Components::Occluder(dummy));
+        comps.push_back(new Components::OwlAI(dummy));
         comps.push_back(Components::EnemyPace::Create(dummy));
         comps.push_back(new Components::Parallax(dummy));
         comps.push_back(new Components::ParticleColorAnimator(dummy));
@@ -206,6 +210,7 @@ namespace ForLeaseEngine
             leg::componentNames.push_back("Light");
             leg::componentNames.push_back("Model");
             leg::componentNames.push_back("Occluder");
+            leg::componentNames.push_back("OwlAI");
             leg::componentNames.push_back("PaceAI");
             leg::componentNames.push_back("Parallax");
             leg::componentNames.push_back("Particle Color");
@@ -272,6 +277,7 @@ namespace ForLeaseEngine
         leg::selFollow       = leg::selection->GetComponent<Components::Follow>();
         leg::selPace         = leg::selection->GetComponent<Components::EnemyPace>();
         leg::selHealth       = leg::selection->GetComponent<Components::Health>();
+        leg::selOwl          = leg::selection->GetComponent<Components::OwlAI>();
 
         if (leg::selSprtxt)
             strcpy(leg::spriteTextBuf, leg::selSprtxt->Text.c_str());
@@ -310,6 +316,16 @@ namespace ForLeaseEngine
             leg::visionAngle = atan2(leg::selVision->Direction[1], leg::selVision->Direction[0]);
             if (leg::visionAngle < 0)
                 leg::visionAngle += 2 * 3.1415;
+        }
+
+        if (leg::selOwl)
+        {
+            leg::owlDir1 = atan2(leg::selOwl->Direction1[1], leg::selOwl->Direction1[0]);
+            if (leg::owlDir1 < 0)
+                leg::owlDir1 += 2 * 3.1415;
+            leg::owlDir2 = atan2(leg::selOwl->Direction2[1], leg::selOwl->Direction2[0]);
+            if (leg::owlDir2 < 0)
+                leg::owlDir2 += 2 * 3.1415;
         }
     }
 
@@ -386,7 +402,7 @@ namespace ForLeaseEngine
         {
             GetMouse(leg::mousePos);
             Entity* ent = AddEntity();
-            ent->Deserialize(leg::copyEntity);
+            ent->DeserializeWithoutID(leg::copyEntity);
             Components::Transform* trans = ent->GetComponent<Components::Transform>();
             trans->Position = leg::mousePos;
         }
@@ -500,7 +516,7 @@ namespace ForLeaseEngine
                 Components::Transform* tran  = it->GetComponent<Components::Transform>();
                 Components::Model*     model = it->GetComponent<Components::Model>();
                 leg::render->SetDrawingColor(1,1,1,1);
-                if (tran != NULL && (!model || model->ModelMesh.empty()))
+                if (tran)
                 {
                     leg::render->DrawRectangle(tran->Position, 2, 2, tran->Rotation);
                 }
@@ -550,10 +566,7 @@ namespace ForLeaseEngine
         ImGui_ImplSdl_Shutdown();
     }
 
-    void LevelEditor::Unload()
-    {
-        //SaveFiles();
-    }
+    void LevelEditor::Unload() { }
 
     void LevelEditor::LoadFiles()
     {

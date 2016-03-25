@@ -218,20 +218,25 @@ namespace ForLeaseEngine
 
         if (ImGui::CollapsingHeader("Object List"))
         {
-            std::vector<std::string> entityNames;
+            std::vector<unsigned long> entityIDs;
             for (Entity* e : Entities)
-                entityNames.push_back(e->GetName());
+                entityIDs.push_back(e->GetID());
 
             static ImGuiTextFilter objectFilter;
             objectFilter.Draw("Name##objects", 200);
             ImGui::BeginChild("Objects##objects", ImVec2(0, 150), true);
-            for (std::string s : entityNames)
+
+            for (unsigned long id : entityIDs)
             {
-                if (objectFilter.PassFilter(s.c_str()))
+                std::stringstream name;
+                name << GetEntityByID(id)->GetName() << " [" << id << "]";
+
+                if (objectFilter.PassFilter(name.str().c_str()))
                 {
-                    if (ImGui::MenuItem(s.c_str()))
+                    if (ImGui::MenuItem(name.str().c_str()))
                     {
-                        leg::selection = GetEntityByName(s);
+                        leg::selection = GetEntityByID(id);
+
                         if (leg::selection)
                         {
                             MakeSelection();
@@ -242,7 +247,6 @@ namespace ForLeaseEngine
                 }
             }
 
-            entityNames.clear();
             ImGui::EndChild();
         }
 
@@ -343,14 +347,19 @@ namespace ForLeaseEngine
                 leg::selOccluder = NULL;
             return;
         }
-
+        if (!(component.compare("OwlAI")) && !leg::selOwl)
+        {
+            leg::selOwl = Components::OwlAI::Create(*leg::selection);
+            if (!leg::selection->AddComponent(leg::selOwl))
+                leg::selOwl = NULL;
+            return;
+        }
         if (!(component.compare("PaceAI")) && !leg::selPace)
         {
             leg::selPace = Components::EnemyPace::Create(*leg::selection);
             if (!leg::selection->AddComponent(leg::selPace))
                 leg::selPace = NULL;
             return;
-
         }
         if (!(component.compare("Parallax")) && !leg::selParallax)
         {
@@ -482,6 +491,13 @@ namespace ForLeaseEngine
             if (counter)
                 tooltip += ", ";
             tooltip += "Particle System";
+            ++counter;
+        }
+        if (static_cast<unsigned long long>(reqMask & ComponentType::VisionCone) != 0)
+        {
+            if (counter)
+                tooltip += ", ";
+            tooltip += "Vision Cone";
             ++counter;
         }
 

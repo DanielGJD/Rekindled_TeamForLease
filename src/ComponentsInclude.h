@@ -42,5 +42,6 @@
 #include "ComponentHealth.h"
 #include "ComponentEnemyPace.h"
 #include "ComponentMovingPlatform.h"
+#include "ComponentOwlAI.h"
 
 #endif

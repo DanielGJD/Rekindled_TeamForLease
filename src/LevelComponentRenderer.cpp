@@ -288,11 +288,32 @@ namespace ForLeaseEngine {
                     }
                     if(entity->HasComponent(ComponentType::Light)) {
                         Components::Light* light = entity->GetComponent<Components::Light>();
-                        SetBlendMode(light->LightMode);
-                        SetTexture(NULL);
                         ModelView = Matrix::Translation(trans->Position);
+
+                        ////////////////////////////////////////////////////////////////////////////////////
+//                        SetDrawingColor(1, 0, 0, 0);
+//                        Mesh* lightMesh = light->GetLightMesh();
+//                        DrawArrow(trans->Position, light->Direction);
+//                        DrawArrow(trans->Position, Point(ModelView * lightMesh->GetVertex(1)));
+//                        DrawArrow(trans->Position, Point(ModelView * lightMesh->GetVertex(lightMesh->GetVertexCount() - 1)));
+//                        SetDrawingColor(0, 1, 0, 1);
+//                        for(int j = 4; j < lightMesh->GetVertexCount() - 3; ++j) {
+//                            DrawArrow(trans->Position, Point(ModelView * lightMesh->GetVertex(j)));
+//                        }
+                        ///////////////////////////////////////////////////////////////////////////////////////
+
+                        SetBlendMode(light->LightMode);
+                        if(light->LightTexture.empty()) {
+                            SetTexture(NULL);
+                        }
+                        else {
+                            SetTexture(ForLease->Resources.GetTexture(light->LightTexture));
+                            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+                            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+                        }
+
                         glBindFramebuffer(GL_FRAMEBUFFER, LightFBO);
-                        DrawMesh(light->GetLightMesh(), light->DrawOutline, false);
+                        DrawMesh(light->GetLightMesh(), false, true);
                         if(trans->UILayer) {
                             glBindFramebuffer(GL_FRAMEBUFFER, UIFBO);
                         }
@@ -348,11 +369,11 @@ namespace ForLeaseEngine {
             Point pos = cameraTrans->Position;
 
             // Draw outline
-            SetDrawingColor(OutlineColor);
-            DrawRectangleFilled(pos + Vector(0, halfheight), width, OutlineWidth);
-            DrawRectangleFilled(pos + Vector(0, -halfheight), width, OutlineWidth);
-            DrawRectangleFilled(pos + Vector(halfwidth, 0), OutlineWidth, height);
-            DrawRectangleFilled(pos + Vector(-halfwidth, 0), OutlineWidth, height);
+//            SetDrawingColor(OutlineColor);
+//            DrawRectangleFilled(pos + Vector(0, halfheight), width, OutlineWidth);
+//            DrawRectangleFilled(pos + Vector(0, -halfheight), width, OutlineWidth);
+//            DrawRectangleFilled(pos + Vector(halfwidth, 0), OutlineWidth, height);
+//            DrawRectangleFilled(pos + Vector(-halfwidth, 0), OutlineWidth, height);
 
             // Draw overlay
             SetDrawingColor(OverlayColor);
@@ -600,11 +621,16 @@ namespace ForLeaseEngine {
             }
 
             glLineWidth(2);
+            //glBindFrameBuffer(GL_FRAMEBUFFER, UIFBO);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            SetTexture(NULL);
+            SetBlendMode(BlendMode::NONE);
             glBegin(GL_LINE_STRIP);
                 for(int i = 0; i < 5; ++i) {
                     glVertex2f(vertices[i][0], vertices[i][1]);
                 }
             glEnd();
+            //glBindFrameBuffer(GL_FRAMEBUFFER, 0);
         }
 
         void Renderer::DrawArrow(const Point& start, const Vector& end) {
@@ -760,9 +786,15 @@ namespace ForLeaseEngine {
                     if(i < mesh->GetFaceCount() && (it == SortedEdges.end() || i <= (*it).first)) {
                         SetDrawingColor(faceColors[i]);
                         IndexedFace face = mesh->GetIndexedFace(i);
+                        Point uv0 = mesh->GetUV(face.Indices[0]);
+                        Point uv1 = mesh->GetUV(face.Indices[1]);
+                        Point uv2 = mesh->GetUV(face.Indices[2]);
                         glBegin(GL_TRIANGLES);
+                            glTexCoord2f(uv0[0], uv0[1]);
                             glVertex2f(transformed[face.Indices[0]][0], transformed[face.Indices[0]][1]);
+                            glTexCoord2f(uv1[0], uv1[1]);
                             glVertex2f(transformed[face.Indices[1]][0], transformed[face.Indices[1]][1]);
+                            glTexCoord2f(uv2[0], uv2[1]);
                             glVertex2f(transformed[face.Indices[2]][0], transformed[face.Indices[2]][1]);
                         glEnd();
                         ++TriCount;
@@ -786,6 +818,8 @@ namespace ForLeaseEngine {
                         IndexedFace face = mesh->GetIndexedFace(i);
                         SetDrawingColor(faceColors[i]);
                         for(int j = 0; j < 3; ++j) {
+                            Point uv = mesh->GetUV(face.Indices[j]);
+                            glTexCoord2f(uv[0], uv[1]);
                             glVertex2f(transformed[face.Indices[j]][0], transformed[face.Indices[j]][1]);
                         }
                         ++TriCount;

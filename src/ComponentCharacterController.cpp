@@ -41,23 +41,23 @@ namespace ForLeaseEngine {
         void CharacterController::Update() {
 //            std::cout << "Animation: " << Parent.GetComponent<Components::Model>()->GetAnimation() << std::endl;
             //std::cout << "Walk ani: " << WalkAnimation << std::endl;
-            Components::SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
-            if(emitter && RightPressed != LeftPressed) {
-                Timer += ForLease->FrameRateController().GetDt();
-                //std::cout << "Timer: " << Timer << std::endl;
-                if(Timer >= 0.3) {
-                    emitter->SetVolume(1.0f, WalkSound);
-                    emitter->StopEvent(WalkSound);
-                    emitter->PlayEvent(WalkSound);
-                    Timer = 0;
-                }
-                else if(Timer >= 0.25) {
-                    emitter->StopEvent(WalkSound);
-                }
-            }
-            else if(emitter) {
-                emitter->StopEvent(WalkSound);
-            }
+//            Components::SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
+//            if(emitter && RightPressed != LeftPressed) {
+//                Timer += ForLease->FrameRateController().GetDt();
+//                //std::cout << "Timer: " << Timer << std::endl;
+//                if(Timer >= 0.3) {
+//                    emitter->SetVolume(1.0f, WalkSound);
+//                    emitter->StopEvent(WalkSound);
+//                    emitter->PlayEvent(WalkSound);
+//                    Timer = 0;
+//                }
+//                else if(Timer >= 0.25) {
+//                    emitter->StopEvent(WalkSound);
+//                }
+//            }
+//            else if(emitter) {
+//                emitter->StopEvent(WalkSound);
+//            }
             Collision* collider = Parent.GetComponent<Collision>();
             Physics* physics = Parent.GetComponent<Physics>();
             bool couldJump = CanJump;
@@ -82,11 +82,20 @@ namespace ForLeaseEngine {
             }
             if(LeftPressed || RightPressed) {
                 Components::Model* model = Parent.GetComponent<Components::Model>();
+                if(model && model->GetAnimation().compare(WalkAnimation) != 0) {
+                    model->SetAnimation(WalkAnimation);
+                }
                 if(model && accel[0] > 0.0001) {
                     model->FlipY = false;
                 }
                 else if(model && accel[0] < -0.0001) {
                     model->FlipY = true;
+                }
+            }
+            else {
+                Components::Model* model = Parent.GetComponent<Components::Model>();
+                if(model && model->GetAnimation().compare("") != 0) {
+                    model->SetAnimation("");
                 }
             }
 

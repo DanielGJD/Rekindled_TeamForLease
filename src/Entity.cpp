@@ -68,7 +68,10 @@ namespace ForLeaseEngine {
         entity.ReadUint("ID", id);
         entity.ReadString("Name", Name);
         ID = id;
-        IDs.insert(id);
+        auto insertion = IDs.insert(id);
+        if (!insertion.second) {
+            ID = GetNewID();
+        }
         ArraySerializer jsonComponents(entity);
         jsonComponents = entity.GetChild("Components");
         for (unsigned i = 0; i < jsonComponents.Size(); ++i) {
@@ -357,6 +360,9 @@ namespace ForLeaseEngine {
                 break;
             case ComponentType::EnemyPace:
                 component = Components::EnemyPace::Create(entity);
+                break;
+            case ComponentType::OwlAI:
+                component = Components::OwlAI::Create(entity);
                 break;
             default:
                 std::cout << "Unknown Type: " << type << std::endl;

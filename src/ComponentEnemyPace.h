@@ -35,6 +35,7 @@ namespace ForLeaseEngine
                 float MaxPaceDistance;
                 float PauseTimer;
                 float DetectionDelay;
+                float ResumeTime;
                 int Direction;
 
                 void Initialize();
@@ -43,8 +44,6 @@ namespace ForLeaseEngine
                 void OnPlayerNotSeen(Event const* e);
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
-
-                Vector LastMovement(bool scaleDt = true);
 
             private:
                 bool playerDetected;
@@ -58,6 +57,7 @@ namespace ForLeaseEngine
                 float Moved;
                 float ptimer;
                 float dtimer;
+                float rtimer;
         };
     }
   }
