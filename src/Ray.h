@@ -32,7 +32,7 @@ namespace ForLeaseEngine {
             Vector GetScaledVector();
             Vector GetLastNormal();
             float GetLastDistance();
-            Components::Collision::Side GetLastSide();
+            CollisionSide GetLastSide();
             Point GetIntersectionPoint();
             HalfPlane::CollisionInterval GetHalfPlaneInterval(const HalfPlane& halfPlane);
             static Entity* CheckCollisions(Ray& ray, std::vector<Entity *>& entities, Entity* ignore = 0);
@@ -54,7 +54,7 @@ namespace ForLeaseEngine {
             float Length;
             int Collisions;
             Vector LastNormal;
-            Components::Collision::Side LastSide;
+            CollisionSide LastSide;
             float LastDistance;
     };
 

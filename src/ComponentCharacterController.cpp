@@ -62,7 +62,7 @@ namespace ForLeaseEngine {
             Physics* physics = Parent.GetComponent<Physics>();
             bool couldJump = CanJump;
             CanJump = false;
-            if(collider->CollidedLastFrame && collider->CollidedWithSide == Components::Collision::Side::Top)
+            if(collider->CollidedLastFrame && collider->CollidedWithSide == CollisionSide::Top)
                 CanJump = true;
 
             if(couldJump) {

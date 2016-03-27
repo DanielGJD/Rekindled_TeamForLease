@@ -21,6 +21,24 @@ namespace ForLeaseEngine {
 
     class Entity;
 
+    enum class CollisionSide : char {
+        Left,
+        Right,
+        Top,
+        Bottom,
+        None
+    };
+
+    class SweptCollision {
+        public:
+            Vector Normal;
+            float Distance;
+            CollisionSide Side;
+            CollisionSide SelfSide; // Awkward naming, but basically this denotes which side of the entity we're sweeping as collided with the other entity
+
+            SweptCollision(Vector normal = Vector(0, 0), float distance = 1.0f, CollisionSide side = CollisionSide::None);
+    };
+
     namespace Components {
 
         /*!
@@ -31,15 +49,6 @@ namespace ForLeaseEngine {
         */
         class Collision : public Component {
             public:
-
-                enum class Side : char {
-                    Left,
-                    Right,
-                    Top,
-                    Bottom,
-                    None
-                };
-
                 static const ComponentType Type = ComponentType::Collision;
                 virtual ComponentType GetType() { return Type; }
 
@@ -76,7 +85,7 @@ namespace ForLeaseEngine {
                 bool CollidedLastFrame;   //! Whether or not the entity collided on the last frame.  This should be handled by an event.
                 //Entity* CollidedWith;   //! The last entity this entity collided with
                 std::unordered_set<Entity *> CollidedWithLastFrame;
-                Side CollidedWithSide;    //! The side of the last entity this entity collided with
+                CollisionSide CollidedWithSide;    //! The side of the last entity this entity collided with
                 bool ResolveCollisions;   //! Whether we want to resolve collisions by moving entities
 
         private:

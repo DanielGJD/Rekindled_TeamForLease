@@ -18,6 +18,26 @@
 
 namespace ForLeaseEngine {
 
+    SweptCollision::SweptCollision(Vector normal, float distance, CollisionSide side) : Normal(normal), Distance(distance), Side(side) {
+        switch (Side) {
+            case CollisionSide::Bottom:
+                SelfSide = CollisionSide::Top;
+                break;
+            case CollisionSide::Top:
+                SelfSide = CollisionSide::Bottom;
+                break;
+            case CollisionSide::Right:
+                SelfSide = CollisionSide::Left;
+                break;
+            case CollisionSide::Left:
+                SelfSide = CollisionSide::Right;
+                break;
+            default:
+                SelfSide = CollisionSide::None;
+                break;
+        }
+    }
+
     namespace Components {
 
         /*!

@@ -51,20 +51,41 @@ namespace ForLeaseEngine {
         */
         void Collision::Update(std::vector<Entity *>& entities) {
             std::vector<Entity *> collisionEntities;
+            std::vector<Entity *> movingPlatforms;
+            std::vector<Entity *> physicsEntities;
 
             // Pre-screen entities for the collision component
             for (Entity* entity : entities) {
                 if (entity->HasComponent(ComponentType::Collision)) {
                     entity->GetComponent<Components::Collision>()->CollidedLastFrame = false;
-                    //entity->GetComponent<Components::Collision>()->CollidedWith = 0;
-
                     collisionEntities.push_back(entity);
+                }
+
+                if (entity->HasComponent(ComponentType::Physics) && !entity->HasComponent(ComponentType::MovingPlatform))
+                    physicsEntities.push_back(entity);
+
+                if (entity->HasComponent(ComponentType::MovingPlatform))
+                    movingPlatforms.push_back(entity);
+            }
+
+            //for (Entity* entity : physicsEntities) {
+            //    for (Entity* other : entity->GetComponent<Components::Collision>()->)
+            //}
+
+            for (Entity* entity : movingPlatforms) {
+                PhysicsCompute(entity);
+                PhysicsCleanup(entity);
+                //ResolveIndividualSweptCollision(entity, SweptCollision(), 0.0f);
+                CheckAndResolveMovingPlatformSweptCollisions(entity, physicsEntities, collisionEntities);
+                if (entity->GetComponent<Components::MovingPlatform>()->CurrentAction == Components::MovingPlatform::Action::Away
+                    && entity->GetComponent<Components::MovingPlatform>()->Direction == Components::MovingPlatform::Axis::Vertical) {
+                    for (Entity* touching : entity->GetComponent<Components::Collision>()->CollidedWithLastFrame) {
+                        touching->GetComponent<Components::Transform>()->Position += entity->GetComponent<Components::MovingPlatform>()->LastMovement();
+                    }
                 }
             }
 
-            for (Entity* entity : collisionEntities) {
-                if (!entity->HasComponent(ComponentType::Physics)) continue;
-
+            for (Entity* entity : physicsEntities) {
                 PhysicsCompute(entity);
                 PhysicsCleanup(entity);
                 CheckAndResolveSweptCollisions(entity, collisionEntities);
@@ -96,9 +117,9 @@ namespace ForLeaseEngine {
             Components::Physics* physics = entity->GetComponent<Components::Physics>();
             std::unordered_set<Entity *> collidedWithThisFrame;
 
-            while (time > Epsilon) {
+            while (time > 0.0f) {
                 Entity* collidedAgainst = 0;
-                SweptCollision firstCollision(Vector(0,0), 1.0f, Components::Collision::Side::None);
+                SweptCollision firstCollision(Vector(0,0), 1.0f, CollisionSide::None);
 
                 for (Entity* checkAgainst : entities) {
                     if (entity == checkAgainst) continue;
@@ -129,9 +150,16 @@ namespace ForLeaseEngine {
                     collidedWithThisFrame.insert(collidedAgainst);
                     //collision->CollidedWith = collidedAgainst;
 
-                    if (collidedAgainst->HasComponent(ComponentType::MovingPlatform)) {
-                        std::cout << ForLease->FrameRateController().FrameNumber << std::endl;
-                        entity->GetComponent<Components::Transform>()->Position += collidedAgainst->GetComponent<Components::MovingPlatform>()->LastMovement();
+                    if (collidedAgainst->HasComponent(ComponentType::MovingPlatform)
+                        && firstCollision.SelfSide == CollisionSide::Bottom
+                        && firstCollision.Side == CollisionSide::Top) {
+
+                        Components::MovingPlatform* mp = collidedAgainst->GetComponent<Components::MovingPlatform>();
+
+                        if (mp->Direction == Components::MovingPlatform::Axis::Horizontal) {
+                            std::cout << ForLease->FrameRateController().FrameNumber << std::endl;
+                            entity->GetComponent<Components::Transform>()->Position += collidedAgainst->GetComponent<Components::MovingPlatform>()->LastMovement();
+                        }
                     }
                 }
 
@@ -140,7 +168,7 @@ namespace ForLeaseEngine {
                 //if (collidedAgainst && collidedAgainst->GetComponent<Components::Collision>()->ResolveCollisions)
                     ResolveIndividualSweptCollision(entity, firstCollision, time);
 
-                if (firstCollision.Side != Components::Collision::Side::None)
+                if (firstCollision.Side != CollisionSide::None)
                     collision->CollidedWithSide = firstCollision.Side;
             }
 
@@ -164,6 +192,7 @@ namespace ForLeaseEngine {
                 CollisionStartedEvent toEntity = CollisionStartedEvent(collided);
                 ForLease->Dispatcher.DispatchToParent(&toCA, collided);
                 ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
+                collided->GetComponent<Components::Collision>()->CollidedWithLastFrame.insert(entity);
             }
 
             for (Entity* collided : collisionEnded) {
@@ -171,23 +200,104 @@ namespace ForLeaseEngine {
                 CollisionEndedEvent toEntity = CollisionEndedEvent(collided);
                 ForLease->Dispatcher.DispatchToParent(&toCA, collided);
                 ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
+                collided->GetComponent<Components::Collision>()->CollidedWithLastFrame.erase(entity);
             }
 
             collision->CollidedWithLastFrame = collidedWithThisFrame;
         }
 
+        void Collision::CheckAndResolveMovingPlatformSweptCollisions(Entity* entity, std::vector<Entity *>& entities, std::vector<Entity *>& collisionEntities) {
+            Components::Transform* transform = entity->GetComponent<Components::Transform>();
+            Components::Collision* collision = entity->GetComponent<Components::Collision>();
+            Components::Physics* physics = entity->GetComponent<Components::Physics>();
+            Components::MovingPlatform* platform = entity->GetComponent<Components::MovingPlatform>();
+            float dt = ForLease->FrameRateController().GetDt();
+
+            //if (platform->Direction == Components::MovingPlatform::Axis::Vertical
+            //    && platform->CurrentAction == Components::MovingPlatform::Action::Away) {
+            //    ResolveIndividualSweptCollision(entity, SweptCollision(), 0.0f);
+            //    return;
+            //} else {
+            //    ResolveIndividualSweptCollision(entity, SweptCollision(), 0.0f);
+            //    return;
+            //}
+
+            float time = 1.0f;
+            std::unordered_set<Entity *> collidedWithThisFrame;
+            std::unordered_set<Entity *> ignore;
+
+            while (time > Epsilon) {
+                Entity* collidedAgainst = 0;
+                SweptCollision firstCollision(Vector(0, 0), 1.0f, CollisionSide::None);
+
+                for (Entity* checkAgainst : entities) {
+                    if (entity == checkAgainst) continue;
+                    if (!BroadphaseSweptCollision(entity, checkAgainst, time)) continue;
+
+                    if (!checkAgainst->GetComponent<Components::Collision>()->ResolveCollisions) {
+                        CollisionEvent toCA = CollisionEvent(entity);
+                        CollisionEvent toEntity = CollisionEvent(checkAgainst);
+                        ForLease->Dispatcher.DispatchToParent(&toCA, checkAgainst);
+                        ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
+                        collidedWithThisFrame.insert(checkAgainst);
+                        continue;
+                    }
+
+                    SweptCollision newCollision = CheckIndividualSweptCollision(entity, checkAgainst, time);
+                    if (newCollision.Distance < firstCollision.Distance && ignore.find(checkAgainst) == ignore.end()) {
+                        firstCollision = newCollision;
+                        collidedAgainst = checkAgainst;
+                    }
+                }
+
+                if (collidedAgainst) {
+                    //CollisionEvent toCA = CollisionEvent(entity, firstCollision.SelfSide);
+                    //CollisionEvent toEntity = CollisionEvent(collidedAgainst, firstCollision.Side);
+                    //ForLease->Dispatcher.DispatchToParent(&toCA, collidedAgainst);
+                    //ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
+                    collision->CollidedLastFrame = true;
+                    collidedWithThisFrame.insert(collidedAgainst);
+                    //collision->CollidedWith = collidedAgainst;
+                    bool broadphase = false;
+                    Vector movement = physics->Velocity * dt * 1.000001f;
+
+                    //for (Entity* possible : collisionEntities) {
+                    //    if (possible == collidedAgainst) continue;
+                    //    if (BroadphaseSweptCollision(collidedAgainst, movement, possible)) {
+                    //        broadphase = true;
+                    //        ignore.insert(collidedAgainst);
+                    //        break;
+                    //    }
+                    //}
+
+                    //if (!broadphase) {
+                        ResolveIndividualSweptCollision(collidedAgainst, movement, SweptCollision(Vector(0,0), time, CollisionSide::None));
+                    //}
+                }
+
+                time -= firstCollision.Distance;
+
+                //if (collidedAgainst && collidedAgainst->GetComponent<Components::Collision>()->ResolveCollisions)
+            }
+            ResolveIndividualSweptCollision(entity, SweptCollision(), 1.0f);
+        }
+
         bool Collision::BroadphaseSweptCollision(Entity* resolve, Entity* against, float remainingTime) {
-            Components::Collision* rCollision = resolve->GetComponent<Components::Collision>();
             Components::Physics* rPhysics = resolve->GetComponent<Components::Physics>();
-            Components::Collision* aCollision = against->GetComponent<Components::Collision>();
             float dt = ForLease->FrameRateController().GetDt();
             Vector rVelocity = rPhysics->Velocity * dt * remainingTime;
 
+            return BroadphaseSweptCollision(resolve, rVelocity, against);
+        }
+
+        bool Collision::BroadphaseSweptCollision(Entity* resolve, Vector movement, Entity* against) {
+            Components::Collision* rCollision = resolve->GetComponent<Components::Collision>();
+            Components::Collision* aCollision = against->GetComponent<Components::Collision>();
+            float dt = ForLease->FrameRateController().GetDt();
+            Vector rVelocity = movement;
+
             Point bpPositionTL = rCollision->TopLeft();
             Point bpPositionBR = rCollision->BotRight();
-            //Vector bpDimension;
-            //bpDimension.x = rCollision->ScaledWidth();
-            //bpDimension.y = rCollision->ScaledHeight();
 
             if (rVelocity.x < 0) bpPositionTL.x += rVelocity.x;
             else bpPositionBR.x += rVelocity.x;
@@ -198,29 +308,13 @@ namespace ForLeaseEngine {
             Point aPositionTL = aCollision->TopLeft();
             Point aPositionBR = aCollision->BotRight();
 
-            //if (rVelocity.x > 0) {
-            //    bpDimension.x += rVelocity.x;
-            //} else {
-            //    bpPositionTL.x += rVelocity.x;
-            //    bpDimension.x -= rVelocity.x;
-            //}
-
-            //if (rVelocity.y > 0) {
-            //    bpDimension.y += rVelocity.y;
-            //} else {
-            //    bpPositionTL.y += rVelocity.y;
-            //    bpDimension.y -= rVelocity.y;
-            //}
-
-            //Point bpPositionBR = bpPositionTL + bpDimension;
-
             return !(bpPositionBR.x < aPositionTL.x || bpPositionTL.x > aPositionBR.x || bpPositionBR.y > aPositionTL.y || bpPositionTL.y < aPositionBR.y);
         }
 
         /*!
             Adapted from http://www.gamedev.net/page/resources/_/technical/game-programming/swept-aabb-collision-detection-and-response-r3084
         */
-        Collision::SweptCollision Collision::CheckIndividualSweptCollision(Entity* resolve, Entity* against, float remainingTime) {
+        SweptCollision Collision::CheckIndividualSweptCollision(Entity* resolve, Entity* against, float remainingTime) {
             Components::Transform* rTransform = resolve->GetComponent<Components::Transform>();
             Components::Collision* rCollision = resolve->GetComponent<Components::Collision>();
             Components::Physics* rPhysics = resolve->GetComponent<Components::Physics>();
@@ -283,7 +377,7 @@ namespace ForLeaseEngine {
 
             Vector normal(0, 0);
             float dist = 1;
-            Components::Collision::Side side = Components::Collision::Side::None;
+            CollisionSide side = CollisionSide::None;
 
             // No collision
             if (entryTime > exitTime || (entry.x < 0.0f && entry.y < 0.0f) || (entry.x > 1.0f || entry.y > 1.0f))
@@ -292,18 +386,18 @@ namespace ForLeaseEngine {
             if (entry.x > entry.y) {
                 if (inverseEntry.x < 0) {
                     normal = Vector(1, 0);
-                    side = Components::Collision::Side::Right;
+                    side = CollisionSide::Right;
                 } else {
                     normal = Vector(-1, 0);
-                    side = Components::Collision::Side::Left;
+                    side = CollisionSide::Left;
                 }
             } else {
                 if (inverseEntry.y > 0) {
                     normal = Vector(0, -1);
-                    side = Components::Collision::Side::Bottom;
+                    side = CollisionSide::Bottom;
                 } else {
                     normal = Vector(0, 1);
-                    side = Components::Collision::Side::Top;
+                    side = CollisionSide::Top;
                 }
             }
 
@@ -313,20 +407,24 @@ namespace ForLeaseEngine {
         }
 
         void Collision::ResolveIndividualSweptCollision(Entity* resolve, SweptCollision collision, float remainingTime) {
-            Components::Transform* rTransform = resolve->GetComponent<Components::Transform>();
             Components::Physics* rPhysics = resolve->GetComponent<Components::Physics>();
             float dt = ForLease->FrameRateController().GetDt();
-            //float remainingTime = time - collision.Distance;
 
-            rTransform->Position += rPhysics->Velocity * collision.Distance * dt;
+            Vector velocity = rPhysics->Velocity * dt;
 
-            if (collision.Side != Components::Collision::Side::None) {
+            ResolveIndividualSweptCollision(resolve, velocity, collision);
+
+            if (collision.Side != CollisionSide::None) {
                 float dotprod = (rPhysics->Velocity.x * collision.Normal.y + rPhysics->Velocity.y * collision.Normal.x) * remainingTime;
                 rPhysics->Velocity.x = dotprod * collision.Normal.y;
                 rPhysics->Velocity.y = dotprod * collision.Normal.x;
             }
+        }
 
-            //rTransform->Position += rPhysics->Velocity * remainingTime * dt;
+        void Collision::ResolveIndividualSweptCollision(Entity* resolve, Vector movement, SweptCollision collision) {
+            Components::Transform* rTransform = resolve->GetComponent<Components::Transform>();
+
+            rTransform->Position += movement * collision.Distance;
         }
 
         void Collision::CheckAndResolveCollision(Entity* entity, std::vector<Entity *>& entities) {
@@ -349,7 +447,7 @@ namespace ForLeaseEngine {
             Vector halfDimensions = Vector(collision->ScaledHalfWidth(), collision->ScaledHalfHeight());
             Vector velocity = physics->GetFrameVelocity();
 
-            Components::Collision::Side side = Components::Collision::Side::None;
+            CollisionSide side = CollisionSide::None;
             float dist = 9999;
             Entity* collidedWith = 0;
 
@@ -412,11 +510,11 @@ namespace ForLeaseEngine {
 
             collision->CollidedWithSide = side;
 
-            if (side == Components::Collision::Side::Bottom || side == Components::Collision::Side::Top) {
+            if (side == CollisionSide::Bottom || side == CollisionSide::Top) {
                 velocity[1] = 0.0f;
                 physics->Velocity[1] = 0.0f;
             }
-            else if (side == Components::Collision::Side::Left || side == Components::Collision::Side::Right) {
+            else if (side == CollisionSide::Left || side == CollisionSide::Right) {
                 velocity[0] = 0.0f;
                 physics->Velocity[0] = 0.0f;
             }
@@ -637,7 +735,7 @@ namespace ForLeaseEngine {
 
             //LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true);
 
-            Components::Collision::Side side;
+            CollisionSide side;
             float dist = 9999;
 
             //std::cout << "X: " << numVertsX << " | Y: " << numVertsY << std::endl;
@@ -663,7 +761,7 @@ namespace ForLeaseEngine {
             //dist -= 1;
             //toResolveTransform->Position += velocity * dist;
 
-            if (side == Components::Collision::Side::Bottom || side == Components::Collision::Side::Top) {
+            if (side == CollisionSide::Bottom || side == CollisionSide::Top) {
                 velocity[1] = 0.0f;
                 toResolvePhysics->Velocity[1] = 0.0f;
             }
@@ -689,7 +787,7 @@ namespace ForLeaseEngine {
             //toResolvePhysics->Velocity[1] = 0;
         }
 
-        void Collision::CheckRay(Point point, Vector velocity, Entity* other, Components::Collision::Side& side, float& dist) {
+        void Collision::CheckRay(Point point, Vector velocity, Entity* other, CollisionSide& side, float& dist) {
             //ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->DrawRectangleFilled(point, 0.25, 0.25, 0);
 
             Ray toResolveRay(point, velocity, velocity.Magnitude(), 1);

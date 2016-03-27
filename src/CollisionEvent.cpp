@@ -21,7 +21,7 @@ namespace ForLeaseEngine {
         \param other
             A pointer to the entity that the target entity collided with.
     */
-    CollisionEvent::CollisionEvent(Entity* with, Components::Collision::Side side) : Event("Collision"), With(with), Side(side) {}
+    CollisionEvent::CollisionEvent(Entity* with, CollisionSide side) : Event("Collision"), With(with), Side(side) {}
 
     CollisionStartedEvent::CollisionStartedEvent(Entity* with) : Event("CollisionStarted"), With(with) {
         std::cout << "Started colliding with " << with->GetName() << std::endl;

@@ -31,9 +31,9 @@ namespace ForLeaseEngine {
     class CollisionEvent : public Event {
         public:
             Entity* With;
-            Components::Collision::Side Side;
+            CollisionSide Side;
 
-            CollisionEvent(Entity* with, Components::Collision::Side side = Components::Collision::Side::None);
+            CollisionEvent(Entity* with, CollisionSide side = CollisionSide::None);
 
         private:
             CollisionEvent() = delete;

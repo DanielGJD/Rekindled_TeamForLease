@@ -32,7 +32,7 @@ void SeanState::Load() {
     camera->AddComponent(new FLE::Components::Camera(*camera, 0, 1, 50));
     renderer->SetCamera(*camera);
     AddLevelComponent(renderer);
-    AddLevelComponent(new LevelComponents::Physics(*this, Vector(0,-10)));
+    AddLevelComponent(new LevelComponents::Physics(*this, Vector(0,-100)));
     AddLevelComponent(new LevelComponents::Collision(*this));
     AddLevelComponent(new LevelComponents::Menu(*this));
 
@@ -56,19 +56,39 @@ void SeanState::Load() {
     //floor->AddComponent(new Components::Collision(*floor, 2, 2, true, 0, 0, true));
     //floor->AddComponent(new Components::Model(*floor, true, false, false, "1-1Block.json"));
 
-    //Entity* floor2 = AddEntity("Floor2");
-    //floor2->AddComponent(new Components::Transform(*floor2, Point(0, -6), 30, 1, 0, 0));
-    ////floor2->AddComponent(new Components::Physics(*floor2, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
-    ////floor2->AddComponent(new Components::EnemyPace(*floor2, 3, 20, 0));
-    //floor2->AddComponent(new Components::Collision(*floor2, 2, 2, true, 0, 0, true));
-    //floor2->AddComponent(new Components::Model(*floor2, true, false, false, "1-1Block.json"));
+    Entity* floor2 = AddEntity("Floor2");
+    floor2->AddComponent(new Components::Transform(*floor2, Point(0, -7), 30, 1, 0, 0));
+    //floor2->AddComponent(new Components::Physics(*floor2, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
+    //floor2->AddComponent(new Components::EnemyPace(*floor2, 3, 20, 0));
+    floor2->AddComponent(new Components::Collision(*floor2, 2, 2, true, 0, 0, true));
+    floor2->AddComponent(new Components::Model(*floor2, true, false, false, "1-1Block.json"));
 
-    Entity* smallPlatform = AddEntity("SmallPlatform");
-    smallPlatform->AddComponent(new Components::Transform(*smallPlatform, Point(0,-4), 5, 1, 0, 0));
+    Entity* character = AddEntity("Character");
+    character->AddComponent(new Components::Transform(*character, Point(0, 4), 5, 5));
+    character->AddComponent(new Components::Physics(*character));
+    character->AddComponent(new Components::Collision(*character, 2.0f, 2.0f, true/*, 20, 20*/));
+    character->AddComponent(new Components::Model(*character, true, false, false, "1-1Block.json"));
+    Components::CharacterController* charController = Components::CharacterController::Create(*character);
+    charController->Acceleration = 60;
+    charController->JumpSpeed = 40;
+    //    charController->JumpSpeed = 50;
+    //    charController->MoveSpeed = 50;
+    //    charController->maxSpeed = 200;
+    character->AddComponent(charController);
+
+    /*Entity* smallPlatform = AddEntity("SmallPlatform");
+    smallPlatform->AddComponent(new Components::Transform(*smallPlatform, Point(10,-4), 5, 1, 0, 0));
     smallPlatform->AddComponent(new Components::Physics(*smallPlatform, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
     smallPlatform->AddComponent(new Components::Collision(*smallPlatform, 2, 2, true, 0, 0, true));
-    smallPlatform->AddComponent(new Components::MovingPlatform(*smallPlatform, 2, 5, 0, Components::MovingPlatform::Axis::Horizontal));
-    smallPlatform->AddComponent(new Components::Model(*smallPlatform, true, false, false, "1-1Block.json"));
+    smallPlatform->AddComponent(new Components::MovingPlatform(*smallPlatform, 15.0f, 15.0f, 5, 1.0f, Components::MovingPlatform::Axis::Horizontal));
+    smallPlatform->AddComponent(new Components::Model(*smallPlatform, true, false, false, "1-1Block.json"));*/
+
+    Entity* smallPlatform2 = AddEntity("SmallPlatform2");
+    smallPlatform2->AddComponent(new Components::Transform(*smallPlatform2, Point(0, -4), 5, 1, 0, 0));
+    smallPlatform2->AddComponent(new Components::Physics(*smallPlatform2, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
+    smallPlatform2->AddComponent(new Components::Collision(*smallPlatform2, 2, 2, true, 0, 0, true));
+    smallPlatform2->AddComponent(new Components::MovingPlatform(*smallPlatform2, 15.0f, 15.0f, 5, 1.0f, Components::MovingPlatform::Axis::Vertical));
+    smallPlatform2->AddComponent(new Components::Model(*smallPlatform2, true, false, false, "1-1Block.json"));
 
     //Entity* ceil = AddEntity("Ceiling");
     //ceil->AddComponent(new Components::Transform(*ceil, Point(0, 15), 20, 1, 0, 0));
@@ -107,19 +127,6 @@ void SeanState::Load() {
     //floor4->AddComponent(new Components::Collision(*floor4, 2, 2));
     //floor4->AddComponent(new Components::Model(*floor4, true, false, false, "1-1Block.json"));
 
-    Entity* character = AddEntity("Character");
-    character->AddComponent(new Components::Transform(*character, Point(0, 4), 5, 5));
-    character->AddComponent(new Components::Physics(*character));
-    character->AddComponent(new Components::Collision(*character, 2.0f, 2.0f, true/*, 20, 20*/));
-    character->AddComponent(new Components::Model(*character, true, false, false, "1-1Block.json"));
-    Components::CharacterController* charController = Components::CharacterController::Create(*character);
-    charController->Acceleration = 60;
-    charController->JumpSpeed = 20;
-//    charController->JumpSpeed = 50;
-//    charController->MoveSpeed = 50;
-//    charController->maxSpeed = 200;
-    character->AddComponent(charController);
-
     //Entity* moving = AddEntity("Moving");
     //moving->AddComponent(new Components::Transform(*moving, Point(), 20));
     //moving->AddComponent(new Components::Physics(*moving, 1.0f, Vector(5,0), Vector(0,0), Vector(0,0), false, true));
@@ -155,8 +162,17 @@ void SeanState::Initialize() {
 }
 
 void SeanState::Update() {
+    //std::cout << ForLease->FrameRateController().FrameNumber << " " << ForLease->FrameRateController().GetDt() << std::endl;
 
     ForLease->OSInput.ProcessAllInput();
+
+    //Components::Transform* smallPlatform = GetEntityByName("SmallPlatform")->GetComponent<Components::Transform>();
+    //Components::MovingPlatform* spmp = GetEntityByName("SmallPlatform")->GetComponent<Components::MovingPlatform>();
+    //smallPlatform->Position += spmp->LastMovement();
+
+    //Components::Transform* floor = GetEntityByName("Floor2")->GetComponent<Components::Transform>();
+    //floor->Position += spmp->LastMovement();
+    ////std::cout << floor->Position.y << std::endl;
 
     for (FLE::Entity* entity : Entities) {
         entity->Update();

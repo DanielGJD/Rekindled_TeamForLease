@@ -23,11 +23,12 @@ namespace ForLeaseEngine
 {
     namespace Components
     {
-            MovingPlatform::MovingPlatform(Entity& owner, float speed, float maxDistance, float pause, Axis direction) : Component(owner, ComponentType::Transform | ComponentType::Collision | ComponentType::Physics),
-                                                                                              Speed(speed),
-                                                                                              MaxMove(maxDistance),
-                                                                                              PauseTimer(pause),
-                                                                                              Direction(direction)
+            MovingPlatform::MovingPlatform(Entity& owner, float awaySpeed, float backSpeed, float maxDistance, float pause, Axis direction) : Component(owner, ComponentType::Transform | ComponentType::Collision | ComponentType::Physics),
+                                                                                                                                              AwaySpeed(awaySpeed),
+                                                                                                                                              BackSpeed(backSpeed),
+                                                                                                                                              MaxMove(maxDistance),
+                                                                                                                                              PauseTimer(pause),
+                                                                                                                                              Direction(direction)
             {
                 CurrentAction = Action::Away;
                 NextAction = Action::Away;
@@ -63,23 +64,11 @@ namespace ForLeaseEngine
                 Components::Physics* physics = Parent.GetComponent<Components::Physics>();
 
                 if (Direction == Axis::Horizontal)
-                    physics->Velocity[0] = -Speed;
+                    physics->Velocity[0] = -AwaySpeed;
                 else
-                    physics->Velocity[1] = -Speed;
+                    physics->Velocity[1] = -AwaySpeed;
 
-                //[Direction] += -Speed * dt;
-                Moved += Speed * dt;
-
-                //Components::Collision* collision = Parent.GetComponent<Components::Collision>();
-                //if (collision) {
-                //    std::vector<Entity*> entities = ForLease->GameStateManager().CurrentState().GetEntitiesInBox(Position, collision->ScaledWidth(), collision->ScaledHeight());
-                //    for (Entity* entity : entities) {
-                //        if (entity->HasComponent(ComponentType::Physics)) {
-                //            entity->GetComponent<Components::Physics>()->Velocity[Direction] = 0;
-                //            entity->GetComponent<Components::Transform>()->Position += LastMovement();
-                //        }
-                //    }
-                //}
+                Moved += AwaySpeed * dt;
 
                 if (Moved >= MaxMove)
                 {
@@ -94,23 +83,11 @@ namespace ForLeaseEngine
                 Components::Physics* physics = Parent.GetComponent<Components::Physics>();
 
                 if (Direction == Axis::Horizontal)
-                    physics->Velocity[0] = Speed;
+                    physics->Velocity[0] = BackSpeed;
                 else
-                    physics->Velocity[1] = Speed;
+                    physics->Velocity[1] = BackSpeed;
 
-                //Position[Direction] += PaceSpeed * dt;
-                Moved += Speed * dt;
-
-                //Components::Collision* collision = Parent.GetComponent<Components::Collision>();
-                //if (collision) {
-                //    std::vector<Entity*> entities = ForLease->GameStateManager().CurrentState().GetEntitiesInBox(Position, collision->ScaledWidth(), collision->ScaledHeight());
-                //    for (Entity* entity : entities) {
-                //        if (entity->HasComponent(ComponentType::Physics)) {
-                //            entity->GetComponent<Components::Physics>()->Velocity[Direction] = 0;
-                //            entity->GetComponent<Components::Transform>()->Position += LastMovement();
-                //        }
-                //    }
-                //}
+                Moved += BackSpeed * dt;
 
                 if (Moved >= MaxMove)
                 {
@@ -123,7 +100,9 @@ namespace ForLeaseEngine
             void MovingPlatform::MovePause(float dt)
             {
                 CurrentPauseTimer += dt;
-                //Position[Direction] = 0;
+                Components::Physics* physics = Parent.GetComponent<Components::Physics>();
+                physics->Velocity = Vector(0, 0);
+
                 if (CurrentPauseTimer >= PauseTimer)
                 {
                     CurrentAction = NextAction;
@@ -140,7 +119,8 @@ namespace ForLeaseEngine
                 root.WriteUlonglong("Type", static_cast<unsigned long long>(Type));
                 Serializer plat = root.GetChild("MovingPlatform");
                 plat.WriteFloat("MaxMove", MaxMove);
-                plat.WriteFloat("Speed", Speed);
+                plat.WriteFloat("AwaySpeed", AwaySpeed);
+                plat.WriteFloat("BackSpeed", BackSpeed);
                 plat.WriteFloat("PauseTimer", PauseTimer);
                 plat.WriteInt("Direction", static_cast<int>(Direction));
                 plat.WriteUlonglong("Type", static_cast<unsigned long long>(Type));
@@ -151,7 +131,8 @@ namespace ForLeaseEngine
             {
                 Serializer plat = root.GetChild("MovingPlatform");
                 plat.ReadFloat("MaxMove", MaxMove);
-                plat.ReadFloat("Speed", Speed);
+                plat.ReadFloat("AwaySpeed", AwaySpeed);
+                plat.ReadFloat("BackSpeed", BackSpeed);
                 plat.ReadFloat("PauseTimer", PauseTimer);
                 int direction;
                 plat.ReadInt("Direction", direction);
@@ -172,9 +153,9 @@ namespace ForLeaseEngine
                     dt = 1.0f;
 
                 if (CurrentAction == Action::Away)
-                    movement[direction] = -(Speed * dt);
+                    movement[direction] = -(AwaySpeed * dt);
                 else if (CurrentAction == Action::Back)
-                    movement[direction] = (Speed * dt);
+                    movement[direction] = (BackSpeed * dt);
 
                 return movement;
             }

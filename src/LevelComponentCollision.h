@@ -37,39 +37,13 @@ namespace ForLeaseEngine {
                 Collision(State& owner, float vertexSpacing = 0.25);
                 void Update(std::vector<Entity *>& entities);
                 void CheckAndResolveSweptCollisions(Entity* entity, std::vector<Entity *>& entities);
-
-                class SweptCollision {
-                    public:
-                        Vector Normal;
-                        float Distance;
-                        Components::Collision::Side Side;
-                        Components::Collision::Side SelfSide; // Awkward naming, but basically this denotes which side of the entity we're sweeping as collided with the other entity
-
-                        SweptCollision(Vector normal = Vector(0,0), float distance = 999999, Components::Collision::Side side = Components::Collision::Side::None)
-                            : Normal(normal), Distance(distance), Side(side) {
-                            switch (Side) {
-                                case Components::Collision::Side::Bottom:
-                                    SelfSide = Components::Collision::Side::Top;
-                                    break;
-                                case Components::Collision::Side::Top:
-                                    SelfSide = Components::Collision::Side::Bottom;
-                                    break;
-                                case Components::Collision::Side::Right:
-                                    SelfSide = Components::Collision::Side::Left;
-                                    break;
-                                case Components::Collision::Side::Left:
-                                    SelfSide = Components::Collision::Side::Right;
-                                    break;
-                                default:
-                                    SelfSide = Components::Collision::Side::None;
-                                    break;
-                            }
-                        }
-                };
+                void CheckAndResolveMovingPlatformSweptCollisions(Entity* entity, std::vector<Entity *>& entities, std::vector<Entity *>& collisionEntities);
 
                 bool BroadphaseSweptCollision(Entity* resolve, Entity* against, float remainingTime);
+                bool BroadphaseSweptCollision(Entity* resolve, Vector movement, Entity* against);
                 SweptCollision CheckIndividualSweptCollision(Entity* resolve, Entity* against, float remainingTime);
                 void ResolveIndividualSweptCollision(Entity* resolve, SweptCollision collision, float remainingTime);
+                void ResolveIndividualSweptCollision(Entity* resolve, Vector movement, SweptCollision collision);
 
                 void CheckAndResolveCollision(Entity* entity, std::vector<Entity *>& entities);
                 bool CheckCollision(Entity* entity1, Entity* entity2);
@@ -86,7 +60,7 @@ namespace ForLeaseEngine {
             private:
                 void ResolveCollisionBoundingBox(Entity* toResolve, Entity* other);
                 void ResolveCollisionMesh(Entity* toResolve, Entity* other);
-                void CheckRay(Point point, Vector velocity, Entity* other, Components::Collision::Side& side, float& dist);
+                void CheckRay(Point point, Vector velocity, Entity* other, CollisionSide& side, float& dist);
                 static const unsigned DefaultVertsPerSide = 2;
                 float VertexSpacing;
         };

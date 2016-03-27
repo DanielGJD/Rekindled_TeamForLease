@@ -42,11 +42,12 @@ namespace ForLeaseEngine
                 };
 
                 static const ComponentType Type = ComponentType::MovingPlatform;
-                MovingPlatform(Entity & owner, float speed = 3.0, float maxDistance = 5.0, float pause = 2.0, Axis direction = Axis::Horizontal);
+                MovingPlatform(Entity & owner, float awaySpeed = 3.0f, float backSpeed = 3.0f, float maxDistance = 5.0, float pause = 2.0, Axis direction = Axis::Horizontal);
                 ~MovingPlatform();
                 virtual ComponentType GetType() { return Type; }
 
-                float Speed;
+                float AwaySpeed;
+                float BackSpeed;
                 float MaxMove;
                 float PauseTimer;
                 Axis Direction;
@@ -57,14 +58,16 @@ namespace ForLeaseEngine
 
                 Vector LastMovement(bool scaleDt = true);
 
+                Action CurrentAction;
+                Action NextAction;
+                Action ActionAfterPage;
+                float Moved;
+                float CurrentPauseTimer;
+
             private:
                 void MoveAway(float dt);
                 void MoveBack(float dt);
                 void MovePause(float dt);
-                Action CurrentAction;
-                Action NextAction;
-                float Moved;
-                float CurrentPauseTimer;
         };
     }
   }

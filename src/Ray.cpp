@@ -84,7 +84,7 @@ namespace ForLeaseEngine {
 
         float minDist = 9999;
         Vector normal;
-        Components::Collision::Side side;
+        CollisionSide side;
 
         HalfPlane::CollisionInterval interval = GetHalfPlaneInterval(top);
 
@@ -93,7 +93,7 @@ namespace ForLeaseEngine {
                 if (interval.Start < minDist) {
                     minDist = interval.Start;
                     normal = top.GetNormal();
-                    side = Components::Collision::Side::Top;
+                    side = CollisionSide::Top;
                 }
             }
         }
@@ -105,7 +105,7 @@ namespace ForLeaseEngine {
                 if (interval.Start < minDist) {
                     minDist = interval.Start;
                     normal = left.GetNormal();
-                    side = Components::Collision::Side::Left;
+                    side = CollisionSide::Left;
                 }
             }
         }
@@ -117,7 +117,7 @@ namespace ForLeaseEngine {
                 if (interval.Start < minDist) {
                     minDist = interval.Start;
                     normal = right.GetNormal();
-                    side = Components::Collision::Side::Right;
+                    side = CollisionSide::Right;
                 }
             }
         }
@@ -129,7 +129,7 @@ namespace ForLeaseEngine {
                 if (interval.Start < minDist) {
                     minDist = interval.Start;
                     normal = bot.GetNormal();
-                    side = Components::Collision::Side::Bottom;
+                    side = CollisionSide::Bottom;
                 }
             }
         }
@@ -173,7 +173,7 @@ namespace ForLeaseEngine {
         return LastNormal;
     }
 
-    Components::Collision::Side Ray::GetLastSide() {
+    CollisionSide Ray::GetLastSide() {
         return LastSide;
     }
 
