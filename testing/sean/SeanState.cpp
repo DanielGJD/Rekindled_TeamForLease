@@ -64,10 +64,10 @@ void SeanState::Load() {
     //floor2->AddComponent(new Components::Model(*floor2, true, false, false, "1-1Block.json"));
 
     Entity* smallPlatform = AddEntity("SmallPlatform");
-    smallPlatform->AddComponent(new Components::Transform(*smallPlatform, Point(0,-4), 20, 1, 0, 0));
+    smallPlatform->AddComponent(new Components::Transform(*smallPlatform, Point(0,-4), 5, 1, 0, 0));
     smallPlatform->AddComponent(new Components::Physics(*smallPlatform, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
     smallPlatform->AddComponent(new Components::Collision(*smallPlatform, 2, 2, true, 0, 0, true));
-    smallPlatform->AddComponent(new Components::MovingPlatform(*smallPlatform, 600, 600, 0, Components::MovingPlatform::Axis::Horizontal));
+    smallPlatform->AddComponent(new Components::MovingPlatform(*smallPlatform, 2, 5, 0, Components::MovingPlatform::Axis::Horizontal));
     smallPlatform->AddComponent(new Components::Model(*smallPlatform, true, false, false, "1-1Block.json"));
 
     //Entity* ceil = AddEntity("Ceiling");

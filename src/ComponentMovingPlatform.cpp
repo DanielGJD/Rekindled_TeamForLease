@@ -63,9 +63,9 @@ namespace ForLeaseEngine
                 Components::Physics* physics = Parent.GetComponent<Components::Physics>();
 
                 if (Direction == Axis::Horizontal)
-                    physics->Velocity[0] = -Speed * dt;
+                    physics->Velocity[0] = -Speed;
                 else
-                    physics->Velocity[1] = -Speed * dt;
+                    physics->Velocity[1] = -Speed;
 
                 //[Direction] += -Speed * dt;
                 Moved += Speed * dt;
@@ -94,9 +94,9 @@ namespace ForLeaseEngine
                 Components::Physics* physics = Parent.GetComponent<Components::Physics>();
 
                 if (Direction == Axis::Horizontal)
-                    physics->Velocity[0] = Speed * dt;
+                    physics->Velocity[0] = Speed;
                 else
-                    physics->Velocity[1] = Speed * dt;
+                    physics->Velocity[1] = Speed;
 
                 //Position[Direction] += PaceSpeed * dt;
                 Moved += Speed * dt;
@@ -130,11 +130,8 @@ namespace ForLeaseEngine
                     NextAction = Action::Pause;
                     CurrentPauseTimer = 0;
                     Components::Model* model = Parent.GetComponent<Components::Model>();
-                    Components::VisionCone* vision = Parent.GetComponent<Components::VisionCone>();
                     if (model)
                         model->FlipY = !(model->FlipY);
-                    if (vision)
-                        vision->Direction[0] *= -1;
                 }
             }
 

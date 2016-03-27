@@ -130,6 +130,7 @@ namespace ForLeaseEngine {
                     //collision->CollidedWith = collidedAgainst;
 
                     if (collidedAgainst->HasComponent(ComponentType::MovingPlatform)) {
+                        std::cout << ForLease->FrameRateController().FrameNumber << std::endl;
                         entity->GetComponent<Components::Transform>()->Position += collidedAgainst->GetComponent<Components::MovingPlatform>()->LastMovement();
                     }
                 }

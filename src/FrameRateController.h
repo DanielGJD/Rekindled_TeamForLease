@@ -53,6 +53,8 @@ namespace ForLeaseEngine {
 
                 void TimeScaling(double timeScale);
                 double TimeScaling();
+
+                unsigned long long FrameNumber;
             private:
                 //! A reference to the engine
                 // Engine& Parent;

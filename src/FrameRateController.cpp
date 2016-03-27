@@ -45,7 +45,7 @@ namespace ForLeaseEngine {
                 The current time scale.  Default is 1.
         */
         FrameRateController::FrameRateController(int framesPerSecond, double timeScale)
-            : FramesPerSecond(framesPerSecond), TimeScale(timeScale) {
+            : FramesPerSecond(framesPerSecond), TimeScale(timeScale), FrameNumber(0) {
                 #ifdef FLE_WINDOWS
                 FrameTime = 1.0/FramesPerSecond;
                 LastFrameTime = 0.0;
@@ -78,6 +78,8 @@ namespace ForLeaseEngine {
             End the current frame's timing, and sleep until the end of the frame's allotted time.
         */
         void FrameRateController::End() {
+            ++FrameNumber;
+
             Timer muhTimer;
             #ifdef FLE_WINDOWS
             LARGE_INTEGER currentTime;
