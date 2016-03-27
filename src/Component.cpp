@@ -24,8 +24,8 @@ namespace ForLeaseEngine {
             A ComponentType that is the result of the OR on the two ComponentTypes.
     */
     ComponentType operator|(const ComponentType& lhs, const ComponentType& rhs) {
-        return static_cast<ComponentType>(static_cast<unsigned long>(lhs)
-            | static_cast<unsigned long>(rhs));
+        return static_cast<ComponentType>(static_cast<unsigned long long>(lhs)
+            | static_cast<unsigned long long>(rhs));
     }
 
     /*!
@@ -38,8 +38,8 @@ namespace ForLeaseEngine {
             A ComponentType that is the result of the AND on the two ComponentTypes.
     */
     ComponentType operator&(const ComponentType& lhs, const ComponentType& rhs) {
-        return static_cast<ComponentType>(static_cast<unsigned long>(lhs)
-            & static_cast<unsigned long>(rhs));
+        return static_cast<ComponentType>(static_cast<unsigned long long>(lhs)
+            & static_cast<unsigned long long>(rhs));
     }
 
     /*!
@@ -59,7 +59,7 @@ namespace ForLeaseEngine {
     }
 
     std::ostream& operator<<(std::ostream& os, const ComponentType& type) {
-        os << static_cast<unsigned long>(type);
+        os << static_cast<unsigned long long>(type);
         return os;
     }
 
