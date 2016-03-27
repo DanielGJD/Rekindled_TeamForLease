@@ -55,7 +55,7 @@ namespace ForLeaseEngine {
 
         void WindowProperties::ReadCfg() {
             std::ifstream in;
-            in.open(DEFAULT_FILENAME, std::istream::in);
+            in.open(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Save) .append(DEFAULT_FILENAME), std::istream::in);
             std::getline(in, windowTitle);
             in >> xResolution;
             in >> yResolution;
@@ -65,6 +65,8 @@ namespace ForLeaseEngine {
             in >> resizeable;
             in >> mouseConstrained;
             in.close();
+
+            std::cout << xResolution << "," << yResolution << "," << visible << "," << fullscreen << "," << borderless << "," << resizeable << "," << mouseConstrained << std::endl;
 
             //WriteCfg();
         }
@@ -91,6 +93,7 @@ namespace ForLeaseEngine {
             //properties.ReadCfg();
             InitGameWindow(properties);
             currentProperties.WriteCfg();
+            currentProperties.ReadCfg();
         }
 
         /*!
