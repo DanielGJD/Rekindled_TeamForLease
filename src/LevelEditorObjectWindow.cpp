@@ -1049,6 +1049,7 @@ namespace ForLeaseEngine
             ImGui::DragFloat("X##visionoffset", &(leg::selVision->Offset[0]), 0.01);
             ImGui::SameLine();
             ImGui::DragFloat("Y##visionoffset", &(leg::selVision->Offset[1]), 0.01);
+            ImGui::SameLine();
             ImGui::Text("Offset");
             ImGui::PopItemWidth();
             ImGui::DragFloat("Radius##VisionCone", &(leg::selVision->Radius), 0.01);

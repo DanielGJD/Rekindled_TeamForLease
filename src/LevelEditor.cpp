@@ -466,6 +466,8 @@ namespace ForLeaseEngine
                 levelmenu = new LevelComponents::Menu(*this);
                 AddLevelComponent(levelmenu);
             }
+
+            leg::gravity = leg::levelPhysics->GetGravity();
             leg::selection = NULL;
         }
     }

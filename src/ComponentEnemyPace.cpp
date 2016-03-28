@@ -116,7 +116,11 @@ namespace ForLeaseEngine
                 if (model)
                     model->FlipY = !(model->FlipY);
                 if (vision)
+                {
                     vision->Direction[0] *= -1;
+                    vision->Offset[0] *= -1;
+                }
+
             }
         }
 
