@@ -79,6 +79,7 @@ namespace ForLeaseEngine {
                 // Screen to world transforms
                 Point ScreenToWorld(const Point& point);
                 Point WorldToScreen(const Point& point);
+                void Reload();
             private:
                 Matrix Projection;
                 Matrix ModelView;

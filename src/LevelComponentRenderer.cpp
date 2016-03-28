@@ -98,6 +98,7 @@ namespace ForLeaseEngine {
 
         Renderer::~Renderer() {
             glDeleteTextures(1, &LightTexture);
+            glDeleteTextures(1, &UITexture);
         }
 
         void Renderer::Serialize(Serializer& root) {
@@ -965,6 +966,39 @@ namespace ForLeaseEngine {
                 *(dest++) = combigned * Point(0.5, -0.5);
                 *(dest++) = combigned * Point(0.5, 0.5);
                 ++source;
+            }
+        }
+
+        void Renderer::Reload() {
+            glDeleteTextures(1, &LightTexture);
+            glDeleteTextures(1, &UITexture);
+
+            glGenTextures(1, &LightTexture);
+            glBindTexture(GL_TEXTURE_2D, LightTexture);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ForLease->GameWindow->GetXResolution(), ForLease->GameWindow->GetYResolution(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+            glGenTextures(1, &UITexture);
+            glBindTexture(GL_TEXTURE_2D, UITexture);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ForLease->GameWindow->GetXResolution(), ForLease->GameWindow->GetYResolution(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            //glGenFramebuffers(1, &LightFBO);
+            glBindFramebuffer(GL_FRAMEBUFFER, LightFBO);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, LightTexture, 0);
+            if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+                std::cout << "ERROR CREATING LIGHTING FRAMEBUFFER" << std::endl;
+            }
+
+            //glGenFramebuffers(1, &UIFBO);
+            glBindFramebuffer(GL_FRAMEBUFFER, UIFBO);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, UITexture, 0);
+            if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+                std::cout << "ERROR CREATING UI FRAMEBUFFER" << std::endl;
             }
         }
     }

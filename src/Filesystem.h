@@ -32,7 +32,9 @@ namespace ForLeaseEngine {
                 Filesystem();
                 Filesystem(std::string gameFile);
                 void Preinitialize();
+                void PreinitializePlatforms();
                 void Initialize(std::string gameFile);
+                void CreateSaveLocation();
 
                 static std::vector<std::string> GetAllFilesInFolder(std::string folder);
                 static bool PathExists(std::string path);
@@ -45,6 +47,7 @@ namespace ForLeaseEngine {
                     Animation,
                     Image,
                     Font,
+                    UserData,
                     Save
                 };
 

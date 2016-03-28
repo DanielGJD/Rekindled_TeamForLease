@@ -17,6 +17,8 @@
 #include <GL/glew.h>
 #include "GraphicsException.h"
 #include "Window.h"
+#include "Engine.h"
+#include "Filesystem.h"
 
 namespace ForLeaseEngine {
     namespace Systems {
@@ -27,10 +29,10 @@ namespace ForLeaseEngine {
                 Creates a WindowProperties containing the default properties
         */
         WindowProperties::WindowProperties() : windowTitle("For Lease Engine") {
-            xResolution = 800;
-            yResolution = 600;
+            xResolution = 1280;
+            yResolution = 720;
             visible = true;
-            fullscreen = false;
+            fullscreen = true;
             borderless = false;
             resizeable = false;
             mouseConstrained = false;
@@ -38,7 +40,7 @@ namespace ForLeaseEngine {
 
         void WindowProperties::WriteCfg() {
             std::ofstream out;
-            out.open(DEFAULT_FILENAME, std::ofstream::out);
+            out.open(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Save).append(DEFAULT_FILENAME), std::ofstream::out);
             out << windowTitle << "\n"
                 << xResolution << "\n"
                 << yResolution << "\n"
@@ -47,11 +49,13 @@ namespace ForLeaseEngine {
                 << borderless << "\n"
                 << resizeable << "\n"
                 << mouseConstrained;
+
+            //std::cout << "Writing window config to " << ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Save).append(DEFAULT_FILENAME);
         }
 
         void WindowProperties::ReadCfg() {
             std::ifstream in;
-            in.open(DEFAULT_FILENAME, std::istream::in);
+            in.open(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Save).append(DEFAULT_FILENAME), std::istream::in);
             std::getline(in, windowTitle);
             in >> xResolution;
             in >> yResolution;
@@ -62,7 +66,9 @@ namespace ForLeaseEngine {
             in >> mouseConstrained;
             in.close();
 
-            WriteCfg();
+            //std::cout << xResolution << "," << yResolution << "," << visible << "," << fullscreen << "," << borderless << "," << resizeable << "," << mouseConstrained << std::endl;
+
+            //WriteCfg();
         }
 
         /*!
@@ -73,6 +79,7 @@ namespace ForLeaseEngine {
             WindowProperties properties = WindowProperties();
             currentProperties = properties;
             InitGameWindow(properties);
+            //currentProperties.WriteCfg();
         }
 
         /*!
@@ -85,6 +92,8 @@ namespace ForLeaseEngine {
         Window::Window(WindowProperties& properties) : currentProperties(properties) {
             //properties.ReadCfg();
             InitGameWindow(properties);
+            //currentProperties.WriteCfg();
+            currentProperties.ReadCfg();
         }
 
         /*!
@@ -92,7 +101,7 @@ namespace ForLeaseEngine {
                 Cleans up window and closes SDL Video module
         */
         Window::~Window() {
-            //currentProperties.WriteCfg();
+            currentProperties.WriteCfg();
             DestroyGameWindow();
         }
 
@@ -180,6 +189,61 @@ namespace ForLeaseEngine {
         */
         int Window::GetYResolution() { return currentProperties.yResolution; }
 
+        bool Window::GetFullscreen() { return currentProperties.fullscreen; }
+
+        void Window::SetResolution(int x, int y) {
+            SDL_DisplayMode mode;
+            SDL_DisplayMode currentMode;
+            SDL_GetDisplayMode(0, 0, &mode);
+            mode.format = currentMode.format;
+            mode.w = x;
+            mode.h = y;
+
+            currentProperties.xResolution = x;
+            currentProperties.yResolution = y;
+
+            int windowOptions = SDL_WINDOW_OPENGL;
+
+            if(currentProperties.visible)
+                windowOptions |= SDL_WINDOW_SHOWN;
+            if(currentProperties.fullscreen)
+                windowOptions |= SDL_WINDOW_FULLSCREEN;
+            if(currentProperties.borderless)
+                windowOptions |= SDL_WINDOW_BORDERLESS;
+            if(currentProperties.resizeable)
+                windowOptions |= SDL_WINDOW_RESIZABLE;
+            if(currentProperties.mouseConstrained)
+                windowOptions |= SDL_WINDOW_INPUT_GRABBED;
+
+//            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,
+//                                FLE_GL_MAJOR_VERSION);
+//            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,
+//                                FLE_GL_MINOR_VERSION);
+            //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+            //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+//            SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+            SDL_DestroyWindow(window);
+            window = SDL_CreateWindow(currentProperties.windowTitle.c_str(),
+                                      SDL_WINDOWPOS_UNDEFINED,
+                                      SDL_WINDOWPOS_UNDEFINED,
+                                      currentProperties.xResolution,
+                                      currentProperties.yResolution,
+                                      windowOptions);
+            SDL_GL_MakeCurrent(window, context);
+            glViewport(0, 0, x, y);
+        }
+
+        void Window::SetFullscreen(bool fullscreen) {
+            currentProperties.fullscreen = fullscreen;
+
+            if(fullscreen) {
+                SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+            }
+            else {
+                SDL_SetWindowFullscreen(window, 0);
+            }
+        }
+
         /*!
             \brief
                 Initializes SDL Video, creates a window, and creates an OpenGL context
@@ -211,8 +275,8 @@ namespace ForLeaseEngine {
                                 FLE_GL_MAJOR_VERSION);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,
                                 FLE_GL_MINOR_VERSION);
-            //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-            //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+            SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+            SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
             SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
             window = SDL_CreateWindow(properties.windowTitle.c_str(),
@@ -237,7 +301,9 @@ namespace ForLeaseEngine {
             }
 
             glEnable(GL_BLEND);
-            //glEnable(GL_MULTISAMPLE);
+            glEnable(GL_MULTISAMPLE);
+            glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+            glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
             glMatrixMode(GL_MODELVIEW);
@@ -274,6 +340,8 @@ namespace ForLeaseEngine {
             window = NULL;
             SDL_QuitSubSystem(SDL_INIT_VIDEO);
         }
+
+
 
         /*!
             \brief
