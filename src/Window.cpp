@@ -50,12 +50,12 @@ namespace ForLeaseEngine {
                 << resizeable << "\n"
                 << mouseConstrained;
 
-            std::cout << "Writing window config to " << ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Save).append(DEFAULT_FILENAME);
+            //std::cout << "Writing window config to " << ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Save).append(DEFAULT_FILENAME);
         }
 
         void WindowProperties::ReadCfg() {
             std::ifstream in;
-            in.open(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Save) .append(DEFAULT_FILENAME), std::istream::in);
+            in.open(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Save).append(DEFAULT_FILENAME), std::istream::in);
             std::getline(in, windowTitle);
             in >> xResolution;
             in >> yResolution;
@@ -66,7 +66,7 @@ namespace ForLeaseEngine {
             in >> mouseConstrained;
             in.close();
 
-            std::cout << xResolution << "," << yResolution << "," << visible << "," << fullscreen << "," << borderless << "," << resizeable << "," << mouseConstrained << std::endl;
+            //std::cout << xResolution << "," << yResolution << "," << visible << "," << fullscreen << "," << borderless << "," << resizeable << "," << mouseConstrained << std::endl;
 
             //WriteCfg();
         }
@@ -79,7 +79,7 @@ namespace ForLeaseEngine {
             WindowProperties properties = WindowProperties();
             currentProperties = properties;
             InitGameWindow(properties);
-            currentProperties.WriteCfg();
+            //currentProperties.WriteCfg();
         }
 
         /*!
@@ -92,7 +92,7 @@ namespace ForLeaseEngine {
         Window::Window(WindowProperties& properties) : currentProperties(properties) {
             //properties.ReadCfg();
             InitGameWindow(properties);
-            currentProperties.WriteCfg();
+            //currentProperties.WriteCfg();
             currentProperties.ReadCfg();
         }
 
@@ -101,7 +101,7 @@ namespace ForLeaseEngine {
                 Cleans up window and closes SDL Video module
         */
         Window::~Window() {
-            //currentProperties.WriteCfg();
+            currentProperties.WriteCfg();
             DestroyGameWindow();
         }
 
@@ -275,8 +275,8 @@ namespace ForLeaseEngine {
                                 FLE_GL_MAJOR_VERSION);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,
                                 FLE_GL_MINOR_VERSION);
-            //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-            //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+            SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+            SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
             SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
             window = SDL_CreateWindow(properties.windowTitle.c_str(),
@@ -301,7 +301,9 @@ namespace ForLeaseEngine {
             }
 
             glEnable(GL_BLEND);
-            //glEnable(GL_MULTISAMPLE);
+            glEnable(GL_MULTISAMPLE);
+            glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+            glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
             glMatrixMode(GL_MODELVIEW);

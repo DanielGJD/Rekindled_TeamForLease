@@ -67,9 +67,17 @@ namespace ForLeaseEngine {
         SDL_Init(0);
         Keys::InitKeymap();
         Systems::WindowProperties properties = Systems::WindowProperties();
-        properties.xResolution = ResolutionX;
-        properties.yResolution = ResolutionY;
-        properties.fullscreen = Fullscreen;
+        if(Filesystem.PathExists(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Save).append(Systems::WindowProperties::DEFAULT_FILENAME))){
+            std::cout << "Window.cfg exists" << std::endl;
+            properties.ReadCfg();
+        }
+        else {
+            std::cout << "Using default window cfg" << std::endl;
+            properties.WriteCfg();
+        }
+        //properties.xResolution = ResolutionX;
+        //properties.yResolution = ResolutionY;
+        //properties.fullscreen = Fullscreen;
         GameWindow = Systems::Window::CreateGameWindow(properties);
         OSInput.dispatcher = &Dispatcher;
         OSInput.GameWindow = GameWindow;

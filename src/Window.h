@@ -53,8 +53,8 @@ namespace ForLeaseEngine {
                 void ReadCfg();
                 void ReadCfg(char* cfgFile);
 
-            private:
                 static char const* const DEFAULT_FILENAME;
+            private:
         };
 
 
