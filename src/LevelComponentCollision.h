@@ -36,6 +36,11 @@ namespace ForLeaseEngine {
                 virtual ComponentType GetType() { return Type; }
                 Collision(State& owner, float vertexSpacing = 0.25);
                 void Update(std::vector<Entity *>& entities);
+                void UpdateMovingPlatform(Entity* entity, std::vector<Entity *> physicsEntities);
+                bool IsAffectedByMovingPlatform(Entity* platform, Entity* check);
+                bool IsAffectedByHoriziontalMovingPlatform(Entity* platform, Entity* check);
+                bool IsAffectedByVerticalMovingPlatform(Entity* platform, Entity* check);
+                bool BoxesIntersect(Point br1, Point tl1, Point br2, Point tl2);
                 void CheckAndResolveSweptCollisions(Entity* entity, std::vector<Entity *>& entities);
                 void CheckAndResolveMovingPlatformSweptCollisions(Entity* entity, std::vector<Entity *>& entities, std::vector<Entity *>& collisionEntities);
 

@@ -76,18 +76,18 @@ void SeanState::Load() {
     //    charController->maxSpeed = 200;
     character->AddComponent(charController);
 
-    /*Entity* smallPlatform = AddEntity("SmallPlatform");
+    Entity* smallPlatform = AddEntity("SmallPlatform");
     smallPlatform->AddComponent(new Components::Transform(*smallPlatform, Point(10,-4), 5, 1, 0, 0));
     smallPlatform->AddComponent(new Components::Physics(*smallPlatform, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
     smallPlatform->AddComponent(new Components::Collision(*smallPlatform, 2, 2, true, 0, 0, true));
-    smallPlatform->AddComponent(new Components::MovingPlatform(*smallPlatform, 15.0f, 15.0f, 5, 1.0f, Components::MovingPlatform::Axis::Horizontal));
-    smallPlatform->AddComponent(new Components::Model(*smallPlatform, true, false, false, "1-1Block.json"));*/
+    smallPlatform->AddComponent(new Components::MovingPlatform(*smallPlatform, 15.0f, 15.0f, 0.25f, 5, 1.0f, Components::MovingPlatform::Axis::Horizontal));
+    smallPlatform->AddComponent(new Components::Model(*smallPlatform, true, false, false, "1-1Block.json"));
 
     Entity* smallPlatform2 = AddEntity("SmallPlatform2");
-    smallPlatform2->AddComponent(new Components::Transform(*smallPlatform2, Point(0, -4), 5, 1, 0, 0));
+    smallPlatform2->AddComponent(new Components::Transform(*smallPlatform2, Point(-10, -4), 5, 1, 0, 0));
     smallPlatform2->AddComponent(new Components::Physics(*smallPlatform2, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
     smallPlatform2->AddComponent(new Components::Collision(*smallPlatform2, 2, 2, true, 0, 0, true));
-    smallPlatform2->AddComponent(new Components::MovingPlatform(*smallPlatform2, 15.0f, 15.0f, 5, 1.0f, Components::MovingPlatform::Axis::Vertical));
+    smallPlatform2->AddComponent(new Components::MovingPlatform(*smallPlatform2, 15.0f, 15.0f, 0.25f, 5.0f, 1.0f, Components::MovingPlatform::Axis::Vertical));
     smallPlatform2->AddComponent(new Components::Model(*smallPlatform2, true, false, false, "1-1Block.json"));
 
     //Entity* ceil = AddEntity("Ceiling");

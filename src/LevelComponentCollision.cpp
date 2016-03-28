@@ -72,17 +72,21 @@ namespace ForLeaseEngine {
             //    for (Entity* other : entity->GetComponent<Components::Collision>()->)
             //}
 
+            //for (Entity* entity : movingPlatforms) {
+            //    PhysicsCompute(entity);
+            //    PhysicsCleanup(entity);
+            //    //ResolveIndividualSweptCollision(entity, SweptCollision(), 0.0f);
+            //    CheckAndResolveMovingPlatformSweptCollisions(entity, physicsEntities, collisionEntities);
+            //    if (entity->GetComponent<Components::MovingPlatform>()->CurrentAction == Components::MovingPlatform::Action::Away
+            //        && entity->GetComponent<Components::MovingPlatform>()->Direction == Components::MovingPlatform::Axis::Vertical) {
+            //        for (Entity* touching : entity->GetComponent<Components::Collision>()->CollidedWithLastFrame) {
+            //            touching->GetComponent<Components::Transform>()->Position += entity->GetComponent<Components::MovingPlatform>()->LastMovement();
+            //        }
+            //    }
+            //}
+
             for (Entity* entity : movingPlatforms) {
-                PhysicsCompute(entity);
-                PhysicsCleanup(entity);
-                //ResolveIndividualSweptCollision(entity, SweptCollision(), 0.0f);
-                CheckAndResolveMovingPlatformSweptCollisions(entity, physicsEntities, collisionEntities);
-                if (entity->GetComponent<Components::MovingPlatform>()->CurrentAction == Components::MovingPlatform::Action::Away
-                    && entity->GetComponent<Components::MovingPlatform>()->Direction == Components::MovingPlatform::Axis::Vertical) {
-                    for (Entity* touching : entity->GetComponent<Components::Collision>()->CollidedWithLastFrame) {
-                        touching->GetComponent<Components::Transform>()->Position += entity->GetComponent<Components::MovingPlatform>()->LastMovement();
-                    }
-                }
+                UpdateMovingPlatform(entity, physicsEntities);
             }
 
             for (Entity* entity : physicsEntities) {
@@ -107,6 +111,81 @@ namespace ForLeaseEngine {
 
                 }
             }*/
+        }
+
+        void Collision::UpdateMovingPlatform(Entity* entity, std::vector<Entity*> physicsEntities) {
+            Components::Transform* transform = entity->GetComponent<Components::Transform>();
+            Components::Collision* collision = entity->GetComponent<Components::Collision>();
+            Components::Physics* physics = entity->GetComponent<Components::Physics>();
+            Components::MovingPlatform* platform = entity->GetComponent<Components::MovingPlatform>();
+            float dt = ForLease->FrameRateController().GetDt();
+
+            std::vector<Entity*> allAffected;
+
+            for (Entity* check : physicsEntities) {
+                if (IsAffectedByMovingPlatform(entity, check))
+                    allAffected.push_back(check);
+            }
+
+            Vector movement = physics->Velocity * dt;
+            transform->Position += movement;
+
+            if (platform->Direction == Components::MovingPlatform::Axis::Horizontal) {
+                for (Entity* affected : allAffected) {
+                    affected->GetComponent<Components::Transform>()->Position += movement;
+                }
+            } else {
+                for (Entity* affected : allAffected) {
+                    Components::Transform* aTransform = affected->GetComponent<Components::Transform>();
+                    Components::Collision* aCollision = affected->GetComponent<Components::Collision>();
+
+                    aTransform->Position.y = transform->Position.y + collision->ScaledHalfHeight() + aCollision->ScaledHalfHeight();
+                }
+            }
+        }
+
+        bool Collision::IsAffectedByMovingPlatform(Entity* platform, Entity* check) {
+            if (platform->GetComponent<Components::MovingPlatform>()->Direction == Components::MovingPlatform::Axis::Horizontal) {
+                return IsAffectedByHoriziontalMovingPlatform(platform, check);
+            } else {
+                return IsAffectedByVerticalMovingPlatform(platform, check);
+            }
+        }
+
+        bool Collision::IsAffectedByHoriziontalMovingPlatform(Entity* platform, Entity* check) {
+            Components::Collision* pCollision = platform->GetComponent<Components::Collision>();
+            Components::MovingPlatform* pPlatform = platform->GetComponent<Components::MovingPlatform>();
+            Point pbr1 = pCollision->TopRight();
+            Point ptl1 = pCollision->TopLeft();
+            ptl1.y += pPlatform->AffectedFieldHeight;
+
+            Components::Collision* cCollision = check->GetComponent<Components::Collision>();
+
+            if (!cCollision) return false;
+            else             return BoxesIntersect(pbr1, ptl1, cCollision->BotRight(), cCollision->TopLeft());
+        }
+
+        bool Collision::IsAffectedByVerticalMovingPlatform(Entity* platform, Entity* check) {
+            Components::Collision* pCollision = platform->GetComponent<Components::Collision>();
+            Components::Physics* pPhysics = platform->GetComponent<Components::Physics>();
+            Components::MovingPlatform* pPlatform = platform->GetComponent<Components::MovingPlatform>();
+            Point pbr1 = pCollision->TopRight();
+            Point ptl1 = pCollision->TopLeft();
+            ptl1.y += pPlatform->AffectedFieldHeight;
+            if (pPhysics->Velocity.y > 0) ptl1.y += pPhysics->Velocity.y * ForLease->FrameRateController().GetDt();
+
+            Components::Collision* cCollision = check->GetComponent<Components::Collision>();
+
+            if (!cCollision) return false;
+            else             return BoxesIntersect(pbr1, ptl1, cCollision->BotRight(), cCollision->TopLeft());
+        }
+
+        /*!
+            Takes four points--each box (1 and 2) has a bottom right and top left
+            point.
+        */
+        bool Collision::BoxesIntersect(Point br1, Point tl1, Point br2, Point tl2) {
+            return !(br1.x < tl2.x || tl1.x > br2.x || br1.y > tl2.y || tl1.y < br2.y);
         }
 
         void Collision::CheckAndResolveSweptCollisions(Entity* entity, std::vector<Entity *>& entities) {
@@ -150,17 +229,17 @@ namespace ForLeaseEngine {
                     collidedWithThisFrame.insert(collidedAgainst);
                     //collision->CollidedWith = collidedAgainst;
 
-                    if (collidedAgainst->HasComponent(ComponentType::MovingPlatform)
-                        && firstCollision.SelfSide == CollisionSide::Bottom
-                        && firstCollision.Side == CollisionSide::Top) {
+                    //if (collidedAgainst->HasComponent(ComponentType::MovingPlatform)
+                    //    && firstCollision.SelfSide == CollisionSide::Bottom
+                    //    && firstCollision.Side == CollisionSide::Top) {
 
-                        Components::MovingPlatform* mp = collidedAgainst->GetComponent<Components::MovingPlatform>();
+                    //    Components::MovingPlatform* mp = collidedAgainst->GetComponent<Components::MovingPlatform>();
 
-                        if (mp->Direction == Components::MovingPlatform::Axis::Horizontal) {
-                            std::cout << ForLease->FrameRateController().FrameNumber << std::endl;
-                            entity->GetComponent<Components::Transform>()->Position += collidedAgainst->GetComponent<Components::MovingPlatform>()->LastMovement();
-                        }
-                    }
+                    //    if (mp->Direction == Components::MovingPlatform::Axis::Horizontal) {
+                    //        std::cout << ForLease->FrameRateController().FrameNumber << std::endl;
+                    //        entity->GetComponent<Components::Transform>()->Position += collidedAgainst->GetComponent<Components::MovingPlatform>()->LastMovement();
+                    //    }
+                    //}
                 }
 
                 time -= firstCollision.Distance;
@@ -308,7 +387,8 @@ namespace ForLeaseEngine {
             Point aPositionTL = aCollision->TopLeft();
             Point aPositionBR = aCollision->BotRight();
 
-            return !(bpPositionBR.x < aPositionTL.x || bpPositionTL.x > aPositionBR.x || bpPositionBR.y > aPositionTL.y || bpPositionTL.y < aPositionBR.y);
+            return BoxesIntersect(bpPositionBR, bpPositionTL, aPositionBR, aPositionTL);
+            //!(bpPositionBR.x < aPositionTL.x || bpPositionTL.x > aPositionBR.x || bpPositionBR.y > aPositionTL.y || bpPositionTL.y < aPositionBR.y);
         }
 
         /*!

@@ -23,9 +23,10 @@ namespace ForLeaseEngine
 {
     namespace Components
     {
-            MovingPlatform::MovingPlatform(Entity& owner, float awaySpeed, float backSpeed, float maxDistance, float pause, Axis direction) : Component(owner, ComponentType::Transform | ComponentType::Collision | ComponentType::Physics),
+            MovingPlatform::MovingPlatform(Entity& owner, float awaySpeed, float backSpeed, float affectedFieldHeight, float maxDistance, float pause, Axis direction) : Component(owner, ComponentType::Transform | ComponentType::Collision | ComponentType::Physics),
                                                                                                                                               AwaySpeed(awaySpeed),
                                                                                                                                               BackSpeed(backSpeed),
+                                                                                                                                              AffectedFieldHeight(affectedFieldHeight),
                                                                                                                                               MaxMove(maxDistance),
                                                                                                                                               PauseTimer(pause),
                                                                                                                                               Direction(direction)
@@ -121,6 +122,7 @@ namespace ForLeaseEngine
                 plat.WriteFloat("MaxMove", MaxMove);
                 plat.WriteFloat("AwaySpeed", AwaySpeed);
                 plat.WriteFloat("BackSpeed", BackSpeed);
+                plat.WriteFloat("AffectedFieldHeight", AffectedFieldHeight);
                 plat.WriteFloat("PauseTimer", PauseTimer);
                 plat.WriteInt("Direction", static_cast<int>(Direction));
                 plat.WriteUlonglong("Type", static_cast<unsigned long long>(Type));
@@ -133,6 +135,7 @@ namespace ForLeaseEngine
                 plat.ReadFloat("MaxMove", MaxMove);
                 plat.ReadFloat("AwaySpeed", AwaySpeed);
                 plat.ReadFloat("BackSpeed", BackSpeed);
+                plat.ReadFloat("AffectedFieldHeight", AffectedFieldHeight);
                 plat.ReadFloat("PauseTimer", PauseTimer);
                 int direction;
                 plat.ReadInt("Direction", direction);

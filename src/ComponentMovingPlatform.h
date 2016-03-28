@@ -42,7 +42,7 @@ namespace ForLeaseEngine
                 };
 
                 static const ComponentType Type = ComponentType::MovingPlatform;
-                MovingPlatform(Entity & owner, float awaySpeed = 3.0f, float backSpeed = 3.0f, float maxDistance = 5.0, float pause = 2.0, Axis direction = Axis::Horizontal);
+                MovingPlatform(Entity & owner, float awaySpeed = 3.0f, float backSpeed = 3.0f, float affectedFieldHeight = 0.25f, float maxDistance = 5.0, float pause = 2.0, Axis direction = Axis::Horizontal);
                 ~MovingPlatform();
                 virtual ComponentType GetType() { return Type; }
 
@@ -51,6 +51,7 @@ namespace ForLeaseEngine
                 float MaxMove;
                 float PauseTimer;
                 Axis Direction;
+                float AffectedFieldHeight;
 
                 void Update();
                 void Serialize(Serializer& root);
