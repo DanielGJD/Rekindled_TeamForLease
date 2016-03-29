@@ -26,6 +26,7 @@ public:
     void Update();
     void Deinitialize();
     void Unload();
+    std::string MainMenuBGM;
 private:
     int Health;
 };
