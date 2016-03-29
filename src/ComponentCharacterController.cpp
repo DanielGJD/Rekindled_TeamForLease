@@ -41,7 +41,7 @@ namespace ForLeaseEngine {
         void CharacterController::Update() {
 //            std::cout << "Animation: " << Parent.GetComponent<Components::Model>()->GetAnimation() << std::endl;
             //std::cout << "Walk ani: " << WalkAnimation << std::endl;
-//            Components::SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
+            Components::SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
 //            if(emitter && RightPressed != LeftPressed) {
 //                Timer += ForLease->FrameRateController().GetDt();
 //                //std::cout << "Timer: " << Timer << std::endl;
@@ -104,6 +104,7 @@ namespace ForLeaseEngine {
             if(!couldJump && CanJump && JumpSoundTimer > 0.1) {
                 SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
                 if(emitter){
+                    std::cout<< "land sound" <<std::endl;
                     emitter->SetVolume(1.0f, LandSound);
                     emitter->StopEvent(LandSound);
                     emitter->PlayEvent(LandSound);

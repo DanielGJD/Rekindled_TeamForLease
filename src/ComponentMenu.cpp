@@ -14,6 +14,7 @@
 #include "ComponentMenu.h"
 #include "Engine.h"
 #include "State.h"
+#include "SoundEmitter.h"
 #include <sstream>
 
 namespace ForLeaseEngine {
@@ -24,6 +25,9 @@ namespace ForLeaseEngine {
             : Component(owner, ComponentType::Transform), UnfocusedScale(unfocusedScale),
               FocusedScale(focusedScale), Spacing(spacing), Active(active), LastActive(0) {
             if (Active) Activate();
+
+
+
         }
 
         Menu::~Menu() {
@@ -91,6 +95,7 @@ namespace ForLeaseEngine {
                 Representations.push_back(rep);
                 rep->AddComponent(new Components::Transform(*rep, position, UnfocusedScale, UnfocusedScale, 0, 500));
                 rep->AddComponent(new Components::Sprite(*rep));
+
                 //ForLease->Resources.LoadTexture(item->Image);
                 //Texture* texture = Texture::CreateTexture(item->Image);
                 //TextureRegion textureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
@@ -106,7 +111,9 @@ namespace ForLeaseEngine {
                 sprite->SetSpriteSource(item->Image);
                 rep->GetComponent<Components::Transform>(true)->ScaleX = UnfocusedScale * sprite->SpriteSource.GetWidth() / sprite->SpriteSource.GetHeight();
                 position += Spacing * FocusedScale;
+                rep->AddComponent(new Components::BackgroundMusic(*rep, "Menu2"));
             }
+
 
             std::cout << Parent.GetName() << " activated." << std::endl;
         }

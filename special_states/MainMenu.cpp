@@ -15,6 +15,7 @@
 #include "Mesh.h"
 #include "GameStateManager.h"
 #include "Ray.h"
+#include "SoundEmitter.h"
 
 #include <iostream>
 #include <string>
@@ -22,7 +23,7 @@
 namespace FLE = ForLeaseEngine;
 using namespace ForLeaseEngine;
 
-MainMenu::MainMenu() : State("MainMenu") {}
+MainMenu::MainMenu() : State("MainMenu"), MainMenuBGM("Menu2") {}
 
 void MainMenu::Load() {
 }
@@ -41,6 +42,23 @@ void MainMenu::Initialize() {
     Entity* background = AddEntity("Background");
     background->AddComponent(new Components::Transform(*background, 0, 0, 50, 50));
     background->AddComponent(new Components::Sprite(*background));
+    background->AddComponent(new Components::SoundEmitter(*background));
+    Components::SoundEmitter* emitter = background->GetComponent<Components::SoundEmitter>();
+    //SoundEmitter* emitter = background.GetComponent<SoundEmitter>();
+    if(emitter)
+    {
+        emitter->SetVolume(1.0f, MainMenuBGM);
+        emitter->StopEvent(MainMenuBGM);
+        emitter->PlayEvent(MainMenuBGM);
+        std::cout<< "MENU2 EMITTER HERE" << std::endl;
+    }
+    if(!emitter)
+    {
+        std::cout << "no menu sound" <<std::endl;
+    }
+   // background->GetComponent<Components::SoundEmitter>(true)->SetVolume(1.0f, "Menu2");
+    //background->GetComponent<Components::SoundEmitter>(true)->StopEvent("Menu2");
+    //background->GetComponent<Components::SoundEmitter>(true)->PlayEvent("Menu2");
     //ForLease->Resources.LoadTexture("bg7.png");
     //Texture* texture = Texture::CreateTexture("bg7.png");
     //TextureRegion textureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
