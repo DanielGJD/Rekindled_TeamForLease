@@ -76,6 +76,8 @@ namespace ForLeaseEngine {
 
                 State* PauseScreen;
 
+                int FreezeCount;
+
                 //! Made private and deactivated, since we NEED Parent
                 GameStateManager() = delete;
         };
