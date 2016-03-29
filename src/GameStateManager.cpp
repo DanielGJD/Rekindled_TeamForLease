@@ -13,6 +13,7 @@
 #include "Engine.h"
 #include "State.h"
 #include "PauseMenu.h"
+#include "WindowEvent.h"
 
 namespace ForLeaseEngine {
 
@@ -22,18 +23,19 @@ namespace ForLeaseEngine {
             Constructor for GameStateManager.  Creates a new instance of GameStateManager using a provided Engine as its parent.
         */
         GameStateManager::GameStateManager(Engine& parent)
-            : Parent(parent), StateIndex(0), Action(StateAction::Continue), UnfreezeAction(StateAction::Continue) {}
+            : Parent(parent), StateIndex(0), Action(StateAction::Continue), UnfreezeAction(StateAction::Continue), FreezeCount(0) {}
 
         /*!
             Constructor for GameStateManager.  Creates a new instance of GameStateManager using a provided State list.
         */
         GameStateManager::GameStateManager(Engine& parent, std::vector<State *> states)
             : Parent(parent), States(states), StateIndex(0),
-              Action(StateAction::Continue), UnfreezeAction(StateAction::Continue) {}
+              Action(StateAction::Continue), UnfreezeAction(StateAction::Continue), FreezeCount(0) {}
 
         void GameStateManager::Initialize() {
-            ForLease->Dispatcher.Attach(NULL, this, "FocusGained", &GameStateManager::FocusUnfreeze);
-            ForLease->Dispatcher.Attach(NULL, this, "FocusLost", &GameStateManager::UnfocusFreeze);
+            ForLease->Dispatcher.Attach(NULL, this, WindowEvent::FocusGained, &GameStateManager::FocusUnfreeze);
+            ForLease->Dispatcher.Attach(NULL, this, WindowEvent::FocusLost, &GameStateManager::UnfocusFreeze);
+            ForLease->Dispatcher.Attach(NULL, this, WindowEvent::Exposed, &GameStateManager::FocusUnfreeze);
             PauseScreen = new PauseMenu();
             //PauseScreen->Initialize();
         }
@@ -55,19 +57,19 @@ namespace ForLeaseEngine {
                     bool frozenLastFrame = false;
 
                     do {
-                        Parent.FrameRateController().Start();   // Start the current frame
                         if (!frozenLastFrame) {
+                            Parent.FrameRateController().Start();   // Start the current frame
                             States[StateIndex]->Update();       // Do all the game stuff
+                            Parent.FrameRateController().End();     // End the current frame
                         }
                         else {
                             frozenLastFrame = false;
                         }
-                        Parent.FrameRateController().End();     // End the current frame
 
                         while (Action == StateAction::Freeze) {
-                            ForLease->OSInput.ProcessAllInput();
-                            Parent.FrameRateController().SleepFor(0.1);
                             frozenLastFrame = true;
+                            Parent.FrameRateController().SleepFor(0.1);
+                            ForLease->OSInput.ProcessAllInput();
                         }
 
                         if (Action == StateAction::Pause) {
@@ -86,6 +88,10 @@ namespace ForLeaseEngine {
                                     ForLease->OSInput.ProcessAllInput();
                                     Parent.FrameRateController().SleepFor(0.1);
                                     frozenLastFrame = true;
+                                }
+                                if(frozenLastFrame && Action != StateAction::Freeze) {
+                                    Parent.FrameRateController().Start();
+                                    Parent.FrameRateController().End();
                                 }
                             }
 
@@ -114,7 +120,17 @@ namespace ForLeaseEngine {
             \param action
                 A StateAction that we'll set the Action of the GameStateManger to.
         */
-        void GameStateManager::SetAction(StateAction action) { Action = action; }
+        void GameStateManager::SetAction(StateAction action) {
+            if(action == StateAction::Freeze && FreezeCount == 0) {
+                UnfreezeAction = Action;
+                Action = action;
+                ++FreezeCount;
+            }
+            else {
+                Action = action;
+                FreezeCount = 0;
+            }
+        }
 
         /*!
             Sets the state of the GameStateManager.
@@ -147,12 +163,28 @@ namespace ForLeaseEngine {
         }
 
         void GameStateManager::UnfocusFreeze(const Event* e) {
-            UnfreezeAction = Action;
-            Action = StateAction::Freeze;
+            if(FreezeCount == 0) {
+                UnfreezeAction = Action;
+                Action = StateAction::Freeze;
+            }
+            if(FreezeCount < 0) {
+                throw(Exception("FreezeCount < 0"));
+            }
+            ++FreezeCount;
+            std::cout << "FreezeCount = " << FreezeCount << std::endl;
         }
 
         void GameStateManager::FocusUnfreeze(const Event* e) {
-            Action = UnfreezeAction;
+            if(FreezeCount > 0) {
+                --FreezeCount;
+                std::cout << "FreezeCount = " << FreezeCount << std::endl;
+                if(FreezeCount == 0) {
+                    std::cout << "Unfreezing" << std::endl;
+                    Action = UnfreezeAction;
+                    Parent.FrameRateController().Start();
+                    Parent.FrameRateController().End();
+                }
+            }
         }
 
         /*!

@@ -19,6 +19,7 @@
 #include "Window.h"
 #include "Engine.h"
 #include "Filesystem.h"
+#include "WindowEvent.h"
 
 namespace ForLeaseEngine {
     namespace Systems {
@@ -192,12 +193,16 @@ namespace ForLeaseEngine {
         bool Window::GetFullscreen() { return currentProperties.fullscreen; }
 
         void Window::SetResolution(int x, int y) {
-            SDL_DisplayMode mode;
-            SDL_DisplayMode currentMode;
-            SDL_GetDisplayMode(0, 0, &mode);
-            mode.format = currentMode.format;
-            mode.w = x;
-            mode.h = y;
+            std::cout << "Setting resolution " << x << "," << y << std::endl;
+            WindowEvent e = WindowEvent(WindowEvent::FocusLost);
+            ForLease->Dispatcher.Dispatch(&e, NULL);
+
+//            SDL_DisplayMode mode;
+//            SDL_DisplayMode currentMode;
+//            SDL_GetDisplayMode(0, 0, &mode);
+//            mode.format = currentMode.format;
+//            mode.w = x;
+//            mode.h = y;
 
             currentProperties.xResolution = x;
             currentProperties.yResolution = y;
@@ -234,6 +239,11 @@ namespace ForLeaseEngine {
         }
 
         void Window::SetFullscreen(bool fullscreen) {
+            std::cout << "Setting fullscreen " << fullscreen << std::endl;
+            WindowEvent e = WindowEvent(WindowEvent::FocusLost);
+            ForLease->Dispatcher.Dispatch(&e, NULL);
+            //ForLease->Dispatcher.Dispatch(&e, NULL);
+
             currentProperties.fullscreen = fullscreen;
 
             if(fullscreen) {
@@ -242,6 +252,9 @@ namespace ForLeaseEngine {
             else {
                 SDL_SetWindowFullscreen(window, 0);
             }
+
+            //e = WindowEvent(WindowEvent::FocusGained);
+            //ForLease->Dispatcher.Dispatch(&e, NULL);
         }
 
         /*!

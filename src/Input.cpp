@@ -131,8 +131,12 @@ namespace ForLeaseEngine {
                         std::cout << "Window " << SDL_e.window.windowID << " hidden" << std::endl;
                         break;
                     case SDL_WINDOWEVENT_EXPOSED:
+                    {
                         std::cout << "Window " << SDL_e.window.windowID << " exposed" << std::endl;
+                        WindowEvent e = WindowEvent(WindowEvent::Exposed);
+                        ForLease->Dispatcher.Dispatch(&e, this);
                         break;
+                    }
                     case SDL_WINDOWEVENT_MOVED:
                         std::cout << "Window " << SDL_e.window.windowID << " moved to (" << SDL_e.window.data1 << "," << SDL_e.window.data2 << ")" << std::endl;
                         break;
