@@ -35,6 +35,7 @@ void SeanState::Load() {
     AddLevelComponent(new LevelComponents::Physics(*this, Vector(0,-100)));
     AddLevelComponent(new LevelComponents::Collision(*this));
     AddLevelComponent(new LevelComponents::Menu(*this));
+    AddLevelComponent(new LevelComponents::UsefulObject(*this, "balloon"));
 
     //Entity* checkpoint = AddEntity("Checkpoint");
     //checkpoint->AddComponent(new Components::Transform(*checkpoint));

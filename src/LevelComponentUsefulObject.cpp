@@ -20,9 +20,9 @@ namespace ForLeaseEngine {
 
     namespace LevelComponents {
 
-        UsefulObject::UsefulObject(State& owner) : LevelComponent(owner, ComponentType::UsefulObject),
-            BalloonArchetypeName(""),
-            DistractionArchetypeName("") {}
+        UsefulObject::UsefulObject(State& owner, std::string balloon, std::string distraction) : LevelComponent(owner, ComponentType::UsefulObject),
+            BalloonArchetypeName(balloon),
+            DistractionArchetypeName(distraction) {}
 
         void UsefulObject::Serialize(Serializer& root) {
             root.WriteUlonglong("Type", static_cast<unsigned long long int>(ComponentType::UsefulObject));

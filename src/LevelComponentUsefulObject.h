@@ -28,7 +28,7 @@ namespace ForLeaseEngine {
                 static const ComponentType Type = ComponentType::UsefulObject;
                 virtual ComponentType GetType() { return Type; }
 
-                UsefulObject(State& owner);
+                UsefulObject(State& owner, std::string balloon = std::string(""), std::string distraction = std::string(""));
 
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
