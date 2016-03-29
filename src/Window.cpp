@@ -197,12 +197,12 @@ namespace ForLeaseEngine {
             WindowEvent e = WindowEvent(WindowEvent::FocusLost);
             ForLease->Dispatcher.Dispatch(&e, NULL);
 
-            SDL_DisplayMode mode;
-            SDL_DisplayMode currentMode;
-            SDL_GetDisplayMode(0, 0, &mode);
-            mode.format = currentMode.format;
-            mode.w = x;
-            mode.h = y;
+//            SDL_DisplayMode mode;
+//            SDL_DisplayMode currentMode;
+//            SDL_GetDisplayMode(0, 0, &mode);
+//            mode.format = currentMode.format;
+//            mode.w = x;
+//            mode.h = y;
 
             currentProperties.xResolution = x;
             currentProperties.yResolution = y;
