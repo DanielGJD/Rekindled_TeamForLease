@@ -42,7 +42,10 @@ namespace ForLeaseEngine {
     class CollisionStartedEvent : public Event {
         public:
             Entity* With;
-            CollisionStartedEvent(Entity* with);
+            CollisionSide Side;
+            CollisionSide SelfSide;
+
+            CollisionStartedEvent(Entity* with, CollisionSide side);
         private:
             CollisionStartedEvent() = delete;
     };

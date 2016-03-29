@@ -195,6 +195,7 @@ namespace ForLeaseEngine {
             Components::Collision* collision = entity->GetComponent<Components::Collision>();
             Components::Physics* physics = entity->GetComponent<Components::Physics>();
             std::unordered_set<Entity *> collidedWithThisFrame;
+            std::vector<SweptCollision> collisionsThisFrame;
 
             while (time > 0.0f) {
                 Entity* collidedAgainst = 0;
@@ -240,6 +241,15 @@ namespace ForLeaseEngine {
                     //        entity->GetComponent<Components::Transform>()->Position += collidedAgainst->GetComponent<Components::MovingPlatform>()->LastMovement();
                     //    }
                     //}
+
+                    auto collidedLast = collision->CollidedWithLastFrame.find(collidedAgainst);
+                    if (collidedLast == collision->CollidedWithLastFrame.end()) {
+                        CollisionStartedEvent toCA = CollisionStartedEvent(entity, firstCollision.SelfSide);
+                        CollisionStartedEvent toEntity = CollisionStartedEvent(collidedAgainst, firstCollision.Side);
+                        ForLease->Dispatcher.DispatchToParent(&toCA, collidedAgainst);
+                        ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
+                        collidedAgainst->GetComponent<Components::Collision>()->CollidedWithLastFrame.insert(entity);
+                    }
                 }
 
                 time -= firstCollision.Distance;
@@ -251,14 +261,14 @@ namespace ForLeaseEngine {
                     collision->CollidedWithSide = firstCollision.Side;
             }
 
-            std::vector<Entity *> collisionStarted;
+            //std::vector<Entity *> collisionStarted;
             std::vector<Entity *> collisionEnded;
 
-            for (Entity* collided : collidedWithThisFrame) {
-                auto collidedLast = collision->CollidedWithLastFrame.find(collided);
-                if (collidedLast == collision->CollidedWithLastFrame.end())
-                    collisionStarted.push_back(collided);
-            }
+            //for (Entity* collided : collidedWithThisFrame) {
+            //    auto collidedLast = collision->CollidedWithLastFrame.find(collided);
+            //    if (collidedLast == collision->CollidedWithLastFrame.end())
+            //        collisionStarted.push_back(collided);
+            //}
 
             for (Entity* collidedLast : collision->CollidedWithLastFrame) {
                 auto collided = collidedWithThisFrame.find(collidedLast);
@@ -266,13 +276,13 @@ namespace ForLeaseEngine {
                     collisionEnded.push_back(collidedLast);
             }
 
-            for (Entity* collided : collisionStarted) {
-                CollisionStartedEvent toCA = CollisionStartedEvent(entity);
-                CollisionStartedEvent toEntity = CollisionStartedEvent(collided);
-                ForLease->Dispatcher.DispatchToParent(&toCA, collided);
-                ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
-                collided->GetComponent<Components::Collision>()->CollidedWithLastFrame.insert(entity);
-            }
+            //for (Entity* collided : collisionStarted) {
+                //CollisionStartedEvent toCA = CollisionStartedEvent(entity);
+                //CollisionStartedEvent toEntity = CollisionStartedEvent(collided);
+                //ForLease->Dispatcher.DispatchToParent(&toCA, collided);
+                //ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
+                //collided->GetComponent<Components::Collision>()->CollidedWithLastFrame.insert(entity);
+            //}
 
             for (Entity* collided : collisionEnded) {
                 CollisionEndedEvent toCA = CollisionEndedEvent(entity);

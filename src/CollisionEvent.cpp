@@ -23,8 +23,32 @@ namespace ForLeaseEngine {
     */
     CollisionEvent::CollisionEvent(Entity* with, CollisionSide side) : Event("Collision"), With(with), Side(side) {}
 
-    CollisionStartedEvent::CollisionStartedEvent(Entity* with) : Event("CollisionStarted"), With(with) {
-        std::cout << "Started colliding with " << with->GetName() << std::endl;
+    CollisionStartedEvent::CollisionStartedEvent(Entity* with, CollisionSide side) : Event("CollisionStarted"), With(with), Side(side) {
+        std::cout << "Started colliding with " << with->GetName();
+
+        switch (Side) {
+            case CollisionSide::Bottom:
+                SelfSide = CollisionSide::Top;
+                std::cout << " on " << with->GetName() << "'s bottom.";
+                break;
+            case CollisionSide::Top:
+                SelfSide = CollisionSide::Bottom;
+                std::cout << " on " << with->GetName() << "'s top.";
+                break;
+            case CollisionSide::Right:
+                SelfSide = CollisionSide::Left;
+                std::cout << " on " << with->GetName() << "'s right.";
+                break;
+            case CollisionSide::Left:
+                SelfSide = CollisionSide::Right;
+                std::cout << " on " << with->GetName() << "'s left.";
+                break;
+            default:
+                SelfSide = CollisionSide::None;
+                break;
+        }
+
+        std::cout << std::endl;
     }
 
     CollisionEndedEvent::CollisionEndedEvent(Entity* with) : Event("CollisionEnded"), With(with) {
