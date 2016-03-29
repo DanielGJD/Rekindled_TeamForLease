@@ -36,12 +36,15 @@ namespace ForLeaseEngine {
 
             void Update();
             void OnCollide(const Event* e);
+            void OnKeyDown(const Event* e);
 
             void Serialize(Serializer& root);
             void Deserialize(Serializer& root);
 
             UsefulObjectCategory Category;
             std::string FollowName;
+            int ThrowKey;
+            Vector ThrowVector;
 
         private:
             UsefulObjectInventory() = delete;

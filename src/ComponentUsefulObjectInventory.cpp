@@ -23,9 +23,11 @@ namespace ForLeaseEngine {
             return object;
         }
 
-        UsefulObjectInventory::UsefulObjectInventory(Entity& owner) : Component(owner, ComponentType::Transform | ComponentType::Collision | ComponentType::Physics),
+        UsefulObjectInventory::UsefulObjectInventory(Entity& owner) : Component(owner, ComponentType::Transform | ComponentType::Collision | ComponentType::Physics | ComponentType::Model),
                                                                       Category(UsefulObjectCategory::None),
-                                                                      FollowName("") {}
+                                                                      FollowName(""),
+                                                                      ThrowKey(Keys::Comma),
+                                                                      ThrowVector(20,0) {}
 
         UsefulObjectInventory::~UsefulObjectInventory() {
             ForLease->Dispatcher.Detach(this, "Collision");
@@ -33,6 +35,7 @@ namespace ForLeaseEngine {
 
         void UsefulObjectInventory::Initialize() {
             ForLease->Dispatcher.Attach(NULL, this, "Collision", &UsefulObjectInventory::OnCollide, &Parent);
+            ForLease->Dispatcher.Attach(NULL, this, "KeyDown", &UsefulObjectInventory::OnKeyDown);
         }
 
         void UsefulObjectInventory::Update() {
@@ -66,11 +69,21 @@ namespace ForLeaseEngine {
                 std::cout << "distraction" << std::endl;
         }
 
+        void UsefulObjectInventory::OnKeyDown(const Event* e) {
+            const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
+
+            if (key_e->Key != ThrowKey) return;
+
+
+        }
+
         void UsefulObjectInventory::Serialize(Serializer& root) {
             root.WriteUlonglong("Type", static_cast<unsigned long long>(Type));
             Serializer usefulObjectInventory = root.GetChild("UsefulObjectInventory");
             usefulObjectInventory.WriteInt("Category", static_cast<int>(Category));
             usefulObjectInventory.WriteString("FollowName", FollowName);
+            usefulObjectInventory.WriteInt("ThrowKey", ThrowKey);
+            usefulObjectInventory.WriteVec("ThrowVector", ThrowVector);
             usefulObjectInventory.WriteUlonglong("Type", static_cast<unsigned long long>(Type));
             root.Append(usefulObjectInventory, "UsefulObjectInventory");
         }
@@ -81,6 +94,8 @@ namespace ForLeaseEngine {
             usefulObjectInventory.ReadInt("Category", category);
             Category = static_cast<UsefulObjectCategory>(category);
             usefulObjectInventory.ReadString("FollowName", FollowName);
+            usefulObjectInventory.ReadInt("ThrowKey", ThrowKey);
+            usefulObjectInventory.ReadVec("ThrowVector", ThrowVector);
         }
 
     } // Components
