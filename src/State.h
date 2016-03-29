@@ -92,10 +92,14 @@ namespace ForLeaseEngine {
 
             bool ResetToCheckpoint = false;
 
+            void DeleteEntityAfterFrame(Entity* entity);
+            void PostFrameCleanup();
+
         protected:
             std::string Name;                               //! Name of the state
             std::vector<LevelComponent*> LevelComponents;   //! The level components in the state
             std::vector<Entity*> Entities;                  //! The entities in the state
+            std::vector<Entity*> DeleteAfterFrame;
     };
 
     LevelComponent* DeserializeLevelComponent(Serializer& root, State& state, Serializer& stateSerializer);

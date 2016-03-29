@@ -31,6 +31,7 @@ namespace ForLeaseEngine {
             virtual void Update();
             virtual void Deinitialize();
             virtual void Unload();
+
         private:
             std::string File;
     };

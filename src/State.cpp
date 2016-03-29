@@ -695,6 +695,18 @@ namespace ForLeaseEngine {
         Deserialize(root);
     }
 
+    void State::DeleteEntityAfterFrame(Entity* entity) {
+        DeleteAfterFrame.push_back(entity);
+    }
+
+    void State::PostFrameCleanup() {
+        for (Entity* entity : DeleteAfterFrame) {
+            DeleteEntity(entity);
+        }
+
+        DeleteAfterFrame.clear();
+    }
+
     /*!
         Add a level component (or multiple level components) to a given state.
 

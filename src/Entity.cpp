@@ -367,6 +367,12 @@ namespace ForLeaseEngine {
             case ComponentType::MovingPlatform:
                 component = new Components::MovingPlatform(entity);
                 break;
+            case ComponentType::UsefulObject:
+                component = new Components::UsefulObject(entity);
+                break;
+            case ComponentType::UsefulObjectInventory:
+                component = Components::UsefulObjectInventory::Create(entity);
+                break;
             default:
                 std::cout << "Unknown Type: " << type << std::endl;
                 return 0;
