@@ -44,6 +44,8 @@ namespace ForLeaseEngine {
             if (Category == UsefulObjectCategory::Balloon) {
                 Parent.GetComponent<Components::Model>()->ModelColor = Color(1, 0, 0);
                 Parent.GetComponent<Components::Physics>()->Mass = BalloonMass;
+            } else if (Category == UsefulObjectCategory::Distraction) {
+                Parent.GetComponent<Components::Model>()->ModelColor = Color(0, 1, 0);
             } else {
                 Parent.GetComponent<Components::Model>()->ModelColor = Color(1, 1, 1);
                 Parent.GetComponent<Components::Physics>()->Mass = NormalMass;
@@ -51,6 +53,8 @@ namespace ForLeaseEngine {
         }
 
         void UsefulObjectInventory::OnCollide(const Event* e) {
+            if (Category != UsefulObjectCategory::None) return;
+
             const CollisionEvent* collision_e = reinterpret_cast<const CollisionEvent*>(e);
 
             Entity* with = collision_e->With;

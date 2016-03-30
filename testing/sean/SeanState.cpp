@@ -35,7 +35,7 @@ void SeanState::Load() {
     AddLevelComponent(new LevelComponents::Physics(*this, Vector(0,-100)));
     AddLevelComponent(new LevelComponents::Collision(*this));
     AddLevelComponent(new LevelComponents::Menu(*this));
-    AddLevelComponent(new LevelComponents::UsefulObject(*this, "balloon"));
+    AddLevelComponent(new LevelComponents::UsefulObject(*this, "balloon", "distraction"));
 
     //Entity* checkpoint = AddEntity("Checkpoint");
     //checkpoint->AddComponent(new Components::Transform(*checkpoint));
@@ -87,6 +87,14 @@ void SeanState::Load() {
     object->AddComponent(new Components::UsefulObject(*object, UsefulObjectCategory::Balloon));
     object->CreateArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "balloon");
 
+    Entity* object2 = AddEntity("Object");
+    object2->AddComponent(new Components::Transform(*object2, Point(-10, 4), 1, 1));
+    object2->AddComponent(new Components::Physics(*object2));
+    object2->AddComponent(new Components::Collision(*object2, 2.0f, 2.0f, false/*, 20, 20*/));
+    object2->AddComponent(new Components::Model(*object2, true, false, false, "1-1Block.json", "", Color(0, 1, 0)));
+    object2->AddComponent(new Components::UsefulObject(*object2, UsefulObjectCategory::Distraction));
+    object2->CreateArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "distraction");
+
     //Entity* smallPlatform = AddEntity("SmallPlatform");
     //smallPlatform->AddComponent(new Components::Transform(*smallPlatform, Point(10,-4), 5, 1, 0, 0));
     //smallPlatform->AddComponent(new Components::Physics(*smallPlatform, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
@@ -115,12 +123,12 @@ void SeanState::Load() {
     //lWall->AddComponent(new Components::Collision(*lWall, 2, 2, true, 0, 0, true));
     //lWall->AddComponent(new Components::Model(*lWall, true, false, false, "1-1Block.json"));
 
-    Entity* rWall = AddEntity("RightWall");
-    rWall->AddComponent(new Components::Transform(*rWall, Point(10, 0), 1, 20, 0, 0));
-    //floor->AddComponent(new Components::Physics(*floor, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
-    //floor->AddComponent(new Components::EnemyPace(*floor, 3, 20, 0));
-    rWall->AddComponent(new Components::Collision(*rWall, 2, 2, false, 0, 0, true));
-    rWall->AddComponent(new Components::Model(*rWall, true, false, false, "1-1Block.json"));
+    //Entity* rWall = AddEntity("RightWall");
+    //rWall->AddComponent(new Components::Transform(*rWall, Point(10, 0), 1, 20, 0, 0));
+    ////floor->AddComponent(new Components::Physics(*floor, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
+    ////floor->AddComponent(new Components::EnemyPace(*floor, 3, 20, 0));
+    //rWall->AddComponent(new Components::Collision(*rWall, 2, 2, false, 0, 0, true));
+    //rWall->AddComponent(new Components::Model(*rWall, true, false, false, "1-1Block.json"));
 
     //Entity* floor2 = AddEntity("Floor2");
     //floor2->AddComponent(new Components::Transform(*floor2, Point(0, -8), 20, 1, 0, 0));
