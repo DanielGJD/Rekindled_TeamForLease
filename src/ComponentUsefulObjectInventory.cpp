@@ -24,10 +24,12 @@ namespace ForLeaseEngine {
         }
 
         UsefulObjectInventory::UsefulObjectInventory(Entity& owner) : Component(owner, ComponentType::Transform | ComponentType::Collision | ComponentType::Physics | ComponentType::Model),
-                                                                      Category(UsefulObjectCategory::None),
-                                                                      FollowName(""),
-                                                                      ThrowKey(Keys::Comma),
-                                                                      ThrowVector(20,0) {}
+            Category(UsefulObjectCategory::None),
+            FollowName(""),
+            ThrowKey(Keys::Comma),
+            ThrowVector(20, 0),
+            BalloonMass(0.5f),
+            NormalMass(1.0f) {}
 
         UsefulObjectInventory::~UsefulObjectInventory() {
             ForLease->Dispatcher.Detach(this, "Collision");
@@ -41,9 +43,10 @@ namespace ForLeaseEngine {
         void UsefulObjectInventory::Update() {
             if (Category == UsefulObjectCategory::Balloon) {
                 Parent.GetComponent<Components::Model>()->ModelColor = Color(1, 0, 0);
-                Parent.GetComponent<Components::Physics>()->Acceleration.y = 200.0f;
+                Parent.GetComponent<Components::Physics>()->Mass = 0.5f;
             } else {
                 Parent.GetComponent<Components::Model>()->ModelColor = Color(1, 1, 1);
+                Parent.GetComponent<Components::Physics>()->Mass = 1.0f;
             }
         }
 
@@ -122,6 +125,8 @@ namespace ForLeaseEngine {
             usefulObjectInventory.WriteString("FollowName", FollowName);
             usefulObjectInventory.WriteInt("ThrowKey", ThrowKey);
             usefulObjectInventory.WriteVec("ThrowVector", ThrowVector);
+            usefulObjectInventory.WriteFloat("BalloonMass", BalloonMass);
+            usefulObjectInventory.WriteFloat("NormalMass", NormalMass);
             usefulObjectInventory.WriteUlonglong("Type", static_cast<unsigned long long>(Type));
             root.Append(usefulObjectInventory, "UsefulObjectInventory");
         }
@@ -134,6 +139,8 @@ namespace ForLeaseEngine {
             usefulObjectInventory.ReadString("FollowName", FollowName);
             usefulObjectInventory.ReadInt("ThrowKey", ThrowKey);
             usefulObjectInventory.ReadVec("ThrowVector", ThrowVector);
+            usefulObjectInventory.ReadFloat("BalloonMass", BalloonMass);
+            usefulObjectInventory.ReadFloat("NormalMass", NormalMass);
         }
 
     } // Components

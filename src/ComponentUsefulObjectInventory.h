@@ -45,6 +45,8 @@ namespace ForLeaseEngine {
             std::string FollowName;
             int ThrowKey;
             Vector ThrowVector;
+            float BalloonMass;
+            float NormalMass;
 
         private:
             UsefulObjectInventory() = delete;
