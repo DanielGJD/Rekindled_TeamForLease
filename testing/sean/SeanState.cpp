@@ -36,6 +36,8 @@ void SeanState::Load() {
     AddLevelComponent(new LevelComponents::Collision(*this));
     AddLevelComponent(new LevelComponents::Menu(*this));
     AddLevelComponent(new LevelComponents::UsefulObject(*this, "balloon", "distraction"));
+    GetLevelComponent<LevelComponents::UsefulObject>()->BalloonMesh = "Balloon.json";
+    GetLevelComponent<LevelComponents::UsefulObject>()->DistractionMesh = "Color.json";
 
     //Entity* checkpoint = AddEntity("Checkpoint");
     //checkpoint->AddComponent(new Components::Transform(*checkpoint));
@@ -78,6 +80,13 @@ void SeanState::Load() {
     //    charController->maxSpeed = 200;
     character->AddComponent(charController);
     character->GetComponent<Components::UsefulObjectInventory>()->ThrowVector = Vector(20, 20);
+    character->GetComponent<Components::UsefulObjectInventory>()->FollowName = "Follow";
+
+    Entity* follow = AddEntity("Follow");
+    follow->AddComponent(new Components::Transform(*follow, Point(0, 10), 5, 5));
+    //follow->AddComponent(new Components::Physics(*follow));
+    //follow->AddComponent(new Components::Collision(*follow, 2.0f, 2.0f, false/*, 20, 20*/));
+    follow->AddComponent(new Components::Model(*follow, true, false, false));
 
     Entity* object = AddEntity("Object");
     object->AddComponent(new Components::Transform(*object, Point(10, 4), 1, 1));
@@ -87,7 +96,7 @@ void SeanState::Load() {
     object->AddComponent(new Components::UsefulObject(*object, UsefulObjectCategory::Balloon));
     object->CreateArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "balloon");
 
-    Entity* object2 = AddEntity("Object");
+    Entity* object2 = AddEntity("Object2");
     object2->AddComponent(new Components::Transform(*object2, Point(-10, 4), 1, 1));
     object2->AddComponent(new Components::Physics(*object2));
     object2->AddComponent(new Components::Collision(*object2, 2.0f, 2.0f, false/*, 20, 20*/));

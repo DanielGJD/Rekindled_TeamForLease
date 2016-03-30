@@ -37,6 +37,8 @@ namespace ForLeaseEngine {
 
                 std::string BalloonArchetypeName;
                 std::string DistractionArchetypeName;
+                std::string BalloonMesh;
+                std::string DistractionMesh;
         };
 
     } // LevelComponents

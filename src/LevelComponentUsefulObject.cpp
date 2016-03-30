@@ -30,6 +30,8 @@ namespace ForLeaseEngine {
             usefulObject.WriteUlonglong("Type", static_cast<unsigned long long int>(ComponentType::UsefulObject));
             usefulObject.WriteString("BalloonArchetypeName", BalloonArchetypeName);
             usefulObject.WriteString("DistractionArchetypeName", DistractionArchetypeName);
+            usefulObject.WriteString("BalloonMesh", BalloonMesh);
+            usefulObject.WriteString("DistractionMesh", DistractionMesh);
             root.Append(usefulObject, "UsefulObject");
         }
 
@@ -37,6 +39,8 @@ namespace ForLeaseEngine {
             Serializer usefulObject = root.GetChild("UsefulObject");
             usefulObject.ReadString("BalloonArchetypeName", BalloonArchetypeName);
             usefulObject.ReadString("DistractionArchetypeName", DistractionArchetypeName);
+            usefulObject.ReadString("BalloonMesh", BalloonMesh);
+            usefulObject.ReadString("DistractionMesh", DistractionMesh);
         }
 
     } // LevelComponents

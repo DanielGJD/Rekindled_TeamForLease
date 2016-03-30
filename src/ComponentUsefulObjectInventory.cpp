@@ -41,15 +41,26 @@ namespace ForLeaseEngine {
         }
 
         void UsefulObjectInventory::Update() {
-            if (Category == UsefulObjectCategory::Balloon) {
-                Parent.GetComponent<Components::Model>()->ModelColor = Color(1, 0, 0);
+            if (Category == UsefulObjectCategory::Balloon)
                 Parent.GetComponent<Components::Physics>()->Mass = BalloonMass;
-            } else if (Category == UsefulObjectCategory::Distraction) {
-                Parent.GetComponent<Components::Model>()->ModelColor = Color(0, 1, 0);
-            } else {
-                Parent.GetComponent<Components::Model>()->ModelColor = Color(1, 1, 1);
+            else
                 Parent.GetComponent<Components::Physics>()->Mass = NormalMass;
-            }
+
+            Entity* follow = ForLease->GameStateManager().CurrentState().GetEntityByName(FollowName);
+            if (!follow) return;
+
+            LevelComponents::UsefulObject* lcUsefulObject = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::UsefulObject>();
+            if (!lcUsefulObject) return;
+
+            if (!follow->HasComponent(ComponentType::Model)) return;
+
+            if (Category == UsefulObjectCategory::Balloon)
+                follow->GetComponent<Components::Model>()->ModelMesh = lcUsefulObject->BalloonMesh;
+            else if (Category == UsefulObjectCategory::Distraction)
+                follow->GetComponent<Components::Model>()->ModelMesh = lcUsefulObject->DistractionMesh;
+            else
+                follow->GetComponent<Components::Model>()->ModelMesh = "";
+            
         }
 
         void UsefulObjectInventory::OnCollide(const Event* e) {
@@ -84,6 +95,7 @@ namespace ForLeaseEngine {
 
             State& currentState = ForLease->GameStateManager().CurrentState();
             LevelComponents::UsefulObject* lcUsefulObject = currentState.GetLevelComponent<LevelComponents::UsefulObject>();
+            if (!lcUsefulObject) return;
             Entity* newObject;
             std::stringstream name;
 
