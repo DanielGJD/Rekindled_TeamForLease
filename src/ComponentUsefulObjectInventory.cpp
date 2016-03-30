@@ -43,10 +43,10 @@ namespace ForLeaseEngine {
         void UsefulObjectInventory::Update() {
             if (Category == UsefulObjectCategory::Balloon) {
                 Parent.GetComponent<Components::Model>()->ModelColor = Color(1, 0, 0);
-                Parent.GetComponent<Components::Physics>()->Mass = 0.5f;
+                Parent.GetComponent<Components::Physics>()->Mass = BalloonMass;
             } else {
                 Parent.GetComponent<Components::Model>()->ModelColor = Color(1, 1, 1);
-                Parent.GetComponent<Components::Physics>()->Mass = 1.0f;
+                Parent.GetComponent<Components::Physics>()->Mass = NormalMass;
             }
         }
 
