@@ -87,6 +87,7 @@ void SeanState::Load() {
     //follow->AddComponent(new Components::Physics(*follow));
     //follow->AddComponent(new Components::Collision(*follow, 2.0f, 2.0f, false/*, 20, 20*/));
     follow->AddComponent(new Components::Model(*follow, true, false, false));
+    follow->AddComponent(new Components::Follow(*follow, true, 0.0f, 1.0f, character->GetID(), Vector(0,2)));
 
     Entity* object = AddEntity("Object");
     object->AddComponent(new Components::Transform(*object, Point(10, 4), 1, 1));
