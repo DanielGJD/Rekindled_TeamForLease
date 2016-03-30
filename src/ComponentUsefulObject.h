@@ -13,6 +13,7 @@
 #define COMPONENT_USEFUL_OBJECT_H
 
 #include "Component.h"
+#include "Event.h"
 
 namespace ForLeaseEngine {
 
@@ -29,15 +30,16 @@ namespace ForLeaseEngine {
         class UsefulObject : public Component {
 
             public:
-                //static UsefulObject* Create(Entity& owner);
+                static UsefulObject* Create(Entity& owner);
 
                 static const ComponentType Type = ComponentType::UsefulObject;
                 virtual ComponentType GetType() { return Type; }
 
                 UsefulObject(Entity& owner, UsefulObjectCategory category = UsefulObjectCategory::None);
-                //void Initialize();
+                void Initialize();
 
-                void Update() {};
+                void Update();
+                //void OnCollide(const Event* e);
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
 

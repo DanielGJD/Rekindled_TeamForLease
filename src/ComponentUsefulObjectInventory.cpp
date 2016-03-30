@@ -39,10 +39,10 @@ namespace ForLeaseEngine {
         }
 
         void UsefulObjectInventory::Update() {
-            if (Category != UsefulObjectCategory::None) {
+            if (Category == UsefulObjectCategory::Balloon) {
                 Parent.GetComponent<Components::Model>()->ModelColor = Color(1, 0, 0);
-            }
-            else {
+                Parent.GetComponent<Components::Physics>()->Acceleration.y = 200.0f;
+            } else {
                 Parent.GetComponent<Components::Model>()->ModelColor = Color(1, 1, 1);
             }
         }
@@ -77,7 +77,7 @@ namespace ForLeaseEngine {
 
             State& currentState = ForLease->GameStateManager().CurrentState();
             LevelComponents::UsefulObject* lcUsefulObject = currentState.GetLevelComponent<LevelComponents::UsefulObject>();
-            Entity* newObject = 0;
+            Entity* newObject;
             std::stringstream name;
 
             if (Category == UsefulObjectCategory::Balloon) {
@@ -91,7 +91,26 @@ namespace ForLeaseEngine {
             name << newObject->GetID();
             newObject->SetName(name.str());
 
-            newObject->GetComponent<Components::Physics>()->Velocity = ThrowVector;
+            Point spawn;
+
+            Components::Transform* transform = Parent.GetComponent<Components::Transform>();
+            Components::Collision* collision = Parent.GetComponent<Components::Collision>();
+            Components::Model* model = Parent.GetComponent<Components::Model>();
+
+            Components::Collision* noCollision = newObject->GetComponent<Components::Collision>();
+            Vector throwVector = ThrowVector;
+
+            if (model->FlipY) {
+                throwVector.x *= -1;
+                spawn = collision->TopLeft() + Vector(-noCollision->ScaledWidth(), noCollision->ScaledHeight());
+            } else {
+                spawn = collision->TopRight() + Vector(noCollision->ScaledWidth(), noCollision->ScaledHeight());
+            }
+
+            //std::cout << Parent.GetComponent<Components::Transform>()->Position << " " << spawn << std::endl;
+            newObject->GetComponent<Components::Transform>()->Position = spawn;
+
+            newObject->GetComponent<Components::Physics>()->Velocity = throwVector;
 
             Category = UsefulObjectCategory::None;
         }

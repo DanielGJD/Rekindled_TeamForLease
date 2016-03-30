@@ -368,7 +368,7 @@ namespace ForLeaseEngine {
                 component = new Components::MovingPlatform(entity);
                 break;
             case ComponentType::UsefulObject:
-                component = new Components::UsefulObject(entity);
+                component = Components::UsefulObject::Create(entity);
                 break;
             case ComponentType::UsefulObjectInventory:
                 component = Components::UsefulObjectInventory::Create(entity);

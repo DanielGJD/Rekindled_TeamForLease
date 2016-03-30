@@ -210,7 +210,16 @@ namespace ForLeaseEngine {
                         CollisionEvent toEntity = CollisionEvent(checkAgainst);
                         ForLease->Dispatcher.DispatchToParent(&toCA, checkAgainst);
                         ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
+
+                        if (collision->CollidedWithLastFrame.find(checkAgainst) == collision->CollidedWithLastFrame.end()) {
+                            CollisionStartedEvent toCAStart = CollisionStartedEvent(entity, CollisionSide::None);
+                            CollisionStartedEvent toEntityStart = CollisionStartedEvent(checkAgainst, CollisionSide::None);
+                            ForLease->Dispatcher.DispatchToParent(&toCA, checkAgainst);
+                            ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
+                        }
+
                         collidedWithThisFrame.insert(checkAgainst);
+
                         continue;
                     }
 
