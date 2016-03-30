@@ -576,6 +576,12 @@ namespace ForLeaseEngine {
         return Entities;
     }
 
+    bool State::EntityExists(Entity* entity) {
+        auto find = std::find(Entities.begin(), Entities.end(), entity);
+        if (find == Entities.end()) return false;
+        else return true;
+    }
+
     void State::DeleteAllLevelComponents() {
         for (LevelComponent* lc : LevelComponents) {
             delete lc;
@@ -681,6 +687,9 @@ namespace ForLeaseEngine {
                 break;
             case ComponentType::Checkpoint:
                 lc = new LevelComponents::Checkpoint(state, stateSerializer);
+                break;
+            case ComponentType::UsefulObject:
+                lc = new LevelComponents::UsefulObject(state);
                 break;
             default:
                 return 0;

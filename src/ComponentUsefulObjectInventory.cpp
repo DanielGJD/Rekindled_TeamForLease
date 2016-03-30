@@ -73,8 +73,27 @@ namespace ForLeaseEngine {
             const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
 
             if (key_e->Key != ThrowKey) return;
+            if (Category == UsefulObjectCategory::None) return;
 
+            State& currentState = ForLease->GameStateManager().CurrentState();
+            LevelComponents::UsefulObject* lcUsefulObject = currentState.GetLevelComponent<LevelComponents::UsefulObject>();
+            Entity* newObject = 0;
+            std::stringstream name;
 
+            if (Category == UsefulObjectCategory::Balloon) {
+                newObject = currentState.SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + lcUsefulObject->BalloonArchetypeName);
+                name << "Balloon";
+            } else if (Category == UsefulObjectCategory::Distraction) {
+                newObject = currentState.SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + lcUsefulObject->DistractionArchetypeName);
+                name << "Distraction";
+            }  else return;
+
+            name << newObject->GetID();
+            newObject->SetName(name.str());
+
+            newObject->GetComponent<Components::Physics>()->Velocity = ThrowVector;
+
+            Category = UsefulObjectCategory::None;
         }
 
         void UsefulObjectInventory::Serialize(Serializer& root) {

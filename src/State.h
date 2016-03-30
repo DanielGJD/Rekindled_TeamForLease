@@ -59,6 +59,7 @@ namespace ForLeaseEngine {
             std::vector<Entity*> GetEntitiesInCone(Point const& position, float radius, Vector const& direction, float angle);
             std::vector<Entity*> GetEntitiesInBox(Point const& position, float width, float height);
             std::vector<Entity *>& GetAllEntities();
+            bool EntityExists(Entity* entity);
 
             void DeleteAllLevelComponents();
 

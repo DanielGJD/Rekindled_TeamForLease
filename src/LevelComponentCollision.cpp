@@ -248,7 +248,6 @@ namespace ForLeaseEngine {
                         CollisionStartedEvent toEntity = CollisionStartedEvent(collidedAgainst, firstCollision.Side);
                         ForLease->Dispatcher.DispatchToParent(&toCA, collidedAgainst);
                         ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
-                        collidedAgainst->GetComponent<Components::Collision>()->CollidedWithLastFrame.insert(entity);
                     }
                 }
 
@@ -285,11 +284,13 @@ namespace ForLeaseEngine {
             //}
 
             for (Entity* collided : collisionEnded) {
-                CollisionEndedEvent toCA = CollisionEndedEvent(entity);
-                CollisionEndedEvent toEntity = CollisionEndedEvent(collided);
-                ForLease->Dispatcher.DispatchToParent(&toCA, collided);
-                ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
-                collided->GetComponent<Components::Collision>()->CollidedWithLastFrame.erase(entity);
+                if (Owner.EntityExists(collided)) {
+                    CollisionEndedEvent toCA = CollisionEndedEvent(entity);
+                    CollisionEndedEvent toEntity = CollisionEndedEvent(collided);
+                    ForLease->Dispatcher.DispatchToParent(&toCA, collided);
+                    ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
+                    collided->GetComponent<Components::Collision>()->CollidedWithLastFrame.erase(entity);
+                }
             }
 
             collision->CollidedWithLastFrame = collidedWithThisFrame;
