@@ -13,6 +13,8 @@
 #include "SoundEmitter.h"
 #include "Entity.h"
 #include "Engine.h"
+#include "CollisionEvent.h"
+#include "ComponentCollision.h"
 
 namespace ForLeaseEngine {
     namespace Components {
@@ -20,7 +22,7 @@ namespace ForLeaseEngine {
                                                 : Component(owner, ComponentType::Physics | ComponentType::Collision),
                                                   RightKey(Keys::D), LeftKey(Keys::A), JumpKey(Keys::Space),
                                                   Acceleration(20.0f), JumpSpeed(5.0f), Drag(5.0f),WalkSound(""), JumpSound(""), LandSound(""),
-                                                  WalkAnimation(""), JumpAnimation(""), CanJump(false), RightPressed(false), LeftPressed(false), LastAnimationFrame(0), Timer(0), JumpSoundTimer(0){};
+                                                  WalkAnimation(""), JumpAnimation(""), CanJump(false), RightPressed(false), LeftPressed(false), LastAnimationFrame(0), Timer(0), JumpSoundTimer(0) {};
 
         CharacterController* CharacterController::Create(Entity& owner) {
             CharacterController* controller = new CharacterController(owner);
@@ -36,6 +38,9 @@ namespace ForLeaseEngine {
         void CharacterController::Initialize() {
             ForLease->Dispatcher.Attach(NULL, this, "KeyDown", &CharacterController::OnKeyDown);
             ForLease->Dispatcher.Attach(NULL, this, "KeyUp", &CharacterController::OnKeyUp);
+            //ForLease->Dispatcher.Attach(NULL, this, "Collision", &CharacterController::OnCollision, &Parent);
+            ForLease->Dispatcher.Attach(NULL, this, "CollisionStarted", &CharacterController::OnCollisionStarted, &Parent);
+            ForLease->Dispatcher.Attach(NULL, this, "CollisionEnded", &CharacterController::OnCollisionEnded, &Parent);
         }
 
         void CharacterController::Update() {
@@ -61,9 +66,9 @@ namespace ForLeaseEngine {
             Collision* collider = Parent.GetComponent<Collision>();
             Physics* physics = Parent.GetComponent<Physics>();
             bool couldJump = CanJump;
-            CanJump = false;
-            if(collider->CollidedLastFrame && collider->CollidedWithSide == CollisionSide::Top)
-                CanJump = true;
+            //CanJump = false;
+            //if(collider->CollidedLastFrame && collider->CollidedWithSide == CollisionSide::Top)
+                //CanJump = true;
 
             if(couldJump) {
                 JumpSoundTimer = 0;
@@ -94,7 +99,7 @@ namespace ForLeaseEngine {
                     model->FlipY = true;
                 }
             }
-            else {
+            else if(CanJump){
                 Components::Model* model = Parent.GetComponent<Components::Model>();
                 if(model && model->GetAnimation().compare("") != 0) {
                     model->AnimationActive = true;
@@ -113,6 +118,7 @@ namespace ForLeaseEngine {
                     emitter->PlayEvent(LandSound);
                 }
             }
+
         };
 
         void CharacterController::OnKeyDown(const Event* e) {
@@ -185,6 +191,34 @@ namespace ForLeaseEngine {
 //                    model->SetAnimation("");
             }
         }
+
+        void CharacterController::OnCollisionStarted(const Event* e) {
+            const CollisionStartedEvent* collision_e = reinterpret_cast<const CollisionStartedEvent*>(e);
+            if(collision_e->SelfSide == CollisionSide::Bottom) {
+                std::cout << "Collided with bottom" << std::endl;
+                FloorContacts.insert(collision_e->With);
+                CanJump = true;
+            }
+        }
+
+        void CharacterController::OnCollisionEnded(const Event* e) {
+            const CollisionEndedEvent* collision_e = reinterpret_cast<const CollisionEndedEvent*>(e);
+                std::cout << "Ended collision" << std::endl;
+            FloorContacts.erase(collision_e->With);
+            if(FloorContacts.empty()) {
+                CanJump = false;
+            }
+        }
+
+//        void CharacterController::OnCollision(const Event* e) {
+//            const CollisionEvent* collision_e = reinterpret_cast<const CollisionEvent*>(e);
+//
+//            std::cout << "Collision" << std::endl;
+//
+//            if(collision_e->Side == CollisionSide::Top) {
+//                CanJump = true;
+//            }
+//        }
 
         void CharacterController::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));

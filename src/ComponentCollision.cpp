@@ -52,7 +52,7 @@ namespace ForLeaseEngine {
             PacingPlatform(pacingPlatform && owner.HasComponent(ComponentType::EnemyPace))*/ {}
 
         void Collision::Initialize() {
-            std::cout << Parent.GetName() << " collision init." << std::endl;
+            //std::cout << Parent.GetName() << " collision init." << std::endl;
             ForLease->Dispatcher.Attach(NULL, this, "Collision", &Collision::OnCollide, &Parent);
         }
 

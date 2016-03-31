@@ -15,6 +15,7 @@
 #include "KeyboardEvent.h"
 #include "Component.h"
 #include "Engine.h"
+#include <set>
 
 namespace ForLeaseEngine {
     namespace Components {
@@ -51,6 +52,9 @@ namespace ForLeaseEngine {
 
                 void OnKeyDown(const Event* e);
                 void OnKeyUp(const Event* e);
+                //void OnCollision(const Event* e);
+                void OnCollisionStarted(const Event* e);
+                void OnCollisionEnded(const Event* e);
 
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
@@ -62,6 +66,7 @@ namespace ForLeaseEngine {
                 unsigned int LastAnimationFrame;
                 float Timer;
                 float JumpSoundTimer;
+                std::set<Entity*> FloorContacts;
         };
     }
 }
