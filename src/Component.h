@@ -63,7 +63,8 @@ namespace ForLeaseEngine {
         OwlAI                  = 1 << 30,   //! Moves the vision cone from place to place
         MovingPlatform         = 1ull << 31,   //! Similar to EnemyPace, but moves a platform instead
         UsefulObject           = 1ull << 32,   //! "Happy objects"
-        UsefulObjectInventory  = 1ull << 33    //! Simple "inventory" for "happy objects"
+        UsefulObjectInventory  = 1ull << 33,    //! Simple "inventory" for "happy objects"
+        DamageOnCollide        = 1ull << 34  //! Sends a damage event when something collides with it
 
     };
 

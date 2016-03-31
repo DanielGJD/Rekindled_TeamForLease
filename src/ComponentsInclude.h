@@ -45,5 +45,6 @@
 #include "ComponentOwlAI.h"
 #include "ComponentUsefulObject.h"
 #include "ComponentUsefulObjectInventory.h"
+#include "ComponentDamageOnCollide.h"
 
 #endif

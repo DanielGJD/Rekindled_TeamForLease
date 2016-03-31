@@ -373,6 +373,10 @@ namespace ForLeaseEngine {
             case ComponentType::UsefulObjectInventory:
                 component = Components::UsefulObjectInventory::Create(entity);
                 break;
+            case ComponentType::DamageOnCollide:
+                component = new Components::DamageOnCollide(entity);
+                component->Initialize();
+                break;
             default:
                 std::cout << "Unknown Type: " << type << std::endl;
                 return 0;
