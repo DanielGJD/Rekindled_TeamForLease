@@ -124,6 +124,7 @@ namespace ForLeaseEngine {
                 Name of the animation to use
         */
         void Model::SetAnimation(std::string animation) {
+            std::cout << "Set animation to " << animation << (Looping ? " looping" : " not looping") << (AnimationActive ? " animation active" : "animation inactive") << std::endl;
             FrameTime = 0;
             CurrentFrame = 0;
             CurrentAnimation = animation;

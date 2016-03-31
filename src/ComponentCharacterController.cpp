@@ -82,7 +82,9 @@ namespace ForLeaseEngine {
             }
             if(LeftPressed || RightPressed) {
                 Components::Model* model = Parent.GetComponent<Components::Model>();
-                if(model && model->GetAnimation().compare(WalkAnimation) != 0) {
+                if(model && model->GetAnimation().compare(WalkAnimation) != 0 && CanJump) {
+                    model->AnimationActive = true;
+                    model->Looping = true;
                     model->SetAnimation(WalkAnimation);
                 }
                 if(model && accel[0] > 0.0001) {
@@ -95,6 +97,8 @@ namespace ForLeaseEngine {
             else {
                 Components::Model* model = Parent.GetComponent<Components::Model>();
                 if(model && model->GetAnimation().compare("") != 0) {
+                    model->AnimationActive = true;
+                    model->Looping = true;
                     model->SetAnimation("");
                 }
             }
@@ -104,7 +108,6 @@ namespace ForLeaseEngine {
             if(!couldJump && CanJump && JumpSoundTimer > 0.1) {
                 SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
                 if(emitter){
-                    std::cout<< "land sound" <<std::endl;
                     emitter->SetVolume(1.0f, LandSound);
                     emitter->StopEvent(LandSound);
                     emitter->PlayEvent(LandSound);
@@ -120,62 +123,27 @@ namespace ForLeaseEngine {
             Physics* rbody = Parent.GetComponent<Physics>();
             if(key_e->Key == LeftKey)
             {
-
-//<<<<<<< HEAD
                 LeftPressed = true;
-
-                //if(model)
-                    //model->FlipY = true;
-//                if(collider->CollidedLastFrame && collider->CollidedWithSide == Collision::Side::Top)
-//                {
-//                    if (emitter)
-//                    {
-//                        //emitter->Looping = true;
-//                        emitter->SetVolume(1.0f, WalkSound);
-//                        emitter->StopEvent(WalkSound);
-//                        emitter->PlayEvent(WalkSound);
-//                    }
-//
-//                    if(model)
-//                        model->SetAnimation(WalkAnimation);
-//                }
             }
             else if(key_e->Key == RightKey)
             {
                 RightPressed = true;
-
-                //if(model)
-                    //model->FlipY = false;
-//                if(collider->CollidedLastFrame && collider->CollidedWithSide == Collision::Side::Top) {
-//                    if (emitter) {
-//                        emitter->SetVolume(1.0f, WalkSound);
-//                        emitter->StopEvent(WalkSound);
-//                        emitter->PlayEvent(WalkSound);
-//                    }
-//                    if(model)
-//                        model->SetAnimation(WalkAnimation);
-//                }
-//=======
-//>>>>>>> c66c221e9b974efcf0ec080ef8377ae1e364b2bd
             }
             else if(key_e->Key == JumpKey) {
                 Physics* Jbody = Parent.GetComponent<Physics>();
-               // Collision* collider = Parent.GetComponent<Collision>();
                 if(CanJump) {
-//<<<<<<< HEAD
                     rbody->Velocity[1] = JumpSpeed;
+                    if(model) {
+                        model->SetAnimation(JumpAnimation);
+                        model->Looping = false;
+                    }
                     SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
-//=======
-//>>>>>>> c66c221e9b974efcf0ec080ef8377ae1e364b2bd
-                    //rbody->Velocity.Normalize();
-                    //printf("JumpV: %f", rbody->Velocity[0]);
+
                     if (emitter) {
-                        //printf("reach jump sound check");
                         emitter->SetVolume(1.0f, JumpSound);
                         emitter->StopEvent(JumpSound);
                         emitter->PlayEvent(JumpSound);
                     }
-                    //rbody->Velocity.Normalize();
                     CanJump = false;
                 }
             }
@@ -202,19 +170,19 @@ namespace ForLeaseEngine {
             if(key_e->Key == LeftKey) {
                 LeftPressed = false;
 
-                if(emitter)
-                    emitter->SetPause(true, WalkSound);
+                //if(emitter)
+                    //emitter->SetPause(true, WalkSound);
 
-                if(model)
-                    model->SetAnimation("");
+                //if(model)
+                    //model->SetAnimation("");
             }
             else if(key_e->Key == RightKey) {
                 RightPressed = false;
 
-                if(emitter)
-                    emitter->SetPause(true, WalkSound);
-                if(model)
-                    model->SetAnimation("");
+//                if(emitter)
+//                    emitter->SetPause(true, WalkSound);
+//                if(model)
+//                    model->SetAnimation("");
             }
         }
 

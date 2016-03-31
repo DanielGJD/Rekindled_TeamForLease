@@ -61,7 +61,7 @@ namespace ForLeaseEngine {
         Health                 = 1 << 28,   //! Keeps track of health
         EnemyPace              = 1 << 29,   //! Has an enemy pace back and forth
         OwlAI                  = 1 << 30,   //! Moves the vision cone from place to place
-        MovingPlatform         = 1 << 31    //! Similar to EnemyPace, but moves a platform instead
+        MovingPlatform         = 1ull << 31    //! Similar to EnemyPace, but moves a platform instead
 
     };
 
