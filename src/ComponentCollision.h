@@ -53,6 +53,7 @@ namespace ForLeaseEngine {
                 virtual ComponentType GetType() { return Type; }
 
                 Collision(Entity& owner, float width = 1, float height = 1, bool resolve = true, float offsetX = 0, float offsetY = 0, bool pacingPlatform = false);
+                ~Collision();
                 void Initialize();
                 void Update() {};
                 void OnCollide(const Event* e);

@@ -210,7 +210,16 @@ namespace ForLeaseEngine {
                         CollisionEvent toEntity = CollisionEvent(checkAgainst);
                         ForLease->Dispatcher.DispatchToParent(&toCA, checkAgainst);
                         ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
+
+                        if (collision->CollidedWithLastFrame.find(checkAgainst) == collision->CollidedWithLastFrame.end()) {
+                            CollisionStartedEvent toCAStart = CollisionStartedEvent(entity, CollisionSide::None);
+                            CollisionStartedEvent toEntityStart = CollisionStartedEvent(checkAgainst, CollisionSide::None);
+                            ForLease->Dispatcher.DispatchToParent(&toCA, checkAgainst);
+                            ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
+                        }
+
                         collidedWithThisFrame.insert(checkAgainst);
+
                         continue;
                     }
 
@@ -248,7 +257,6 @@ namespace ForLeaseEngine {
                         CollisionStartedEvent toEntity = CollisionStartedEvent(collidedAgainst, firstCollision.Side);
                         ForLease->Dispatcher.DispatchToParent(&toCA, collidedAgainst);
                         ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
-                        collidedAgainst->GetComponent<Components::Collision>()->CollidedWithLastFrame.insert(entity);
                     }
                 }
 
@@ -287,9 +295,11 @@ namespace ForLeaseEngine {
             for (Entity* collided : collisionEnded) {
                 CollisionEndedEvent toCA = CollisionEndedEvent(entity);
                 CollisionEndedEvent toEntity = CollisionEndedEvent(collided);
-                ForLease->Dispatcher.DispatchToParent(&toCA, collided);
                 ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
-                collided->GetComponent<Components::Collision>()->CollidedWithLastFrame.erase(entity);
+                if (Owner.EntityExists(collided)) {
+                    ForLease->Dispatcher.DispatchToParent(&toCA, collided);
+                    collided->GetComponent<Components::Collision>()->CollidedWithLastFrame.erase(entity);
+                }
             }
 
             collision->CollidedWithLastFrame = collidedWithThisFrame;

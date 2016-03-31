@@ -51,6 +51,13 @@ namespace ForLeaseEngine {
             OffsetX(offsetX), OffsetY(offsetY), CollidedLastFrame(false), /*CollidedWith(0),*/ ResolveCollisions(resolve)/*,
             PacingPlatform(pacingPlatform && owner.HasComponent(ComponentType::EnemyPace))*/ {}
 
+        Collision::~Collision() {
+            for (Entity* entity: CollidedWithLastFrame) {
+                Components::Collision* collision = entity->GetComponent<Components::Collision>();
+                collision->CollidedWithLastFrame.erase(&Parent);
+            }
+        }
+
         void Collision::Initialize() {
             //std::cout << Parent.GetName() << " collision init." << std::endl;
             ForLease->Dispatcher.Attach(NULL, this, "Collision", &Collision::OnCollide, &Parent);

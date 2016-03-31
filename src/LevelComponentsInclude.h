@@ -18,5 +18,6 @@
 #include "LevelComponentMenu.h"
 #include "LevelComponentLight.h"
 #include "LevelComponentCheckpoint.h"
+#include "LevelComponentUsefulObject.h"
 
 #endif

@@ -576,6 +576,13 @@ namespace ForLeaseEngine {
         return Entities;
     }
 
+    bool State::EntityExists(Entity* entity) {
+        for (Entity* check : Entities)
+            if (check == entity) return true;
+
+        return false;
+    }
+
     void State::DeleteAllLevelComponents() {
         for (LevelComponent* lc : LevelComponents) {
             delete lc;
@@ -682,6 +689,9 @@ namespace ForLeaseEngine {
             case ComponentType::Checkpoint:
                 lc = new LevelComponents::Checkpoint(state, stateSerializer);
                 break;
+            case ComponentType::UsefulObject:
+                lc = new LevelComponents::UsefulObject(state);
+                break;
             default:
                 return 0;
         }
@@ -693,6 +703,18 @@ namespace ForLeaseEngine {
 
     void State::DeserializeNonReference(Serializer root) {
         Deserialize(root);
+    }
+
+    void State::DeleteEntityAfterFrame(Entity* entity) {
+        DeleteAfterFrame.push_back(entity);
+    }
+
+    void State::PostFrameCleanup() {
+        for (Entity* entity : DeleteAfterFrame) {
+            DeleteEntity(entity);
+        }
+
+        DeleteAfterFrame.clear();
     }
 
     /*!

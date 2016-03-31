@@ -59,6 +59,7 @@ namespace ForLeaseEngine {
             std::vector<Entity*> GetEntitiesInCone(Point const& position, float radius, Vector const& direction, float angle);
             std::vector<Entity*> GetEntitiesInBox(Point const& position, float width, float height);
             std::vector<Entity *>& GetAllEntities();
+            bool EntityExists(Entity* entity);
 
             void DeleteAllLevelComponents();
 
@@ -92,10 +93,14 @@ namespace ForLeaseEngine {
 
             bool ResetToCheckpoint = false;
 
+            void DeleteEntityAfterFrame(Entity* entity);
+            void PostFrameCleanup();
+
         protected:
             std::string Name;                               //! Name of the state
             std::vector<LevelComponent*> LevelComponents;   //! The level components in the state
             std::vector<Entity*> Entities;                  //! The entities in the state
+            std::vector<Entity*> DeleteAfterFrame;
     };
 
     LevelComponent* DeserializeLevelComponent(Serializer& root, State& state, Serializer& stateSerializer);

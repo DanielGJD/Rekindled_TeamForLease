@@ -28,7 +28,7 @@ namespace ForLeaseEngine {
             scale unless we implement scripting or some other solution for
             loading game code.
     */
-    enum class ComponentType : unsigned long long {
+    enum class ComponentType : unsigned long long int {
         None                   = 0,         //! No component
         Transform              = 1 <<  0,   //! Transform
         PlayerController       = 1 <<  1,   //! Player controls
@@ -61,7 +61,9 @@ namespace ForLeaseEngine {
         Health                 = 1 << 28,   //! Keeps track of health
         EnemyPace              = 1 << 29,   //! Has an enemy pace back and forth
         OwlAI                  = 1 << 30,   //! Moves the vision cone from place to place
-        MovingPlatform         = 1ull << 31    //! Similar to EnemyPace, but moves a platform instead
+        MovingPlatform         = 1ull << 31,   //! Similar to EnemyPace, but moves a platform instead
+        UsefulObject           = 1ull << 32,   //! "Happy objects"
+        UsefulObjectInventory  = 1ull << 33    //! Simple "inventory" for "happy objects"
 
     };
 

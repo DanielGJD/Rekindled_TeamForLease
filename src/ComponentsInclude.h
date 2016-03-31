@@ -43,5 +43,7 @@
 #include "ComponentEnemyPace.h"
 #include "ComponentMovingPlatform.h"
 #include "ComponentOwlAI.h"
+#include "ComponentUsefulObject.h"
+#include "ComponentUsefulObjectInventory.h"
 
 #endif

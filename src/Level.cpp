@@ -58,6 +58,8 @@ namespace ForLeaseEngine {
             }
             ResetToCheckpoint = false;
         }
+
+        PostFrameCleanup();
     }
 
     void Level::Deinitialize() {

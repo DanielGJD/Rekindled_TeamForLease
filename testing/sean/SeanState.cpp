@@ -35,6 +35,9 @@ void SeanState::Load() {
     AddLevelComponent(new LevelComponents::Physics(*this, Vector(0,-100)));
     AddLevelComponent(new LevelComponents::Collision(*this));
     AddLevelComponent(new LevelComponents::Menu(*this));
+    AddLevelComponent(new LevelComponents::UsefulObject(*this, "balloon", "distraction"));
+    GetLevelComponent<LevelComponents::UsefulObject>()->BalloonMesh = "Balloon.json";
+    GetLevelComponent<LevelComponents::UsefulObject>()->DistractionMesh = "Color.json";
 
     //Entity* checkpoint = AddEntity("Checkpoint");
     //checkpoint->AddComponent(new Components::Transform(*checkpoint));
@@ -68,6 +71,7 @@ void SeanState::Load() {
     character->AddComponent(new Components::Physics(*character));
     character->AddComponent(new Components::Collision(*character, 2.0f, 2.0f, true/*, 20, 20*/));
     character->AddComponent(new Components::Model(*character, true, false, false, "1-1Block.json"));
+    character->AddComponent(new Components::UsefulObjectInventory(*character));
     Components::CharacterController* charController = Components::CharacterController::Create(*character);
     charController->Acceleration = 60;
     charController->JumpSpeed = 40;
@@ -75,20 +79,45 @@ void SeanState::Load() {
     //    charController->MoveSpeed = 50;
     //    charController->maxSpeed = 200;
     character->AddComponent(charController);
+    character->GetComponent<Components::UsefulObjectInventory>()->ThrowVector = Vector(20, 20);
+    character->GetComponent<Components::UsefulObjectInventory>()->FollowName = "Follow";
 
-    Entity* smallPlatform = AddEntity("SmallPlatform");
-    smallPlatform->AddComponent(new Components::Transform(*smallPlatform, Point(10,-4), 5, 1, 0, 0));
-    smallPlatform->AddComponent(new Components::Physics(*smallPlatform, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
-    smallPlatform->AddComponent(new Components::Collision(*smallPlatform, 2, 2, true, 0, 0, true));
-    smallPlatform->AddComponent(new Components::MovingPlatform(*smallPlatform, 15.0f, 15.0f, 0.25f, 5, 1.0f, Components::MovingPlatform::Axis::Horizontal));
-    smallPlatform->AddComponent(new Components::Model(*smallPlatform, true, false, false, "1-1Block.json"));
+    Entity* follow = AddEntity("Follow");
+    follow->AddComponent(new Components::Transform(*follow, Point(0, 10), 5, 5));
+    //follow->AddComponent(new Components::Physics(*follow));
+    //follow->AddComponent(new Components::Collision(*follow, 2.0f, 2.0f, false/*, 20, 20*/));
+    follow->AddComponent(new Components::Model(*follow, true, false, false));
+    follow->AddComponent(new Components::Follow(*follow, true, 0.0f, 1.0f, character->GetID(), Vector(0,2)));
 
-    Entity* smallPlatform2 = AddEntity("SmallPlatform2");
-    smallPlatform2->AddComponent(new Components::Transform(*smallPlatform2, Point(-10, -4), 5, 1, 0, 0));
-    smallPlatform2->AddComponent(new Components::Physics(*smallPlatform2, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
-    smallPlatform2->AddComponent(new Components::Collision(*smallPlatform2, 2, 2, true, 0, 0, true));
-    smallPlatform2->AddComponent(new Components::MovingPlatform(*smallPlatform2, 15.0f, 15.0f, 0.25f, 5.0f, 1.0f, Components::MovingPlatform::Axis::Vertical));
-    smallPlatform2->AddComponent(new Components::Model(*smallPlatform2, true, false, false, "1-1Block.json"));
+    Entity* object = AddEntity("Object");
+    object->AddComponent(new Components::Transform(*object, Point(10, 4), 1, 1));
+    object->AddComponent(new Components::Physics(*object));
+    object->AddComponent(new Components::Collision(*object, 2.0f, 2.0f, false/*, 20, 20*/));
+    object->AddComponent(new Components::Model(*object, true, false, false, "1-1Block.json", "", Color(1,0,0)));
+    object->AddComponent(new Components::UsefulObject(*object, UsefulObjectCategory::Balloon));
+    object->CreateArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "balloon");
+
+    Entity* object2 = AddEntity("Object2");
+    object2->AddComponent(new Components::Transform(*object2, Point(-10, 4), 1, 1));
+    object2->AddComponent(new Components::Physics(*object2));
+    object2->AddComponent(new Components::Collision(*object2, 2.0f, 2.0f, false/*, 20, 20*/));
+    object2->AddComponent(new Components::Model(*object2, true, false, false, "1-1Block.json", "", Color(0, 1, 0)));
+    object2->AddComponent(new Components::UsefulObject(*object2, UsefulObjectCategory::Distraction));
+    object2->CreateArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "distraction");
+
+    //Entity* smallPlatform = AddEntity("SmallPlatform");
+    //smallPlatform->AddComponent(new Components::Transform(*smallPlatform, Point(10,-4), 5, 1, 0, 0));
+    //smallPlatform->AddComponent(new Components::Physics(*smallPlatform, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
+    //smallPlatform->AddComponent(new Components::Collision(*smallPlatform, 2, 2, true, 0, 0, true));
+    //smallPlatform->AddComponent(new Components::MovingPlatform(*smallPlatform, 15.0f, 15.0f, 0.25f, 5, 1.0f, Components::MovingPlatform::Axis::Horizontal));
+    //smallPlatform->AddComponent(new Components::Model(*smallPlatform, true, false, false, "1-1Block.json"));
+
+    //Entity* smallPlatform2 = AddEntity("SmallPlatform2");
+    //smallPlatform2->AddComponent(new Components::Transform(*smallPlatform2, Point(-10, -4), 5, 1, 0, 0));
+    //smallPlatform2->AddComponent(new Components::Physics(*smallPlatform2, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
+    //smallPlatform2->AddComponent(new Components::Collision(*smallPlatform2, 2, 2, true, 0, 0, true));
+    //smallPlatform2->AddComponent(new Components::MovingPlatform(*smallPlatform2, 15.0f, 15.0f, 0.25f, 5.0f, 1.0f, Components::MovingPlatform::Axis::Vertical));
+    //smallPlatform2->AddComponent(new Components::Model(*smallPlatform2, true, false, false, "1-1Block.json"));
 
     //Entity* ceil = AddEntity("Ceiling");
     //ceil->AddComponent(new Components::Transform(*ceil, Point(0, 15), 20, 1, 0, 0));
@@ -210,6 +239,8 @@ void SeanState::Update() {
     UpdateDebug();
 
     ForLease->GameWindow->UpdateGameWindow();
+
+    PostFrameCleanup();
 }
 
 void SeanState::Deinitialize() {
