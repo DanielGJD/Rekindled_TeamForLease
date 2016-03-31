@@ -15,6 +15,7 @@
 #include "State.h"
 #include "GameStateManager.h"
 #include "ComponentSoundEmitter.h"
+#include "ComponentUsefulObject.h"
 #include "DamageEvent.h"
 #include <iostream>
 
@@ -162,7 +163,8 @@ namespace ForLeaseEngine {
                 LevelComponents::Light* lightSystem = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Light>();
                 std::string entityName = entity->GetName();
 
-                if(entityName.compare(LikedEntityName) == 0) {
+                Components::UsefulObject* usefulObject = entity->GetComponent<Components::UsefulObject>();
+                if(usefulObject && usefulObject->Category == UsefulObjectCategory::Distraction) {
                     // not using lighting
                     if(!lightSystem) {
                         Happy = true;
@@ -233,6 +235,16 @@ namespace ForLeaseEngine {
                 //std::cout << "Sending " << damage.Damage << " to " << hatedEntity->GetName() << " : " << hatedEntity << std::endl;
                 DamageEvent damage = DamageEvent(ForLease->FrameRateController().GetDt());
                 ForLease->Dispatcher.DispatchToParent(&damage, hatedEntity);
+            }
+
+            if(Happy) {
+                Parent.GetComponent<Components::VisionCone>()->IndicatorColor = HappyColor;
+            }
+            else if(Angry) {
+                Parent.GetComponent<Components::VisionCone>()->IndicatorColor = DetectionColor;
+            }
+            else {
+                Parent.GetComponent<Components::VisionCone>()->IndicatorColor = NoDetectionColor;
             }
         }
     }

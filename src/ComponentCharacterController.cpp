@@ -33,6 +33,8 @@ namespace ForLeaseEngine {
         CharacterController::~CharacterController() {
             ForLease->Dispatcher.Detach(this, "KeyDown");
             ForLease->Dispatcher.Detach(this, "KeyUp");
+            ForLease->Dispatcher.Detach(this, "CollisionStarted");
+            ForLease->Dispatcher.Detach(this, "CollisionEnded");
         }
 
         void CharacterController::Initialize() {
