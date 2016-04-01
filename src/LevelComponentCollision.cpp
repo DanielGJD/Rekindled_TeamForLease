@@ -155,13 +155,12 @@ namespace ForLeaseEngine {
             Components::Collision* pCollision = platform->GetComponent<Components::Collision>();
             Components::Collision* tCollision = toPush->GetComponent<Components::Collision>();
 
-            if (!BoxesIntersect(pCollision->BotRight(), pCollision->TopLeft(), tCollision->BotRight(), tCollision->TopLeft()))
-                return;
+            //if (!BoxesIntersect(pCollision->BotRight(), pCollision->TopLeft(), tCollision->BotRight(), tCollision->TopLeft()))
+            //    return;
 
-            if (pPlatform->Direction == Components::MovingPlatform::Axis::Vertical)
-                VerticalMovingPlatformPushOut(platform, toPush);
-            else
-                HorizontalMovingPlatformPushOut(platform, toPush);
+            //if (pPlatform->Direction == Components::MovingPlatform::Axis::Horizontal)
+            //    HorizontalMovingPlatformPushOut(platform, toPush);
+                
         }
 
         void Collision::HorizontalMovingPlatformPushOut(Entity* platform, Entity* toPush) {
@@ -174,14 +173,22 @@ namespace ForLeaseEngine {
             CollisionSide side = CollisionSide::None;
             float distance = std::numeric_limits<float>::infinity();
 
-            float topDistance = pCollision->TopRight().y - tCollision->TopRight().y;
-            if (topDistance > 0 && topDistance < distance) {
-                distance = topDistance;
-                side = CollisionSide::Top;
+            float leftDistance = std::abs(pCollision->TopLeft().x - tCollision->TopRight().x);
+            if (leftDistance >= 0 && leftDistance < distance) {
+                distance = leftDistance;
+                side = CollisionSide::Left;
             }
 
-            if (side == CollisionSide::Top) {
-                tTransform->Position.y += distance + Epsilon;
+            float rightDistance = std::abs(pCollision->TopRight().x - tCollision->TopLeft().x);
+            if (rightDistance >= 0 && rightDistance < distance) {
+                distance = rightDistance;
+                side = CollisionSide::Right;
+            }
+
+            if (side == CollisionSide::Left) {
+                tTransform->Position.x -= (distance + Epsilon);
+            } else if (side == CollisionSide::Right) {
+                tTransform->Position.x += distance + Epsilon;
             }
         }
 
@@ -195,16 +202,10 @@ namespace ForLeaseEngine {
             CollisionSide side = CollisionSide::None;
             float distance = std::numeric_limits<float>::infinity();
 
-            float leftDistance = pCollision->TopLeft().x - tCollision->TopRight().x;
-            if (leftDistance > 0 && leftDistance < distance) {
-                distance = leftDistance;
-                side = CollisionSide::Left;
-            }
-
-            float rightDistance = pCollision->TopRight().x - tCollision->TopLeft().x;
-            if (rightDistance > 0 && rightDistance < distance) {
-                distance = rightDistance;
-                side = CollisionSide::Right;
+            float topDistance = pCollision->TopRight().y - tCollision->TopRight().y;
+            if (topDistance > 0 && topDistance < distance) {
+                distance = topDistance;
+                side = CollisionSide::Top;
             }
 
             if (side == CollisionSide::Top) {
@@ -300,8 +301,17 @@ namespace ForLeaseEngine {
 
                     SweptCollision newCollision = CheckIndividualSweptCollision(entity, checkAgainst, time);
                     if (newCollision.Distance < firstCollision.Distance) {
-                        firstCollision = newCollision;
-                        collidedAgainst = checkAgainst;
+                        // HACKY SHIT
+                        // Makes sure that moving platforms only register on top-bottom collisions
+                        if (checkAgainst->HasComponent(ComponentType::MovingPlatform)) {
+                            if (newCollision.SelfSide == CollisionSide::Bottom) {
+                                firstCollision = newCollision;
+                                collidedAgainst = checkAgainst;
+                            }
+                        } else {
+                            firstCollision = newCollision;
+                            collidedAgainst = checkAgainst;
+                        }
                     }
                 }
 
