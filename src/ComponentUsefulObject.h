@@ -39,7 +39,7 @@ namespace ForLeaseEngine {
                 void Initialize();
 
                 void Update();
-                //void OnCollide(const Event* e);
+                void OnCollide(const Event* e);
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
 

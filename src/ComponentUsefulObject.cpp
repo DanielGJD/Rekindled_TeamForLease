@@ -27,21 +27,24 @@ namespace ForLeaseEngine {
         }
 
         void UsefulObject::Initialize() {
-            //ForLease->Dispatcher.Attach(NULL, this, "Collision", &UsefulObject::OnCollide, &Parent);
+            ForLease->Dispatcher.Attach(NULL, this, "Collision", &UsefulObject::OnCollide, &Parent);
         }
 
         void UsefulObject::Update() {
             Components::Collision* collision = Parent.GetComponent<Components::Collision>();
             if (!collision->CollidedLastFrame) return;
-            Vector accel;
+//            Vector accel;
             Components::Physics* physics = Parent.GetComponent<Components::Physics>();
-            accel[0] = accel[0] - physics->Velocity[0];
-            physics->Acceleration = accel;
+//            accel[0] = accel[0] - physics->Velocity[0];
+//            physics->Acceleration = accel;
+            physics->Velocity.x = 0;
         }
 
-        //void UsefulObject::OnCollide(const Event* e) {
-        //    Parent.GetComponent<Components::Physics>()->Velocity.x -= Parent.GetComponent<Components::Physics>()->Velocity.x * 0.025f;
-        //}
+
+
+        void UsefulObject::OnCollide(const Event* e) {
+//            Parent.GetComponent<Components::Physics>()->Velocity.x = 0;
+        }
 
         void UsefulObject::Serialize(Serializer& root) {
             root.WriteUlonglong("Type", static_cast<unsigned long long>(Type));
