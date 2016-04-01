@@ -327,6 +327,7 @@ namespace ForLeaseEngine {
 
             GLboolean texEnable = glIsEnabled(GL_TEXTURE_2D);
             glEnable(GL_TEXTURE_2D);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
             if(lighting) {
                 SetBlendMode(BlendMode::MULTIPLY);
@@ -622,8 +623,8 @@ namespace ForLeaseEngine {
             }
 
             glLineWidth(2);
-            //glBindFrameBuffer(GL_FRAMEBUFFER, UIFBO);
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glBindFramebuffer(GL_FRAMEBUFFER, UIFBO);
+            //glBindFramebuffer(GL_FRAMEBUFFER, 0);
             SetTexture(NULL);
             SetBlendMode(BlendMode::NONE);
             glBegin(GL_LINE_STRIP);

@@ -13,6 +13,7 @@
 #include "Engine.h"
 #include "Interpolation.h"
 #include "ComponentTransform.h"
+#include "LevelComponentRenderer.h"
 
 namespace ForLeaseEngine {
     namespace Components {
@@ -49,7 +50,28 @@ namespace ForLeaseEngine {
 //                Vector scaledMovement = Vector::Scale(fullMovement, moveScale * ForLease->FrameRateController().GetDt());
 //                myTrans->Position += scaledMovement;
                 Vector direction = followTrans->Position - myTrans->Position + Offset;
-                myTrans->Position += direction * ForLease->FrameRateController().GetDt();
+                double distance = direction.Magnitude();
+                direction.Normalize();
+
+//                if(distance < FollowBeginDistance) {
+//                    std::cout << "Closer than min distance" << std::endl;
+//                    return;
+//                }
+//                else if(distance > FollowEndDistance) {
+//                    std::cout << "Beyond max distance, place at max" << std::endl;
+//                    myTrans->Position += direction * (distance - FollowEndDistance);
+//                }
+                if(distance > FollowBeginDistance) {
+                    float delta = FollowEndDistance - FollowBeginDistance;
+                    if(delta < 0.00001 && delta > -0.00001) {
+                        myTrans->Position += direction * (distance - FollowEndDistance);
+                    }
+                    else {
+                        float t = (distance - FollowBeginDistance) / (FollowEndDistance - FollowBeginDistance);
+                        myTrans->Position += direction * Interpolation::Linear(0, (FollowEndDistance - FollowBeginDistance), t) * ForLease->FrameRateController().GetDt();
+                    }
+                }
+                //myTrans->Position += direction * ForLease->FrameRateController().GetDt();
             }
         }
 
