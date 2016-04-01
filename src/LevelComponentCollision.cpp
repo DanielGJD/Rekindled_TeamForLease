@@ -514,10 +514,16 @@ namespace ForLeaseEngine {
 
             ResolveIndividualSweptCollision(resolve, velocity, collision);
 
-            if (collision.Side != CollisionSide::None) {
-                float dotprod = (rPhysics->Velocity.x * collision.Normal.y + rPhysics->Velocity.y * collision.Normal.x) * remainingTime;
-                rPhysics->Velocity.x = dotprod * collision.Normal.y;
-                rPhysics->Velocity.y = dotprod * collision.Normal.x;
+            //if (collision.Side != CollisionSide::None) {
+            //    float dotprod = (rPhysics->Velocity.x * collision.Normal.y + rPhysics->Velocity.y * collision.Normal.x) * remainingTime;
+            //    rPhysics->Velocity.x = dotprod * collision.Normal.y;
+            //    rPhysics->Velocity.y = dotprod * collision.Normal.x;
+            //}
+
+            if (collision.SelfSide == CollisionSide::Top || collision.SelfSide == CollisionSide::Bottom) {
+                rPhysics->Velocity.y = 0;
+            } else if (collision.SelfSide == CollisionSide::Left || collision.SelfSide == CollisionSide::Right) {
+                rPhysics->Velocity.x = 0;
             }
         }
 
