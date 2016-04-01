@@ -36,6 +36,8 @@ namespace ForLeaseEngine {
             ForLease->Dispatcher.Attach(NULL, this, WindowEvent::FocusGained, &GameStateManager::FocusUnfreeze);
             ForLease->Dispatcher.Attach(NULL, this, WindowEvent::FocusLost, &GameStateManager::UnfocusFreeze);
             ForLease->Dispatcher.Attach(NULL, this, WindowEvent::Exposed, &GameStateManager::FocusUnfreeze);
+            ForLease->Dispatcher.Attach(NULL, this, WindowEvent::Minimized, &GameStateManager::UnfocusFreeze);
+            //ForLease->Dispatcher.Attach(NULL, this, WindowEvent::Maximized, &GameStateManager::FocusUnfreeze);
             PauseScreen = new PauseMenu();
             //PauseScreen->Initialize();
         }

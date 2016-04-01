@@ -10,6 +10,7 @@ namespace ForLeaseEngine {
             static const std::string Resized;
             static const std::string SizeChanged;
             static const std::string Minimized;
+            static const std::string Maximized;
             static const std::string Restored;
             static const std::string MouseEnter;
             static const std::string MouseLeave;

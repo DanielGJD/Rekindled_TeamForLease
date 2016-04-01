@@ -147,11 +147,19 @@ namespace ForLeaseEngine {
                         std::cout << "Window " << SDL_e.window.windowID << " size changed to (" << SDL_e.window.data1 << "," << SDL_e.window.data2 << ")" << std::endl;
                         break;
                     case SDL_WINDOWEVENT_MINIMIZED:
+                    {
                         std::cout << "Window " << SDL_e.window.windowID << " minimized" << std::endl;
+                        WindowEvent e = WindowEvent(WindowEvent::Minimized);
+                        ForLease->Dispatcher.Dispatch(&e, this);
                         break;
+                    }
                     case SDL_WINDOWEVENT_MAXIMIZED:
+                    {
                         std::cout << "Window " << SDL_e.window.windowID << " maximized" << std::endl;
+                        WindowEvent e = WindowEvent(WindowEvent::Maximized);
+                        ForLease->Dispatcher.Dispatch(&e, this);
                         break;
+                    }
                     case SDL_WINDOWEVENT_RESTORED:
                         std::cout << "Window " << SDL_e.window.windowID << " restored" << std::endl;
                         break;
