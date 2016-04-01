@@ -8,6 +8,7 @@ namespace ForLeaseEngine {
     const std::string WindowEvent::Resized = "Resized";
     const std::string WindowEvent::SizeChanged = "SizeChanged";
     const std::string WindowEvent::Minimized = "Minimized";
+    const std::string WindowEvent::Maximized = "Maximized";
     const std::string WindowEvent::Restored = "Restored";
     const std::string WindowEvent::MouseEnter = "MouseEnter";
     const std::string WindowEvent::MouseLeave = "MouseLeave";
