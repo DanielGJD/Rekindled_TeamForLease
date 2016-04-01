@@ -155,29 +155,35 @@ namespace ForLeaseEngine {
         bool Collision::IsAffectedByHoriziontalMovingPlatform(Entity* platform, Entity* check) {
             Components::Collision* pCollision = platform->GetComponent<Components::Collision>();
             Components::MovingPlatform* pPlatform = platform->GetComponent<Components::MovingPlatform>();
-            Point pbr1 = pCollision->TopRight();
-            Point ptl1 = pCollision->TopLeft();
-            ptl1.y += pPlatform->AffectedFieldHeight;
+            Point pbr = pCollision->TopRight();
+            Point ptl = pCollision->TopLeft();
+            ptl.y += pPlatform->AffectedFieldHeight;
 
             Components::Collision* cCollision = check->GetComponent<Components::Collision>();
+            Point cbr = cCollision->BotRight();
+            Point ctl = cCollision->BotLeft();
+            ctl.y += pPlatform->AffectedFieldHeight;
 
             if (!cCollision) return false;
-            else             return BoxesIntersect(pbr1, ptl1, cCollision->BotRight(), cCollision->TopLeft());
+            else             return BoxesIntersect(pbr, ptl, cbr, ctl);
         }
 
         bool Collision::IsAffectedByVerticalMovingPlatform(Entity* platform, Entity* check) {
             Components::Collision* pCollision = platform->GetComponent<Components::Collision>();
             Components::Physics* pPhysics = platform->GetComponent<Components::Physics>();
             Components::MovingPlatform* pPlatform = platform->GetComponent<Components::MovingPlatform>();
-            Point pbr1 = pCollision->TopRight();
-            Point ptl1 = pCollision->TopLeft();
-            ptl1.y += pPlatform->AffectedFieldHeight;
-            if (pPhysics->Velocity.y > 0) ptl1.y += pPhysics->Velocity.y * ForLease->FrameRateController().GetDt();
+            Point pbr = pCollision->TopRight();
+            Point ptl = pCollision->TopLeft();
+            ptl.y += pPlatform->AffectedFieldHeight;
+            if (pPhysics->Velocity.y > 0) ptl.y += pPhysics->Velocity.y * ForLease->FrameRateController().GetDt();
 
             Components::Collision* cCollision = check->GetComponent<Components::Collision>();
+            Point cbr = cCollision->BotRight();
+            Point ctl = cCollision->BotLeft();
+            ctl.y += pPlatform->AffectedFieldHeight;
 
             if (!cCollision) return false;
-            else             return BoxesIntersect(pbr1, ptl1, cCollision->BotRight(), cCollision->TopLeft());
+            else             return BoxesIntersect(pbr, ptl, cbr, ctl);
         }
 
         /*!
