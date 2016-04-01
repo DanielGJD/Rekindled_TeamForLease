@@ -5,10 +5,11 @@ namespace ForLeaseEngine
         extern SDL_Window* window;
         extern Point       mousePos;
 
-        extern LevelComponents::Renderer*   render;
-        extern LevelComponents::Physics*    levelPhysics;
-        extern LevelComponents::Light*      levelLight;
-        extern LevelComponents::Checkpoint* levelCheckpoint;
+        extern LevelComponents::Renderer*     render;
+        extern LevelComponents::Physics*      levelPhysics;
+        extern LevelComponents::Light*        levelLight;
+        extern LevelComponents::Checkpoint*   levelCheckpoint;
+        extern LevelComponents::UsefulObject* levelUseful;
         extern Vector gravity;
 
         extern Entity*                             selection;
@@ -42,6 +43,9 @@ namespace ForLeaseEngine
         extern Components::EnemyPace*              selPace;
         extern Components::Health*                 selHealth;
         extern Components::OwlAI*                  selOwl;
+        extern Components::MovingPlatform*         selMoving;
+        extern Components::UsefulObject*           selUseful;
+        extern Components::DamageOnCollide*        selDamage;
 
         extern Entity*                levelCamera;
         extern Entity*                camera;
@@ -97,6 +101,7 @@ namespace ForLeaseEngine
         extern int particleBlend;
         extern int modelBlend;
         extern int lightBlend;
+        extern int usefulCategory;
         extern float lightAngle;
         extern float visionAngle;
         extern float owlDir1;

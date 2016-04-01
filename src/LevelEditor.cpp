@@ -28,10 +28,11 @@ namespace ForLeaseEngine
          SDL_Window* window;
          Point       mousePos;
 
-         LevelComponents::Renderer*   render;
-         LevelComponents::Physics*    levelPhysics;
-         LevelComponents::Light*      levelLight;
-         LevelComponents::Checkpoint* levelCheckpoint;
+         LevelComponents::Renderer*     render;
+         LevelComponents::Physics*      levelPhysics;
+         LevelComponents::Light*        levelLight;
+         LevelComponents::Checkpoint*   levelCheckpoint;
+         LevelComponents::UsefulObject* levelUseful;
          Vector gravity;
 
          Entity*                             selection;
@@ -65,8 +66,9 @@ namespace ForLeaseEngine
          Components::EnemyPace*              selPace;
          Components::Health*                 selHealth;
          Components::OwlAI*                  selOwl;
-
-
+         Components::MovingPlatform*         selMoving;
+         Components::UsefulObject*           selUseful;
+         Components::DamageOnCollide*        selDamage;
 
          Entity*                levelCamera;
          Entity*                camera;
@@ -101,15 +103,10 @@ namespace ForLeaseEngine
          char spriteTextBuf[512];
          char statefile[128];
          char statename[128];
-         char meshfile[128];
          char archetypefile[128];
-         char soundfile[128];
-         char fontfile[128];
-         char animationfile[128];
          char spriteSource[128];
          char changeLevel[128];
          char changeObject[128];
-         char particleSource[128];
          char enemyHateName[128];
          char enemyLikeName[128];
 
@@ -119,6 +116,7 @@ namespace ForLeaseEngine
          int particleBlend = 1;
          int modelBlend = 0;
          int lightBlend = 2;
+         int usefulCategory = 0;
          float lightAngle = 3 * 3.1415 / 2;
          float visionAngle = 0;
          float owlDir1 = 0;
@@ -139,6 +137,7 @@ namespace ForLeaseEngine
         comps.push_back(new Components::ChangeLevelOnCollide(dummy));
         comps.push_back(new Components::Checkpoint(dummy));
         comps.push_back(new Components::Collision(dummy));
+        comps.push_back(new Components::DamageOnCollide(dummy));
         comps.push_back(Components::DragWithMouse::Create(dummy));
         comps.push_back(new Components::EnemyAI(dummy));
         comps.push_back(new Components::FadeWithDistance(dummy));
@@ -146,6 +145,7 @@ namespace ForLeaseEngine
         comps.push_back(new Components::Health(dummy));
         comps.push_back(new Components::Light(dummy));
         comps.push_back(new Components::Model(dummy));
+        comps.push_back(new Components::MovingPlatform(dummy));
         comps.push_back(new Components::Occluder(dummy));
         comps.push_back(new Components::OwlAI(dummy));
         comps.push_back(Components::EnemyPace::Create(dummy));
@@ -161,6 +161,7 @@ namespace ForLeaseEngine
         comps.push_back(new Components::Sprite(dummy));
         comps.push_back(new Components::SpriteText(dummy, "Arial.fnt"));
         comps.push_back(new Components::TransformModeControls(dummy));
+        comps.push_back(Components::UsefulObject::Create(dummy));
         comps.push_back(new Components::VisionCone(dummy));
 
         for (unsigned i = 0; i < comps.size(); i++)
@@ -183,6 +184,7 @@ namespace ForLeaseEngine
         leg::levelPhysics = new LevelComponents::Physics(*this);
         Serializer root;
         leg::levelCheckpoint = new LevelComponents::Checkpoint(*this, root);
+        leg::levelUseful = new LevelComponents::UsefulObject(*this);
         AddLevelComponent(leg::render);
         AddLevelComponent(leg::levelPhysics);
         AddLevelComponent(new LevelComponents::Menu(*this));
@@ -193,6 +195,7 @@ namespace ForLeaseEngine
         strcpy(leg::statename, Name.c_str());
         if (leg::startUp)
         {
+            ForLease->GameWindow->SetResolution(1600, 900);
             Keys::InitKeymap();
             leg::keyCodes = Keys::GetKeyStrings();
             std::sort(leg::keyCodes.begin(), leg::keyCodes.end());
@@ -202,6 +205,7 @@ namespace ForLeaseEngine
             leg::componentNames.push_back("Change Level on Collide");
             leg::componentNames.push_back("Checkpoint");
             leg::componentNames.push_back("Collision");
+            leg::componentNames.push_back("Damage on Collide");
             leg::componentNames.push_back("Drag with Mouse");
             leg::componentNames.push_back("Enemy AI");
             leg::componentNames.push_back("Fade with Distance");
@@ -209,6 +213,7 @@ namespace ForLeaseEngine
             leg::componentNames.push_back("Health");
             leg::componentNames.push_back("Light");
             leg::componentNames.push_back("Model");
+            leg::componentNames.push_back("Moving Platform");
             leg::componentNames.push_back("Occluder");
             leg::componentNames.push_back("OwlAI");
             leg::componentNames.push_back("PaceAI");
@@ -224,6 +229,7 @@ namespace ForLeaseEngine
             leg::componentNames.push_back("Sprite");
             leg::componentNames.push_back("Sprite Text");
             leg::componentNames.push_back("Transform Control");
+            leg::componentNames.push_back("Useful Object");
             leg::componentNames.push_back("Vision Cone");
             leg::startUp = false;
         }
@@ -278,6 +284,12 @@ namespace ForLeaseEngine
         leg::selPace         = leg::selection->GetComponent<Components::EnemyPace>();
         leg::selHealth       = leg::selection->GetComponent<Components::Health>();
         leg::selOwl          = leg::selection->GetComponent<Components::OwlAI>();
+        leg::selMoving       = leg::selection->GetComponent<Components::MovingPlatform>();
+        leg::selUseful       = leg::selection->GetComponent<Components::UsefulObject>();
+        leg::selDamage       = leg::selection->GetComponent<Components::DamageOnCollide>();
+
+        if (leg::selUseful)
+            leg::usefulCategory = static_cast<int>(leg::selUseful->Category);
 
         if (leg::selSprtxt)
             strcpy(leg::spriteTextBuf, leg::selSprtxt->Text.c_str());
@@ -467,6 +479,11 @@ namespace ForLeaseEngine
                 AddLevelComponent(levelmenu);
             }
 
+            if (!leg::levelUseful)
+            {
+                leg::levelUseful = new LevelComponents::UsefulObject(*this);
+            }
+
             leg::gravity = leg::levelPhysics->GetGravity();
             leg::selection = NULL;
         }
@@ -516,7 +533,6 @@ namespace ForLeaseEngine
             if (it != leg::camera)
             {
                 Components::Transform* tran  = it->GetComponent<Components::Transform>();
-                Components::Model*     model = it->GetComponent<Components::Model>();
                 leg::render->SetDrawingColor(1,1,1,1);
                 if (tran)
                 {

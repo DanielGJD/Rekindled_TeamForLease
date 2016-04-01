@@ -196,6 +196,108 @@ namespace ForLeaseEngine
             ImGui::ColorEdit4("Ambient Light", const_cast<float*>(leg::levelLight->AmbientLight.GetAll()));
         }
 
+        if (ImGui::CollapsingHeader("Useful Objects"))
+        {
+            if (ImGui::TreeNode("Set Archetypes"))
+            {
+                static int button = 0;
+                ImGui::RadioButton("Balloon Archetype##leveluseful", &button, 0);
+                ImGui::SameLine();
+                ImGui::Text(": %s", leg::levelUseful->BalloonArchetypeName.c_str());
+
+                ImGui::RadioButton("Distraction Archetype##leveluseful", &button, 1);
+                ImGui::SameLine();
+                ImGui::Text(": %s", leg::levelUseful->DistractionArchetypeName.c_str());
+
+                static ImGuiTextFilter archFilter;
+                archFilter.Draw("##usefularchetype", 500);
+                ImGui::Text("Available Archetypes");
+                ImGui::BeginChild("Archetypes", ImVec2(0, 100), true);
+                for (unsigned i = 0; i < leg::archetypeNames.size(); i++)
+                {
+                    if (archFilter.PassFilter(leg::archetypeNames[i].c_str()))
+                    {
+                        if (ImGui::MenuItem(leg::archetypeNames[i].c_str()))
+                        {
+                            switch(button)
+                            {
+                            case 0:
+                                leg::levelUseful->BalloonArchetypeName = leg::archetypeNames[i];
+                                break;
+                            case 1:
+                                leg::levelUseful->DistractionArchetypeName = leg::archetypeNames[i];
+                                break;
+                            }
+                        }
+                    }
+                }
+                ImGui::EndChild();
+                if (ImGui::Button("Clear##usefulArch"))
+                {
+                    switch(button)
+                    {
+                    case 0:
+                        leg::levelUseful->BalloonArchetypeName = "";
+                        break;
+                    case 1:
+                        leg::levelUseful->DistractionArchetypeName = "";
+                        break;
+                    }
+                }
+                ImGui::TreePop();
+            }
+
+            if (ImGui::TreeNode("Set Meshes"))
+            {
+                static int meshButton = 0;
+                ImGui::RadioButton("Balloon Mesh##leveluseful", &meshButton, 0);
+                ImGui::SameLine();
+                ImGui::Text(": %s", leg::levelUseful->BalloonMesh.c_str());
+
+                ImGui::RadioButton("Distraction Mesh##leveluseful", &meshButton, 1);
+                ImGui::SameLine();
+                ImGui::Text(": %s", leg::levelUseful->DistractionMesh.c_str());
+
+                static ImGuiTextFilter meshFilter;
+                meshFilter.Draw("##usefulmesh", 500);
+                ImGui::Text("Available Meshes");
+                ImGui::BeginChild("Meshes", ImVec2(0, 100), true);
+                for (unsigned i = 0; i < leg::meshNames.size(); i++)
+                {
+                    if (meshFilter.PassFilter(leg::meshNames[i].c_str()))
+                    {
+                        if (ImGui::MenuItem(leg::meshNames[i].c_str()))
+                        {
+                            switch(meshButton)
+                            {
+                            case 0:
+                                leg::levelUseful->BalloonMesh = leg::meshNames[i];
+                                break;
+                            case 1:
+                                leg::levelUseful->DistractionMesh = leg::meshNames[i];
+                                break;
+                            }
+                        }
+                    }
+                }
+                ImGui::EndChild();
+                if (ImGui::Button("Clear##usefulMesh"))
+                {
+                    switch(meshButton)
+                    {
+                    case 0:
+                        leg::levelUseful->BalloonMesh = "";
+                        break;
+                    case 1:
+                        leg::levelUseful->DistractionMesh = "";
+                        break;
+                    }
+                }
+                ImGui::TreePop();
+            }
+
+        }
+
         if (ImGui::CollapsingHeader("Spawn Archetype"))
         {
             static ImGuiTextFilter archFilter;
@@ -290,6 +392,13 @@ namespace ForLeaseEngine
                 leg::selCollision = NULL;
             return;
         }
+        if (!(component.compare("Damage on Collide")) && !leg::selDamage)
+        {
+            leg::selDamage = new Components::DamageOnCollide(*leg::selection);
+            if (!leg::selection->AddComponent(leg::selDamage))
+                leg::selDamage = nullptr;
+            return;
+        }
         if (!(component.compare("Drag with Mouse")) && !leg::selDrag)
         {
             leg::selDrag = Components::DragWithMouse::Create(*leg::selection);
@@ -338,6 +447,13 @@ namespace ForLeaseEngine
             leg::selModel = new Components::Model(*leg::selection);
             if (!leg::selection->AddComponent(leg::selModel))
                 leg::selModel = NULL;
+            return;
+        }
+        if (!(component.compare("Moving Platform")) && !leg::selMoving)
+        {
+            leg::selMoving = new Components::MovingPlatform(*leg::selection);
+            if (!leg::selection->AddComponent(leg::selMoving))
+                leg::selMoving = NULL;
             return;
         }
         if (!(component.compare("Occluder")) && !leg::selOccluder)
@@ -445,6 +561,12 @@ namespace ForLeaseEngine
                 leg::selTMC = NULL;
 
             return;
+        }
+        if (!(component.compare("Useful Object")) && !leg::selUseful)
+        {
+            leg::selUseful = Components::UsefulObject::Create(*leg::selection);
+            if (!leg::selection->AddComponent(leg::selUseful))
+                leg::selUseful = nullptr;
         }
         if (!(component.compare("Vision Cone")) && !leg::selVision)
         {

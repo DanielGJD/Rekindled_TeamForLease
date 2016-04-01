@@ -241,6 +241,18 @@ namespace ForLeaseEngine
             }
         }
 
+        if (leg::selDamage && ImGui::CollapsingHeader("Damage on Collide"))
+        {
+            ImGui::InputFloat("Damage##damage", &(leg::selDamage->Damage));
+            ImGui::Checkbox("Continuous##damage", &(leg::selDamage->Continuous));
+
+            if (ImGui::Button("Remove Damage on Collide"))
+            {
+                leg::selection->DeleteComponent(ComponentType::DamageOnCollide);
+                leg::selDamage = nullptr;
+            }
+        }
+
         if (leg::selDrag && ImGui::CollapsingHeader("Drag with Mouse"))
         {
             ImGui::Checkbox("Active##DWM", &(leg::selDrag->Active));
@@ -454,6 +466,22 @@ namespace ForLeaseEngine
             {
                 leg::selection->DeleteComponent(ComponentType::Light);
                 leg::selLight = NULL;
+            }
+        }
+        if (leg::selMoving && ImGui::CollapsingHeader("Moving Platform"))
+        {
+            ImGui::InputFloat("Affected Field Height##platform", &(leg::selMoving->AffectedFieldHeight));
+            ImGui::InputFloat("Max Move Distance##platform", &(leg::selMoving->MaxMove));
+            ImGui::InputFloat("Away Speed##platform", &(leg::selMoving->AwaySpeed));
+            ImGui::InputFloat("Back Speed##platform", &(leg::selMoving->BackSpeed));
+            ImGui::InputFloat("Pause Timer##platform", &(leg::selMoving->PauseTimer));
+            ImGui::RadioButton("Horizontal##platform", reinterpret_cast<int*>(&(leg::selMoving->Direction)), 0);
+            ImGui::RadioButton("Vertical##platform", reinterpret_cast<int*>(&(leg::selMoving->Direction)), 1);
+
+            if (ImGui::Button("Remove Moving Platform"))
+            {
+                leg::selection->DeleteComponent(ComponentType::MovingPlatform);
+                leg::selMoving = nullptr;
             }
         }
         if (leg::selOccluder && ImGui::CollapsingHeader("Occluder"))
@@ -1034,6 +1062,17 @@ namespace ForLeaseEngine
             }
         }
 
+        if (leg::selUseful && ImGui::CollapsingHeader("Useful Object"))
+        {
+            ImGui::Combo("Category##useful", &leg::usefulCategory, "None\0Balloon\0Distraction\0\0");
+            leg::selUseful->Category = static_cast<UsefulObjectCategory>(leg::usefulCategory);
+
+            if (ImGui::Button("Remove Useful Object"))
+            {
+                leg::selection->DeleteComponent(ComponentType::UsefulObject);
+                leg::selUseful = nullptr;
+            }
+        }
         if (leg::selVision && ImGui::CollapsingHeader("Vision Cone"))
         {
             ImGui::Checkbox("Active##VisionCone", &(leg::selVision->Active));
