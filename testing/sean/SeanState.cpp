@@ -116,7 +116,7 @@ void SeanState::Load() {
     smallPlatform2->AddComponent(new Components::Transform(*smallPlatform2, Point(-20, -4), 5, 1, 0, 0));
     smallPlatform2->AddComponent(new Components::Physics(*smallPlatform2, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
     smallPlatform2->AddComponent(new Components::Collision(*smallPlatform2, 2, 2, true, 0, 0, true));
-    smallPlatform2->AddComponent(new Components::MovingPlatform(*smallPlatform2, 15.0f, 15.0f, 0.25f, 5.0f, 1.0f, Components::MovingPlatform::Axis::Vertical));
+    smallPlatform2->AddComponent(new Components::MovingPlatform(*smallPlatform2, 15.0f, 15.0f, 0.5f, 5.0f, 1.0f, Components::MovingPlatform::Axis::Vertical));
     smallPlatform2->AddComponent(new Components::Model(*smallPlatform2, true, false, false, "1-1Block.json"));
 
     //Entity* ceil = AddEntity("Ceiling");

@@ -31,8 +31,7 @@ namespace ForLeaseEngine
                 {
                     Pause,
                     Away,
-                    Back,
-                    Resume
+                    Back
                 };
 
                 enum class Axis : char
@@ -57,11 +56,8 @@ namespace ForLeaseEngine
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
 
-                Vector LastMovement(bool scaleDt = true);
-
                 Action CurrentAction;
                 Action NextAction;
-                Action ActionAfterPage;
                 float Moved;
                 float CurrentPauseTimer;
 
@@ -69,6 +65,7 @@ namespace ForLeaseEngine
                 void MoveAway(float dt);
                 void MoveBack(float dt);
                 void MovePause(float dt);
+                Vector LastMovement(bool scaleDt = true); //deprecated
         };
     }
   }

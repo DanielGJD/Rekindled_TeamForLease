@@ -65,7 +65,8 @@ namespace ForLeaseEngine {
                     physicsEntities.push_back(entity);
 
                 if (entity->HasComponent(ComponentType::MovingPlatform))
-                    movingPlatforms.push_back(entity);
+                    if (entity->GetComponent<Components::MovingPlatform>()->CurrentAction != Components::MovingPlatform::Action::Pause)
+                        movingPlatforms.push_back(entity);
             }
 
             //for (Entity* entity : physicsEntities) {
@@ -139,15 +140,16 @@ namespace ForLeaseEngine {
                     Components::Transform* aTransform = affected->GetComponent<Components::Transform>();
                     Components::Collision* aCollision = affected->GetComponent<Components::Collision>();
 
-                    aTransform->Position.y = transform->Position.y + collision->ScaledHalfHeight() + aCollision->ScaledHalfHeight();
+                    aTransform->Position.y = transform->Position.y + collision->ScaledHalfHeight() + aCollision->ScaledHalfHeight() + Epsilon;
                 }
             }
         }
 
         bool Collision::IsAffectedByMovingPlatform(Entity* platform, Entity* check) {
-            if (platform->GetComponent<Components::MovingPlatform>()->Direction == Components::MovingPlatform::Axis::Horizontal) {
+            Components::MovingPlatform::Axis direction = platform->GetComponent<Components::MovingPlatform>()->Direction;
+            if (direction == Components::MovingPlatform::Axis::Horizontal) {
                 return IsAffectedByHoriziontalMovingPlatform(platform, check);
-            } else {
+            } else if (direction == Components::MovingPlatform::Axis::Vertical) {
                 return IsAffectedByVerticalMovingPlatform(platform, check);
             }
         }
