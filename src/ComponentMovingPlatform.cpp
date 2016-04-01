@@ -23,13 +23,14 @@ namespace ForLeaseEngine
 {
     namespace Components
     {
-            MovingPlatform::MovingPlatform(Entity& owner, float awaySpeed, float backSpeed, float affectedFieldHeight, float maxDistance, float pause, Axis direction) : Component(owner, ComponentType::Transform | ComponentType::Collision | ComponentType::Physics),
-                                                                                                                                              AwaySpeed(awaySpeed),
-                                                                                                                                              BackSpeed(backSpeed),
-                                                                                                                                              AffectedFieldHeight(affectedFieldHeight),
-                                                                                                                                              MaxMove(maxDistance),
-                                                                                                                                              PauseTimer(pause),
-                                                                                                                                              Direction(direction)
+            MovingPlatform::MovingPlatform(Entity& owner, float awaySpeed, float backSpeed, float affectedFieldHeight, float maxDistance, float pause, Axis direction)
+                : Component(owner, ComponentType::Transform | ComponentType::Collision | ComponentType::Physics),
+                  AwaySpeed(awaySpeed),
+                  BackSpeed(backSpeed),
+                  AffectedFieldHeight(affectedFieldHeight),
+                  MaxMove(maxDistance),
+                  PauseTimer(pause),
+                  Direction(direction)
             {
                 CurrentAction = Action::Away;
                 NextAction = Action::Away;
@@ -47,15 +48,15 @@ namespace ForLeaseEngine
 
                 switch (CurrentAction)
                 {
-                case Action::Pause:
-                    MovePause(dt);
-                    break;
-                case Action::Away:
-                    MoveAway(dt);
-                    break;
-                case Action::Back:
-                    MoveBack(dt);
-                    break;
+                    case Action::Pause:
+                        MovePause(dt);
+                        break;
+                    case Action::Away:
+                        MoveAway(dt);
+                        break;
+                    case Action::Back:
+                        MoveBack(dt);
+                        break;
                 }
             }
 
@@ -73,7 +74,7 @@ namespace ForLeaseEngine
 
                 if (Moved >= MaxMove)
                 {
-                    CurrentAction = NextAction;
+                    CurrentAction = Action::Pause;
                     NextAction = Action::Back;
                     Moved = -MaxMove;
                 }
@@ -92,7 +93,7 @@ namespace ForLeaseEngine
 
                 if (Moved >= MaxMove)
                 {
-                    CurrentAction = NextAction;
+                    CurrentAction = Action::Pause;
                     NextAction = Action::Away;
                     Moved = -MaxMove;
                 }
@@ -109,9 +110,6 @@ namespace ForLeaseEngine
                     CurrentAction = NextAction;
                     NextAction = Action::Pause;
                     CurrentPauseTimer = 0;
-                    Components::Model* model = Parent.GetComponent<Components::Model>();
-                    if (model)
-                        model->FlipY = !(model->FlipY);
                 }
             }
 

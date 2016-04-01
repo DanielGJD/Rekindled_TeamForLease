@@ -139,15 +139,85 @@ namespace ForLeaseEngine {
                     Components::Transform* aTransform = affected->GetComponent<Components::Transform>();
                     Components::Collision* aCollision = affected->GetComponent<Components::Collision>();
 
-                    aTransform->Position.y = transform->Position.y + collision->ScaledHalfHeight() + aCollision->ScaledHalfHeight();
+                    aTransform->Position.y = transform->Position.y + collision->ScaledHalfHeight() + aCollision->ScaledHalfHeight() + Epsilon;
+                }
+            }
+
+            for (Entity* toPush : physicsEntities) {
+                if (toPush->HasComponent(ComponentType::Collision)) {
+                    MovingPlatformPushOut(entity, toPush);
                 }
             }
         }
 
+        void Collision::MovingPlatformPushOut(Entity* platform, Entity* toPush) {
+            Components::MovingPlatform* pPlatform = platform->GetComponent<Components::MovingPlatform>();
+            Components::Collision* pCollision = platform->GetComponent<Components::Collision>();
+            Components::Collision* tCollision = toPush->GetComponent<Components::Collision>();
+
+            //if (!BoxesIntersect(pCollision->BotRight(), pCollision->TopLeft(), tCollision->BotRight(), tCollision->TopLeft()))
+            //    return;
+
+            //if (pPlatform->Direction == Components::MovingPlatform::Axis::Horizontal)
+            //    HorizontalMovingPlatformPushOut(platform, toPush);
+                
+        }
+
+        void Collision::HorizontalMovingPlatformPushOut(Entity* platform, Entity* toPush) {
+            Components::MovingPlatform* pPlatform = platform->GetComponent<Components::MovingPlatform>();
+            Components::Collision* pCollision = platform->GetComponent<Components::Collision>();
+
+            Components::Transform* tTransform = toPush->GetComponent<Components::Transform>();
+            Components::Collision* tCollision = toPush->GetComponent<Components::Collision>();
+
+            CollisionSide side = CollisionSide::None;
+            float distance = std::numeric_limits<float>::infinity();
+
+            float leftDistance = std::abs(pCollision->TopLeft().x - tCollision->TopRight().x);
+            if (leftDistance >= 0 && leftDistance < distance) {
+                distance = leftDistance;
+                side = CollisionSide::Left;
+            }
+
+            float rightDistance = std::abs(pCollision->TopRight().x - tCollision->TopLeft().x);
+            if (rightDistance >= 0 && rightDistance < distance) {
+                distance = rightDistance;
+                side = CollisionSide::Right;
+            }
+
+            if (side == CollisionSide::Left) {
+                tTransform->Position.x -= (distance + Epsilon);
+            } else if (side == CollisionSide::Right) {
+                tTransform->Position.x += distance + Epsilon;
+            }
+        }
+
+        void Collision::VerticalMovingPlatformPushOut(Entity* platform, Entity* toPush) {
+            Components::MovingPlatform* pPlatform = platform->GetComponent<Components::MovingPlatform>();
+            Components::Collision* pCollision = platform->GetComponent<Components::Collision>();
+
+            Components::Transform* tTransform = toPush->GetComponent<Components::Transform>();
+            Components::Collision* tCollision = toPush->GetComponent<Components::Collision>();
+
+            CollisionSide side = CollisionSide::None;
+            float distance = std::numeric_limits<float>::infinity();
+
+            float topDistance = pCollision->TopRight().y - tCollision->TopRight().y;
+            if (topDistance > 0 && topDistance < distance) {
+                distance = topDistance;
+                side = CollisionSide::Top;
+            }
+
+            if (side == CollisionSide::Top) {
+                tTransform->Position.y += distance + Epsilon;
+            }
+        }
+
         bool Collision::IsAffectedByMovingPlatform(Entity* platform, Entity* check) {
-            if (platform->GetComponent<Components::MovingPlatform>()->Direction == Components::MovingPlatform::Axis::Horizontal) {
+            Components::MovingPlatform::Axis direction = platform->GetComponent<Components::MovingPlatform>()->Direction;
+            if (direction == Components::MovingPlatform::Axis::Horizontal) {
                 return IsAffectedByHoriziontalMovingPlatform(platform, check);
-            } else {
+            } else if (direction == Components::MovingPlatform::Axis::Vertical) {
                 return IsAffectedByVerticalMovingPlatform(platform, check);
             }
         }
@@ -231,8 +301,17 @@ namespace ForLeaseEngine {
 
                     SweptCollision newCollision = CheckIndividualSweptCollision(entity, checkAgainst, time);
                     if (newCollision.Distance < firstCollision.Distance) {
-                        firstCollision = newCollision;
-                        collidedAgainst = checkAgainst;
+                        // HACKY SHIT
+                        // Makes sure that moving platforms only register on top-bottom collisions
+                        if (checkAgainst->HasComponent(ComponentType::MovingPlatform)) {
+                            if (newCollision.SelfSide == CollisionSide::Bottom) {
+                                firstCollision = newCollision;
+                                collidedAgainst = checkAgainst;
+                            }
+                        } else {
+                            firstCollision = newCollision;
+                            collidedAgainst = checkAgainst;
+                        }
                     }
                 }
 
