@@ -23,13 +23,14 @@ namespace ForLeaseEngine
 {
     namespace Components
     {
-            MovingPlatform::MovingPlatform(Entity& owner, float awaySpeed, float backSpeed, float affectedFieldHeight, float maxDistance, float pause, Axis direction) : Component(owner, ComponentType::Transform | ComponentType::Collision | ComponentType::Physics),
-                                                                                                                                              AwaySpeed(awaySpeed),
-                                                                                                                                              BackSpeed(backSpeed),
-                                                                                                                                              AffectedFieldHeight(affectedFieldHeight),
-                                                                                                                                              MaxMove(maxDistance),
-                                                                                                                                              PauseTimer(pause),
-                                                                                                                                              Direction(direction)
+            MovingPlatform::MovingPlatform(Entity& owner, float awaySpeed, float backSpeed, float affectedFieldHeight, float maxDistance, float pause, Axis direction)
+                : Component(owner, ComponentType::Transform | ComponentType::Collision | ComponentType::Physics),
+                  AwaySpeed(awaySpeed),
+                  BackSpeed(backSpeed),
+                  AffectedFieldHeight(affectedFieldHeight),
+                  MaxMove(maxDistance),
+                  PauseTimer(pause),
+                  Direction(direction)
             {
                 CurrentAction = Action::Away;
                 NextAction = Action::Away;

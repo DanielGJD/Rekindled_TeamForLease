@@ -37,6 +37,9 @@ namespace ForLeaseEngine {
                 Collision(State& owner, float vertexSpacing = 0.25);
                 void Update(std::vector<Entity *>& entities);
                 void UpdateMovingPlatform(Entity* entity, std::vector<Entity *> physicsEntities);
+                void MovingPlatformPushOut(Entity* platform, Entity* toPush);
+                void HorizontalMovingPlatformPushOut(Entity* platform, Entity* toPush);
+                void VerticalMovingPlatformPushOut(Entity* platform, Entity* toPush);
                 bool IsAffectedByMovingPlatform(Entity* platform, Entity* check);
                 bool IsAffectedByHoriziontalMovingPlatform(Entity* platform, Entity* check);
                 bool IsAffectedByVerticalMovingPlatform(Entity* platform, Entity* check);
