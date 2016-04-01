@@ -43,6 +43,7 @@ namespace ForLeaseEngine {
             void SetName(std::string name);
             bool AddComponent(Component* component);
             void DeleteComponent(ComponentType type);
+            void DeleteAllComponents();
             ComponentType GetComponentMask();
             bool HasComponent(ComponentType type);
             /*!

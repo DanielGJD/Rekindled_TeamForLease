@@ -54,6 +54,7 @@ namespace ForLeaseEngine {
         Collision::~Collision() {
             for (Entity* entity: CollidedWithLastFrame) {
                 Components::Collision* collision = entity->GetComponent<Components::Collision>();
+                if (!collision) continue;
                 collision->CollidedWithLastFrame.erase(&Parent);
             }
         }

@@ -41,7 +41,7 @@ namespace ForLeaseEngine {
         Destructor for an Entity.  Destroys all components attached to it.
     */
     Entity::~Entity() {
-        for (Component* component : Components) delete component;
+        DeleteAllComponents();
 
         FreeID(ID);
     }
@@ -81,14 +81,14 @@ namespace ForLeaseEngine {
     }
 
     void Entity::DeserializeWithoutID(Serializer& root) {
-        Serializer entity = root.GetChild("Entity");
-        entity.ReadString("Name", Name);
-        ArraySerializer jsonComponents(entity);
-        jsonComponents = entity.GetChild("Components");
-        for (unsigned i = 0; i < jsonComponents.Size(); ++i) {
-            Serializer component = jsonComponents[i];
-            AddComponent(DeserializeComponent(component, *this));
-        }
+Serializer entity = root.GetChild("Entity");
+entity.ReadString("Name", Name);
+ArraySerializer jsonComponents(entity);
+jsonComponents = entity.GetChild("Components");
+for (unsigned i = 0; i < jsonComponents.Size(); ++i) {
+    Serializer component = jsonComponents[i];
+    AddComponent(DeserializeComponent(component, *this));
+}
     }
 
     /*!
@@ -175,10 +175,18 @@ namespace ForLeaseEngine {
             if (Components[i]->GetType() == type) {
                 delete Components[i];
                 Components.erase(Components.begin() + i);
-                ComponentMask = static_cast<ComponentType>(static_cast<unsigned long>(ComponentMask) - static_cast<unsigned long>(type));
+                ComponentMask = static_cast<ComponentType>(static_cast<unsigned long long int>(ComponentMask) - static_cast<unsigned long long int>(type));
                 break;
             }
         }
+    }
+
+    void Entity::DeleteAllComponents() {
+        for (Component* component : Components) {
+            delete component;
+        }
+        Components.clear();
+        ComponentMask = ComponentType::None;
     }
 
     /*!

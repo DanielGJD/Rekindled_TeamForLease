@@ -158,6 +158,10 @@ namespace ForLeaseEngine {
 
     void State::DeleteAllEntities() {
         for (Entity* entity : Entities) {
+            entity->DeleteAllComponents();
+        }
+
+        for (Entity* entity : Entities) {
             delete entity;
         }
 
@@ -663,8 +667,8 @@ namespace ForLeaseEngine {
     }
 
     LevelComponent* DeserializeLevelComponent(Serializer& root, State& state, Serializer& stateSerializer) {
-        unsigned type;
-        root.ReadUint("Type", type);
+        unsigned long long int type;
+        root.ReadUlonglong("Type", type);
 
         std::cout << "Deserializing " << type << std::endl;
 
