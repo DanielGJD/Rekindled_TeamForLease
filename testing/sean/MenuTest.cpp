@@ -62,7 +62,7 @@ void MenuTest::Initialize() {
     follow->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
     follow->GetComponent<Components::Sprite>(true)->AnimationActive = false;
     follow->AddComponent(new Components::Follow(*follow, true, 0.0f, 1.0f, 0UL, Vector(-0.5f,-1.0f)));
-    follow->GetComponent<Components::Follow>()->InterpolationScale = 7.0f;
+//    follow->GetComponent<Components::Follow>()->InterpolationScale = 7.0f;
 
 
     Entity* menu = AddEntity("Menu");
