@@ -29,14 +29,12 @@
 #include "Exception.h"
 #include "Serializable.h"
 #include "Serialize.h"
-//#include "json-forwards.h"
 #include "MeshAnimation.h"
 #include <map>
 #include <vector>
 #include <list>
 #include <thread>
 #include <cmath>
-#define PARTICLE_THREADS 2
 
 GLuint index;
 
@@ -167,6 +165,8 @@ namespace ForLeaseEngine {
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT);
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glClearColor(ClearColor.GetR(), ClearColor.GetG(), ClearColor.GetB(), ClearColor.GetA());
+            glClear(GL_COLOR_BUFFER_BIT);
 //            glFlush();
 
             if(CurrentCamera != 0) {
