@@ -68,7 +68,7 @@ namespace ForLeaseEngine {
                     }
                     else {
                         float t = (distance - FollowBeginDistance) / (FollowEndDistance - FollowBeginDistance);
-                        myTrans->Position += direction * Interpolation::Linear(0, (FollowEndDistance - FollowBeginDistance), t) * ForLease->FrameRateController().GetDt();
+                        myTrans->Position += direction * Interpolation::Linear(0, (FollowEndDistance - FollowBeginDistance), t) * ForLease->FrameRateController().GetDt() * InterpolationScale;
                     }
                 }
                 //myTrans->Position += direction * ForLease->FrameRateController().GetDt();

@@ -22,6 +22,7 @@
 #include "Vector.h"
 #include "Event.h"
 #include "MouseMotionEvent.h"
+#include "Color.h"
 #include <string>
 
 namespace ForLeaseEngine {
@@ -34,7 +35,7 @@ namespace ForLeaseEngine {
                 static const ComponentType Type = ComponentType::Menu;
                 virtual ComponentType GetType() { return Type; }
 
-                Menu(Entity& owner, Vector spacing = Vector(0, -3), bool active = false, float unfocusedScale = 1, float focusedScale = 1.3, std::string font = "Liberation_Serif.fnt", std::string followName = "");
+                Menu(Entity& owner, Vector spacing = Vector(0, -3), bool active = false, float unfocusedScale = 1, float focusedScale = 1.3, std::string font = "Liberation_Serif.fnt", std::string followName = "", Color unfocusedColor = Color(1,1,1), Color focusedColor = Color(1,1,1));
                 ~Menu();
                 virtual void Update();
 
@@ -57,7 +58,8 @@ namespace ForLeaseEngine {
                 float FocusedScale;
                 std::string Font;
                 std::string FollowName;
-
+                Color UnfocusedColor;
+                Color FocusedColor;
             private:
                 std::vector<Entity*> Representations;
                 std::vector<MenuItem*> Items;

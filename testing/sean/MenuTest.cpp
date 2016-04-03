@@ -61,12 +61,13 @@ void MenuTest::Initialize() {
     follow->AddComponent(new Components::Sprite(*follow));
     follow->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
     follow->GetComponent<Components::Sprite>(true)->AnimationActive = false;
-    follow->AddComponent(new Components::Follow(*follow, true, 0.0f, 1.0f, 0UL, Vector(-0.5f,-0.5f)));
+    follow->AddComponent(new Components::Follow(*follow, true, 0.0f, 1.0f, 0UL, Vector(-0.5f,-1.0f)));
+    follow->GetComponent<Components::Follow>()->InterpolationScale = 3.0f;
 
 
     Entity* menu = AddEntity("Menu");
     menu->AddComponent(new Components::Transform(*menu));
-    menu->AddComponent(new Components::Menu(*menu, Vector(0, -3), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow"));
+    menu->AddComponent(new Components::Menu(*menu, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
     menuComp->AddItem(new MenuItems::ResumeGame("ButtonResume.png"));
     //menuComp->AddItem(new MenuItems::LoadLevel("ButtonHowTo.png", "HowToPlay"));
@@ -76,14 +77,14 @@ void MenuTest::Initialize() {
 
     Entity* quitConfirm = AddEntity("QuitConfirm");
     quitConfirm->AddComponent(new Components::Transform(*quitConfirm));
-    quitConfirm->AddComponent(new Components::Menu(*quitConfirm));
+    quitConfirm->AddComponent(new Components::Menu(*quitConfirm, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* quitConfirmComp = quitConfirm->GetComponent<Components::Menu>();
     quitConfirmComp->AddItem(new MenuItems::Quit("ButtonQuit.png"));
     quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonCancel.png", "Menu", "QuitConfirm"));
 
     Entity* mainMenuConfirm = AddEntity("MainMenuConfirm");
     mainMenuConfirm->AddComponent(new Components::Transform(*mainMenuConfirm));
-    mainMenuConfirm->AddComponent(new Components::Menu(*mainMenuConfirm));
+    mainMenuConfirm->AddComponent(new Components::Menu(*mainMenuConfirm, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* mainMenuConfirmComp = mainMenuConfirm->GetComponent<Components::Menu>();
     mainMenuConfirmComp->AddItem(new MenuItems::LoadLevel("ButtonMainMenu.png", "MainMenu"));
     mainMenuConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonCancel.png", "Menu", "MainMenuConfirm"));

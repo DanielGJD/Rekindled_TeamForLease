@@ -21,15 +21,13 @@ namespace ForLeaseEngine {
 
     namespace Components {
 
-        Menu::Menu(Entity& owner, Vector spacing, bool active, float unfocusedScale, float focusedScale, std::string font, std::string followName)
-            : Component(owner, ComponentType::Transform), UnfocusedScale(unfocusedScale),
-              FocusedScale(focusedScale), Font(font), FollowName(followName), Spacing(spacing), Active(active), LastActive(0)
+        Menu::Menu(Entity& owner, Vector spacing, bool active, float unfocusedScale, float focusedScale,
+                   std::string font, std::string followName, Color unfocusedColor, Color focusedColor)
+                 : Component(owner, ComponentType::Transform), UnfocusedScale(unfocusedScale),
+                   FocusedScale(focusedScale), Font(font), FollowName(followName), Spacing(spacing),
+                   Active(active), LastActive(0), UnfocusedColor(unfocusedColor), FocusedColor(focusedColor)
         {
             if (Active) Activate();
-            Entity* follow = ForLease->GameStateManager().CurrentState().GetEntityByName(FollowName);
-            if (follow) {
-                follow->GetComponent<Components::Transform>()->Position = Parent.GetComponent<Components::Transform>()->Position;
-            }
         }
 
         Menu::~Menu() {
@@ -46,6 +44,7 @@ namespace ForLeaseEngine {
                 //Components::Sprite* sprite = rep->GetComponent<Components::SpriteText>(true);
                 rep->GetComponent<Components::Transform>()->ScaleX = UnfocusedScale;
                 rep->GetComponent<Components::Transform>()->ScaleY = UnfocusedScale;
+                rep->GetComponent<Components::SpriteText>()->TextColor = UnfocusedColor;
             }
 
             LastActive = 0;
@@ -64,6 +63,7 @@ namespace ForLeaseEngine {
                     Components::Follow* followFollow = follow->GetComponent<Components::Follow>();
                     if (followFollow) followFollow->FollowEntityID = rep->GetID();
                 }
+                rep->GetComponent<Components::SpriteText>()->TextColor = FocusedColor;
             }
         }
 
@@ -92,6 +92,7 @@ namespace ForLeaseEngine {
             State& currentState = ForLease->GameStateManager().CurrentState();
 
             Point position = Parent.GetComponent<Components::Transform>()->Position;
+            Entity* follow = ForLease->GameStateManager().CurrentState().GetEntityByName(FollowName);
 
             for (MenuItem* item : Items) {
                 std::stringstream name;
@@ -104,6 +105,7 @@ namespace ForLeaseEngine {
                 //rep->AddComponent(new Components::Sprite(*rep));
                 rep->AddComponent(new Components::SpriteText(*rep, Font));
                 rep->GetComponent<Components::SpriteText>()->Text = item->Text;
+                rep->GetComponent<Components::SpriteText>()->TextColor = UnfocusedColor;
 
                 //ForLease->Resources.LoadTexture(item->Image);
                 //Texture* texture = Texture::CreateTexture(item->Image);
@@ -123,7 +125,10 @@ namespace ForLeaseEngine {
                 rep->AddComponent(new Components::BackgroundMusic(*rep, "Menu2"));
             }
 
-
+            if (follow) {
+                if (Representations.size() > 0)
+                    follow->GetComponent<Components::Follow>()->FollowEntityID = Representations[0]->GetID();
+            }
             std::cout << Parent.GetName() << " activated." << std::endl;
         }
 
