@@ -21,9 +21,9 @@ namespace ForLeaseEngine {
 
     namespace Components {
 
-        Menu::Menu(Entity& owner, Vector spacing, bool active, float unfocusedScale, float focusedScale)
+        Menu::Menu(Entity& owner, Vector spacing, bool active, float unfocusedScale, float focusedScale, std::string font)
             : Component(owner, ComponentType::Transform), UnfocusedScale(unfocusedScale),
-              FocusedScale(focusedScale), Spacing(spacing), Active(active), LastActive(0) {
+              FocusedScale(focusedScale), Font(font), Spacing(spacing), Active(active), LastActive(0) {
             if (Active) Activate();
 
 
@@ -41,8 +41,8 @@ namespace ForLeaseEngine {
 
         void Menu::OnMouseMotion(const Event* e) {
             for (Entity* rep : Representations) {
-                Components::Sprite* sprite = rep->GetComponent<Components::Sprite>(true);
-                rep->GetComponent<Components::Transform>()->ScaleX = UnfocusedScale * sprite->SpriteSource.GetWidth() / sprite->SpriteSource.GetHeight();
+                //Components::Sprite* sprite = rep->GetComponent<Components::SpriteText>(true);
+                rep->GetComponent<Components::Transform>()->ScaleX = UnfocusedScale;
                 rep->GetComponent<Components::Transform>()->ScaleY = UnfocusedScale;
             }
 
@@ -53,8 +53,8 @@ namespace ForLeaseEngine {
             position = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true)->ScreenToWorld(position);
             Entity* rep = GetRepresentationAtPosition(position);
             if (rep) {
-                Components::Sprite* sprite = rep->GetComponent<Components::Sprite>(true);
-                rep->GetComponent<Components::Transform>()->ScaleX = FocusedScale * sprite->SpriteSource.GetWidth() / sprite->SpriteSource.GetHeight();
+                //Components::Sprite* sprite = rep->GetComponent<Components::Sprite>(true);
+                rep->GetComponent<Components::Transform>()->ScaleX = FocusedScale;
                 rep->GetComponent<Components::Transform>()->ScaleY = FocusedScale;
                 LastActive = rep;
             }
@@ -70,7 +70,7 @@ namespace ForLeaseEngine {
 
         void Menu::AddItem(MenuItem* item) {
             Items.push_back(item);
-            std::cout << Parent.GetName() << " added an item: " << item->Image << std::endl;
+            std::cout << Parent.GetName() << " added an item: " << item->Text << std::endl;
         }
 
         void Menu::AddLoadLevel(std::string image, std::string stateName) {
@@ -88,13 +88,15 @@ namespace ForLeaseEngine {
 
             for (MenuItem* item : Items) {
                 std::stringstream name;
-                name << "Menu " << Parent.GetName() << " item " << item->Image;
+                name << "Menu " << Parent.GetName() << " item " << item->Text;
                 std::cout << "Activate: " << name.str() << std::endl;
                 Entity* rep = currentState.AddEntity(name.str());
                 rep->IncludeInSerialize = false;
                 Representations.push_back(rep);
                 rep->AddComponent(new Components::Transform(*rep, position, UnfocusedScale, UnfocusedScale, 0, 500));
-                rep->AddComponent(new Components::Sprite(*rep));
+                //rep->AddComponent(new Components::Sprite(*rep));
+                rep->AddComponent(new Components::SpriteText(*rep, Font));
+                rep->GetComponent<Components::SpriteText>()->Text = item->Text;
 
                 //ForLease->Resources.LoadTexture(item->Image);
                 //Texture* texture = Texture::CreateTexture(item->Image);
@@ -106,10 +108,10 @@ namespace ForLeaseEngine {
 
                 //////////////////////////////////////////////////////////////////////////////
 
-                rep->GetComponent<Components::Sprite>(true)->AnimationActive = false;
-                Components::Sprite* sprite = rep->GetComponent<Components::Sprite>(true);
-                sprite->SetSpriteSource(item->Image);
-                rep->GetComponent<Components::Transform>(true)->ScaleX = UnfocusedScale * sprite->SpriteSource.GetWidth() / sprite->SpriteSource.GetHeight();
+                //rep->GetComponent<Components::Sprite>(true)->AnimationActive = false;
+                //Components::Sprite* sprite = rep->GetComponent<Components::Sprite>(true);
+                //sprite->SetSpriteSource(item->Text);
+                //rep->GetComponent<Components::Transform>(true)->ScaleX = UnfocusedScale * sprite->SpriteSource.GetWidth() / sprite->SpriteSource.GetHeight();
                 position += Spacing * FocusedScale;
                 rep->AddComponent(new Components::BackgroundMusic(*rep, "Menu2"));
             }
@@ -134,11 +136,12 @@ namespace ForLeaseEngine {
         Entity* Menu::GetRepresentationAtPosition(Point position, bool throwOnFail) {
             for (Entity* entity : Representations) {
                 if (!entity->HasComponent(ComponentType::Transform)) continue;
-                if (!entity->HasComponent(ComponentType::Sprite)) continue;
+                if (!entity->HasComponent(ComponentType::SpriteText)) continue;
 
                 Components::Transform* transform = entity->GetComponent<Components::Transform>(true);
-                Components::Sprite* sprite = entity->GetComponent<Components::Sprite>(true);
-                float scaleX = transform->ScaleX * sprite->SpriteSource.GetWidth() / sprite->SpriteSource.GetHeight();
+                //Components::SpriteText* sprite = entity->GetComponent<Components::Sprite>(true);
+                //float scaleX = transform->ScaleX * sprite->SpriteSource.GetWidth() / sprite->SpriteSource.GetHeight();
+                float scaleX = 1000;
                 float scaleY = transform->ScaleY;
 
                 ///////////////////////////// More Chris hax /////////////////////////

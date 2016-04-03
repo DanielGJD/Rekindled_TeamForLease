@@ -9,6 +9,7 @@
 #include "State.h"
 #include "Engine.h"
 #include "SeanState.h"
+#include "MenuTest.h"
 #include "SecondState.h"
 #include "RaycastTest.h"
 #include "Utilities.h"
@@ -24,7 +25,7 @@
 int Start(){
     std::vector<ForLeaseEngine::State *> states;
     //states.push_back(new Loading("Game.json"));
-    states.push_back(new SeanState());
+    states.push_back(new MenuTest());
 
     ForLeaseEngine::Modules::Debug debug;
     debug.Draw.Collision = true;

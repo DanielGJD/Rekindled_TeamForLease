@@ -35,8 +35,8 @@ namespace ForLeaseEngine {
     class MenuItem : public Serializable {
         public:
             MenuItem() {}
-            MenuItem(MenuItemType type, std::string image);
-            std::string Image;
+            MenuItem(MenuItemType type, std::string text);
+            std::string Text;
             MenuItemType Type;
             virtual void Action() { }
             virtual void Serialize(Serializer& root);

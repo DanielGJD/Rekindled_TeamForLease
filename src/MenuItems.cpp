@@ -18,7 +18,7 @@
 
 namespace ForLeaseEngine {
 
-    MenuItem::MenuItem(MenuItemType type, std::string image) : Image(image), Type(type) {}
+    MenuItem::MenuItem(MenuItemType type, std::string text) : Text(text), Type(type) {}
 
     void MenuItem::Serialize(Serializer& root) {
     }
@@ -39,7 +39,7 @@ namespace ForLeaseEngine {
         void LoadLevel::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer loadLevel = root.GetChild("LoadLevel");
-            loadLevel.WriteString("Image", Image);
+            loadLevel.WriteString("Text", Text);
             loadLevel.WriteString("StateName", StateName);
             loadLevel.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(loadLevel, "LoadLevel");
@@ -47,7 +47,7 @@ namespace ForLeaseEngine {
 
         void LoadLevel::Deserialize(Serializer& root) {
             Serializer loadLevel = root.GetChild("LoadLevel");
-            loadLevel.ReadString("Image", Image);
+            loadLevel.ReadString("Text", Text);
             loadLevel.ReadString("StateName", StateName);
         }
 
@@ -62,14 +62,14 @@ namespace ForLeaseEngine {
         void NextLevel::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer nextLevel = root.GetChild("NextLevel");
-            nextLevel.WriteString("Image", Image);
+            nextLevel.WriteString("Text", Text);
             nextLevel.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(nextLevel, "NextLevel");
         }
 
         void NextLevel::Deserialize(Serializer& root) {
             Serializer nextLevel = root.GetChild("NextLevel");
-            nextLevel.ReadString("Image", Image);
+            nextLevel.ReadString("Text", Text);
         }
 
         // ==================================================================================
@@ -83,14 +83,14 @@ namespace ForLeaseEngine {
         void Quit::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer quit = root.GetChild("Quit");
-            quit.WriteString("Image", Image);
+            quit.WriteString("Text", Text);
             quit.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(quit, "Quit");
         }
 
         void Quit::Deserialize(Serializer& root) {
             Serializer quit = root.GetChild("Quit");
-            quit.ReadString("Image", Image);
+            quit.ReadString("Text", Text);
         }
 
         // ==================================================================================
@@ -108,7 +108,7 @@ namespace ForLeaseEngine {
         void ActivateOther::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer activateOther = root.GetChild("ActivateOther");
-            activateOther.WriteString("Image", Image);
+            activateOther.WriteString("Text", Text);
             activateOther.WriteString("OtherMenu", OtherMenu);
             activateOther.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(activateOther, "ActivateOther");
@@ -116,7 +116,7 @@ namespace ForLeaseEngine {
 
         void ActivateOther::Deserialize(Serializer& root) {
             Serializer activateOther = root.GetChild("ActivateOther");
-            activateOther.ReadString("Image", Image);
+            activateOther.ReadString("Text", Text);
             activateOther.ReadString("OtherMenu", OtherMenu);
         }
 
@@ -139,7 +139,7 @@ namespace ForLeaseEngine {
         void ActivateAndDeactivate::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer actAndDeact = root.GetChild("ActivateAndDeactivate");
-            actAndDeact.WriteString("Image", Image);
+            actAndDeact.WriteString("Text", Text);
             actAndDeact.WriteString("ToDeactivate", ToDeactivate);
             actAndDeact.WriteString("ToActivate", ToActivate);
             actAndDeact.WriteUint("Type", static_cast<unsigned>(Type));
@@ -148,7 +148,7 @@ namespace ForLeaseEngine {
 
         void ActivateAndDeactivate::Deserialize(Serializer& root) {
             Serializer activateOther = root.GetChild("ActivateAndDeactivate");
-            activateOther.ReadString("Image", Image);
+            activateOther.ReadString("Text", Text);
             activateOther.ReadString("ToDeactivate", ToDeactivate);
             activateOther.ReadString("ToActivate", ToActivate);
         }
@@ -166,14 +166,14 @@ namespace ForLeaseEngine {
         void ResumeGame::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer resume = root.GetChild("ResumeGame");
-            resume.WriteString("Image", Image);
+            resume.WriteString("Text", Text);
             resume.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(resume, "ResumeGame");
         }
 
         void ResumeGame::Deserialize(Serializer& root) {
             Serializer resume = root.GetChild("ResumeGame");
-            resume.ReadString("Image", Image);
+            resume.ReadString("Text", Text);
         }
 
         // ==================================================================================
@@ -200,7 +200,7 @@ namespace ForLeaseEngine {
         void ActivateAndDeactivateAndMakeInvisible::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer actAndDeact = root.GetChild("ActivateAndDeactivateAndMakeInvisible");
-            actAndDeact.WriteString("Image", Image);
+            actAndDeact.WriteString("Text", Text);
             actAndDeact.WriteString("ToDeactivate", ToDeactivate);
             actAndDeact.WriteString("ToActivate", ToActivate);
             actAndDeact.WriteString("ToMakeInvisible", ToMakeInvisible);
@@ -210,7 +210,7 @@ namespace ForLeaseEngine {
 
         void ActivateAndDeactivateAndMakeInvisible::Deserialize(Serializer& root) {
             Serializer activateOther = root.GetChild("ActivateAndDeactivateAndMakeInvisible");
-            activateOther.ReadString("Image", Image);
+            activateOther.ReadString("Text", Text);
             activateOther.ReadString("ToDeactivate", ToDeactivate);
             activateOther.ReadString("ToActivate", ToActivate);
             activateOther.ReadString("ToMakeInvisible", ToMakeInvisible);
@@ -240,7 +240,7 @@ namespace ForLeaseEngine {
         void ActivateAndDeactivateAndMakeVisible::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer actAndDeact = root.GetChild("ActivateAndDeactivateAndMakeVisible");
-            actAndDeact.WriteString("Image", Image);
+            actAndDeact.WriteString("Text", Text);
             actAndDeact.WriteString("ToDeactivate", ToDeactivate);
             actAndDeact.WriteString("ToActivate", ToActivate);
             actAndDeact.WriteString("ToMakeVisible", ToMakeVisible);
@@ -250,7 +250,7 @@ namespace ForLeaseEngine {
 
         void ActivateAndDeactivateAndMakeVisible::Deserialize(Serializer& root) {
             Serializer activateOther = root.GetChild("ActivateAndDeactivateAndMakeVisible");
-            activateOther.ReadString("Image", Image);
+            activateOther.ReadString("Text", Text);
             activateOther.ReadString("ToDeactivate", ToDeactivate);
             activateOther.ReadString("ToActivate", ToActivate);
             activateOther.ReadString("ToMakeVisible", ToMakeVisible);
