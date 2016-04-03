@@ -426,15 +426,20 @@ namespace ForLeaseEngine
                 leg::selFollow = NULL;
             return;
         }
-
         if (!(component.compare("Health")) && !leg::selHealth)
         {
-            leg::selHealth = new Components::Health(*leg::selection, 5);
+            leg::selHealth = new Components::Health(*leg::selection);
             if (!leg::selection->AddComponent(leg::selHealth))
                 leg::selHealth = NULL;
             return;
         }
-
+        if (!(component.compare("Inventory")) && !leg::selInventory)
+        {
+            leg::selInventory = Components::UsefulObjectInventory::Create(*leg::selection);
+            if (!leg::selection->AddComponent(leg::selInventory))
+                leg::selInventory = NULL;
+            return;
+        }
         if (!(component.compare("Light")) && !leg::selLight)
         {
             leg::selLight = new Components::Light(*leg::selection);

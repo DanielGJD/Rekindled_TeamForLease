@@ -46,6 +46,7 @@ namespace ForLeaseEngine
         extern Components::MovingPlatform*         selMoving;
         extern Components::UsefulObject*           selUseful;
         extern Components::DamageOnCollide*        selDamage;
+        extern Components::UsefulObjectInventory*  selInventory;
 
         extern Entity*                levelCamera;
         extern Entity*                camera;
@@ -78,22 +79,12 @@ namespace ForLeaseEngine
         extern char spriteTextBuf[512];
         extern char statefile[128];
         extern char statename[128];
-        extern char meshfile[128];
         extern char archetypefile[128];
-        extern char soundfile[128];
-        extern char fontfile[128];
-        extern char enemyHateN[128];
-        extern char enemyLikeN[128];
-        extern char enemyHateS[128];
-        extern char enemyLikeS[128];
-        extern char animationfile[128];
-        extern char spriteSource[128];
         extern char changeLevel[128];
         extern char changeObject[128];
-        extern char scaleSound[128];
-        extern char particleSource[128];
         extern char enemyHateName[128];
         extern char enemyLikeName[128];
+        extern char usefulFollowName[128];
 
         extern const char* archToSpawn;
         extern int eCount;

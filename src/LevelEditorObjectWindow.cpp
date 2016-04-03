@@ -230,6 +230,11 @@ namespace ForLeaseEngine
             ImGui::DragFloat("Width##Collision", &(leg::selCollision->Width), 0.05);
             ImGui::SameLine();
             ImGui::DragFloat("Height##Collision", &(leg::selCollision->Height), 0.05);
+            ImGui::DragFloat("X##collision", &(leg::selCollision->OffsetX), 0.05);
+            ImGui::SameLine();
+            ImGui::DragFloat("Y##collision", &(leg::selCollision->OffsetY), 0.05);
+            ImGui::SameLine();
+            ImGui::Text("Offset");
             ImGui::PopItemWidth();
             ImGui::Checkbox("Resolve Collision##Collision", &(leg::selCollision->ResolveCollisions));
 
@@ -411,6 +416,41 @@ namespace ForLeaseEngine
             {
                 leg::selection->DeleteComponent(ComponentType::Health);
                 leg::selHealth = NULL;
+            }
+        }
+        if (leg::selInventory && ImGui::CollapsingHeader("Inventory"))
+        {
+            ImGui::InputFloat("Balloon Mass##inventory", &(leg::selInventory->BalloonMass));
+            ImGui::InputFloat("Normal Mass##inventory", &(leg::selInventory->NormalMass));
+            ImGui::InputText("Follow Name##inventory", leg::usefulFollowName, 128);
+            leg::selInventory->FollowName = leg::usefulFollowName;
+            ImGui::PushItemWidth(width);
+            ImGui::InputFloat("X##inventory", &(leg::selInventory->ThrowVector[0]));
+            ImGui::SameLine();
+            ImGui::InputFloat("Y##inventory", &(leg::selInventory->ThrowVector[1]));
+            ImGui::SameLine();
+            ImGui::Text("Throw Vector");
+
+            if (ImGui::TreeNode("Edit Controls##inventory"))
+            {
+                ImGui::Text("Throw Key: %d", leg::selInventory->ThrowKey);
+
+                static ImGuiTextFilter keyFilter;
+                keyFilter.Draw("##inventory", 250);
+                ImGui::Text("Available Keys");
+                ImGui::BeginChild("ThrowKey", ImVec2(0, 100), true);
+                for (std::string s : leg::keyCodes)
+                {
+                    if (keyFilter.PassFilter(s.c_str()))
+                    {
+                        if (ImGui::MenuItem(s.c_str()))
+                        {
+                            leg::selInventory->ThrowKey = Keys::GetKeyFromString(s);
+                        }
+                    }
+                }
+                ImGui::EndChild();
+                ImGui::TreePop();
             }
         }
         if (leg::selLight && ImGui::CollapsingHeader("Light"))

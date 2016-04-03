@@ -69,6 +69,7 @@ namespace ForLeaseEngine
          Components::MovingPlatform*         selMoving;
          Components::UsefulObject*           selUseful;
          Components::DamageOnCollide*        selDamage;
+         Components::UsefulObjectInventory*  selInventory;
 
          Entity*                levelCamera;
          Entity*                camera;
@@ -104,11 +105,11 @@ namespace ForLeaseEngine
          char statefile[128];
          char statename[128];
          char archetypefile[128];
-         char spriteSource[128];
          char changeLevel[128];
          char changeObject[128];
          char enemyHateName[128];
          char enemyLikeName[128];
+         char usefulFollowName[128];
 
          const char* archToSpawn = NULL;
          int eCount = 0;
@@ -143,6 +144,7 @@ namespace ForLeaseEngine
         comps.push_back(new Components::FadeWithDistance(dummy));
         comps.push_back(new Components::Follow(dummy));
         comps.push_back(new Components::Health(dummy));
+        comps.push_back(new Components::UsefulObjectInventory(dummy));
         comps.push_back(new Components::Light(dummy));
         comps.push_back(new Components::Model(dummy));
         comps.push_back(new Components::MovingPlatform(dummy));
@@ -190,6 +192,7 @@ namespace ForLeaseEngine
         AddLevelComponent(new LevelComponents::Menu(*this));
         AddLevelComponent(new LevelComponents::Collision(*this));
         AddLevelComponent(leg::levelCheckpoint);
+        AddLevelComponent(leg::levelUseful);
         leg::gravity = leg::levelPhysics->GetGravity();
         leg::window = ForLease->GameWindow->DangerousGetRawWindow();
         strcpy(leg::statename, Name.c_str());
@@ -211,6 +214,7 @@ namespace ForLeaseEngine
             leg::componentNames.push_back("Fade with Distance");
             leg::componentNames.push_back("Follow");
             leg::componentNames.push_back("Health");
+            leg::componentNames.push_back("Inventory");
             leg::componentNames.push_back("Light");
             leg::componentNames.push_back("Model");
             leg::componentNames.push_back("Moving Platform");
@@ -287,7 +291,12 @@ namespace ForLeaseEngine
         leg::selMoving       = leg::selection->GetComponent<Components::MovingPlatform>();
         leg::selUseful       = leg::selection->GetComponent<Components::UsefulObject>();
         leg::selDamage       = leg::selection->GetComponent<Components::DamageOnCollide>();
+        leg::selInventory    = leg::selection->GetComponent<Components::UsefulObjectInventory>();
 
+        if (leg::selInventory)
+        {
+            strcpy(leg::usefulFollowName, leg::selInventory->FollowName.c_str());
+        }
         if (leg::selUseful)
             leg::usefulCategory = static_cast<int>(leg::selUseful->Category);
 
@@ -452,6 +461,7 @@ namespace ForLeaseEngine
             leg::levelLight = GetLevelComponent<LevelComponents::Light>();
             leg::render = GetLevelComponent<LevelComponents::Renderer>();
             leg::levelLight = GetLevelComponent<LevelComponents::Light>();
+            leg::levelUseful = GetLevelComponent<LevelComponents::UsefulObject>();
             if (!leg::render)
             {
                 leg::render = new LevelComponents::Renderer(*this);
@@ -478,10 +488,10 @@ namespace ForLeaseEngine
                 levelmenu = new LevelComponents::Menu(*this);
                 AddLevelComponent(levelmenu);
             }
-
             if (!leg::levelUseful)
             {
-                leg::levelUseful = new LevelComponents::UsefulObject(*this);
+                leg::levelUseful = new LevelComponents::UsefulObject(*this, "", "");
+                AddLevelComponent(leg::levelUseful);
             }
 
             leg::gravity = leg::levelPhysics->GetGravity();
