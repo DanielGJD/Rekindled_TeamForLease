@@ -18,7 +18,8 @@
 
 namespace ForLeaseEngine {
 
-    MenuItem::MenuItem(MenuItemType type, std::string text) : Text(text), Type(type) {}
+    MenuItem::MenuItem(MenuItemType type, std::string text, bool option)
+        : Text(text), Type(type), Option(option) {}
 
     void MenuItem::Serialize(Serializer& root) {
     }
@@ -257,5 +258,159 @@ namespace ForLeaseEngine {
         }
 
     } // MenuItems
+
+    OptionMenuItem::OptionMenuItem(MenuItemType type, std::string text)
+        : MenuItem(type, text, true), FirstText(text) {}
+
+    namespace OptionMenuItems {
+        FinalAccept::FinalAccept(std::string parentMenuName, std::string text)
+            : OptionMenuItem(MenuItemType::OptionAccept, text),
+              ParentMenuName(parentMenuName) {}
+
+        void FinalAccept::Action() {
+            Entity* parentMenu = ForLease->GameStateManager().CurrentState().GetEntityByName(ParentMenuName);
+            if (parentMenu) {
+                Components::Menu* menu = parentMenu->GetComponent<Components::Menu>();
+                if (menu) {
+                    for (MenuItem* item : menu->Items) {
+                        if (item->Option) {
+                            OptionMenuItem* option = reinterpret_cast<OptionMenuItem*>(item);
+                            if (option->Dirty) option->Accept();
+                        }
+                    }
+                }
+            }
+        }
+
+        void FinalAccept::Accept() {}
+
+        Resolution::ItemizedResolution::ItemizedResolution() : Index(0) {
+            Resolutions.push_back(Res(1920, 1080));
+            Resolutions.push_back(Res(1280, 720));
+            Resolutions.push_back(Res(1366, 768));
+            Resolutions.push_back(Res(1280, 1024));
+            Resolutions.push_back(Res(1280, 800));
+            Resolutions.push_back(Res(1024, 768));
+            Resolutions.push_back(Res(800, 600));
+        }
+
+        void Resolution::ItemizedResolution::SetIndex(int x, int y) {
+            for (unsigned i = 0; i < Resolutions.size(); ++i) {
+                if (Resolutions[i].X == x && Resolutions[i].Y == y) {
+                    Index = i;
+                    return;
+                }
+            }
+
+            Index = 0;
+            return;
+        }
+
+        void Resolution::ItemizedResolution::IncrementIndex() {
+            ++Index;
+            if (Index >= Resolutions.size()) {
+                Index = 0;
+            }
+        }
+
+        Resolution::ItemizedResolution::Res Resolution::ItemizedResolution::GetNextResolution() {
+            IncrementIndex();
+            return GetResolution();
+        }
+
+        Resolution::ItemizedResolution::Res Resolution::ItemizedResolution::GetResolution() {
+            return Resolutions[Index];
+        }
+
+        Resolution::Resolution(std::string text)
+            : OptionMenuItem(MenuItemType::OptionResolution, text),
+              Current()
+        {
+            Current.SetIndex(ForLease->GameWindow->GetXResolution(), ForLease->GameWindow->GetYResolution());
+
+            SetText();
+        }
+
+        void Resolution::SetText() {
+            std::stringstream ss;
+            ss << FirstText;
+            ItemizedResolution::Res currentRes = Current.GetResolution();
+            ss << currentRes.X << "x" << currentRes.Y;
+            Text = ss.str();
+        }
+
+        void Resolution::Action() {
+            Current.IncrementIndex();
+            SetText();
+
+            Dirty = true;
+        }
+
+        void Resolution::Accept() {
+            ItemizedResolution::Res currentRes = Current.GetResolution();
+            ForLease->GameWindow->SetResolution(currentRes.X, currentRes.Y);
+        }
+
+        Fullscreen::Fullscreen(std::string text)
+            : OptionMenuItem(MenuItemType::OptionFullscreen, text)
+        {
+            IsFullscreen = ForLease->GameWindow->GetFullscreen();
+            SetText();
+        }
+
+        void Fullscreen::SetText() {
+            std::stringstream ss;
+            ss << FirstText;
+            if (IsFullscreen) {
+                ss << "On";
+            } else {
+                ss << "Off";
+            }
+            Text = ss.str();
+        }
+
+        void Fullscreen::Action() {
+            IsFullscreen = !IsFullscreen;
+            SetText();
+
+            Dirty = true;
+        }
+
+        void Fullscreen::Accept() {
+            ForLease->GameWindow->SetFullscreen(IsFullscreen);
+        }
+
+        Volume::Volume(std::string text, unsigned volumeIncrement, unsigned maxVolume)
+            : OptionMenuItem(MenuItemType::OptionVolume, text),
+              CurrentVolume(100),
+              VolumeIncrement(volumeIncrement),
+              MaxVolume(maxVolume)
+        {
+            SetText();
+        }
+
+        void Volume::SetText() {
+            std::stringstream ss;
+            ss << FirstText;
+            ss << CurrentVolume;
+            Text = ss.str();
+        }
+
+        void Volume::Action() {
+            CurrentVolume += VolumeIncrement;
+            if (CurrentVolume > MaxVolume) {
+                CurrentVolume = 0;
+            }
+
+            Dirty = true;
+
+            SetText();
+        }
+
+        void Volume::Accept() {
+            std::cout << CurrentVolume << std::endl;
+        }
+
+    } // OptionMenuItems
 
 } // ForLeaseEngine

@@ -62,7 +62,7 @@ void MenuTest::Initialize() {
     follow->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
     follow->GetComponent<Components::Sprite>(true)->AnimationActive = false;
     follow->AddComponent(new Components::Follow(*follow, true, 0.0f, 1.0f, 0UL, Vector(-0.5f,-1.0f)));
-    follow->GetComponent<Components::Follow>()->InterpolationScale = 3.0f;
+    follow->GetComponent<Components::Follow>()->InterpolationScale = 7.0f;
 
 
     Entity* menu = AddEntity("Menu");
@@ -73,6 +73,10 @@ void MenuTest::Initialize() {
     //menuComp->AddItem(new MenuItems::LoadLevel("ButtonHowTo.png", "HowToPlay"));
     menuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonMainMenu.png", "MainMenuConfirm", "Menu"));
     menuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonQuit.png", "QuitConfirm", "Menu"));
+    menuComp->AddItem(new OptionMenuItems::Resolution());
+    menuComp->AddItem(new OptionMenuItems::Fullscreen());
+    menuComp->AddItem(new OptionMenuItems::Volume());
+    menuComp->AddItem(new OptionMenuItems::FinalAccept("Menu"));
     menuComp->Activate();
 
     Entity* quitConfirm = AddEntity("QuitConfirm");

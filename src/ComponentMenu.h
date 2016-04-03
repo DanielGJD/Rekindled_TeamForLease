@@ -60,9 +60,9 @@ namespace ForLeaseEngine {
                 std::string FollowName;
                 Color UnfocusedColor;
                 Color FocusedColor;
+                std::vector<MenuItem*> Items;
             private:
                 std::vector<Entity*> Representations;
-                std::vector<MenuItem*> Items;
                 Entity* LastActive;
                 bool Active;
 

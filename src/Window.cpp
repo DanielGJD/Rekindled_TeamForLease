@@ -246,8 +246,9 @@ namespace ForLeaseEngine {
                 SDL_SetWindowFullscreen(window, 0);
             }
 
-            //e = WindowEvent(WindowEvent::FocusGained);
-            //ForLease->Dispatcher.Dispatch(&e, NULL);
+            // Should this be uncommented?
+            e = WindowEvent(WindowEvent::FocusGained);
+            ForLease->Dispatcher.Dispatch(&e, NULL);
         }
 
         /*!

@@ -36,7 +36,11 @@ namespace ForLeaseEngine {
         }
 
         void Menu::Update() {
-
+            if (Active) {
+                for (unsigned i = 0; i < Items.size(); ++i) {
+                    Representations[i]->GetComponent<Components::SpriteText>()->Text = Items[i]->Text;
+                }
+            }
         }
 
         void Menu::OnMouseMotion(const Event* e) {
