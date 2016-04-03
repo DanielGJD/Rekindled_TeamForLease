@@ -58,6 +58,9 @@ void SeanState::Load() {
     //floor->AddComponent(new Components::EnemyPace(*floor, 3, 20, 0, 1));
     //floor->AddComponent(new Components::Collision(*floor, 2, 2, true, 0, 0, true));
     //floor->AddComponent(new Components::Model(*floor, true, false, false, "1-1Block.json"));
+    Entity* bg = AddEntity("Backround");
+    bg->AddComponent(new Components::Transform(*bg, Point(0,0), 300, 300));
+    bg->AddComponent(new Components::Model(*bg, true, false, false, "1-1Block.json", "", Color(0,0,0)));
 
     Entity* floor2 = AddEntity("Floor2");
     floor2->AddComponent(new Components::Transform(*floor2, Point(0, -20), 300, 1, 0, 0));
