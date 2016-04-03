@@ -18,6 +18,7 @@
 #include "HowToPlay.h"
 #include "Loading.h"
 #include "Debug.h"
+#include "MainMenu.h"
 //#include "SegmentPrototypeState.h"
 
 #undef main
@@ -25,7 +26,8 @@
 int Start(){
     std::vector<ForLeaseEngine::State *> states;
     //states.push_back(new Loading("Game.json"));
-    states.push_back(new MenuTest());
+    states.push_back(new Loading("Game.json"));
+    states.push_back(new MainMenu());
 
     ForLeaseEngine::Modules::Debug debug;
     debug.Draw.Collision = true;

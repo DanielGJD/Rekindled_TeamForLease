@@ -96,7 +96,7 @@ namespace ForLeaseEngine {
 
         // ==================================================================================
 
-        ActivateOther::ActivateOther(std::string image, std::string otherMenu) 
+        ActivateOther::ActivateOther(std::string image, std::string otherMenu)
             : MenuItem(MenuItemType::ActivateOther, image), OtherMenu(otherMenu) {}
 
         void ActivateOther::Action() {
@@ -275,7 +275,10 @@ namespace ForLeaseEngine {
                     for (MenuItem* item : menu->Items) {
                         if (item->Option) {
                             OptionMenuItem* option = reinterpret_cast<OptionMenuItem*>(item);
-                            if (option->Dirty) option->Accept();
+                            if (option->Dirty) {
+                                    option->Accept();
+                                    option->Dirty = false;
+                            }
                         }
                     }
                 }
@@ -355,6 +358,7 @@ namespace ForLeaseEngine {
             : OptionMenuItem(MenuItemType::OptionFullscreen, text)
         {
             IsFullscreen = ForLease->GameWindow->GetFullscreen();
+            OriginalFullscreen = IsFullscreen;
             SetText();
         }
 
@@ -373,11 +377,16 @@ namespace ForLeaseEngine {
             IsFullscreen = !IsFullscreen;
             SetText();
 
-            Dirty = true;
+            if (IsFullscreen != OriginalFullscreen)
+                Dirty = true;
+            else
+                Dirty = false;
         }
 
         void Fullscreen::Accept() {
             ForLease->GameWindow->SetFullscreen(IsFullscreen);
+            OriginalFullscreen = IsFullscreen;
+            Dirty = false;
         }
 
         Volume::Volume(std::string text, unsigned volumeIncrement, unsigned maxVolume)

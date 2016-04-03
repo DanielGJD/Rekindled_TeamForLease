@@ -69,14 +69,15 @@ void MenuTest::Initialize() {
     menu->AddComponent(new Components::Transform(*menu));
     menu->AddComponent(new Components::Menu(*menu, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
-    menuComp->AddItem(new MenuItems::ResumeGame("ButtonResume.png"));
+    //menuComp->AddItem(new MenuItems::ResumeGame("ButtonResume.png"));
     //menuComp->AddItem(new MenuItems::LoadLevel("ButtonHowTo.png", "HowToPlay"));
-    menuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonMainMenu.png", "MainMenuConfirm", "Menu"));
-    menuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonQuit.png", "QuitConfirm", "Menu"));
+    //menuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonMainMenu.png", "MainMenuConfirm", "Menu"));
     menuComp->AddItem(new OptionMenuItems::Resolution());
     menuComp->AddItem(new OptionMenuItems::Fullscreen());
     menuComp->AddItem(new OptionMenuItems::Volume());
     menuComp->AddItem(new OptionMenuItems::FinalAccept("Menu"));
+    menuComp->AddItem(new MenuItems::ActivateAndDeactivate("Quit", "QuitConfirm", "Menu"));
+
     menuComp->Activate();
 
     Entity* quitConfirm = AddEntity("QuitConfirm");
@@ -93,7 +94,7 @@ void MenuTest::Initialize() {
     mainMenuConfirmComp->AddItem(new MenuItems::LoadLevel("ButtonMainMenu.png", "MainMenu"));
     mainMenuConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonCancel.png", "Menu", "MainMenuConfirm"));
 
-    ForLease->Dispatcher.Attach(NULL, this, "KeyDown", &MenuTest::OnKeyDown);
+//    ForLease->Dispatcher.Attach(NULL, this, "KeyDown", &MenuTest::OnKeyDown);
 }
 
 void MenuTest::Update() {
@@ -116,13 +117,13 @@ void MenuTest::Update() {
 void MenuTest::Deinitialize() {
     DeleteAllEntities();
     DeleteAllLevelComponents();
-    ForLease->Dispatcher.Detach(this, "KeyDown");
+//    ForLease->Dispatcher.Detach(this, "KeyDown");
 }
 
 void MenuTest::Unload() {}
 
-void MenuTest::OnKeyDown(const Event* e) {
-    const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
-    if (key_e->Key == Keys::Escape)
-        ForLease->GameStateManager().SetAction(Modules::StateAction::Continue);
-}
+//void MenuTest::OnKeyDown(const Event* e) {
+//    const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
+//    if (key_e->Key == Keys::Escape)
+//        ForLease->GameStateManager().SetAction(Modules::StateAction::Continue);
+//}

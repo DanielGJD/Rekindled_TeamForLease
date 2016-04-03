@@ -118,9 +118,9 @@ namespace ForLeaseEngine {
         class ActivateAndDeactivateAndMakeInvisible : public MenuItem {
             public:
                 ActivateAndDeactivateAndMakeInvisible(std::string image, std::string toActivate, std::string toDeactivate, std::string toMakeInvisible);
-                
+
                 virtual void Action();
-                
+
                 virtual void Serialize(Serializer& root);
                 virtual void Deserialize(Serializer& root);
 
@@ -197,6 +197,7 @@ namespace ForLeaseEngine {
                 void Action();
                 void Accept();
                 bool IsFullscreen;
+                bool OriginalFullscreen;
         };
 
         class Volume : public OptionMenuItem {
