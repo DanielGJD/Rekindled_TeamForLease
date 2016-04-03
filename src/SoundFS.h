@@ -62,6 +62,7 @@ class SoundManager //: public ISystem
 		void Resume(void);
 		void Volume(float vol, std::string name);
         void SetGlobalVol(float vol);
+        void SetGlobalVolume(float vol);
 		std::vector<std::string>GetName();
 
 	private:

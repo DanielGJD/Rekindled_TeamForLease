@@ -50,6 +50,7 @@ public:
 	void Serialize(Serializer& root);
     void Deserialize(Serializer& root);
     void SetGlobal(float vol);
+    void SetGlobalVol(float vol);
 
   // void SerializeRead(Serializer& str) override;
   // void SerializeWrite(Serializer& str) override;
