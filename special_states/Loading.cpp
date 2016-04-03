@@ -49,21 +49,33 @@ void Loading::Initialize() {
     background->GetComponent<Components::Sprite>(true)->SetSpriteSource("bg7.png");
     background->GetComponent<Components::Sprite>(true)->AnimationActive = false;
 
-    Entity* logo = AddEntity("Logo");
-    logo->AddComponent(new Components::Transform(*logo, Point(0, 15), 30, 30));
-    logo->AddComponent(new Components::Sprite(*logo));
-    ForLease->Resources.LoadTexture("Title.png");
-    logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
-    logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
+//    Entity* logo = AddEntity("Logo");
+//    logo->AddComponent(new Components::Transform(*logo, Point(0, 15), 30, 30));
+//    logo->AddComponent(new Components::Sprite(*logo));
+//    ForLease->Resources.LoadTexture("Title.png");
+//    logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
+//    logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
 
     Entity* player = AddEntity("Player");
-    player->AddComponent(new Components::Transform(*player, Point(-50,5), 5, 5));
+    player->AddComponent(new Components::Transform(*player, Point(0,0), 5, 5));
     Components::Model* model = new Components::Model(*player, true, false, false, "fox.json");
+    model->SetAnimation("a");
+    model->AnimationActive = true;
+    model->Looping = true;
+    model->FrameRate = 10;
     player->AddComponent(model);
 
-    Entity* status = AddEntity("Status");
-    status->AddComponent(new Components::Transform(*status, Point(0,0), 2, 2));
-    status->AddComponent(new Components::SpriteText(*status, "Liberation_Serif.fnt"));
+//    Entity* status = AddEntity("Status");
+//    status->AddComponent(new Components::Transform(*status, Point(-40,-10), 2, 2));
+//    status->AddComponent(new Components::SpriteText(*status, "Liberation_Serif.fnt"));
+
+    Entity* backBar = AddEntity("BackBar");
+    backBar->AddComponent(new Components::Transform(*backBar, Point(0, -5), EndScale, 1));
+    backBar->AddComponent(new Components::Model(*backBar, true, false, false, "1-1Block.json", "", Color(0,0,0)));
+
+    Entity* bar = AddEntity("Bar");
+    bar->AddComponent(new Components::Transform(*bar, Point(0, -5), 0, 1));
+    bar->AddComponent(new Components::Model(*bar, true, false, false, "1-1Block.json"));
 
 
     //ForLease->Filesystem.LoadAllAssets();
@@ -71,7 +83,7 @@ void Loading::Initialize() {
     LoadPaths = ForLease->Filesystem.GetAllAssetDirectoryListings();
 
     if (LoadPaths.size() != 0) {
-        MovementPerFile = Vector(TotalMovement[0] / LoadPaths.size(), TotalMovement[1] / LoadPaths.size());
+        ScalePerFile = EndScale / LoadPaths.size();
         RotationPerFile = 2 * PI / LoadPaths.size();
     }
     NextToLoad = 0;
@@ -96,15 +108,17 @@ void Loading::Update() {
         //logo->GetComponent<FLE::Components::Transform>()->Rotation += RotationPerFile;
 
         Entity* player = GetEntityByName("Player");
-        player->GetComponent<FLE::Components::Transform>()->Position += MovementPerFile;
+//        player->GetComponent<FLE::Components::Transform>()->Position += MovementPerFile;
+        Entity* bar = GetEntityByName("Bar");
+        bar->GetComponent<Components::Transform>()->ScaleX += ScalePerFile;
 
         ForLease->Filesystem.LoadAsset(LoadPaths[NextToLoad]);
         std::cout << "Loaded " << LoadPaths[NextToLoad].second << std::endl;
         ++NextToLoad;
-        if (NextToLoad < LoadPaths.size()) {
-            Entity* status = GetEntityByName("Status");
-            status->GetComponent<FLE::Components::SpriteText>()->Text = "Loading " + LoadPaths[NextToLoad].second + "...";
-        }
+//        if (NextToLoad < LoadPaths.size()) {
+//            Entity* status = GetEntityByName("Status");
+//            status->GetComponent<FLE::Components::SpriteText>()->Text = "Loading " + LoadPaths[NextToLoad].second + "...";
+//        }
     }
     else {
         ForLease->GameStateManager().SetAction(FLE::Modules::StateAction::Next);
