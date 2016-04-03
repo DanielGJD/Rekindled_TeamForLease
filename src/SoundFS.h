@@ -39,6 +39,8 @@ typedef FMOD::Studio::System * SoundSys;
 typedef FMOD::Studio::Bank * SoundBank;
 typedef std::unordered_map<std::string, FMOD::Studio::EventInstance *> SoundCollection;
 typedef std::unordered_map<std::string, FMOD::Studio::EventInstance *>::iterator Soundit;
+typedef FMOD::Studio::ID * EventID;
+typedef FMOD::Studio::Bus * Buslist;
 
 class SoundManager //: public ISystem
 {
@@ -59,6 +61,7 @@ class SoundManager //: public ISystem
 		void ResumeAll(void);
 		void Resume(void);
 		void Volume(float vol, std::string name);
+        void SetGlobalVol(float vol);
 		std::vector<std::string>GetName();
 
 	private:
@@ -68,6 +71,8 @@ class SoundManager //: public ISystem
 		SoundBank m_MasterBank;
 		SoundBank m_StringsBank;
 		SoundCollection m_LoopSounds;
+        EventID m_EventID;
+        Buslist m_Bus;
 };
 
 extern SoundManager * sound;
