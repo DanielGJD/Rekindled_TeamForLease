@@ -19,10 +19,10 @@ namespace ForLeaseEngine {
     namespace Components {
         Follow::Follow(Entity& parent, bool active,
                                          float followBeginDistance, float followEndDistance,
-                                         unsigned long followEntityID, Vector const& offset)
+                                         unsigned long followEntityID, Vector const& offset, float speed)
                                         : Component(parent, ComponentType::Transform),
                                           Active(active), FollowBeginDistance(followBeginDistance),
-                                          FollowEndDistance(followEndDistance), FollowEntityID(followEntityID), Offset(offset) {}
+                                          FollowEndDistance(followEndDistance), FollowEntityID(followEntityID), Offset(offset), Speed(speed) {}
 
 
         Follow::~Follow() {}
@@ -68,7 +68,7 @@ namespace ForLeaseEngine {
                     }
                     else {
                         float t = (distance - FollowBeginDistance) / (FollowEndDistance - FollowBeginDistance);
-                        myTrans->Position += direction * Interpolation::Linear(0, (FollowEndDistance - FollowBeginDistance), t) * ForLease->FrameRateController().GetDt();
+                        myTrans->Position += direction * Interpolation::Linear(0, Speed, t) * ForLease->FrameRateController().GetDt();
                     }
                 }
                 //myTrans->Position += direction * ForLease->FrameRateController().GetDt();
