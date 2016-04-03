@@ -27,7 +27,7 @@ int Start(){
     std::vector<ForLeaseEngine::State *> states;
     //states.push_back(new Loading("Game.json"));
     states.push_back(new Loading("Game.json"));
-    states.push_back(new MainMenu());
+    states.push_back(new MenuTest());
 
     ForLeaseEngine::Modules::Debug debug;
     debug.Draw.Collision = true;

@@ -352,6 +352,7 @@ namespace ForLeaseEngine {
         void Resolution::Accept() {
             ItemizedResolution::Res currentRes = Current.GetResolution();
             ForLease->GameWindow->SetResolution(currentRes.X, currentRes.Y);
+            ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->Reload();
         }
 
         Fullscreen::Fullscreen(std::string text)
