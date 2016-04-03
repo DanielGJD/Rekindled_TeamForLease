@@ -24,8 +24,9 @@ namespace ForLeaseEngine {
                 float FollowEndDistance;
                 unsigned long FollowEntityID;
                 Vector Offset;
+                float Speed;
 
-                Follow(Entity& parent, bool active = true, float followBeginDistance = 0, float followEndDistance = 1, unsigned long followEntityID = 0, Vector const& offset = Vector());
+                Follow(Entity& parent, bool active = true, float followBeginDistance = 0, float followEndDistance = 1, unsigned long followEntityID = 0, Vector const& offset = Vector(), float speed = 10);
                 ~Follow();
 
                 virtual ComponentType GetType();
