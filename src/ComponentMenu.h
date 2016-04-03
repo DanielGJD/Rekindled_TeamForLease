@@ -34,7 +34,7 @@ namespace ForLeaseEngine {
                 static const ComponentType Type = ComponentType::Menu;
                 virtual ComponentType GetType() { return Type; }
 
-                Menu(Entity& owner, Vector spacing = Vector(0, -3), bool active = false, float unfocusedScale = 1, float focusedScale = 1.3, std::string font = "Liberation_Serif.fnt");
+                Menu(Entity& owner, Vector spacing = Vector(0, -3), bool active = false, float unfocusedScale = 1, float focusedScale = 1.3, std::string font = "Liberation_Serif.fnt", std::string followName = "");
                 ~Menu();
                 virtual void Update();
 
@@ -56,6 +56,7 @@ namespace ForLeaseEngine {
                 float UnfocusedScale;
                 float FocusedScale;
                 std::string Font;
+                std::string FollowName;
 
             private:
                 std::vector<Entity*> Representations;

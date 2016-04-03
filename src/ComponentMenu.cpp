@@ -21,13 +21,15 @@ namespace ForLeaseEngine {
 
     namespace Components {
 
-        Menu::Menu(Entity& owner, Vector spacing, bool active, float unfocusedScale, float focusedScale, std::string font)
+        Menu::Menu(Entity& owner, Vector spacing, bool active, float unfocusedScale, float focusedScale, std::string font, std::string followName)
             : Component(owner, ComponentType::Transform), UnfocusedScale(unfocusedScale),
-              FocusedScale(focusedScale), Font(font), Spacing(spacing), Active(active), LastActive(0) {
+              FocusedScale(focusedScale), Font(font), FollowName(followName), Spacing(spacing), Active(active), LastActive(0)
+        {
             if (Active) Activate();
-
-
-
+            Entity* follow = ForLease->GameStateManager().CurrentState().GetEntityByName(FollowName);
+            if (follow) {
+                follow->GetComponent<Components::Transform>()->Position = Parent.GetComponent<Components::Transform>()->Position;
+            }
         }
 
         Menu::~Menu() {
@@ -54,9 +56,14 @@ namespace ForLeaseEngine {
             Entity* rep = GetRepresentationAtPosition(position);
             if (rep) {
                 //Components::Sprite* sprite = rep->GetComponent<Components::Sprite>(true);
-                rep->GetComponent<Components::Transform>()->ScaleX = FocusedScale;
-                rep->GetComponent<Components::Transform>()->ScaleY = FocusedScale;
+                //rep->GetComponent<Components::Transform>()->ScaleX = FocusedScale;
+                //rep->GetComponent<Components::Transform>()->ScaleY = FocusedScale;
                 LastActive = rep;
+                Entity* follow = ForLease->GameStateManager().CurrentState().GetEntityByName(FollowName);
+                if (follow) {
+                    Components::Follow* followFollow = follow->GetComponent<Components::Follow>();
+                    if (followFollow) followFollow->FollowEntityID = rep->GetID();
+                }
             }
         }
 
@@ -185,6 +192,8 @@ namespace ForLeaseEngine {
             menu.WriteVec("Spacing", Spacing);
             menu.WriteFloat("UnfocusedScale", UnfocusedScale);
             menu.WriteFloat("FocusedScale", FocusedScale);
+            menu.WriteString("Font", Font);
+            menu.WriteString("FollowName", FollowName);
             menu.WriteBool("Active", Active);
             ArraySerializer jsonItems(menu);
             jsonItems = menu.GetChild("Items");
@@ -203,6 +212,8 @@ namespace ForLeaseEngine {
             menu.ReadVec("Spacing", Spacing);
             menu.ReadFloat("UnfocusedScale", UnfocusedScale);
             menu.ReadFloat("FocusedScale", FocusedScale);
+            menu.ReadString("Font", Font);
+            menu.ReadString("FollowName", FollowName);
             menu.ReadBool("Active", Active);
             ArraySerializer jsonItems(menu);
             jsonItems = menu.GetChild("Items");

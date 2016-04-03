@@ -56,10 +56,17 @@ void MenuTest::Initialize() {
     logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
     logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
 
+    Entity* follow = AddEntity("MenuFollow");
+    follow->AddComponent(new Components::Transform(*follow, Point(0, 15), 1, 1));
+    follow->AddComponent(new Components::Sprite(*follow));
+    follow->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
+    follow->GetComponent<Components::Sprite>(true)->AnimationActive = false;
+    follow->AddComponent(new Components::Follow(*follow, true, 0.0f, 1.0f, 0UL, Vector(-0.5f,-0.5f)));
+
 
     Entity* menu = AddEntity("Menu");
     menu->AddComponent(new Components::Transform(*menu));
-    menu->AddComponent(new Components::Menu(*menu, Vector(0, -3)));
+    menu->AddComponent(new Components::Menu(*menu, Vector(0, -3), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow"));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
     menuComp->AddItem(new MenuItems::ResumeGame("ButtonResume.png"));
     //menuComp->AddItem(new MenuItems::LoadLevel("ButtonHowTo.png", "HowToPlay"));
