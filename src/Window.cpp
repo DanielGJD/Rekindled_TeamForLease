@@ -212,14 +212,6 @@ namespace ForLeaseEngine {
                 windowOptions |= SDL_WINDOW_RESIZABLE;
             if(currentProperties.mouseConstrained)
                 windowOptions |= SDL_WINDOW_INPUT_GRABBED;
-
-//            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,
-//                                FLE_GL_MAJOR_VERSION);
-//            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,
-//                                FLE_GL_MINOR_VERSION);
-            //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-            //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
-//            SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
             SDL_DestroyWindow(window);
             window = SDL_CreateWindow(currentProperties.windowTitle.c_str(),
                                       SDL_WINDOWPOS_UNDEFINED,
@@ -248,6 +240,39 @@ namespace ForLeaseEngine {
 
 //            e = WindowEvent(WindowEvent::FocusGained);
 //            ForLease->Dispatcher.Dispatch(&e, NULL);
+        }
+
+        const WindowProperties& Window::GetProperties() {
+            return currentProperties;
+        }
+
+        void Window::SetProperties(const WindowProperties& properties) {
+            WindowEvent e = WindowEvent(WindowEvent::FocusLost);
+            ForLease->Dispatcher.Dispatch(&e, NULL);
+
+            currentProperties = properties;
+
+            int windowOptions = SDL_WINDOW_OPENGL;
+
+            if(currentProperties.visible)
+                windowOptions |= SDL_WINDOW_SHOWN;
+            if(currentProperties.fullscreen)
+                windowOptions |= SDL_WINDOW_FULLSCREEN;
+            if(currentProperties.borderless)
+                windowOptions |= SDL_WINDOW_BORDERLESS;
+            if(currentProperties.resizeable)
+                windowOptions |= SDL_WINDOW_RESIZABLE;
+            if(currentProperties.mouseConstrained)
+                windowOptions |= SDL_WINDOW_INPUT_GRABBED;
+            SDL_DestroyWindow(window);
+            window = SDL_CreateWindow(currentProperties.windowTitle.c_str(),
+                                      SDL_WINDOWPOS_UNDEFINED,
+                                      SDL_WINDOWPOS_UNDEFINED,
+                                      currentProperties.xResolution,
+                                      currentProperties.yResolution,
+                                      windowOptions);
+            SDL_GL_MakeCurrent(window, context);
+            glViewport(0, 0, currentProperties.xResolution, currentProperties.yResolution);
         }
 
         /*!

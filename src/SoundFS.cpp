@@ -260,5 +260,18 @@ void SoundManager::Volume(float vol, std::string name)
 	FMOD_Studio_EventInstance_SetVolume(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*> (m_LoopSounds[name]),vol);
 }
 
+void SoundManager::SetGlobalVol(float vol)
+{
+    FMOD_Studio_Bus_SetFaderLevel(reinterpret_cast<FMOD_STUDIO_BUS*> (m_Bus), vol);
+}
+
+void SoundManager::SetGlobalVolume(float vol)
+{
+        for (Soundit it = m_LoopSounds.begin(); it != m_LoopSounds.end(); ++it)
+        {
+            FMOD_Studio_EventInstance_SetVolume(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*> (it->second),vol);
+        }
+}
+
  }
 }

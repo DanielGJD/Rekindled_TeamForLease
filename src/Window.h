@@ -78,6 +78,8 @@ namespace ForLeaseEngine {
                 bool GetFullscreen();
                 void SetResolution(int x, int y);
                 void SetFullscreen(bool fullscreen);
+                const WindowProperties& GetProperties();
+                void SetProperties(const WindowProperties& properties);
 
                 SDL_Window* DangerousGetRawWindow();
 
