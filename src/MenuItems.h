@@ -148,9 +148,10 @@ namespace ForLeaseEngine {
 
     class OptionMenuItem : public MenuItem {
         public:
-            OptionMenuItem(MenuItemType type, std::string text);
+            OptionMenuItem(MenuItemType type, std::string text, bool affectsWindow = false);
             virtual void Accept(Systems::WindowProperties& windowProperties) = 0;
             bool Dirty = false;
+            bool AffectsWindow;
             std::string FirstText;
     };
 
@@ -178,9 +179,12 @@ namespace ForLeaseEngine {
                     Res GetResolution();
                     void IncrementIndex();
                     Res GetNextResolution();
+                    bool IsDirty();
+                    void ClearDirty();
                 private:
                     std::vector<Res> Resolutions;
                     unsigned Index;
+                    unsigned OriginalIndex;
             };
 
             ItemizedResolution Current;

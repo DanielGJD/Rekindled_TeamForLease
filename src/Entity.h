@@ -31,7 +31,7 @@ namespace ForLeaseEngine {
     class Entity : public Serializable{
 
         public:
-            Entity(std::string name = "", boolean serialize = true);
+            Entity(std::string name = "", bool serialize = true);
             ~Entity();
             void Update();
             void Serialize(Serializer& root);

@@ -259,8 +259,8 @@ namespace ForLeaseEngine {
 
     } // MenuItems
 
-    OptionMenuItem::OptionMenuItem(MenuItemType type, std::string text)
-        : MenuItem(type, text, true), FirstText(text) {}
+    OptionMenuItem::OptionMenuItem(MenuItemType type, std::string text, bool affectsWindow)
+        : MenuItem(type, text, true), FirstText(text), AffectsWindow(affectsWindow) {}
 
     namespace OptionMenuItems {
         FinalAccept::FinalAccept(std::string parentMenuName, std::string text)
@@ -271,16 +271,21 @@ namespace ForLeaseEngine {
             Entity* parentMenu = ForLease->GameStateManager().CurrentState().GetEntityByName(ParentMenuName);
             if (parentMenu) {
                 Components::Menu* menu = parentMenu->GetComponent<Components::Menu>();
+                Systems::WindowProperties windowProperties = ForLease->GameWindow->GetProperties();
+                bool windowChanged = false;
                 if (menu) {
                     for (MenuItem* item : menu->Items) {
                         if (item->Option) {
                             OptionMenuItem* option = reinterpret_cast<OptionMenuItem*>(item);
-                            if (option->Dirty) {
-                                    option->Accept();
-                                    option->Dirty = false;
-                            }
+                            if (option->AffectsWindow && option->Dirty) windowChanged = true;
+                            option->Accept(windowProperties);
+                            option->Dirty = false;
                         }
                     }
+                }
+                if (windowChanged) {
+                    ForLease->GameWindow->SetProperties(windowProperties);
+                    ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->Reload();
                 }
             }
         }
@@ -301,11 +306,13 @@ namespace ForLeaseEngine {
             for (unsigned i = 0; i < Resolutions.size(); ++i) {
                 if (Resolutions[i].X == x && Resolutions[i].Y == y) {
                     Index = i;
+                    OriginalIndex = i;
                     return;
                 }
             }
 
             Index = 0;
+            OriginalIndex = 0;
             return;
         }
 
@@ -325,8 +332,16 @@ namespace ForLeaseEngine {
             return Resolutions[Index];
         }
 
+        bool Resolution::ItemizedResolution::IsDirty() {
+            return !(Index == OriginalIndex);
+        }
+
+        void Resolution::ItemizedResolution::ClearDirty() {
+            OriginalIndex = Index;
+        }
+
         Resolution::Resolution(std::string text)
-            : OptionMenuItem(MenuItemType::OptionResolution, text),
+            : OptionMenuItem(MenuItemType::OptionResolution, text, true),
               Current()
         {
             Current.SetIndex(ForLease->GameWindow->GetXResolution(), ForLease->GameWindow->GetYResolution());
@@ -346,17 +361,21 @@ namespace ForLeaseEngine {
             Current.IncrementIndex();
             SetText();
 
-            Dirty = true;
+            Dirty = Current.IsDirty();
         }
 
         void Resolution::Accept(Systems::WindowProperties& windowProperties) {
             ItemizedResolution::Res currentRes = Current.GetResolution();
-            ForLease->GameWindow->SetResolution(currentRes.X, currentRes.Y);
-            ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->Reload();
+            //ForLease->GameWindow->SetResolution(currentRes.X, currentRes.Y);
+            //ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->Reload();
+            windowProperties.xResolution = currentRes.X;
+            windowProperties.yResolution = currentRes.Y;
+            Current.ClearDirty();
+            Dirty = Current.IsDirty();
         }
 
         Fullscreen::Fullscreen(std::string text)
-            : OptionMenuItem(MenuItemType::OptionFullscreen, text)
+            : OptionMenuItem(MenuItemType::OptionFullscreen, text, true)
         {
             IsFullscreen = ForLease->GameWindow->GetFullscreen();
             OriginalFullscreen = IsFullscreen;
@@ -385,9 +404,10 @@ namespace ForLeaseEngine {
         }
 
         void Fullscreen::Accept(Systems::WindowProperties& windowProperties) {
-            ForLease->GameWindow->SetFullscreen(IsFullscreen);
+            //ForLease->GameWindow->SetFullscreen(IsFullscreen);
             OriginalFullscreen = IsFullscreen;
             Dirty = false;
+            windowProperties.fullscreen = IsFullscreen;
         }
 
         Volume::Volume(std::string text, unsigned volumeIncrement, unsigned maxVolume)

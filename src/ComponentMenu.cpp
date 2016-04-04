@@ -22,10 +22,12 @@ namespace ForLeaseEngine {
     namespace Components {
 
         Menu::Menu(Entity& owner, Vector spacing, bool active, float unfocusedScale, float focusedScale,
-                   std::string font, std::string followName, Color unfocusedColor, Color focusedColor)
+                   std::string font, std::string followName, Color unfocusedColor, Color focusedColor,
+                   Color unavailableColor)
                  : Component(owner, ComponentType::Transform), UnfocusedScale(unfocusedScale),
                    FocusedScale(focusedScale), Font(font), FollowName(followName), Spacing(spacing),
-                   Active(active), LastActive(0), UnfocusedColor(unfocusedColor), FocusedColor(focusedColor)
+                   Active(active), LastActive(0), UnfocusedColor(unfocusedColor), FocusedColor(focusedColor),
+                   UnavailableColor(unavailableColor)
         {
             if (Active) Activate();
         }
@@ -40,15 +42,47 @@ namespace ForLeaseEngine {
                 for (unsigned i = 0; i < Items.size(); ++i) {
                     Representations[i]->GetComponent<Components::SpriteText>()->Text = Items[i]->Text;
                 }
+
+                bool dirty = false;
+                for (MenuItem* item : Items) {
+                    if (item->Option) {
+                        if (reinterpret_cast<OptionMenuItem*>(item)->Dirty) {
+                            dirty = true;
+                            break;
+                        }
+                    }
+                }
+                for (unsigned i = 0; i < Items.size(); ++i) {
+                    Representations[i]->GetComponent<Components::SpriteText>()->TextColor = UnfocusedColor;
+
+                    if (Items[i]->Type == MenuItemType::OptionAccept && !dirty)
+                        Representations[i]->GetComponent<Components::SpriteText>()->TextColor = UnavailableColor;
+
+                    if (Representations[i] == LastActive)
+                        Representations[i]->GetComponent<Components::SpriteText>()->TextColor = FocusedColor;
+                }
+
             }
         }
 
         void Menu::OnMouseMotion(const Event* e) {
-            for (Entity* rep : Representations) {
+            bool dirty = false;
+            for (MenuItem* item : Items) {
+                if (item->Option) {
+                    if (reinterpret_cast<OptionMenuItem*>(item)->Dirty) {
+                        dirty = true;
+                        break;
+                    }
+                }
+            }
+
+            for (unsigned i = 0; i < Items.size(); ++i) {
                 //Components::Sprite* sprite = rep->GetComponent<Components::SpriteText>(true);
-                rep->GetComponent<Components::Transform>()->ScaleX = UnfocusedScale;
-                rep->GetComponent<Components::Transform>()->ScaleY = UnfocusedScale;
-                rep->GetComponent<Components::SpriteText>()->TextColor = UnfocusedColor;
+                Representations[i]->GetComponent<Components::Transform>()->ScaleX = UnfocusedScale;
+                Representations[i]->GetComponent<Components::Transform>()->ScaleY = UnfocusedScale;
+                Representations[i]->GetComponent<Components::SpriteText>()->TextColor = UnfocusedColor;
+                if (Items[i]->Type == MenuItemType::OptionAccept && !dirty)
+                    Representations[i]->GetComponent<Components::SpriteText>()->TextColor = UnavailableColor;
             }
 
             LastActive = 0;
@@ -57,6 +91,15 @@ namespace ForLeaseEngine {
             Point position(mouseEvent->X, mouseEvent->Y);
             position = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true)->ScreenToWorld(position);
             Entity* rep = GetRepresentationAtPosition(position);
+            unsigned index;
+            for (index = 0; index < Items.size(); ++index) {
+                if (Representations[index] == rep) {
+                    if (Items[index]->Type == MenuItemType::OptionAccept && !dirty) {
+                        return;
+                    }
+                }
+            }
+
             if (rep) {
                 //Components::Sprite* sprite = rep->GetComponent<Components::Sprite>(true);
                 //rep->GetComponent<Components::Transform>()->ScaleX = FocusedScale;
