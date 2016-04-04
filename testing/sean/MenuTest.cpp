@@ -52,7 +52,7 @@ void MenuTest::Initialize() {
 
     Entity* backgroundMask = AddEntity("BackgroundMask");
     backgroundMask->AddComponent(new Components::Transform(*backgroundMask, 0, 0, 50, 50));
-    background->AddComponent(new Components::Model(*backgroundMask, true, false, false, "1-1Block.json", "", Color(0,0,0,0.5f), ForLeaseEngine::MULTIPLY));
+    background->AddComponent(new Components::Model(*backgroundMask, true, false, false, "1-1Block.json", "", Color(0,1,0,0.5f), ForLeaseEngine::MULTIPLY));
 
     Entity* logo = AddEntity("Logo");
     logo->AddComponent(new Components::Transform(*logo, Point(0, 15), 30, 30));

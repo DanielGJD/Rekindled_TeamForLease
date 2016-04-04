@@ -16,6 +16,7 @@
 #define MENU_ITEMS_H
 
 #include "Serializable.h"
+#include "Window.h"
 #include <string>
 
 namespace ForLeaseEngine {
@@ -148,7 +149,7 @@ namespace ForLeaseEngine {
     class OptionMenuItem : public MenuItem {
         public:
             OptionMenuItem(MenuItemType type, std::string text);
-            virtual void Accept() = 0;
+            virtual void Accept(Systems::WindowProperties& windowProperties) = 0;
             bool Dirty = false;
             std::string FirstText;
     };
@@ -158,7 +159,7 @@ namespace ForLeaseEngine {
             public:
                 FinalAccept(std::string parentMenuName, std::string text = "Accept");
                 void Action();
-                void Accept();
+                void Accept(Systems::WindowProperties& windowProperties);
                 std::string ParentMenuName;
         };
 
@@ -187,7 +188,7 @@ namespace ForLeaseEngine {
                 Resolution(std::string text = "Resolution: ");
                 void Action();
                 void SetText();
-                void Accept();
+                void Accept(Systems::WindowProperties& windowProperties);
         };
 
         class Fullscreen : public OptionMenuItem {
@@ -195,7 +196,7 @@ namespace ForLeaseEngine {
                 Fullscreen(std::string text = "Fullscreen: ");
                 void SetText();
                 void Action();
-                void Accept();
+                void Accept(Systems::WindowProperties& windowProperties);
                 bool IsFullscreen;
                 bool OriginalFullscreen;
         };
@@ -205,7 +206,7 @@ namespace ForLeaseEngine {
                 Volume(std::string text = "Volume: ", unsigned volumeIncrement = 10, unsigned maxVolume = 100);
                 void SetText();
                 void Action();
-                void Accept();
+                void Accept(Systems::WindowProperties& windowProperties);
                 unsigned CurrentVolume;
                 unsigned VolumeIncrement;
                 unsigned MaxVolume;

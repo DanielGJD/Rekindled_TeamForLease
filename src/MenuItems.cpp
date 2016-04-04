@@ -285,7 +285,7 @@ namespace ForLeaseEngine {
             }
         }
 
-        void FinalAccept::Accept() {}
+        void FinalAccept::Accept(Systems::WindowProperties& windowProperties) {}
 
         Resolution::ItemizedResolution::ItemizedResolution() : Index(0) {
             Resolutions.push_back(Res(1920, 1080));
@@ -349,7 +349,7 @@ namespace ForLeaseEngine {
             Dirty = true;
         }
 
-        void Resolution::Accept() {
+        void Resolution::Accept(Systems::WindowProperties& windowProperties) {
             ItemizedResolution::Res currentRes = Current.GetResolution();
             ForLease->GameWindow->SetResolution(currentRes.X, currentRes.Y);
             ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->Reload();
@@ -384,7 +384,7 @@ namespace ForLeaseEngine {
                 Dirty = false;
         }
 
-        void Fullscreen::Accept() {
+        void Fullscreen::Accept(Systems::WindowProperties& windowProperties) {
             ForLease->GameWindow->SetFullscreen(IsFullscreen);
             OriginalFullscreen = IsFullscreen;
             Dirty = false;
@@ -417,7 +417,7 @@ namespace ForLeaseEngine {
             SetText();
         }
 
-        void Volume::Accept() {
+        void Volume::Accept(Systems::WindowProperties& windowProperties) {
             std::cout << CurrentVolume << std::endl;
         }
 
