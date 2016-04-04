@@ -50,6 +50,10 @@ void MenuTest::Initialize() {
     background->GetComponent<Components::Sprite>(true)->SetSpriteSource("bg7.png");
     background->GetComponent<Components::Sprite>(true)->AnimationActive = false;
 
+    Entity* backgroundMask = AddEntity("BackgroundMask");
+    backgroundMask->AddComponent(new Components::Transform(*backgroundMask, 0, 0, 50, 50));
+    background->AddComponent(new Components::Model(*backgroundMask, true, false, false, "1-1Block.json", "", Color(0,0,0,0.5f), ForLeaseEngine::MULTIPLY));
+
     Entity* logo = AddEntity("Logo");
     logo->AddComponent(new Components::Transform(*logo, Point(0, 15), 30, 30));
     logo->AddComponent(new Components::Sprite(*logo));
