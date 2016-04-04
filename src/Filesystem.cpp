@@ -188,6 +188,7 @@ namespace ForLeaseEngine {
             std::vector<AssetPath> result;
 
             for (AssetPath assetDirectory : AssetPaths) {
+                if (assetDirectory.first == AssetType::UserData || assetDirectory.first == AssetType::Save) continue;
                 std::vector<std::string> fileListing = GetAssetDirectoryListing(assetDirectory.first);
                 for (std::string file : fileListing) {
                     result.push_back(AssetPath(assetDirectory.first, file));
