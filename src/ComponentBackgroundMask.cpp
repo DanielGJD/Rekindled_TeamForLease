@@ -40,7 +40,7 @@ namespace ForLeaseEngine {
 
         void BackgroundMask::Update() {
             Components::Model* model = Parent.GetComponent<Components::Model>();
-            float dt = ForLease->FrameRateController().GetDt() * 0.025f;
+            float dt = ForLease->FrameRateController().GetDt() * 0.01f;
             float r = model->ModelColor.GetR();
             float g = model->ModelColor.GetG();
             float b = model->ModelColor.GetB();
