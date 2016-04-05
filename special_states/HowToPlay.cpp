@@ -61,7 +61,7 @@ void HowToPlay::Initialize() {
     Entity* player = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Player");
 
     Entity* floor = AddEntity("Floor");
-    floor->AddComponent(new Components::Transform(*floor, Point(0.0f, -20.0f), 9999999.0f, 1.0f));
+    floor->AddComponent(new Components::Transform(*floor, Point(0.0f, -10.0f), 9999999.0f, 1.0f));
     floor->AddComponent(new Components::Collision(*floor, 2.0f, 2.0f));
     floor->AddComponent(new Components::Model(*floor, true, false, false, "1-1Block.json"));
 
@@ -78,7 +78,7 @@ void HowToPlay::Initialize() {
     follow->GetComponent<Components::Light>()->Radius = 5.0f;
 
     Entity* menu = AddEntity("Menu");
-    menu->AddComponent(new Components::Transform(*menu, Point(-40.0f, -17.0f)));
+    menu->AddComponent(new Components::Transform(*menu, Point(-40.0f, -20.0f)));
     menu->AddComponent(new Components::Menu(*menu, Vector(0, -1), true, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
     menuComp->AddItem(new MenuItems::LoadLevel("Main Menu", "MainMenu"));
