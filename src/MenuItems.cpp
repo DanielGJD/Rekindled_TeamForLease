@@ -294,12 +294,12 @@ namespace ForLeaseEngine {
 
         Resolution::ItemizedResolution::ItemizedResolution() : Index(0) {
             Resolutions.push_back(Res(1920, 1080));
-            Resolutions.push_back(Res(1366, 768));
-            Resolutions.push_back(Res(1280, 1024));
-            Resolutions.push_back(Res(1280, 800));
+//            Resolutions.push_back(Res(1366, 768));
+//            Resolutions.push_back(Res(1280, 1024));
+//            Resolutions.push_back(Res(1280, 800));
             Resolutions.push_back(Res(1280, 720));
-            Resolutions.push_back(Res(1024, 768));
-            Resolutions.push_back(Res(800, 600));
+//            Resolutions.push_back(Res(1024, 768));
+//            Resolutions.push_back(Res(800, 600));
         }
 
         void Resolution::ItemizedResolution::SetIndex(int x, int y) {
