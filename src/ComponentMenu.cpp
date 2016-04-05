@@ -117,6 +117,7 @@ namespace ForLeaseEngine {
         }
 
         void Menu::OnMouseDown(const Event* e) {
+            if (!Active) return;
             for (unsigned i = 0; i < Representations.size(); ++i) {
                 if (Representations[i] == LastActive) {
                     Items[i]->Action();
