@@ -90,12 +90,12 @@ void MainMenu::Initialize() {
     logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
     logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
 
-    Entity* follow = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(-25.0f, 0.0f), "MenuFollow");
+    Entity* follow = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(-40.0f, -10.0f), "MenuFollow");
     follow->GetComponent<Components::Follow>()->Offset = Vector(-1.5f, -1.0f);
     follow->GetComponent<Components::Light>()->Radius = 5.0f;
 
     Entity* menu = AddEntity("Menu");
-    menu->AddComponent(new Components::Transform(*menu, Point(-25.0f, 0.0f)));
+    menu->AddComponent(new Components::Transform(*menu, Point(-40.0f, -10.0f)));
     menu->AddComponent(new Components::Menu(*menu, Vector(0, -1), true, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
     menuComp->AddItem(new MenuItems::NextLevel("Play"));
@@ -105,7 +105,7 @@ void MainMenu::Initialize() {
     menuComp->Activate();
 
     Entity* opMenu = AddEntity("OptionsMenu");
-    opMenu->AddComponent(new Components::Transform(*opMenu, Point(-25.0f, 0.0f)));
+    opMenu->AddComponent(new Components::Transform(*opMenu, Point(-40.0f, -10.0f)));
     opMenu->AddComponent(new Components::Menu(*opMenu, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* opMenuComp = opMenu->GetComponent<Components::Menu>();
     opMenuComp->AddItem(new OptionMenuItems::Resolution());
@@ -115,7 +115,7 @@ void MainMenu::Initialize() {
     opMenuComp->AddItem(new MenuItems::ActivateAndDeactivate("Back", "Menu", "OptionsMenu"));
 
     Entity* quitConfirm = AddEntity("QuitConfirm");
-    quitConfirm->AddComponent(new Components::Transform(*quitConfirm, Point(-25.0f, 0.0f)));
+    quitConfirm->AddComponent(new Components::Transform(*quitConfirm, Point(-40.0f, -10.0f)));
     quitConfirm->AddComponent(new Components::Menu(*quitConfirm, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* quitConfirmComp = quitConfirm->GetComponent<Components::Menu>();
     quitConfirmComp->AddItem(new MenuItems::Quit("Quit"));
