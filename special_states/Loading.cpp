@@ -36,18 +36,24 @@ void Loading::Initialize() {
     camera->AddComponent(new FLE::Components::Camera(*camera, 0, 1, 50));
     renderer->SetCamera(*camera);
     AddLevelComponent(renderer);
-    AddLevelComponent(new LevelComponents::Physics(*this, Vector(0, -10)));
-    AddLevelComponent(new LevelComponents::Collision(*this));
+    AddLevelComponent(new LevelComponents::Light(*this, Color(0.5f, 0.5f, 0.5f)));
+    //AddLevelComponent(new LevelComponents::Physics(*this, Vector(0, -10)));
+    //AddLevelComponent(new LevelComponents::Collision(*this));
 
 
     Entity* background = AddEntity("Background");
-    background->AddComponent(new Components::Transform(*background, 0, 0, 50, 50));
+    background->AddComponent(new Components::Transform(*background, 0, 0, 45, 25));
     background->AddComponent(new Components::Sprite(*background));
-    ForLease->Resources.LoadTexture("bg7.png");
+    //ForLease->Resources.LoadTexture("bg7.png");
     //Texture* texture = Texture::CreateTexture("bg7.png");
     //TextureRegion textureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
-    background->GetComponent<Components::Sprite>(true)->SetSpriteSource("bg7.png");
+    background->GetComponent<Components::Sprite>(true)->SetSpriteSource("bg7_test2.png");
     background->GetComponent<Components::Sprite>(true)->AnimationActive = false;
+
+    Entity* backgroundMask = AddEntity("BackgroundMask");
+    backgroundMask->AddComponent(new Components::Transform(*backgroundMask, 0, 0, 50, 50));
+    backgroundMask->AddComponent(new Components::Model(*backgroundMask, true, false, false, "1-1Block.json"));
+    backgroundMask->AddComponent(new Components::BackgroundMask(*backgroundMask));
 
 //    Entity* logo = AddEntity("Logo");
 //    logo->AddComponent(new Components::Transform(*logo, Point(0, 15), 30, 30));
@@ -62,8 +68,14 @@ void Loading::Initialize() {
     model->SetAnimation("a");
     model->AnimationActive = true;
     model->Looping = true;
-    model->FrameRate = 10;
+    model->FrameRate = 4;
     player->AddComponent(model);
+
+    Entity* follow = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(-25.0f, 0.0f), "MenuFollow");
+    follow->GetComponent<Components::Follow>()->Offset = Vector(-2.0f, 2.5f);
+    follow->GetComponent<Components::Light>()->Radius = 5.0f;
+    follow->GetComponent<Components::Follow>()->FollowEntityID = player->GetID();
+    follow->GetComponent<Components::Transform>()->Position = player->GetComponent<Components::Transform>()->Position + follow->GetComponent<Components::Follow>()->Offset;
 
 //    Entity* status = AddEntity("Status");
 //    status->AddComponent(new Components::Transform(*status, Point(-40,-10), 2, 2));

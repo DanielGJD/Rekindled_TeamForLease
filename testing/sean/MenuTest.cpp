@@ -91,7 +91,8 @@ void MenuTest::Initialize() {
     //follow->AddComponent(new Components::ParticleEmitter(*follow, true, Vector(0,0), Vector(), 20U, 0.25f, 1.0f, 1.0f, 1.0f));
 //    follow->GetComponent<Components::Follow>()->InterpolationScale = 7.0f;
     Entity* follow = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(-25.0f, 0.0f), "MenuFollow");
-    follow->GetComponent<Components::Follow>()->Offset = Vector(-1.0f, -1.0f);
+    follow->GetComponent<Components::Follow>()->Offset = Vector(-1.5f, -1.0f);
+    follow->GetComponent<Components::Light>()->Radius = 5.0f;
 
 
     Entity* menu = AddEntity("Menu");
@@ -113,8 +114,8 @@ void MenuTest::Initialize() {
     quitConfirm->AddComponent(new Components::Transform(*quitConfirm, Point(-25.0f, 0.0f)));
     quitConfirm->AddComponent(new Components::Menu(*quitConfirm, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* quitConfirmComp = quitConfirm->GetComponent<Components::Menu>();
-    quitConfirmComp->AddItem(new MenuItems::Quit("ButtonQuit.png"));
-    quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonCancel.png", "Menu", "QuitConfirm"));
+    quitConfirmComp->AddItem(new MenuItems::Quit("Quit"));
+    quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("Cancel", "Menu", "QuitConfirm"));
 
     Entity* mainMenuConfirm = AddEntity("MainMenuConfirm");
     mainMenuConfirm->AddComponent(new Components::Transform(*mainMenuConfirm, Point(-25.0f, 0.0f)));
