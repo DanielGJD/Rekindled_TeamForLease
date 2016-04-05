@@ -52,8 +52,7 @@ void Loading::Initialize() {
 
     Entity* backgroundMask = AddEntity("BackgroundMask");
     backgroundMask->AddComponent(new Components::Transform(*backgroundMask, 0, 0, 50, 50));
-    backgroundMask->AddComponent(new Components::Model(*backgroundMask, true, false, false, "1-1Block.json"));
-    backgroundMask->AddComponent(new Components::BackgroundMask(*backgroundMask));
+    backgroundMask->AddComponent(new Components::Model(*backgroundMask, true, false, false, "1-1Block.json", "", Color(0.75f, 0.75f, 0.75f), FLE::MULTIPLY));
 
 //    Entity* logo = AddEntity("Logo");
 //    logo->AddComponent(new Components::Transform(*logo, Point(0, 15), 30, 30));

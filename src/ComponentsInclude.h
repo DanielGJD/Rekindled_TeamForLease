@@ -46,6 +46,6 @@
 #include "ComponentUsefulObject.h"
 #include "ComponentUsefulObjectInventory.h"
 #include "ComponentDamageOnCollide.h"
-#include "ComponentBackgroundMask.h"
+//#include "ComponentBackgroundMask.h"
 
 #endif

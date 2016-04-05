@@ -35,14 +35,24 @@ void MainMenu::Initialize() {
     camera->AddComponent(new FLE::Components::Camera(*camera, 0, 1, 50));
     renderer->SetCamera(*camera);
     AddLevelComponent(renderer);
-    AddLevelComponent(new LevelComponents::Physics(*this, Vector(0, -10)));
-    AddLevelComponent(new LevelComponents::Collision(*this));
+    AddLevelComponent(new LevelComponents::Light(*this, Color(0.5f, 0.5f, 0.5f)));
+    //AddLevelComponent(new LevelComponents::Physics(*this, Vector(0, -10)));
+    //AddLevelComponent(new LevelComponents::Collision(*this));
 
 
     Entity* background = AddEntity("Background");
-    background->AddComponent(new Components::Transform(*background, 0, 0, 50, 50));
+    background->AddComponent(new Components::Transform(*background, 0, 0, 45, 25));
     background->AddComponent(new Components::Sprite(*background));
-    background->AddComponent(new Components::SoundEmitter(*background));
+    //ForLease->Resources.LoadTexture("bg7.png");
+    //Texture* texture = Texture::CreateTexture("bg7.png");
+    //TextureRegion textureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
+    background->GetComponent<Components::Sprite>(true)->SetSpriteSource("bg7_test2.png");
+    background->GetComponent<Components::Sprite>(true)->AnimationActive = false;
+
+    Entity* backgroundMask = AddEntity("BackgroundMask");
+    backgroundMask->AddComponent(new Components::Transform(*backgroundMask, 0, 0, 50, 50));
+    backgroundMask->AddComponent(new Components::Model(*backgroundMask, true, false, false, "1-1Block.json", "", Color(0.75f, 0.75f, 0.75f), FLE::MULTIPLY));
+
     Components::SoundEmitter* emitter = background->GetComponent<Components::SoundEmitter>();
     //SoundEmitter* emitter = background.GetComponent<SoundEmitter>();
     if(emitter)
@@ -62,8 +72,17 @@ void MainMenu::Initialize() {
     //ForLease->Resources.LoadTexture("bg7.png");
     //Texture* texture = Texture::CreateTexture("bg7.png");
     //TextureRegion textureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
-    background->GetComponent<Components::Sprite>(true)->SetSpriteSource("bg7.png");
-    background->GetComponent<Components::Sprite>(true)->AnimationActive = false;
+    //background->GetComponent<Components::Sprite>(true)->SetSpriteSource("bg7.png");
+    //background->GetComponent<Components::Sprite>(true)->AnimationActive = false;
+
+    Entity* player = AddEntity("Player");
+    player->AddComponent(new Components::Transform(*player, Point(15, -15), 15, 15));
+    Components::Model* model = new Components::Model(*player, true, false, true, "fox.json");
+    model->SetAnimation("a");
+    model->AnimationActive = true;
+    model->Looping = true;
+    model->FrameRate = 4;
+    player->AddComponent(model);
 
     Entity* logo = AddEntity("Logo");
     logo->AddComponent(new Components::Transform(*logo, Point(0, 15), 30, 30));
@@ -71,22 +90,36 @@ void MainMenu::Initialize() {
     logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
     logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
 
+    Entity* follow = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(-25.0f, 0.0f), "MenuFollow");
+    follow->GetComponent<Components::Follow>()->Offset = Vector(-1.5f, -1.0f);
+    follow->GetComponent<Components::Light>()->Radius = 5.0f;
 
     Entity* menu = AddEntity("Menu");
-    menu->AddComponent(new Components::Transform(*menu, 0, 0));
-    menu->AddComponent(new Components::Menu(*menu, Vector(0, -3)));
+    menu->AddComponent(new Components::Transform(*menu, Point(-25.0f, 0.0f)));
+    menu->AddComponent(new Components::Menu(*menu, Vector(0, -1), true, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
-    menuComp->AddItem(new MenuItems::NextLevel("ButtonPlay.png"));
-    menuComp->AddItem(new MenuItems::LoadLevel("ButtonHowTo.png", "HowToPlay"));
-    menuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonQuit.png", "QuitConfirm", "Menu"));
+    menuComp->AddItem(new MenuItems::NextLevel("Play"));
+    menuComp->AddItem(new MenuItems::ActivateAndDeactivate("Options", "OptionsMenu", "Menu"));
+    menuComp->AddItem(new MenuItems::LoadLevel("How to Play", "HowToPlay"));
+    menuComp->AddItem(new MenuItems::ActivateAndDeactivate("Quit", "QuitConfirm", "Menu"));
     menuComp->Activate();
 
+    Entity* opMenu = AddEntity("OptionsMenu");
+    opMenu->AddComponent(new Components::Transform(*opMenu, Point(-25.0f, 0.0f)));
+    opMenu->AddComponent(new Components::Menu(*opMenu, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
+    Components::Menu* opMenuComp = opMenu->GetComponent<Components::Menu>();
+    opMenuComp->AddItem(new OptionMenuItems::Resolution());
+    opMenuComp->AddItem(new OptionMenuItems::Fullscreen());
+    opMenuComp->AddItem(new OptionMenuItems::Volume());
+    opMenuComp->AddItem(new OptionMenuItems::FinalAccept("OptionsMenu"));
+    opMenuComp->AddItem(new MenuItems::ActivateAndDeactivate("Back", "Menu", "OptionsMenu"));
+
     Entity* quitConfirm = AddEntity("QuitConfirm");
-    quitConfirm->AddComponent(new Components::Transform(*quitConfirm));
-    quitConfirm->AddComponent(new Components::Menu(*quitConfirm));
+    quitConfirm->AddComponent(new Components::Transform(*quitConfirm, Point(-25.0f, 0.0f)));
+    quitConfirm->AddComponent(new Components::Menu(*quitConfirm, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* quitConfirmComp = quitConfirm->GetComponent<Components::Menu>();
-    quitConfirmComp->AddItem(new MenuItems::Quit("ButtonQuit.png"));
-    quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonCancel.png", "Menu", "QuitConfirm"));
+    quitConfirmComp->AddItem(new MenuItems::Quit("Quit"));
+    quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("Cancel", "Menu", "QuitConfirm"));
 }
 
 void MainMenu::Update() {

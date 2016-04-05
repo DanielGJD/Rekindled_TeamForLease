@@ -19,6 +19,7 @@
 #include "Loading.h"
 #include "Debug.h"
 #include "MainMenu.h"
+#include "PauseMenu.h"
 //#include "SegmentPrototypeState.h"
 
 #undef main
@@ -27,7 +28,9 @@ int Start(){
     std::vector<ForLeaseEngine::State *> states;
     //states.push_back(new Loading("Game.json"));
 //    states.push_back(new Loading("Game.json"));
-    states.push_back(new Loading("Game.json"));
+    //states.push_back(new Loading("Game.json"));
+    states.push_back(new PauseMenu());
+    states.push_back(new MainMenu());
     states.push_back(new MenuTest());
 
     ForLeaseEngine::Modules::Debug debug;
