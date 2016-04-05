@@ -73,7 +73,7 @@ void HowToPlay::Initialize() {
     right->AddComponent(new Components::Transform(*right, Point(40.0f, 0.0f), 1.0f, 9999999.0f));
     right->AddComponent(new Components::Collision(*right, 2.0f, 2.0f));
 
-    Entity* follow = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(-40.0f, -10.0f), "MenuFollow");
+    Entity* follow = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(-40.0f, -20.0f), "MenuFollow");
     follow->GetComponent<Components::Follow>()->Offset = Vector(-1.5f, -1.0f);
     follow->GetComponent<Components::Light>()->Radius = 5.0f;
 
