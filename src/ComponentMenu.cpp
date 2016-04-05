@@ -29,13 +29,11 @@ namespace ForLeaseEngine {
                    Active(active), LastActive(0), UnfocusedColor(unfocusedColor), FocusedColor(focusedColor),
                    UnavailableColor(unavailableColor)
         {
-            if (Active) Activate();
         }
 
         Menu::~Menu() {
             ForLease->Dispatcher.Detach(this, "MouseMotion");
             ForLease->Dispatcher.Detach(this, "MouseButtonDown");
-            Active = false;
         }
 
         void Menu::Update() {
@@ -53,7 +51,7 @@ namespace ForLeaseEngine {
                         }
                     }
                 }
-                for (unsigned i = 0; i < Representations.size(); ++i) {
+                for (unsigned i = 0; i < Items.size(); ++i) {
                     Representations[i]->GetComponent<Components::SpriteText>()->TextColor = UnfocusedColor;
 
                     if (Items[i]->Type == MenuItemType::OptionAccept && !dirty)
@@ -67,7 +65,6 @@ namespace ForLeaseEngine {
         }
 
         void Menu::OnMouseMotion(const Event* e) {
-            if (!Active) return;
             bool dirty = false;
             for (MenuItem* item : Items) {
                 if (item->Option) {
@@ -78,7 +75,7 @@ namespace ForLeaseEngine {
                 }
             }
 
-            for (unsigned i = 0; i < Representations.size(); ++i) {
+            for (unsigned i = 0; i < Items.size(); ++i) {
                 //Components::Sprite* sprite = rep->GetComponent<Components::SpriteText>(true);
                 Representations[i]->GetComponent<Components::Transform>()->ScaleX = UnfocusedScale;
                 Representations[i]->GetComponent<Components::Transform>()->ScaleY = UnfocusedScale;
@@ -94,7 +91,7 @@ namespace ForLeaseEngine {
             position = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true)->ScreenToWorld(position);
             Entity* rep = GetRepresentationAtPosition(position);
             unsigned index;
-            for (index = 0; index < Representations.size(); ++index) {
+            for (index = 0; index < Items.size(); ++index) {
                 if (Representations[index] == rep) {
                     if (Items[index]->Type == MenuItemType::OptionAccept && !dirty) {
                         return;
@@ -117,7 +114,6 @@ namespace ForLeaseEngine {
         }
 
         void Menu::OnMouseDown(const Event* e) {
-            if (!Active) return;
             for (unsigned i = 0; i < Representations.size(); ++i) {
                 if (Representations[i] == LastActive) {
                     Items[i]->Action();
