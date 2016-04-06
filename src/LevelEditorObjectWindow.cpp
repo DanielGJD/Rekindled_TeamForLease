@@ -389,6 +389,7 @@ namespace ForLeaseEngine
             ImGui::InputFloat("Y##follow", &(leg::selFollow->Offset[1]));
             ImGui::SameLine();
             ImGui::Text("Offset");
+            ImGui::InputFloat("Speed", &(leg::selFollow->Speed));
             ImGui::PopItemWidth();
             ImGui::Checkbox("Follow Target ID: ", &leg::setFollow);
             if (ImGui::IsItemHovered())
@@ -451,6 +452,12 @@ namespace ForLeaseEngine
                 }
                 ImGui::EndChild();
                 ImGui::TreePop();
+            }
+
+            if (ImGui::Button("Remove Inventory"))
+            {
+                leg::selection->DeleteComponent(ComponentType::UsefulObjectInventory);
+                leg::selInventory = nullptr;
             }
         }
         if (leg::selLight && ImGui::CollapsingHeader("Light"))
