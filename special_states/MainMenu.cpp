@@ -101,6 +101,7 @@ void MainMenu::Initialize() {
     menuComp->AddItem(new MenuItems::NextLevel("Play"));
     menuComp->AddItem(new MenuItems::ActivateAndDeactivate("Options", "OptionsMenu", "Menu"));
     menuComp->AddItem(new MenuItems::LoadLevel("How to Play", "HowToPlay"));
+    menuComp->AddItem(new MenuItems::LoadLevel("Credits", "Credits"));
     menuComp->AddItem(new MenuItems::ActivateAndDeactivate("Quit", "QuitConfirm", "Menu"));
     menuComp->Activate();
 
