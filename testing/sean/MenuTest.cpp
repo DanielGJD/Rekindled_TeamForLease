@@ -1,15 +1,14 @@
 /*!
-    \file   PauseMenu.cpp
+    \file   MenuTest.cpp
     \author Sean McGeer
-    \date   1/24/16
+    \date   4/03/16
 
-    \see PauseMenu.h
+    \see MenuTest.h
 
     \copyright ©Copyright 2016 DigiPen Institute of Technology, All Rights Reserved
 */
 
 #include "State.h"
-#include "PauseMenu.h"
 #include "ComponentsInclude.h"
 #include "ResourceManager.h"
 #include "Vector.h"
@@ -18,6 +17,7 @@
 #include "Mesh.h"
 #include "GameStateManager.h"
 #include "Ray.h"
+#include "MenuTest.h"
 
 #include <iostream>
 #include <string>
@@ -25,12 +25,12 @@
 namespace FLE = ForLeaseEngine;
 using namespace ForLeaseEngine;
 
-PauseMenu::PauseMenu() : State("PauseMenu") {}
+MenuTest::MenuTest() : State("MenuTest") {}
 
-void PauseMenu::Load() {
+void MenuTest::Load() {
 }
 
-void PauseMenu::Initialize() {
+void MenuTest::Initialize() {
     FLE::LevelComponents::Renderer* renderer = new FLE::LevelComponents::Renderer(*this);
     FLE::Entity* camera = AddEntity("Camera");
     camera->AddComponent(new FLE::Components::Transform(*camera, FLE::Point(0, 0), 1, 1, 0));
@@ -55,11 +55,14 @@ void PauseMenu::Initialize() {
     backgroundMask->AddComponent(new Components::Transform(*backgroundMask, 0, 0, 50, 50));
     backgroundMask->AddComponent(new Components::Model(*backgroundMask, true, false, false, "1-1Block.json", "", Color(0.75f, 0.75f, 0.75f), FLE::MULTIPLY));
 
-    //Entity* logo = AddEntity("Logo");
-    //logo->AddComponent(new Components::Transform(*logo, Point(0, 15), 30, 30));
-    //logo->AddComponent(new Components::Sprite(*logo));
-    //logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
-    //logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
+    //Entity* particle = AddEntity("Particle");
+    //particle->AddComponent(new Components::Transform(*particle));
+    //particle->AddComponent(new Components::ParticleSystem(*particle));
+    //particle->AddComponent(new Components::ParticleEmitter(*particle));
+
+    //Entity* backgroundMask2 = AddEntity("BackgroundMask");
+    //backgroundMask2->AddComponent(new Components::Transform(*backgroundMask2, 0, 0, 50, 50));
+    //backgroundMask2->AddComponent(new Components::Model(*backgroundMask2, true, false, false, "1-1Block.json", "", Color(0, 0, 0, 0.5f), ForLeaseEngine::MULTIPLY));
 
     Entity* player = AddEntity("Player");
     player->AddComponent(new Components::Transform(*player, Point(15, -15), 15, 15));
@@ -70,50 +73,60 @@ void PauseMenu::Initialize() {
     model->FrameRate = 4;
     player->AddComponent(model);
 
-    Entity* follow = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(-40.0f, -10.0f), "MenuFollow");
+    Entity* logo = AddEntity("Logo");
+    logo->AddComponent(new Components::Transform(*logo, Point(0, 15), 30, 30));
+    logo->AddComponent(new Components::Sprite(*logo));
+    logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
+    logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
+
+    //Entity* follow = AddEntity("MenuFollow");
+    //follow->AddComponent(new Components::Transform(*follow, Point(0, 15), 1, 1));
+    //follow->AddComponent(new Components::Sprite(*follow));
+    //follow->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
+    //follow->GetComponent<Components::Sprite>(true)->AnimationActive = false;
+    //follow->AddComponent(new Components::Follow(*follow, true, 0.0f, 1.0f, 0UL, Vector(-0.5f,-1.0f)));
+    //follow->AddComponent(new Components::Light(*follow, true, true, false, Vector(), Vector(1, 0), PI, Color(1, 0.5f, 1), ForLeaseEngine::ADDITIVE, 7.5f, "LinearFalloff.png", true));
+    //follow->AddComponent(new Components::ParticleSystem(*follow, true, FLE::MULTIPLY, Color(1.0f, 0.5f, 0.0f), 100U, Vector(), "WhiteCloud.png"));
+    //follow->AddComponent(new Components::ParticleEmitter(*follow, true, Vector(0,0), Vector(), 20U, 0.25f, 1.0f, 1.0f, 1.0f));
+//    follow->GetComponent<Components::Follow>()->InterpolationScale = 7.0f;
+    Entity* follow = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(-25.0f, 0.0f), "MenuFollow");
     follow->GetComponent<Components::Follow>()->Offset = Vector(-1.5f, -1.0f);
     follow->GetComponent<Components::Light>()->Radius = 5.0f;
 
 
     Entity* menu = AddEntity("Menu");
-    menu->AddComponent(new Components::Transform(*menu, Point(-40.0f, -10.0f)));
-    menu->AddComponent(new Components::Menu(*menu, Vector(0, -1), true, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
+    menu->AddComponent(new Components::Transform(*menu, Point(-25.0f, 0.0f)));
+    menu->AddComponent(new Components::Menu(*menu, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
-    menuComp->AddItem(new MenuItems::ResumeGame("Resume"));
+    //menuComp->AddItem(new MenuItems::ResumeGame("ButtonResume.png"));
     //menuComp->AddItem(new MenuItems::LoadLevel("ButtonHowTo.png", "HowToPlay"));
-    menuComp->AddItem(new MenuItems::ActivateAndDeactivate("Options", "OptionsMenu", "Menu"));
-    menuComp->AddItem(new MenuItems::ActivateAndDeactivate("Main Menu", "MainMenuConfirm", "Menu"));
+    //menuComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonMainMenu.png", "MainMenuConfirm", "Menu"));
+    menuComp->AddItem(new OptionMenuItems::Resolution());
+    menuComp->AddItem(new OptionMenuItems::Fullscreen());
+    menuComp->AddItem(new OptionMenuItems::Volume());
+    menuComp->AddItem(new OptionMenuItems::FinalAccept("Menu"));
     menuComp->AddItem(new MenuItems::ActivateAndDeactivate("Quit", "QuitConfirm", "Menu"));
+
     menuComp->Activate();
 
-    Entity* opMenu = AddEntity("OptionsMenu");
-    opMenu->AddComponent(new Components::Transform(*opMenu, Point(-40.0f, -10.0f)));
-    opMenu->AddComponent(new Components::Menu(*opMenu, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
-    Components::Menu* opMenuComp = opMenu->GetComponent<Components::Menu>();
-    opMenuComp->AddItem(new OptionMenuItems::Resolution());
-    opMenuComp->AddItem(new OptionMenuItems::Fullscreen());
-    opMenuComp->AddItem(new OptionMenuItems::Volume());
-    opMenuComp->AddItem(new OptionMenuItems::FinalAccept("OptionsMenu"));
-    opMenuComp->AddItem(new MenuItems::ActivateAndDeactivate("Back", "Menu", "OptionsMenu"));
-
     Entity* quitConfirm = AddEntity("QuitConfirm");
-    quitConfirm->AddComponent(new Components::Transform(*quitConfirm, Point(-40.0f, -10.0f)));
+    quitConfirm->AddComponent(new Components::Transform(*quitConfirm, Point(-25.0f, 0.0f)));
     quitConfirm->AddComponent(new Components::Menu(*quitConfirm, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* quitConfirmComp = quitConfirm->GetComponent<Components::Menu>();
     quitConfirmComp->AddItem(new MenuItems::Quit("Quit"));
     quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("Cancel", "Menu", "QuitConfirm"));
 
     Entity* mainMenuConfirm = AddEntity("MainMenuConfirm");
-    mainMenuConfirm->AddComponent(new Components::Transform(*mainMenuConfirm, Point(-40.0f, -10.0f)));
+    mainMenuConfirm->AddComponent(new Components::Transform(*mainMenuConfirm, Point(-25.0f, 0.0f)));
     mainMenuConfirm->AddComponent(new Components::Menu(*mainMenuConfirm, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* mainMenuConfirmComp = mainMenuConfirm->GetComponent<Components::Menu>();
-    mainMenuConfirmComp->AddItem(new MenuItems::LoadLevel("Main Menu", "MainMenu"));
-    mainMenuConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("Cancel", "Menu", "MainMenuConfirm"));
+    mainMenuConfirmComp->AddItem(new MenuItems::LoadLevel("ButtonMainMenu.png", "MainMenu"));
+    mainMenuConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("ButtonCancel.png", "Menu", "MainMenuConfirm"));
 
-    ForLease->Dispatcher.Attach(NULL, this, "KeyDown", &PauseMenu::OnKeyDown);
+//    ForLease->Dispatcher.Attach(NULL, this, "KeyDown", &MenuTest::OnKeyDown);
 }
 
-void PauseMenu::Update() {
+void MenuTest::Update() {
 
     ForLease->OSInput.ProcessAllInput();
 
@@ -130,16 +143,16 @@ void PauseMenu::Update() {
     ForLease->GameWindow->UpdateGameWindow();
 }
 
-void PauseMenu::Deinitialize() {
+void MenuTest::Deinitialize() {
     DeleteAllEntities();
     DeleteAllLevelComponents();
-    ForLease->Dispatcher.Detach(this, "KeyDown");
+//    ForLease->Dispatcher.Detach(this, "KeyDown");
 }
 
-void PauseMenu::Unload() {}
+void MenuTest::Unload() {}
 
-void PauseMenu::OnKeyDown(const Event* e) {
-    const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
-    if (key_e->Key == Keys::Escape)
-        ForLease->GameStateManager().SetAction(Modules::StateAction::Continue);
-}
+//void MenuTest::OnKeyDown(const Event* e) {
+//    const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
+//    if (key_e->Key == Keys::Escape)
+//        ForLease->GameStateManager().SetAction(Modules::StateAction::Continue);
+//}

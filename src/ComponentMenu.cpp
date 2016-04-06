@@ -21,13 +21,14 @@ namespace ForLeaseEngine {
 
     namespace Components {
 
-        Menu::Menu(Entity& owner, Vector spacing, bool active, float unfocusedScale, float focusedScale)
-            : Component(owner, ComponentType::Transform), UnfocusedScale(unfocusedScale),
-              FocusedScale(focusedScale), Spacing(spacing), Active(active), LastActive(0) {
-            if (Active) Activate();
-
-
-
+        Menu::Menu(Entity& owner, Vector spacing, bool active, float unfocusedScale, float focusedScale,
+                   std::string font, std::string followName, Color unfocusedColor, Color focusedColor,
+                   Color unavailableColor)
+                 : Component(owner, ComponentType::Transform), UnfocusedScale(unfocusedScale),
+                   FocusedScale(focusedScale), Font(font), FollowName(followName), Spacing(spacing),
+                   Active(active), LastActive(0), UnfocusedColor(unfocusedColor), FocusedColor(focusedColor),
+                   UnavailableColor(unavailableColor)
+        {
         }
 
         Menu::~Menu() {
@@ -36,14 +37,51 @@ namespace ForLeaseEngine {
         }
 
         void Menu::Update() {
+            if (Active) {
+                for (unsigned i = 0; i < Items.size(); ++i) {
+                    Representations[i]->GetComponent<Components::SpriteText>()->Text = Items[i]->Text;
+                }
 
+                bool dirty = false;
+                for (MenuItem* item : Items) {
+                    if (item->Option) {
+                        if (reinterpret_cast<OptionMenuItem*>(item)->Dirty) {
+                            dirty = true;
+                            break;
+                        }
+                    }
+                }
+                for (unsigned i = 0; i < Items.size(); ++i) {
+                    Representations[i]->GetComponent<Components::SpriteText>()->TextColor = UnfocusedColor;
+
+                    if (Items[i]->Type == MenuItemType::OptionAccept && !dirty)
+                        Representations[i]->GetComponent<Components::SpriteText>()->TextColor = UnavailableColor;
+
+                    if (Representations[i] == LastActive)
+                        Representations[i]->GetComponent<Components::SpriteText>()->TextColor = FocusedColor;
+                }
+
+            }
         }
 
         void Menu::OnMouseMotion(const Event* e) {
-            for (Entity* rep : Representations) {
-                Components::Sprite* sprite = rep->GetComponent<Components::Sprite>(true);
-                rep->GetComponent<Components::Transform>()->ScaleX = UnfocusedScale * sprite->SpriteSource.GetWidth() / sprite->SpriteSource.GetHeight();
-                rep->GetComponent<Components::Transform>()->ScaleY = UnfocusedScale;
+            bool dirty = false;
+            for (MenuItem* item : Items) {
+                if (item->Option) {
+                    if (reinterpret_cast<OptionMenuItem*>(item)->Dirty) {
+                        dirty = true;
+                        break;
+                    }
+                }
+            }
+
+            for (unsigned i = 0; i < Items.size(); ++i) {
+                //Components::Sprite* sprite = rep->GetComponent<Components::SpriteText>(true);
+                Representations[i]->GetComponent<Components::Transform>()->ScaleX = UnfocusedScale;
+                Representations[i]->GetComponent<Components::Transform>()->ScaleY = UnfocusedScale;
+                Representations[i]->GetComponent<Components::SpriteText>()->TextColor = UnfocusedColor;
+                if (Items[i]->Type == MenuItemType::OptionAccept && !dirty)
+                    Representations[i]->GetComponent<Components::SpriteText>()->TextColor = UnavailableColor;
             }
 
             LastActive = 0;
@@ -52,11 +90,26 @@ namespace ForLeaseEngine {
             Point position(mouseEvent->X, mouseEvent->Y);
             position = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true)->ScreenToWorld(position);
             Entity* rep = GetRepresentationAtPosition(position);
+            unsigned index;
+            for (index = 0; index < Items.size(); ++index) {
+                if (Representations[index] == rep) {
+                    if (Items[index]->Type == MenuItemType::OptionAccept && !dirty) {
+                        return;
+                    }
+                }
+            }
+
             if (rep) {
-                Components::Sprite* sprite = rep->GetComponent<Components::Sprite>(true);
-                rep->GetComponent<Components::Transform>()->ScaleX = FocusedScale * sprite->SpriteSource.GetWidth() / sprite->SpriteSource.GetHeight();
-                rep->GetComponent<Components::Transform>()->ScaleY = FocusedScale;
+                //Components::Sprite* sprite = rep->GetComponent<Components::Sprite>(true);
+                //rep->GetComponent<Components::Transform>()->ScaleX = FocusedScale;
+                //rep->GetComponent<Components::Transform>()->ScaleY = FocusedScale;
                 LastActive = rep;
+                Entity* follow = ForLease->GameStateManager().CurrentState().GetEntityByName(FollowName);
+                if (follow) {
+                    Components::Follow* followFollow = follow->GetComponent<Components::Follow>();
+                    if (followFollow) followFollow->FollowEntityID = rep->GetID();
+                }
+                rep->GetComponent<Components::SpriteText>()->TextColor = FocusedColor;
             }
         }
 
@@ -70,7 +123,7 @@ namespace ForLeaseEngine {
 
         void Menu::AddItem(MenuItem* item) {
             Items.push_back(item);
-            std::cout << Parent.GetName() << " added an item: " << item->Image << std::endl;
+            std::cout << Parent.GetName() << " added an item: " << item->Text << std::endl;
         }
 
         void Menu::AddLoadLevel(std::string image, std::string stateName) {
@@ -85,16 +138,20 @@ namespace ForLeaseEngine {
             State& currentState = ForLease->GameStateManager().CurrentState();
 
             Point position = Parent.GetComponent<Components::Transform>()->Position;
+            Entity* follow = ForLease->GameStateManager().CurrentState().GetEntityByName(FollowName);
 
             for (MenuItem* item : Items) {
                 std::stringstream name;
-                name << "Menu " << Parent.GetName() << " item " << item->Image;
+                name << "Menu " << Parent.GetName() << " item " << item->Text;
                 std::cout << "Activate: " << name.str() << std::endl;
                 Entity* rep = currentState.AddEntity(name.str());
                 rep->IncludeInSerialize = false;
                 Representations.push_back(rep);
                 rep->AddComponent(new Components::Transform(*rep, position, UnfocusedScale, UnfocusedScale, 0, 500));
-                rep->AddComponent(new Components::Sprite(*rep));
+                //rep->AddComponent(new Components::Sprite(*rep));
+                rep->AddComponent(new Components::SpriteText(*rep, Font));
+                rep->GetComponent<Components::SpriteText>()->Text = item->Text;
+                rep->GetComponent<Components::SpriteText>()->TextColor = UnfocusedColor;
 
                 //ForLease->Resources.LoadTexture(item->Image);
                 //Texture* texture = Texture::CreateTexture(item->Image);
@@ -106,15 +163,18 @@ namespace ForLeaseEngine {
 
                 //////////////////////////////////////////////////////////////////////////////
 
-                rep->GetComponent<Components::Sprite>(true)->AnimationActive = false;
-                Components::Sprite* sprite = rep->GetComponent<Components::Sprite>(true);
-                sprite->SetSpriteSource(item->Image);
-                rep->GetComponent<Components::Transform>(true)->ScaleX = UnfocusedScale * sprite->SpriteSource.GetWidth() / sprite->SpriteSource.GetHeight();
+                //rep->GetComponent<Components::Sprite>(true)->AnimationActive = false;
+                //Components::Sprite* sprite = rep->GetComponent<Components::Sprite>(true);
+                //sprite->SetSpriteSource(item->Text);
+                //rep->GetComponent<Components::Transform>(true)->ScaleX = UnfocusedScale * sprite->SpriteSource.GetWidth() / sprite->SpriteSource.GetHeight();
                 position += Spacing * FocusedScale;
                 rep->AddComponent(new Components::BackgroundMusic(*rep, "Menu2"));
             }
 
-
+            if (follow) {
+                if (Representations.size() > 0)
+                    follow->GetComponent<Components::Follow>()->FollowEntityID = Representations[0]->GetID();
+            }
             std::cout << Parent.GetName() << " activated." << std::endl;
         }
 
@@ -134,11 +194,12 @@ namespace ForLeaseEngine {
         Entity* Menu::GetRepresentationAtPosition(Point position, bool throwOnFail) {
             for (Entity* entity : Representations) {
                 if (!entity->HasComponent(ComponentType::Transform)) continue;
-                if (!entity->HasComponent(ComponentType::Sprite)) continue;
+                if (!entity->HasComponent(ComponentType::SpriteText)) continue;
 
                 Components::Transform* transform = entity->GetComponent<Components::Transform>(true);
-                Components::Sprite* sprite = entity->GetComponent<Components::Sprite>(true);
-                float scaleX = transform->ScaleX * sprite->SpriteSource.GetWidth() / sprite->SpriteSource.GetHeight();
+                //Components::SpriteText* sprite = entity->GetComponent<Components::Sprite>(true);
+                //float scaleX = transform->ScaleX * sprite->SpriteSource.GetWidth() / sprite->SpriteSource.GetHeight();
+                float scaleX = 1000;
                 float scaleY = transform->ScaleY;
 
                 ///////////////////////////// More Chris hax /////////////////////////
@@ -182,6 +243,8 @@ namespace ForLeaseEngine {
             menu.WriteVec("Spacing", Spacing);
             menu.WriteFloat("UnfocusedScale", UnfocusedScale);
             menu.WriteFloat("FocusedScale", FocusedScale);
+            menu.WriteString("Font", Font);
+            menu.WriteString("FollowName", FollowName);
             menu.WriteBool("Active", Active);
             ArraySerializer jsonItems(menu);
             jsonItems = menu.GetChild("Items");
@@ -200,6 +263,8 @@ namespace ForLeaseEngine {
             menu.ReadVec("Spacing", Spacing);
             menu.ReadFloat("UnfocusedScale", UnfocusedScale);
             menu.ReadFloat("FocusedScale", FocusedScale);
+            menu.ReadString("Font", Font);
+            menu.ReadString("FollowName", FollowName);
             menu.ReadBool("Active", Active);
             ArraySerializer jsonItems(menu);
             jsonItems = menu.GetChild("Items");

@@ -80,6 +80,17 @@ void SoundEmitter::SetVolume(float vol, std::string name)
     ForLease->sound->Volume(vol, name);
 }
 
+void SoundEmitter::SetGlobal(float vol)
+{
+    ForLease->sound->SetGlobalVol(vol);
+}
+
+void SoundEmitter::SetGlobalVol(float vol)
+{
+    ForLease->sound->SetGlobalVolume(vol);
+    ForLease->sound->Update(0.0f);
+}
+
 void SoundEmitter::Update()
 {
 
