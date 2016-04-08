@@ -264,6 +264,32 @@ namespace ForLeaseEngine {
             return !(br1.x < tl2.x || tl1.x > br2.x || br1.y > tl2.y || tl1.y < br2.y);
         }
 
+        void PostfixCollision(Entity* entity, Entity* collidedAgainst) {
+            //std::cout << "Do stuff here.";
+            Components::Transform* eTransform = entity->GetComponent<Components::Transform>();
+            Components::Collision* eCollision = entity->GetComponent<Components::Collision>();
+            Components::Transform* cTransform = collidedAgainst->GetComponent<Components::Transform>();
+            Components::Collision* cCollision = collidedAgainst->GetComponent<Components::Collision>();
+
+            float xDist, yDist;
+
+            if (eTransform->Position.x > cTransform->Position.x) xDist = eTransform->Position.x - cTransform->Position.x;
+            else xDist = cTransform->Position.x - eTransform->Position.x;
+            xDist = std::abs(xDist);
+
+            if (eTransform->Position.y > cTransform->Position.y) yDist = eTransform->Position.y - cTransform->Position.y;
+            else yDist = cTransform->Position.y - eTransform->Position.y;
+            yDist = std::abs(yDist);
+
+            
+
+            xDist -= (eCollision->HalfWidth() + cCollision->HalfWidth());
+            yDist -= (eCollision->HalfHeight() + cCollision->HalfHeight());
+
+            std::cout << eTransform->Position << " " << cTransform->Position << std::endl;
+            std::cout << xDist << " " << yDist << std::endl;
+        }
+
         void Collision::CheckAndResolveSweptCollisions(Entity* entity, std::vector<Entity *>& entities) {
             float time = 1.0f;
 
@@ -348,7 +374,10 @@ namespace ForLeaseEngine {
                 time -= firstCollision.Distance;
 
                 //if (collidedAgainst && collidedAgainst->GetComponent<Components::Collision>()->ResolveCollisions)
-                    ResolveIndividualSweptCollision(entity, firstCollision, time);
+                ResolveIndividualSweptCollision(entity, firstCollision, time);
+
+                if (collidedAgainst && BoxesIntersect(collision->BotRight(), collision->TopLeft(), collidedAgainst->GetComponent<Components::Collision>()->BotRight(), collidedAgainst->GetComponent<Components::Collision>()->TopLeft()))
+                    PostfixCollision(entity, collidedAgainst);
 
                 if (firstCollision.Side != CollisionSide::None)
                     collision->CollidedWithSide = firstCollision.Side;

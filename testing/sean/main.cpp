@@ -29,9 +29,12 @@ int Start(){
     //states.push_back(new Loading("Game.json"));
 //    states.push_back(new Loading("Game.json"));
     //states.push_back(new Loading("Game.json"));
-    states.push_back(new PauseMenu());
-    states.push_back(new MainMenu());
-    states.push_back(new MenuTest());
+    //states.push_back(new PauseMenu());
+    //states.push_back(new MainMenu());
+    //states.push_back(new MenuTest());
+
+    //states.push_back(new Loading("Game.json"));
+    states.push_back(new SeanState());
 
     ForLeaseEngine::Modules::Debug debug;
     debug.Draw.Collision = true;
