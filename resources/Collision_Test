@@ -1,0 +1,456 @@
+{
+	"State" : 
+	{
+		"Entities" : 
+		[
+			{
+				"Entity" : 
+				{
+					"Components" : 
+					[
+						{
+							"Transform" : 
+							{
+								"Position" : 
+								{
+									"X" : 0,
+									"Y" : 0
+								},
+								"Rotation" : 0,
+								"ScaleX" : 1,
+								"ScaleY" : 1,
+								"Type" : 1,
+								"UILayer" : false,
+								"ZOrder" : 0
+							},
+							"Type" : 1
+						},
+						{
+							"Camera" : 
+							{
+								"Far" : 0,
+								"Near" : 0,
+								"Size" : 50,
+								"Type" : 16
+							},
+							"Type" : 16
+						}
+					],
+					"ID" : 1784,
+					"Name" : "LevelEditorCamera"
+				}
+			},
+			{
+				"Entity" : 
+				{
+					"Components" : 
+					[
+						{
+							"Transform" : 
+							{
+								"Position" : 
+								{
+									"X" : -15.833335876464844,
+									"Y" : 20.5
+								},
+								"Rotation" : 0,
+								"ScaleX" : 6,
+								"ScaleY" : 6,
+								"Type" : 1,
+								"UILayer" : false,
+								"ZOrder" : 0
+							},
+							"Type" : 1
+						},
+						{
+							"Model" : 
+							{
+								"AnimationActive" : true,
+								"BlendingMode" : 0,
+								"Color" : 
+								{
+									"A" : 1,
+									"B" : 1,
+									"G" : 1,
+									"R" : 1
+								},
+								"CurrentAnimation" : "",
+								"CurrentFrame" : 0,
+								"DrawEdges" : false,
+								"DrawVertices" : false,
+								"FlipX" : false,
+								"FlipY" : false,
+								"FrameRate" : 24,
+								"Looping" : true,
+								"Mesh" : "fox.json",
+								"Texture" : "",
+								"Type" : 64,
+								"Visible" : true
+							},
+							"Type" : 64
+						},
+						{
+                            "Collision" : 
+                            {
+                                "Height" : 1.0500000715255737,
+                                "OffsetX" : 0,
+                                "OffsetY" : 0,
+                                "ResolveCollisions" : true,
+                                "Type" : 8,
+                                "Width" : 1.4000000953674316
+                            },
+                            "Type" : 8
+                        },
+						{
+							"Physics" : 
+							{
+								"Acceleration" : 
+								{
+									"X" : 0,
+									"Y" : 0
+								},
+								"Force" : 
+								{
+									"X" : 0,
+									"Y" : 0
+								},
+								"Mass" : 1,
+								"Type" : 4,
+								"UnaffectedByGravity" : false,
+								"UnaffectedByTimeScaling" : false,
+								"Velocity" : 
+								{
+									"X" : 0,
+									"Y" : 0
+								}
+							},
+							"Type" : 4
+						},
+						{
+							"CharacterController" : 
+							{
+								"Acceleration" : 85,
+								"Drag" : 3,
+								"JumpAnimation" : "",
+								"JumpKey" : 32,
+								"JumpSound" : "Jumping.wav",
+								"JumpSpeed" : 50,
+								"LandSound" : "Landing.wav",
+								"LeftKey" : 97,
+								"RightKey" : 100,
+								"Type" : 2,
+								"WalkAnimation" : "",
+								"WalkSound" : "Footstep.wav"
+							},
+							"Type" : 2
+						},
+						{
+							"Camera" : 
+							{
+								"Far" : 0,
+								"Near" : 0,
+								"Size" : 35,
+								"Type" : 16
+							},
+							"Type" : 16
+						},
+						{
+							"Health" : 
+							{
+								"CurrentHealth" : 5,
+								"DamageScale" : 0,
+								"MaxHealth" : 2,
+								"RegenScale" : 0
+							},
+							"Type" : 268435456
+						},
+						{
+							"Type" : 8589934592,
+							"UsefulObjectInventory" : 
+							{
+								"BalloonMass" : 0.5,
+								"Category" : 0,
+								"FollowName" : "",
+								"NormalMass" : 1,
+								"ThrowKey" : 44,
+								"ThrowVector" : 
+								{
+									"X" : 20,
+									"Y" : 0
+								},
+								"Type" : 8589934592
+							}
+						}
+					],
+					"ID" : 5716,
+					"Name" : "[Entity 5716]"
+				}
+			},
+			{
+				"Entity" : 
+				{
+					"Components" : 
+					[
+						{
+							"Transform" : 
+							{
+								"Position" : 
+								{
+									"X" : -1.1666679382324219,
+									"Y" : 4
+								},
+								"Rotation" : 0,
+								"ScaleX" : 50,
+								"ScaleY" : 1,
+								"Type" : 1,
+								"UILayer" : false,
+								"ZOrder" : 0
+							},
+							"Type" : 1
+						},
+						{
+							"Collision" : 
+							{
+								"Height" : 2,
+								"OffsetX" : 0,
+								"OffsetY" : 0,
+								"ResolveCollisions" : true,
+								"Type" : 8,
+								"Width" : 2
+							},
+							"Type" : 8
+						},
+						{
+							"Model" : 
+							{
+								"AnimationActive" : false,
+								"BlendingMode" : 0,
+								"Color" : 
+								{
+									"A" : 1,
+									"B" : 1,
+									"G" : 1,
+									"R" : 1
+								},
+								"CurrentAnimation" : "",
+								"CurrentFrame" : 0,
+								"DrawEdges" : false,
+								"DrawVertices" : false,
+								"FlipX" : false,
+								"FlipY" : false,
+								"FrameRate" : 24,
+								"Looping" : false,
+								"Mesh" : "1-1Block.json",
+								"Texture" : "",
+								"Type" : 64,
+								"Visible" : true
+							},
+							"Type" : 64
+						}
+					],
+					"ID" : 8024,
+					"Name" : "[Entity 8024]"
+				}
+			},
+			{
+				"Entity" : 
+				{
+					"Components" : 
+					[
+						{
+							"Transform" : 
+							{
+								"Position" : 
+								{
+									"X" : -4.4444465637207031,
+									"Y" : -1.7222213745117188
+								},
+								"Rotation" : 0,
+								"ScaleX" : 50,
+								"ScaleY" : 1,
+								"Type" : 1,
+								"UILayer" : false,
+								"ZOrder" : 0
+							},
+							"Type" : 1
+						},
+						{
+							"Collision" : 
+							{
+								"Height" : 2,
+								"OffsetX" : 0,
+								"OffsetY" : 0,
+								"ResolveCollisions" : true,
+								"Type" : 8,
+								"Width" : 2
+							},
+							"Type" : 8
+						},
+						{
+							"Model" : 
+							{
+								"AnimationActive" : false,
+								"BlendingMode" : 0,
+								"Color" : 
+								{
+									"A" : 1,
+									"B" : 1,
+									"G" : 1,
+									"R" : 1
+								},
+								"CurrentAnimation" : "",
+								"CurrentFrame" : 0,
+								"DrawEdges" : false,
+								"DrawVertices" : false,
+								"FlipX" : false,
+								"FlipY" : false,
+								"FrameRate" : 24,
+								"Looping" : false,
+								"Mesh" : "1-1Block.json",
+								"Texture" : "",
+								"Type" : 64,
+								"Visible" : true
+							},
+							"Type" : 64
+						}
+					],
+					"ID" : 331,
+					"Name" : "[Entity 8024]"
+				}
+			},
+			{
+				"Entity" : 
+				{
+					"Components" : 
+					[
+						{
+							"Transform" : 
+							{
+								"Position" : 
+								{
+									"X" : -7.7777786254882812,
+									"Y" : -20.44444465637207
+								},
+								"Rotation" : 0,
+								"ScaleX" : 50,
+								"ScaleY" : 1,
+								"Type" : 1,
+								"UILayer" : false,
+								"ZOrder" : 0
+							},
+							"Type" : 1
+						},
+						{
+							"Collision" : 
+							{
+								"Height" : 2,
+								"OffsetX" : 0,
+								"OffsetY" : 0,
+								"ResolveCollisions" : true,
+								"Type" : 8,
+								"Width" : 2
+							},
+							"Type" : 8
+						},
+						{
+							"Model" : 
+							{
+								"AnimationActive" : false,
+								"BlendingMode" : 0,
+								"Color" : 
+								{
+									"A" : 1,
+									"B" : 1,
+									"G" : 1,
+									"R" : 1
+								},
+								"CurrentAnimation" : "",
+								"CurrentFrame" : 0,
+								"DrawEdges" : false,
+								"DrawVertices" : false,
+								"FlipX" : false,
+								"FlipY" : false,
+								"FrameRate" : 24,
+								"Looping" : false,
+								"Mesh" : "1-1Block.json",
+								"Texture" : "",
+								"Type" : 64,
+								"Visible" : true
+							},
+							"Type" : 64
+						}
+					],
+					"ID" : 5344,
+					"Name" : "[Entity 8024]"
+				}
+			}
+		],
+		"LevelComponents" : 
+		[
+			{
+				"Renderer" : 
+				{
+					"ClearColor" : 
+					{
+						"Color" : 
+						{
+							"A" : 1,
+							"B" : 0,
+							"G" : 0,
+							"R" : 0
+						}
+					},
+					"CurrentCamera" : 1784,
+					"Type" : 256
+				},
+				"Type" : 256
+			},
+			{
+				"Physics" : 
+				{
+					"Gravity" : 
+					{
+						"X" : 0,
+						"Y" : -100
+					},
+					"Type" : 4
+				},
+				"Type" : 4
+			},
+			{
+				"Menu" : 
+				{
+					"Type" : 16384
+				},
+				"Type" : 16384
+			},
+			{
+				"Collision" : 
+				{
+					"Type" : 8
+				},
+				"Type" : 8
+			},
+			{
+				"Checkpoint" : 
+				{
+					"TriggerEntityID" : 0,
+					"Type" : 134217728
+				},
+				"Type" : 134217728
+			},
+			{
+				"Type" : 4294967296,
+				"UsefulObject" : 
+				{
+					"BalloonArchetypeName" : "",
+					"BalloonMesh" : "",
+					"DistractionArchetypeName" : "",
+					"DistractionMesh" : "",
+					"Type" : 4294967296
+				}
+			}
+		],
+		"Name" : "Collision_Test"
+	}
+}
