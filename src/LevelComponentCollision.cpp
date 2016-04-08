@@ -286,11 +286,11 @@ namespace ForLeaseEngine {
             xDist -= (eCollision->ScaledHalfWidth() + cCollision->ScaledHalfWidth());
             yDist -= (eCollision->ScaledHalfHeight() + cCollision->ScaledHalfHeight());
 
-            if (xDist < 0 && xDist > yDist) {
+/*            if (xDist < 0 && xDist > yDist) {
                 if (eTransform->Position.x > cTransform->Position.x) eTransform->Position.x += Epsilon;
                 else eTransform->Position.x -= Epsilon;
             }
-            else if (yDist < 0 && yDist > xDist) {
+            else*/ if (yDist < 0 && yDist > xDist) {
                 if (eTransform->Position.y > cTransform->Position.y) eTransform->Position.y += Epsilon;
                 else eTransform->Position.y -= Epsilon;
             }
@@ -387,8 +387,8 @@ namespace ForLeaseEngine {
                 //if (collidedAgainst && collidedAgainst->GetComponent<Components::Collision>()->ResolveCollisions)
                 ResolveIndividualSweptCollision(entity, firstCollision, time);
 
-                if (collidedAgainst && BoxesIntersect(collision->BotRight(), collision->TopLeft(), collidedAgainst->GetComponent<Components::Collision>()->BotRight(), collidedAgainst->GetComponent<Components::Collision>()->TopLeft()))
-                    PostfixCollision(entity, collidedAgainst);
+                //if (collidedAgainst && BoxesIntersect(collision->BotRight(), collision->TopLeft(), collidedAgainst->GetComponent<Components::Collision>()->BotRight(), collidedAgainst->GetComponent<Components::Collision>()->TopLeft()))
+                //    PostfixCollision(entity, collidedAgainst);
 
                 if (firstCollision.Side != CollisionSide::None)
                     collision->CollidedWithSide = firstCollision.Side;
@@ -655,7 +655,7 @@ namespace ForLeaseEngine {
         void Collision::ResolveIndividualSweptCollision(Entity* resolve, Vector movement, SweptCollision collision) {
             Components::Transform* rTransform = resolve->GetComponent<Components::Transform>();
 
-            rTransform->Position += movement * collision.Distance;
+            rTransform->Position += movement * (collision.Distance - Epsilon);
         }
 
         void Collision::CheckAndResolveCollision(Entity* entity, std::vector<Entity *>& entities) {
