@@ -394,14 +394,14 @@ namespace ForLeaseEngine {
                     collision->CollidedWithSide = firstCollision.Side;
             }
 
-            for (Entity* caEntity : entities) {
-                if (caEntity == entity) continue;
-                Components::Collision* caCollision = caEntity->GetComponent<Components::Collision>();
-                if (!caCollision->ResolveCollisions) continue;
-                
-                if (BoxesIntersect(collision->BotRight(), collision->TopLeft(), caCollision->BotRight(), caCollision->TopLeft()))
-                    PostfixCollision(entity, caEntity);
-            }
+            //for (Entity* caEntity : entities) {
+            //    if (caEntity == entity) continue;
+            //    Components::Collision* caCollision = caEntity->GetComponent<Components::Collision>();
+            //    if (!caCollision->ResolveCollisions) continue;
+            //    
+            //    if (BoxesIntersect(collision->BotRight(), collision->TopLeft(), caCollision->BotRight(), caCollision->TopLeft()))
+            //        PostfixCollision(entity, caEntity);
+            //}
 
             //std::vector<Entity *> collisionStarted;
             std::vector<Entity *> collisionEnded;
@@ -552,7 +552,7 @@ namespace ForLeaseEngine {
             Components::Transform* rTransform = resolve->GetComponent<Components::Transform>();
             Components::Collision* rCollision = resolve->GetComponent<Components::Collision>();
             Components::Physics* rPhysics = resolve->GetComponent<Components::Physics>();
-            Vector rVelocity = rPhysics->Velocity * ForLease->FrameRateController().GetDt() * remainingTime;
+            Vector rVelocity = rPhysics->Velocity * ForLease->FrameRateController().GetDt();
 
             Components::Transform* aTransform = against->GetComponent<Components::Transform>();
             Components::Collision* aCollision = against->GetComponent<Components::Collision>();
@@ -610,7 +610,7 @@ namespace ForLeaseEngine {
             float exitTime = std::min(exit.x, exit.y);
 
             Vector normal(0, 0);
-            float dist = 1;
+            float dist = 1.0f;
             CollisionSide side = CollisionSide::None;
 
             // No collision
