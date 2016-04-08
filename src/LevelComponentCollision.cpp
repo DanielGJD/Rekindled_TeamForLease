@@ -283,11 +283,22 @@ namespace ForLeaseEngine {
 
             
 
-            xDist -= (eCollision->HalfWidth() + cCollision->HalfWidth());
-            yDist -= (eCollision->HalfHeight() + cCollision->HalfHeight());
+            xDist -= (eCollision->ScaledHalfWidth() + cCollision->ScaledHalfWidth());
+            yDist -= (eCollision->ScaledHalfHeight() + cCollision->ScaledHalfHeight());
 
-            std::cout << eTransform->Position << " " << cTransform->Position << std::endl;
-            std::cout << xDist << " " << yDist << std::endl;
+            if (xDist < 0 && xDist > yDist) {
+                if (eTransform->Position.x > cTransform->Position.x) eTransform->Position.x += Epsilon;
+                else eTransform->Position.x -= Epsilon;
+            }
+            else if (yDist < 0 && yDist > xDist) {
+                if (eTransform->Position.y > cTransform->Position.y) eTransform->Position.y += Epsilon;
+                else eTransform->Position.y -= Epsilon;
+            }
+
+            //eTransform->Position.y += Epsilon;
+
+            //std::cout << eTransform->Position << " " << cTransform->Position << std::endl;
+            //std::cout << xDist << " " << yDist << std::endl;
         }
 
         void Collision::CheckAndResolveSweptCollisions(Entity* entity, std::vector<Entity *>& entities) {

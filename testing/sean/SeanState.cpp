@@ -26,6 +26,9 @@ using namespace ForLeaseEngine;
 SeanState::SeanState() : State("Sean's State") {}
 
 void SeanState::Load() {
+    Serializer serial;
+    serial.ReadFile(ForLease->Filesystem.AssetDirectory(FLE::Modules::Filesystem::AssetType::Level) + "Collision_Test");
+    Deserialize(serial);
     //FLE::LevelComponents::Renderer* renderer = new FLE::LevelComponents::Renderer(*this);
     //FLE::Entity* camera = AddEntity("Camera");
     //camera->AddComponent(new FLE::Components::Transform(*camera, FLE::Point(0,0), 1, 1, 0));
@@ -122,26 +125,26 @@ void SeanState::Load() {
     //smallPlatform2->AddComponent(new Components::MovingPlatform(*smallPlatform2, 15.0f, 15.0f, 0.25f, 5.0f, 1.0f, Components::MovingPlatform::Axis::Vertical));
     //smallPlatform2->AddComponent(new Components::Model(*smallPlatform2, true, false, false, "1-1Block.json"));
 
-    ////Entity* ceil = AddEntity("Ceiling");
-    ////ceil->AddComponent(new Components::Transform(*ceil, Point(0, 15), 20, 1, 0, 0));
-    //////floor->AddComponent(new Components::Physics(*floor, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
-    //////floor->AddComponent(new Components::EnemyPace(*floor, 3, 20, 0));
-    ////ceil->AddComponent(new Components::Collision(*ceil, 2, 2, true, 0, 0, true));
-    ////ceil->AddComponent(new Components::Model(*ceil, true, false, false, "1-1Block.json"));
+    Entity* ceil = AddEntity("Ceiling");
+    ceil->AddComponent(new Components::Transform(*ceil, Point(0, 15), 20, 1, 0, 0));
+    //floor->AddComponent(new Components::Physics(*floor, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
+    //floor->AddComponent(new Components::EnemyPace(*floor, 3, 20, 0));
+    ceil->AddComponent(new Components::Collision(*ceil, 2, 2, true, 0, 0, true));
+    ceil->AddComponent(new Components::Model(*ceil, true, false, false, "1-1Block.json"));
 
-    ////Entity* lWall = AddEntity("LeftWall");
-    ////lWall->AddComponent(new Components::Transform(*lWall, Point(-10, 0), 1, 20, 0, 0));
-    //////floor->AddComponent(new Components::Physics(*floor, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
-    //////floor->AddComponent(new Components::EnemyPace(*floor, 3, 20, 0));
-    ////lWall->AddComponent(new Components::Collision(*lWall, 2, 2, true, 0, 0, true));
-    ////lWall->AddComponent(new Components::Model(*lWall, true, false, false, "1-1Block.json"));
+    Entity* lWall = AddEntity("LeftWall");
+    lWall->AddComponent(new Components::Transform(*lWall, Point(-10, 0), 1, 20, 0, 0));
+    //floor->AddComponent(new Components::Physics(*floor, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
+    //floor->AddComponent(new Components::EnemyPace(*floor, 3, 20, 0));
+    lWall->AddComponent(new Components::Collision(*lWall, 2, 2, true, 0, 0, true));
+    lWall->AddComponent(new Components::Model(*lWall, true, false, false, "1-1Block.json"));
 
-    ////Entity* rWall = AddEntity("RightWall");
-    ////rWall->AddComponent(new Components::Transform(*rWall, Point(10, 0), 1, 20, 0, 0));
-    //////floor->AddComponent(new Components::Physics(*floor, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
-    //////floor->AddComponent(new Components::EnemyPace(*floor, 3, 20, 0));
-    ////rWall->AddComponent(new Components::Collision(*rWall, 2, 2, false, 0, 0, true));
-    ////rWall->AddComponent(new Components::Model(*rWall, true, false, false, "1-1Block.json"));
+    Entity* rWall = AddEntity("RightWall");
+    rWall->AddComponent(new Components::Transform(*rWall, Point(10, 0), 1, 20, 0, 0));
+    //floor->AddComponent(new Components::Physics(*floor, 1.0f, Vector(0, 0), Vector(0, 0), Vector(0, 0), false, true));
+    //floor->AddComponent(new Components::EnemyPace(*floor, 3, 20, 0));
+    rWall->AddComponent(new Components::Collision(*rWall, 2, 2, false, 0, 0, true));
+    rWall->AddComponent(new Components::Model(*rWall, true, false, false, "1-1Block.json"));
 
     ////Entity* floor2 = AddEntity("Floor2");
     ////floor2->AddComponent(new Components::Transform(*floor2, Point(0, -8), 20, 1, 0, 0));
@@ -188,9 +191,6 @@ void SeanState::Load() {
 }
 
 void SeanState::Initialize() {
-    Serializer serial;
-    serial.ReadFile(ForLease->Filesystem.AssetDirectory(FLE::Modules::Filesystem::AssetType::Level) + "Collision_Test");
-    Deserialize(serial);
 }
 
 void SeanState::Update() {
