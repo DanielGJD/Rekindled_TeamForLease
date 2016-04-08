@@ -286,11 +286,11 @@ namespace ForLeaseEngine {
             xDist -= (eCollision->ScaledHalfWidth() + cCollision->ScaledHalfWidth());
             yDist -= (eCollision->ScaledHalfHeight() + cCollision->ScaledHalfHeight());
 
-/*            if (xDist < 0 && xDist > yDist) {
+            if (xDist < 0 && xDist > yDist) {
                 if (eTransform->Position.x > cTransform->Position.x) eTransform->Position.x += Epsilon;
                 else eTransform->Position.x -= Epsilon;
             }
-            else*/ if (yDist < 0 && yDist > xDist) {
+            else if (yDist < 0 && yDist > xDist) {
                 if (eTransform->Position.y > cTransform->Position.y) eTransform->Position.y += Epsilon;
                 else eTransform->Position.y -= Epsilon;
             }
@@ -312,7 +312,7 @@ namespace ForLeaseEngine {
 
             while (time > 0.0f) {
                 Entity* collidedAgainst = 0;
-                SweptCollision firstCollision(Vector(0,0), 1.0f, CollisionSide::None);
+                SweptCollision firstCollision(Vector(0,0), time, CollisionSide::None);
 
                 for (Entity* checkAgainst : entities) {
                     if (entity == checkAgainst) continue;
@@ -392,6 +392,15 @@ namespace ForLeaseEngine {
 
                 if (firstCollision.Side != CollisionSide::None)
                     collision->CollidedWithSide = firstCollision.Side;
+            }
+
+            for (Entity* caEntity : entities) {
+                if (caEntity == entity) continue;
+                Components::Collision* caCollision = caEntity->GetComponent<Components::Collision>();
+                if (!caCollision->ResolveCollisions) continue;
+                
+                if (BoxesIntersect(collision->BotRight(), collision->TopLeft(), caCollision->BotRight(), caCollision->TopLeft()))
+                    PostfixCollision(entity, caEntity);
             }
 
             //std::vector<Entity *> collisionStarted;
