@@ -18,7 +18,8 @@
 
 namespace ForLeaseEngine {
 
-    MenuItem::MenuItem(MenuItemType type, std::string image) : Image(image), Type(type) {}
+    MenuItem::MenuItem(MenuItemType type, std::string text, bool option)
+        : Text(text), Type(type), Option(option) {}
 
     void MenuItem::Serialize(Serializer& root) {
     }
@@ -39,7 +40,7 @@ namespace ForLeaseEngine {
         void LoadLevel::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer loadLevel = root.GetChild("LoadLevel");
-            loadLevel.WriteString("Image", Image);
+            loadLevel.WriteString("Text", Text);
             loadLevel.WriteString("StateName", StateName);
             loadLevel.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(loadLevel, "LoadLevel");
@@ -47,7 +48,7 @@ namespace ForLeaseEngine {
 
         void LoadLevel::Deserialize(Serializer& root) {
             Serializer loadLevel = root.GetChild("LoadLevel");
-            loadLevel.ReadString("Image", Image);
+            loadLevel.ReadString("Text", Text);
             loadLevel.ReadString("StateName", StateName);
         }
 
@@ -62,14 +63,14 @@ namespace ForLeaseEngine {
         void NextLevel::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer nextLevel = root.GetChild("NextLevel");
-            nextLevel.WriteString("Image", Image);
+            nextLevel.WriteString("Text", Text);
             nextLevel.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(nextLevel, "NextLevel");
         }
 
         void NextLevel::Deserialize(Serializer& root) {
             Serializer nextLevel = root.GetChild("NextLevel");
-            nextLevel.ReadString("Image", Image);
+            nextLevel.ReadString("Text", Text);
         }
 
         // ==================================================================================
@@ -83,19 +84,19 @@ namespace ForLeaseEngine {
         void Quit::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer quit = root.GetChild("Quit");
-            quit.WriteString("Image", Image);
+            quit.WriteString("Text", Text);
             quit.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(quit, "Quit");
         }
 
         void Quit::Deserialize(Serializer& root) {
             Serializer quit = root.GetChild("Quit");
-            quit.ReadString("Image", Image);
+            quit.ReadString("Text", Text);
         }
 
         // ==================================================================================
 
-        ActivateOther::ActivateOther(std::string image, std::string otherMenu) 
+        ActivateOther::ActivateOther(std::string image, std::string otherMenu)
             : MenuItem(MenuItemType::ActivateOther, image), OtherMenu(otherMenu) {}
 
         void ActivateOther::Action() {
@@ -108,7 +109,7 @@ namespace ForLeaseEngine {
         void ActivateOther::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer activateOther = root.GetChild("ActivateOther");
-            activateOther.WriteString("Image", Image);
+            activateOther.WriteString("Text", Text);
             activateOther.WriteString("OtherMenu", OtherMenu);
             activateOther.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(activateOther, "ActivateOther");
@@ -116,7 +117,7 @@ namespace ForLeaseEngine {
 
         void ActivateOther::Deserialize(Serializer& root) {
             Serializer activateOther = root.GetChild("ActivateOther");
-            activateOther.ReadString("Image", Image);
+            activateOther.ReadString("Text", Text);
             activateOther.ReadString("OtherMenu", OtherMenu);
         }
 
@@ -139,7 +140,7 @@ namespace ForLeaseEngine {
         void ActivateAndDeactivate::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer actAndDeact = root.GetChild("ActivateAndDeactivate");
-            actAndDeact.WriteString("Image", Image);
+            actAndDeact.WriteString("Text", Text);
             actAndDeact.WriteString("ToDeactivate", ToDeactivate);
             actAndDeact.WriteString("ToActivate", ToActivate);
             actAndDeact.WriteUint("Type", static_cast<unsigned>(Type));
@@ -148,7 +149,7 @@ namespace ForLeaseEngine {
 
         void ActivateAndDeactivate::Deserialize(Serializer& root) {
             Serializer activateOther = root.GetChild("ActivateAndDeactivate");
-            activateOther.ReadString("Image", Image);
+            activateOther.ReadString("Text", Text);
             activateOther.ReadString("ToDeactivate", ToDeactivate);
             activateOther.ReadString("ToActivate", ToActivate);
         }
@@ -166,14 +167,14 @@ namespace ForLeaseEngine {
         void ResumeGame::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer resume = root.GetChild("ResumeGame");
-            resume.WriteString("Image", Image);
+            resume.WriteString("Text", Text);
             resume.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(resume, "ResumeGame");
         }
 
         void ResumeGame::Deserialize(Serializer& root) {
             Serializer resume = root.GetChild("ResumeGame");
-            resume.ReadString("Image", Image);
+            resume.ReadString("Text", Text);
         }
 
         // ==================================================================================
@@ -200,7 +201,7 @@ namespace ForLeaseEngine {
         void ActivateAndDeactivateAndMakeInvisible::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer actAndDeact = root.GetChild("ActivateAndDeactivateAndMakeInvisible");
-            actAndDeact.WriteString("Image", Image);
+            actAndDeact.WriteString("Text", Text);
             actAndDeact.WriteString("ToDeactivate", ToDeactivate);
             actAndDeact.WriteString("ToActivate", ToActivate);
             actAndDeact.WriteString("ToMakeInvisible", ToMakeInvisible);
@@ -210,7 +211,7 @@ namespace ForLeaseEngine {
 
         void ActivateAndDeactivateAndMakeInvisible::Deserialize(Serializer& root) {
             Serializer activateOther = root.GetChild("ActivateAndDeactivateAndMakeInvisible");
-            activateOther.ReadString("Image", Image);
+            activateOther.ReadString("Text", Text);
             activateOther.ReadString("ToDeactivate", ToDeactivate);
             activateOther.ReadString("ToActivate", ToActivate);
             activateOther.ReadString("ToMakeInvisible", ToMakeInvisible);
@@ -240,7 +241,7 @@ namespace ForLeaseEngine {
         void ActivateAndDeactivateAndMakeVisible::Serialize(Serializer& root) {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer actAndDeact = root.GetChild("ActivateAndDeactivateAndMakeVisible");
-            actAndDeact.WriteString("Image", Image);
+            actAndDeact.WriteString("Text", Text);
             actAndDeact.WriteString("ToDeactivate", ToDeactivate);
             actAndDeact.WriteString("ToActivate", ToActivate);
             actAndDeact.WriteString("ToMakeVisible", ToMakeVisible);
@@ -250,12 +251,196 @@ namespace ForLeaseEngine {
 
         void ActivateAndDeactivateAndMakeVisible::Deserialize(Serializer& root) {
             Serializer activateOther = root.GetChild("ActivateAndDeactivateAndMakeVisible");
-            activateOther.ReadString("Image", Image);
+            activateOther.ReadString("Text", Text);
             activateOther.ReadString("ToDeactivate", ToDeactivate);
             activateOther.ReadString("ToActivate", ToActivate);
             activateOther.ReadString("ToMakeVisible", ToMakeVisible);
         }
 
     } // MenuItems
+
+    OptionMenuItem::OptionMenuItem(MenuItemType type, std::string text, bool affectsWindow)
+        : MenuItem(type, text, true), FirstText(text), AffectsWindow(affectsWindow) {}
+
+    namespace OptionMenuItems {
+        FinalAccept::FinalAccept(std::string parentMenuName, std::string text)
+            : OptionMenuItem(MenuItemType::OptionAccept, text),
+              ParentMenuName(parentMenuName) {}
+
+        void FinalAccept::Action() {
+            Entity* parentMenu = ForLease->GameStateManager().CurrentState().GetEntityByName(ParentMenuName);
+            if (parentMenu) {
+                Components::Menu* menu = parentMenu->GetComponent<Components::Menu>();
+                Systems::WindowProperties windowProperties = ForLease->GameWindow->GetProperties();
+                bool windowChanged = false;
+                if (menu) {
+                    for (MenuItem* item : menu->Items) {
+                        if (item->Option) {
+                            OptionMenuItem* option = reinterpret_cast<OptionMenuItem*>(item);
+                            if (option->AffectsWindow && option->Dirty) windowChanged = true;
+                            option->Accept(windowProperties);
+                            option->Dirty = false;
+                        }
+                    }
+                }
+                if (windowChanged) {
+                    ForLease->GameWindow->SetProperties(windowProperties);
+                    ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->Reload();
+                }
+            }
+        }
+
+        void FinalAccept::Accept(Systems::WindowProperties& windowProperties) {}
+
+        Resolution::ItemizedResolution::ItemizedResolution() : Index(0) {
+            Resolutions.push_back(Res(1920, 1080));
+//            Resolutions.push_back(Res(1366, 768));
+//            Resolutions.push_back(Res(1280, 1024));
+//            Resolutions.push_back(Res(1280, 800));
+            Resolutions.push_back(Res(1280, 720));
+//            Resolutions.push_back(Res(1024, 768));
+//            Resolutions.push_back(Res(800, 600));
+        }
+
+        void Resolution::ItemizedResolution::SetIndex(int x, int y) {
+            for (unsigned i = 0; i < Resolutions.size(); ++i) {
+                if (Resolutions[i].X == x && Resolutions[i].Y == y) {
+                    Index = i;
+                    OriginalIndex = i;
+                    return;
+                }
+            }
+
+            Index = 0;
+            OriginalIndex = 0;
+            return;
+        }
+
+        void Resolution::ItemizedResolution::IncrementIndex() {
+            ++Index;
+            if (Index >= Resolutions.size()) {
+                Index = 0;
+            }
+        }
+
+        Resolution::ItemizedResolution::Res Resolution::ItemizedResolution::GetNextResolution() {
+            IncrementIndex();
+            return GetResolution();
+        }
+
+        Resolution::ItemizedResolution::Res Resolution::ItemizedResolution::GetResolution() {
+            return Resolutions[Index];
+        }
+
+        bool Resolution::ItemizedResolution::IsDirty() {
+            return !(Index == OriginalIndex);
+        }
+
+        void Resolution::ItemizedResolution::ClearDirty() {
+            OriginalIndex = Index;
+        }
+
+        Resolution::Resolution(std::string text)
+            : OptionMenuItem(MenuItemType::OptionResolution, text, true),
+              Current()
+        {
+            Current.SetIndex(ForLease->GameWindow->GetXResolution(), ForLease->GameWindow->GetYResolution());
+
+            SetText();
+        }
+
+        void Resolution::SetText() {
+            std::stringstream ss;
+            ss << FirstText;
+            ItemizedResolution::Res currentRes = Current.GetResolution();
+            ss << currentRes.X << "x" << currentRes.Y;
+            Text = ss.str();
+        }
+
+        void Resolution::Action() {
+            Current.IncrementIndex();
+            SetText();
+
+            Dirty = Current.IsDirty();
+        }
+
+        void Resolution::Accept(Systems::WindowProperties& windowProperties) {
+            ItemizedResolution::Res currentRes = Current.GetResolution();
+            //ForLease->GameWindow->SetResolution(currentRes.X, currentRes.Y);
+            //ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->Reload();
+            windowProperties.xResolution = currentRes.X;
+            windowProperties.yResolution = currentRes.Y;
+            Current.ClearDirty();
+            Dirty = Current.IsDirty();
+        }
+
+        Fullscreen::Fullscreen(std::string text)
+            : OptionMenuItem(MenuItemType::OptionFullscreen, text, true)
+        {
+            IsFullscreen = ForLease->GameWindow->GetFullscreen();
+            OriginalFullscreen = IsFullscreen;
+            SetText();
+        }
+
+        void Fullscreen::SetText() {
+            std::stringstream ss;
+            ss << FirstText;
+            if (IsFullscreen) {
+                ss << "On";
+            } else {
+                ss << "Off";
+            }
+            Text = ss.str();
+        }
+
+        void Fullscreen::Action() {
+            IsFullscreen = !IsFullscreen;
+            SetText();
+
+            if (IsFullscreen != OriginalFullscreen)
+                Dirty = true;
+            else
+                Dirty = false;
+        }
+
+        void Fullscreen::Accept(Systems::WindowProperties& windowProperties) {
+            //ForLease->GameWindow->SetFullscreen(IsFullscreen);
+            OriginalFullscreen = IsFullscreen;
+            Dirty = false;
+            windowProperties.fullscreen = IsFullscreen;
+        }
+
+        Volume::Volume(std::string text, unsigned volumeIncrement, unsigned maxVolume)
+            : OptionMenuItem(MenuItemType::OptionVolume, text),
+              CurrentVolume(100),
+              VolumeIncrement(volumeIncrement),
+              MaxVolume(maxVolume)
+        {
+            SetText();
+        }
+
+        void Volume::SetText() {
+            std::stringstream ss;
+            ss << FirstText;
+            ss << CurrentVolume;
+            Text = ss.str();
+        }
+
+        void Volume::Action() {
+            CurrentVolume += VolumeIncrement;
+            if (CurrentVolume > MaxVolume) {
+                CurrentVolume = 0;
+            }
+
+            Dirty = true;
+
+            SetText();
+        }
+
+        void Volume::Accept(Systems::WindowProperties& windowProperties) {
+            std::cout << CurrentVolume << std::endl;
+        }
+
+    } // OptionMenuItems
 
 } // ForLeaseEngine

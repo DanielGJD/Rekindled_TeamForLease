@@ -34,7 +34,7 @@ private:
         FadingOut,
         Hold
     };
-    float FadeInTime = 5.0f;
+    float FadeInTime = 1.0f;
     float HoldTime = 2.0f;
     float FadeOutTime = 1.0f;
     FadeState CurrentFadeState;

@@ -33,6 +33,7 @@ namespace ForLeaseEngine {
 
         UsefulObjectInventory::~UsefulObjectInventory() {
             ForLease->Dispatcher.Detach(this, "Collision");
+            ForLease->Dispatcher.Detach(this, "KeyDown");
         }
 
         void UsefulObjectInventory::Initialize() {

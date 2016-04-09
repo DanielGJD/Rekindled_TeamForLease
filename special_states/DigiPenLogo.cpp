@@ -16,6 +16,7 @@
 #include "GameStateManager.h"
 #include "Ray.h"
 #include "MouseButtonEvent.h"
+#include "Interpolation.h"
 
 #include <iostream>
 #include <string>
@@ -35,16 +36,27 @@ void DigiPenLogo::Initialize() {
     camera->AddComponent(new FLE::Components::Camera(*camera, 0, 1, 50));
     renderer->SetCamera(*camera);
     AddLevelComponent(renderer);
-    AddLevelComponent(new LevelComponents::Physics(*this, Vector(0, -10)));
-    AddLevelComponent(new LevelComponents::Collision(*this));
-    AddLevelComponent(new LevelComponents::Light(*this, Color(0, 0, 0, 1)));
+    AddLevelComponent(new LevelComponents::Light(*this, Color(0.0f, 0.0f, 0.0f, 1.0f)));
+    //AddLevelComponent(new LevelComponents::Physics(*this, Vector(0, -10)));
+    //AddLevelComponent(new LevelComponents::Collision(*this));
 
+
+    //Entity* background = AddEntity("Background");
+    //background->AddComponent(new Components::Transform(*background, 0, 0, 45, 25));
+    //background->AddComponent(new Components::Sprite(*background));
+    ////ForLease->Resources.LoadTexture("bg7.png");
+    ////Texture* texture = Texture::CreateTexture("bg7.png");
+    ////TextureRegion textureRegion(texture, 0, texture->GetWidth(), 0, texture->GetHeight());
+    //background->GetComponent<Components::Sprite>(true)->SetSpriteSource("bg7_test2.png");
+    //background->GetComponent<Components::Sprite>(true)->AnimationActive = false;
+
+    //Entity* backgroundMask = AddEntity("BackgroundMask");
+    //backgroundMask->AddComponent(new Components::Transform(*backgroundMask, 0, 0, 50, 50));
+    //backgroundMask->AddComponent(new Components::Model(*backgroundMask, true, false, false, "1-1Block.json", "", Color(0.75f, 0.75f, 0.75f), FLE::MULTIPLY));
 
     Entity* background = AddEntity("Background");
-    background->AddComponent(new Components::Transform(*background, 0, 0, 50, 50, 0, -20));
-    background->AddComponent(new Components::Sprite(*background));
-    background->GetComponent<Components::Sprite>(true)->SetSpriteSource("bg7.png");
-    background->GetComponent<Components::Sprite>(true)->AnimationActive = false;
+    background->AddComponent(new Components::Transform(*background, 0, 0, 50, 50));
+    background->AddComponent(new Components::Model(*background, true, false, false, "1-1Block.json", "", Color(0, 0, 0)));
 
     Entity* logo = AddEntity("Logo");
     logo->AddComponent(new Components::Transform(*logo, Point(0, 0), 20, 20));
@@ -52,13 +64,19 @@ void DigiPenLogo::Initialize() {
     logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("DigiPenWhiteRough.png");
     logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
 
-    Entity* light = AddEntity("Light");
-    light->AddComponent(new Components::Transform(*light, Point(0, 25)));
-    light->AddComponent(new Components::Light(*light));
-    Components::Light* lightComp = light->GetComponent<Components::Light>();
-    lightComp->LightColor = Color(1, 1, 1, 0);
+//    Entity* follow = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(-25.0f, 0.0f), "MenuFollow");
+//    follow->GetComponent<Components::Follow>()->Offset = Vector(-2.0f, 2.5f);
+//    follow->GetComponent<Components::Light>()->Radius = 5.0f;
+    //follow->GetComponent<Components::Follow>()->FollowEntityID = player->GetID();
+    //follow->GetComponent<Components::Transform>()->Position = player->GetComponent<Components::Transform>()->Position + follow->GetComponent<Components::Follow>()->Offset;
+//
+//    Entity* light = AddEntity("Light");
+//    light->AddComponent(new Components::Transform(*light, Point(-44,0)));
+//    light->AddComponent(new Components::Light(*light, true, true, false, Vector(), Vector(1, 0)));
+//    Components::Light* lightComp = light->GetComponent<Components::Light>();
+//    lightComp->LightColor = Color(1, 1, 1, 1);
 
-    CurrentFadeState = FadingIn;
+    CurrentFadeState = FadeState::FadingIn;
 
     ForLease->Dispatcher.Attach(NULL, this, "MouseButtonDown", &DigiPenLogo::OnMouseButtonEvent, NULL);
 
@@ -86,35 +104,57 @@ void DigiPenLogo::Update() {
 
     float dt = ForLease->FrameRateController().GetDt();
 
-    Entity* light = GetEntityByName("Light");
-    Components::Light* lightComp = light->GetComponent<Components::Light>();
-    Color currColor = lightComp->LightColor;
-    float currAlpha = currColor.GetA();
+//    Entity* light = GetEntityByName("Light");
+//    Components::Light* lightComp = light->GetComponent<Components::Light>();
+//    Color currColor = lightComp->LightColor;
+//    float currAlpha = currColor.GetA();
 
     LevelComponents::Light* lcLightComp = GetLevelComponent<LevelComponents::Light>();
+    float currAlpha = lcLightComp->AmbientLight.GetA();
 
     if (CurrentFadeState == FadeState::FadingIn) {
-        currAlpha += (1 / FadeInTime) * dt;
-        if (currAlpha >= 1) {
-            currAlpha = 1;
+        currAlpha -= (1 / FadeInTime) * dt;
+        if (currAlpha <= 0) {
+            currAlpha = 0;
             CurrentFadeState = FadeState::Hold;
         }
-        lightComp->LightColor = Color(1, 1, 1, currAlpha);
-        lcLightComp->AmbientLight = Color(0, 0, 0, 1 - (currAlpha * .5));
+        lcLightComp->AmbientLight = Color(0, 0, 0, currAlpha);
     } else if (CurrentFadeState == FadeState::Hold) {
         HoldTime -= dt;
         if (HoldTime <= 0)
             CurrentFadeState = FadeState::FadingOut;
-        lcLightComp->AmbientLight = Color(0, 0, 0, 0.5);
+        lcLightComp->AmbientLight = Color(0,0,0,0);
     } else if (CurrentFadeState == FadeState::FadingOut) {
-        currAlpha -= (1 / FadeOutTime) * dt;
-        if (currAlpha <= 0) {
-            currAlpha = 0;
+        currAlpha += (1 / FadeOutTime) * dt;
+        if (currAlpha >= 1) {
+            currAlpha = 1;
             ForLease->GameStateManager().SetAction(ForLeaseEngine::Modules::StateAction::Next);
         }
-        lightComp->LightColor = Color(1, 1, 1, currAlpha);
-        lcLightComp->AmbientLight = Color(0, 0, 0, 1 - (currAlpha * 0.5));
+        lcLightComp->AmbientLight = Color(0,0,0,currAlpha);
     }
+
+//    if (CurrentFadeState == FadeState::FadingIn) {
+//        currAlpha += (1 / FadeInTime) * dt;
+//        if (currAlpha >= 1) {
+//            currAlpha = 1;
+//            CurrentFadeState = FadeState::Hold;
+//        }
+//        lightComp->LightColor = Color(1, 1, 1, currAlpha);
+//        lcLightComp->AmbientLight = Color(0, 0, 0, 1 - (currAlpha * .5));
+//    } else if (CurrentFadeState == FadeState::Hold) {
+//        HoldTime -= dt;
+//        if (HoldTime <= 0)
+//            CurrentFadeState = FadeState::FadingOut;
+//        lcLightComp->AmbientLight = Color(0, 0, 0, 0.5);
+//    } else if (CurrentFadeState == FadeState::FadingOut) {
+//        currAlpha -= (1 / FadeOutTime) * dt;
+//        if (currAlpha <= 0) {
+//            currAlpha = 0;
+//            ForLease->GameStateManager().SetAction(ForLeaseEngine::Modules::StateAction::Next);
+//        }
+//        lightComp->LightColor = Color(1, 1, 1, currAlpha);
+//        lcLightComp->AmbientLight = Color(0, 0, 0, 1 - (currAlpha * 0.5));
+//    }
 
     for (FLE::Entity* entity : Entities) {
         entity->Update();
@@ -124,7 +164,7 @@ void DigiPenLogo::Update() {
         levelComponent->Update(Entities);
     }
 
-    LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
+//    LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
 
     ForLease->GameWindow->UpdateGameWindow();
 }
