@@ -14,6 +14,11 @@
 #include <SDL.h>
 
 namespace ForLeaseEngine {
+    namespace Mouse {
+        void SetMouseVisible(bool visible = true);
+        void ToggleMouseVisible();
+    }
+
     class MouseButtonState {
         public:
             static const int Pressed = SDL_PRESSED;
