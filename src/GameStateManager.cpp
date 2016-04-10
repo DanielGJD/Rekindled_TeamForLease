@@ -203,6 +203,10 @@ namespace ForLeaseEngine {
             return States.size();
         }
 
+        StateAction GameStateManager::GetCurrentAction() const {
+            return Action;
+        }
+
     }
 
 } // ForLeaseEngine
