@@ -59,6 +59,7 @@ namespace ForLeaseEngine {
                 void FocusUnfreeze(const Event* e);
                 State& CurrentState();
                 unsigned NumLevels();
+                StateAction GetCurrentAction() const;
             private:
                 State* StateCurrentlyExecuting;
                 //! A reference to the engine
