@@ -92,6 +92,7 @@ void Credits::Initialize() {
 
     Entity* follow = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(-40.0f, -20.0f), "MenuFollow");
     follow->GetComponent<Components::Follow>()->Offset = Vector(-1.5f, -1.0f);
+    follow->GetComponent<Components::Follow>()->Speed = 4;
     follow->GetComponent<Components::Light>()->Radius = 5.0f;
 
     Entity* copyright = AddEntity("Copyright");
@@ -137,8 +138,8 @@ void Credits::Initialize() {
     addCredits->AddComponent(new Components::Transform(*addCredits, Point(-40.0f, -5.5f), 1.5f, 1.5f));
     addCredits->AddComponent(new Components::SpriteText(*addCredits, "Liberation_Serif.fnt"));
     std::stringstream ss2;
-    ss2 << "Art.........Alex Beavin\n"
-        << "Audio....Eric Bergman\n";
+    ss2 << "Background Art...Alex Beavin\n"
+        << "Audio............Eric Bergman\n";
     addCredits->GetComponent<Components::SpriteText>()->Text = ss2.str();
 
     Entity* menu = AddEntity("Menu");

@@ -264,6 +264,43 @@ namespace ForLeaseEngine {
             return !(br1.x < tl2.x || tl1.x > br2.x || br1.y > tl2.y || tl1.y < br2.y);
         }
 
+        void PostfixCollision(Entity* entity, Entity* collidedAgainst) {
+            //std::cout << "Do stuff here.";
+            Components::Transform* eTransform = entity->GetComponent<Components::Transform>();
+            Components::Collision* eCollision = entity->GetComponent<Components::Collision>();
+            Components::Transform* cTransform = collidedAgainst->GetComponent<Components::Transform>();
+            Components::Collision* cCollision = collidedAgainst->GetComponent<Components::Collision>();
+
+            float xDist, yDist;
+
+            if (eTransform->Position.x > cTransform->Position.x) xDist = eTransform->Position.x - cTransform->Position.x;
+            else xDist = cTransform->Position.x - eTransform->Position.x;
+            xDist = std::abs(xDist);
+
+            if (eTransform->Position.y > cTransform->Position.y) yDist = eTransform->Position.y - cTransform->Position.y;
+            else yDist = cTransform->Position.y - eTransform->Position.y;
+            yDist = std::abs(yDist);
+
+            
+
+            xDist -= (eCollision->ScaledHalfWidth() + cCollision->ScaledHalfWidth());
+            yDist -= (eCollision->ScaledHalfHeight() + cCollision->ScaledHalfHeight());
+
+            if (xDist < 0 && xDist > yDist) {
+                if (eTransform->Position.x > cTransform->Position.x) eTransform->Position.x += Epsilon;
+                else eTransform->Position.x -= Epsilon;
+            }
+            else if (yDist < 0 && yDist > xDist) {
+                if (eTransform->Position.y > cTransform->Position.y) eTransform->Position.y += Epsilon;
+                else eTransform->Position.y -= Epsilon;
+            }
+
+            //eTransform->Position.y += Epsilon;
+
+            //std::cout << eTransform->Position << " " << cTransform->Position << std::endl;
+            //std::cout << xDist << " " << yDist << std::endl;
+        }
+
         void Collision::CheckAndResolveSweptCollisions(Entity* entity, std::vector<Entity *>& entities) {
             float time = 1.0f;
 
@@ -275,7 +312,7 @@ namespace ForLeaseEngine {
 
             while (time > 0.0f) {
                 Entity* collidedAgainst = 0;
-                SweptCollision firstCollision(Vector(0,0), 1.0f, CollisionSide::None);
+                SweptCollision firstCollision(Vector(0,0), time, CollisionSide::None);
 
                 for (Entity* checkAgainst : entities) {
                     if (entity == checkAgainst) continue;
@@ -348,11 +385,23 @@ namespace ForLeaseEngine {
                 time -= firstCollision.Distance;
 
                 //if (collidedAgainst && collidedAgainst->GetComponent<Components::Collision>()->ResolveCollisions)
-                    ResolveIndividualSweptCollision(entity, firstCollision, time);
+                ResolveIndividualSweptCollision(entity, firstCollision, time);
+
+                //if (collidedAgainst && BoxesIntersect(collision->BotRight(), collision->TopLeft(), collidedAgainst->GetComponent<Components::Collision>()->BotRight(), collidedAgainst->GetComponent<Components::Collision>()->TopLeft()))
+                //    PostfixCollision(entity, collidedAgainst);
 
                 if (firstCollision.Side != CollisionSide::None)
                     collision->CollidedWithSide = firstCollision.Side;
             }
+
+            //for (Entity* caEntity : entities) {
+            //    if (caEntity == entity) continue;
+            //    Components::Collision* caCollision = caEntity->GetComponent<Components::Collision>();
+            //    if (!caCollision->ResolveCollisions) continue;
+            //    
+            //    if (BoxesIntersect(collision->BotRight(), collision->TopLeft(), caCollision->BotRight(), caCollision->TopLeft()))
+            //        PostfixCollision(entity, caEntity);
+            //}
 
             //std::vector<Entity *> collisionStarted;
             std::vector<Entity *> collisionEnded;
@@ -503,7 +552,7 @@ namespace ForLeaseEngine {
             Components::Transform* rTransform = resolve->GetComponent<Components::Transform>();
             Components::Collision* rCollision = resolve->GetComponent<Components::Collision>();
             Components::Physics* rPhysics = resolve->GetComponent<Components::Physics>();
-            Vector rVelocity = rPhysics->Velocity * ForLease->FrameRateController().GetDt() * remainingTime;
+            Vector rVelocity = rPhysics->Velocity * ForLease->FrameRateController().GetDt();
 
             Components::Transform* aTransform = against->GetComponent<Components::Transform>();
             Components::Collision* aCollision = against->GetComponent<Components::Collision>();
@@ -561,7 +610,7 @@ namespace ForLeaseEngine {
             float exitTime = std::min(exit.x, exit.y);
 
             Vector normal(0, 0);
-            float dist = 1;
+            float dist = 1.0f;
             CollisionSide side = CollisionSide::None;
 
             // No collision
@@ -615,7 +664,7 @@ namespace ForLeaseEngine {
         void Collision::ResolveIndividualSweptCollision(Entity* resolve, Vector movement, SweptCollision collision) {
             Components::Transform* rTransform = resolve->GetComponent<Components::Transform>();
 
-            rTransform->Position += movement * collision.Distance;
+            rTransform->Position += movement * (collision.Distance - Epsilon);
         }
 
         void Collision::CheckAndResolveCollision(Entity* entity, std::vector<Entity *>& entities) {

@@ -707,6 +707,10 @@ namespace ForLeaseEngine {
                 ModelToScreen(vertices[i], vertices[i]);
             }
             SetTexture(texture);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glBegin(GL_QUADS);
                 //for(int i = 0; i < 4; ++i) {
                 //    glTexCoord2f(region->GetUV()[i][0], region->GetUV()[i][1]);
@@ -722,6 +726,8 @@ namespace ForLeaseEngine {
                 glVertex2f(vertices[3][0], vertices[3][1]);
             glEnd();
             TriCount += 2;
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         }
 
         void Renderer::DrawMesh(Mesh* mesh, bool drawEdges, bool drawVertices, std::string animationName, unsigned int frame, float t, Color const& color) {

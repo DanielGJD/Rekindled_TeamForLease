@@ -123,6 +123,10 @@ namespace ForLeaseEngine
                 plat.WriteFloat("AffectedFieldHeight", AffectedFieldHeight);
                 plat.WriteFloat("PauseTimer", PauseTimer);
                 plat.WriteInt("Direction", static_cast<int>(Direction));
+                plat.WriteInt("CurrentAction", static_cast<int>(CurrentAction));
+                plat.WriteInt("NextAction", static_cast<int>(NextAction));
+                plat.WriteFloat("Moved", Moved);
+                plat.WriteFloat("CurrentPauseTimer", CurrentPauseTimer);
                 plat.WriteUlonglong("Type", static_cast<unsigned long long>(Type));
                 root.Append(plat, "MovingPlatform");
             }
@@ -135,9 +139,26 @@ namespace ForLeaseEngine
                 plat.ReadFloat("BackSpeed", BackSpeed);
                 plat.ReadFloat("AffectedFieldHeight", AffectedFieldHeight);
                 plat.ReadFloat("PauseTimer", PauseTimer);
+
                 int direction;
                 plat.ReadInt("Direction", direction);
                 Direction = static_cast<Axis>(direction);
+
+                int currentAction, nextAction;
+                plat.ReadInt("CurrentAction", currentAction);
+                plat.ReadInt("NextAction", nextAction);
+                CurrentAction = static_cast<Action>(currentAction);
+                NextAction = static_cast<Action>(nextAction);
+
+                // This is for the special case where we have a level that got serialized
+                // before the serialization fixes.
+                if (CurrentAction == Action::Pause && NextAction == Action::Pause) {
+                    CurrentAction = Action::Away;
+                    NextAction = Action::Away;
+                }
+
+                plat.ReadFloat("CurrentPauseTimer", CurrentPauseTimer);
+                plat.ReadFloat("Moved", Moved);
             }
 
             Vector MovingPlatform::LastMovement(bool scaleDt) {

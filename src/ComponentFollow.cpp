@@ -81,6 +81,7 @@ namespace ForLeaseEngine {
             follow.WriteBool("Active", Active);
             follow.WriteFloat("FollowBeginDistance", FollowBeginDistance);
             follow.WriteFloat("FollowEndDistance", FollowEndDistance);
+            follow.WriteFloat("Speed", Speed);
             follow.WriteUint("FollowEntityID", FollowEntityID);
             follow.WriteVec("Offset", Offset);
             root.Append(follow, "Follow");
@@ -94,6 +95,8 @@ namespace ForLeaseEngine {
             follow.ReadUint("FollowEntityID", id);
             FollowEntityID = id;
             follow.ReadFloat("FollowEndDistance", FollowEndDistance);
+            follow.ReadFloat("Speed", Speed);
+            if (Speed == 0.0f) Speed = 1.0f; // Fix?
             follow.ReadVec("Offset", Offset);
         }
     }
