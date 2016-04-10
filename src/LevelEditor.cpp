@@ -122,6 +122,7 @@ namespace ForLeaseEngine
          float visionAngle = 0;
          float owlDir1 = 0;
          float owlDir2 = 0;
+         float overlayColor[4] = { 0 };
 
          std::string blueprintDir = "blueprints/";
          std::string levelDir     = "levels/";

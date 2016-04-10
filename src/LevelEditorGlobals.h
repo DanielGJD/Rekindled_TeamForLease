@@ -97,6 +97,7 @@ namespace ForLeaseEngine
         extern float visionAngle;
         extern float owlDir1;
         extern float owlDir2;
+        extern float overlayColor[4];
 
         extern std::string levelDir;
         extern std::string blueprintDir;

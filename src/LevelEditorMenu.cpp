@@ -166,6 +166,9 @@ namespace ForLeaseEngine
             }
         }
 
+        ImGui::ColorEdit4("Overlay Color", leg::overlayColor);
+        leg::render->SetOverlayColor(leg::overlayColor[0], leg::overlayColor[1], leg::overlayColor[2], leg::overlayColor[3]);
+
         if (ImGui::CollapsingHeader("Camera"))
         {
             ImGui::Text("Position");
