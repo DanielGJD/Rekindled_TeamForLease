@@ -468,6 +468,10 @@ namespace ForLeaseEngine
                 leg::render = new LevelComponents::Renderer(*this);
                 AddLevelComponent(leg::render);
             }
+            leg::overlayColor[0] = leg::render->GetOverlayColor().GetR();
+            leg::overlayColor[1] = leg::render->GetOverlayColor().GetG();
+            leg::overlayColor[2] = leg::render->GetOverlayColor().GetB();
+            leg::overlayColor[3] = leg::render->GetOverlayColor().GetA();
             unsigned long camID = leg::render->GetCameraID();
             leg::levelCamera = GetEntityByID(camID);
             leg::camera = GetEntityByName("LevelEditorCamera", true);
