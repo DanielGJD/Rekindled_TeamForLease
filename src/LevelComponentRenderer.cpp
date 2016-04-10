@@ -411,6 +411,10 @@ namespace ForLeaseEngine {
             OverlayColor = Color(r, g, b, a);
         }
 
+        Color Renderer::GetOverlayColor() {
+            return OverlayColor;
+        }
+
         void Renderer::SetOutline(float r, float g, float b, float a, float width) {
             OutlineColor = Color(r, g, b, a);
             OutlineWidth = width;
