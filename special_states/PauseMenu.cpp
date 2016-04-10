@@ -18,6 +18,7 @@
 #include "Mesh.h"
 #include "GameStateManager.h"
 #include "Ray.h"
+#include "Mouse.h"
 
 #include <iostream>
 #include <string>
@@ -31,6 +32,7 @@ void PauseMenu::Load() {
 }
 
 void PauseMenu::Initialize() {
+    Mouse::SetMouseVisible(true);
     FLE::LevelComponents::Renderer* renderer = new FLE::LevelComponents::Renderer(*this);
     FLE::Entity* camera = AddEntity("Camera");
     camera->AddComponent(new FLE::Components::Transform(*camera, FLE::Point(0, 0), 1, 1, 0));
@@ -135,6 +137,7 @@ void PauseMenu::Deinitialize() {
     DeleteAllEntities();
     DeleteAllLevelComponents();
     ForLease->Dispatcher.Detach(this, "KeyDown");
+    Mouse::SetMouseVisible(false);
 }
 
 void PauseMenu::Unload() {}
