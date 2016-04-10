@@ -61,7 +61,7 @@ void DigiPenLogo::Initialize() {
     Entity* logo = AddEntity("Logo");
     logo->AddComponent(new Components::Transform(*logo, Point(0, 0), 20, 20));
     logo->AddComponent(new Components::Sprite(*logo));
-    logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("DigiPen_White_1024.tga");
+    logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("DigiPen_White_1024.png");
     //logo->GetComponent<Components::Sprite>(true)->SpriteColor = Color(1, 1, 1, 1);
     //logo->GetComponent<Components::Sprite>(true)->BlendingMode = ALPHA;
     logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;

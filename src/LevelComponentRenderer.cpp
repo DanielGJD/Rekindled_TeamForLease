@@ -707,6 +707,8 @@ namespace ForLeaseEngine {
                 ModelToScreen(vertices[i], vertices[i]);
             }
             SetTexture(texture);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
             glBegin(GL_QUADS);
                 //for(int i = 0; i < 4; ++i) {
                 //    glTexCoord2f(region->GetUV()[i][0], region->GetUV()[i][1]);

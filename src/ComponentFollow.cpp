@@ -96,6 +96,7 @@ namespace ForLeaseEngine {
             FollowEntityID = id;
             follow.ReadFloat("FollowEndDistance", FollowEndDistance);
             follow.ReadFloat("Speed", Speed);
+            if (Speed == 0.0f) Speed = 1.0f; // Fix?
             follow.ReadVec("Offset", Offset);
         }
     }
