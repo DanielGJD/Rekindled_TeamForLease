@@ -76,12 +76,12 @@ void Credits::Initialize() {
     //background->GetComponent<Components::Sprite>(true)->AnimationActive = false;
 
     Entity* player = AddEntity("Player");
-    player->AddComponent(new Components::Transform(*player, Point(15, -15), 15, 15));
-    Components::Model* model = new Components::Model(*player, true, false, true, "fox.json");
-    model->SetAnimation("a");
+    player->AddComponent(new Components::Transform(*player, Point(25.0f, -11.0f), 15, 15));
+    Components::Model* model = new Components::Model(*player, true, false, true, "foxSit.json");
+    model->SetAnimation("foxSitAni.json");
     model->AnimationActive = true;
     model->Looping = true;
-    model->FrameRate = 4;
+    model->FrameRate = 3.0f;
     player->AddComponent(model);
 
 //    Entity* logo = AddEntity("Logo");
@@ -95,52 +95,56 @@ void Credits::Initialize() {
     follow->GetComponent<Components::Follow>()->Speed = 4;
     follow->GetComponent<Components::Light>()->Radius = 5.0f;
 
-    Entity* copyright = AddEntity("Copyright");
-    copyright->AddComponent(new Components::Transform(*copyright, Point(-40.0f, 22.0f), 2.0f, 2.0f));
-    copyright->AddComponent(new Components::SpriteText(*copyright, "Liberation_Serif.fnt", "Copyright 2015-2016 DigiPen Institute of Technology, All Rights Reserved", Color(1,1,1)));
+    Entity* creditsPic = AddEntity("CreditsPic");
+    creditsPic->AddComponent(new Components::Transform(*creditsPic, Point(0,0), 30.0f, 30.0f, 0.0f));
+    creditsPic->AddComponent(new Components::Sprite(*creditsPic, "Credits.png"));
+
+    //Entity* copyright = AddEntity("Copyright");
+    //copyright->AddComponent(new Components::Transform(*copyright, Point(-40.0f, 22.0f), 2.0f, 2.0f));
+    //copyright->AddComponent(new Components::SpriteText(*copyright, "Liberation_Serif.fnt", "Copyright 2015-2016 DigiPen Institute of Technology, All Rights Reserved", Color(1,1,1)));
 
 
-    Entity* dpHeading = AddEntity("DPHeading");
-    dpHeading->AddComponent(new Components::Transform(*dpHeading, Point(-40.0f, 19.0f), 2.0f, 2.0f));
-    dpHeading->AddComponent(new Components::SpriteText(*dpHeading, "Liberation_Serif.fnt", "Digipen Faculty", Color(0.5, 0.5, 0.5)));
-    Entity* dpCredits = AddEntity("DPCredits");
-    dpCredits->AddComponent(new Components::Transform(*dpCredits, Point(-40.0f, 17.0f), 1.5f, 1.5f));
-    dpCredits->AddComponent(new Components::SpriteText(*dpCredits, "Liberation_Serif.fnt"));
-    std::stringstream ss;
-    ss  << "President.......Claude Comair\n"
-        << "Instructor......Ellen Beeman\n"
-        << "Instructor......Stephen Beeman\n"
-        << "Instructor......Ben Ellinger\n"
-        << "Instructor......Rachel Rutherford\n";
-    dpCredits->GetComponent<Components::SpriteText>()->Text = ss.str();
+    //Entity* dpHeading = AddEntity("DPHeading");
+    //dpHeading->AddComponent(new Components::Transform(*dpHeading, Point(-40.0f, 19.0f), 2.0f, 2.0f));
+    //dpHeading->AddComponent(new Components::SpriteText(*dpHeading, "Liberation_Serif.fnt", "Digipen Faculty", Color(0.5, 0.5, 0.5)));
+    //Entity* dpCredits = AddEntity("DPCredits");
+    //dpCredits->AddComponent(new Components::Transform(*dpCredits, Point(-40.0f, 17.0f), 1.5f, 1.5f));
+    //dpCredits->AddComponent(new Components::SpriteText(*dpCredits, "Liberation_Serif.fnt"));
+    //std::stringstream ss;
+    //ss  << "President.......Claude Comair\n"
+    //    << "Instructor......Ellen Beeman\n"
+    //    << "Instructor......Stephen Beeman\n"
+    //    << "Instructor......Ben Ellinger\n"
+    //    << "Instructor......Rachel Rutherford\n";
+    //dpCredits->GetComponent<Components::SpriteText>()->Text = ss.str();
 
 
-    Entity* teamHeading = AddEntity("TeamHeading");
-    teamHeading->AddComponent(new Components::Transform(*teamHeading, Point(-40.0f, 9.0f), 2.0f, 2.0f));
-    teamHeading->AddComponent(new Components::SpriteText(*teamHeading, "Liberation_Serif.fnt", "Team For Lease", Color(0.5, 0.5, 0.5)));
-    Entity* teamCredits = AddEntity("TeamCredits");
-    teamCredits->AddComponent(new Components::Transform(*teamCredits, Point(-40.0f, 7.0f), 1.5f, 1.5f));
-    teamCredits->AddComponent(new Components::SpriteText(*teamCredits, "Liberation_Serif.fnt"));
-    std::stringstream ss1;
-    ss1 << "Jiangdi Gou\n"
-        << "Kaila Harris\n"
-        << "Chris Hudson\n"
-        << "Andrew Langley\n"
-        << "Sean McGeer\n"
-        << "Sam Montanari\n"
-        << "Josh Painter\n";
-    teamCredits->GetComponent<Components::SpriteText>()->Text = ss1.str();
+    //Entity* teamHeading = AddEntity("TeamHeading");
+    //teamHeading->AddComponent(new Components::Transform(*teamHeading, Point(-40.0f, 9.0f), 2.0f, 2.0f));
+    //teamHeading->AddComponent(new Components::SpriteText(*teamHeading, "Liberation_Serif.fnt", "Team For Lease", Color(0.5, 0.5, 0.5)));
+    //Entity* teamCredits = AddEntity("TeamCredits");
+    //teamCredits->AddComponent(new Components::Transform(*teamCredits, Point(-40.0f, 7.0f), 1.5f, 1.5f));
+    //teamCredits->AddComponent(new Components::SpriteText(*teamCredits, "Liberation_Serif.fnt"));
+    //std::stringstream ss1;
+    //ss1 << "Jiangdi Gou\n"
+    //    << "Kaila Harris\n"
+    //    << "Chris Hudson\n"
+    //    << "Andrew Langley\n"
+    //    << "Sean McGeer\n"
+    //    << "Sam Montanari\n"
+    //    << "Josh Painter\n";
+    //teamCredits->GetComponent<Components::SpriteText>()->Text = ss1.str();
 
-    Entity* addHeading = AddEntity("AdditionalHeading");
-    addHeading->AddComponent(new Components::Transform(*addHeading, Point(-40.0f, -3.5f), 2.0f, 2.0f));
-    addHeading->AddComponent(new Components::SpriteText(*addHeading, "Liberation_Serif.fnt", "Additional Contributors", Color(0.5, 0.5, 0.5)));
-    Entity* addCredits = AddEntity("AdditionalCredits");
-    addCredits->AddComponent(new Components::Transform(*addCredits, Point(-40.0f, -5.5f), 1.5f, 1.5f));
-    addCredits->AddComponent(new Components::SpriteText(*addCredits, "Liberation_Serif.fnt"));
-    std::stringstream ss2;
-    ss2 << "Background Art...Alex Beavin\n"
-        << "Audio............Eric Bergman\n";
-    addCredits->GetComponent<Components::SpriteText>()->Text = ss2.str();
+    //Entity* addHeading = AddEntity("AdditionalHeading");
+    //addHeading->AddComponent(new Components::Transform(*addHeading, Point(-40.0f, -3.5f), 2.0f, 2.0f));
+    //addHeading->AddComponent(new Components::SpriteText(*addHeading, "Liberation_Serif.fnt", "Additional Contributors", Color(0.5, 0.5, 0.5)));
+    //Entity* addCredits = AddEntity("AdditionalCredits");
+    //addCredits->AddComponent(new Components::Transform(*addCredits, Point(-40.0f, -5.5f), 1.5f, 1.5f));
+    //addCredits->AddComponent(new Components::SpriteText(*addCredits, "Liberation_Serif.fnt"));
+    //std::stringstream ss2;
+    //ss2 << "Background Art...Alex Beavin\n"
+    //    << "Audio............Eric Bergman\n";
+    //addCredits->GetComponent<Components::SpriteText>()->Text = ss2.str();
 
     Entity* menu = AddEntity("Menu");
     menu->AddComponent(new Components::Transform(*menu, Point(-40.0f, -20.0f)));

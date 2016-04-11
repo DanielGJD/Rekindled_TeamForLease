@@ -76,18 +76,18 @@ void MainMenu::Initialize() {
     //background->GetComponent<Components::Sprite>(true)->AnimationActive = false;
 
     Entity* player = AddEntity("Player");
-    player->AddComponent(new Components::Transform(*player, Point(15, -15), 15, 15));
-    Components::Model* model = new Components::Model(*player, true, false, true, "fox.json");
-    model->SetAnimation("a");
+    player->AddComponent(new Components::Transform(*player, Point(25.0f, -11.0f), 15, 15));
+    Components::Model* model = new Components::Model(*player, true, false, true, "foxSit.json");
+    model->SetAnimation("foxSitAni.json");
     model->AnimationActive = true;
     model->Looping = true;
-    model->FrameRate = 4;
+    model->FrameRate = 3.0f;
     player->AddComponent(model);
 
     Entity* logo = AddEntity("Logo");
-    logo->AddComponent(new Components::Transform(*logo, Point(0, 15), 30, 30));
+    logo->AddComponent(new Components::Transform(*logo, Point(0, 10), 26, 26));
     logo->AddComponent(new Components::Sprite(*logo));
-    logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("Title.png");
+    logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("title1b.png");
     logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
 
     Entity* follow = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(-40.0f, -10.0f), "MenuFollow");
@@ -96,18 +96,18 @@ void MainMenu::Initialize() {
     follow->GetComponent<Components::Light>()->Radius = 5.0f;
 
     Entity* menu = AddEntity("Menu");
-    menu->AddComponent(new Components::Transform(*menu, Point(-40.0f, -10.0f)));
+    menu->AddComponent(new Components::Transform(*menu, Point(-35.0f, -6.0f)));
     menu->AddComponent(new Components::Menu(*menu, Vector(0, -1), true, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
     menuComp->AddItem(new MenuItems::NextLevel("Play"));
-    menuComp->AddItem(new MenuItems::ActivateAndDeactivate("Options", "OptionsMenu", "Menu"));
     menuComp->AddItem(new MenuItems::LoadLevel("How to Play", "HowToPlay"));
+    menuComp->AddItem(new MenuItems::ActivateAndDeactivate("Options", "OptionsMenu", "Menu"));
     menuComp->AddItem(new MenuItems::LoadLevel("Credits", "Credits"));
     menuComp->AddItem(new MenuItems::ActivateAndDeactivate("Quit", "QuitConfirm", "Menu"));
     menuComp->Activate();
 
     Entity* opMenu = AddEntity("OptionsMenu");
-    opMenu->AddComponent(new Components::Transform(*opMenu, Point(-40.0f, -10.0f)));
+    opMenu->AddComponent(new Components::Transform(*opMenu, Point(-35.0f, -6.0f)));
     opMenu->AddComponent(new Components::Menu(*opMenu, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* opMenuComp = opMenu->GetComponent<Components::Menu>();
     opMenuComp->AddItem(new OptionMenuItems::Resolution());
@@ -117,7 +117,7 @@ void MainMenu::Initialize() {
     opMenuComp->AddItem(new MenuItems::ActivateAndDeactivate("Back", "Menu", "OptionsMenu"));
 
     Entity* quitConfirm = AddEntity("QuitConfirm");
-    quitConfirm->AddComponent(new Components::Transform(*quitConfirm, Point(-40.0f, -10.0f)));
+    quitConfirm->AddComponent(new Components::Transform(*quitConfirm, Point(-35.0f, -13.0f)));
     quitConfirm->AddComponent(new Components::Menu(*quitConfirm, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* quitConfirmComp = quitConfirm->GetComponent<Components::Menu>();
     quitConfirmComp->AddItem(new MenuItems::Quit("Quit"));

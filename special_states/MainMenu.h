@@ -17,6 +17,7 @@
 #include "Event.h"
 #include "LevelComponentsInclude.h"
 #include "State.h"
+#include "Timer.h"
 
 class MainMenu : public ForLeaseEngine::State {
 public:
@@ -29,6 +30,7 @@ public:
     std::string MainMenuBGM;
 private:
     int Health;
+    ForLeaseEngine::Timer AniTimer;
 };
 
 #endif // MAIN_MENU_H
