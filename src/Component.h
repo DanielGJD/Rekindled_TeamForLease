@@ -65,7 +65,9 @@ namespace ForLeaseEngine {
         UsefulObject           = 1ull << 32,   //! "Happy objects"
         UsefulObjectInventory  = 1ull << 33,    //! Simple "inventory" for "happy objects"
         DamageOnCollide        = 1ull << 34, //! Sends a damage event when something collides with it
-        BackgroundMask         = 1ull << 35  //! Handles background color interpolation (used in menus)
+        BackgroundMask         = 1ull << 35,  //! Handles background color interpolation (used in menus)
+        FinaleTwo              = 1ull << 36,  //! Second scene of the finale
+        Autoplay               = 1ull << 37  //! Sends random input to the player
     };
 
     ComponentType operator|(const ComponentType& lhs, const ComponentType& rhs);
