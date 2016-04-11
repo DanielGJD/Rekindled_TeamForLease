@@ -27,6 +27,9 @@ class PauseMenu : public ForLeaseEngine::State {
         void Deinitialize();
         void Unload();
 
+        bool continueFromPause = false;
+        bool continueFromFreeze = false;
+
         void OnKeyDown(const ForLeaseEngine::Event* e);
 };
 
