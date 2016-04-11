@@ -18,6 +18,7 @@
 #include "Mesh.h"
 #include "GameStateManager.h"
 #include "Ray.h"
+#include "SoundEmitter.h"
 
 #include <iostream>
 #include <string>
@@ -141,6 +142,19 @@ void PauseMenu::Unload() {}
 
 void PauseMenu::OnKeyDown(const Event* e) {
     const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
+    Entity * pause = AddEntity("Pause");
+    Components::SoundEmitter * emitter = pause->GetComponent<Components::SoundEmitter>();
     if (key_e->Key == Keys::Escape)
         ForLease->GameStateManager().SetAction(Modules::StateAction::Continue);
+    if(ForLease->GameStateManager().GetCurrentAction() ==  Modules::StateAction::Freeze)
+        emitter->BeQuiet();
+    if(ForLease->GameStateManager().GetCurrentAction() == Modules::StateAction::Pause)
+       {
+            State &levelState = ForLease->GameStateManager().CurrentState();
+            Entity * bgm = levelState.GetEntityByName("backgroundMusic", false);
+            std::string soundname = bgm->GetComponent<Components::BackgroundMusic>()->MusicName;
+            emitter->SetPause(true, soundname);
+       }
+
+
 }
