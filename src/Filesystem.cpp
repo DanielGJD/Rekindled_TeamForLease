@@ -41,7 +41,7 @@ namespace ForLeaseEngine {
             if (PathExists("animations/")) AssetPaths.insert({ AssetType::Animation, "animations/" });
             if (PathExists("images/")) AssetPaths.insert({ AssetType::Image, "images/" });
             if (PathExists("fonts/")) AssetPaths.insert({ AssetType::Font, "fonts/" });
-            AssetPaths.insert({ AssetType::Save, "Blisstopia/" });
+            AssetPaths.insert({ AssetType::Save, "Rekindled/" });
         }
 
         void Filesystem::PreinitializePlatforms() {
@@ -50,7 +50,7 @@ namespace ForLeaseEngine {
 
                 std::stringstream ss;
                 ss << userProfile << "/Documents/";
-                
+
                 if (PathExists(ss.str())) AssetPaths.insert({ AssetType::UserData, ss.str() });
             #endif
         }
