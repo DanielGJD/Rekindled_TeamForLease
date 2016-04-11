@@ -414,12 +414,20 @@ namespace ForLeaseEngine
             leg::selEnemyAI = Components::EnemyAI::Create(*leg::selection);
             if (!leg::selection->AddComponent(leg::selEnemyAI))
                 leg::selEnemyAI = NULL;
+            return;
         }
         if (!(component.compare("Fade with Distance")) && !leg::selFade)
         {
             leg::selFade = new Components::FadeWithDistance(*leg::selection);
             if (!leg::selection->AddComponent(leg::selFade))
                 leg::selFade = NULL;
+            return;
+        }
+        if (!(component.compare("Finale Two")) && !leg::selFinale2)
+        {
+            leg::selFinale2 = new Components::FinaleTwo(*leg::selection);
+            if (!leg::selection->AddComponent(leg::selFinale2))
+                leg::selFinale2 = nullptr;
             return;
         }
         if (!(component.compare("Follow")) && !leg::selFollow)
@@ -575,6 +583,7 @@ namespace ForLeaseEngine
             leg::selUseful = Components::UsefulObject::Create(*leg::selection);
             if (!leg::selection->AddComponent(leg::selUseful))
                 leg::selUseful = nullptr;
+            return;
         }
         if (!(component.compare("Vision Cone")) && !leg::selVision)
         {

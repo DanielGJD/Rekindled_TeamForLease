@@ -70,6 +70,7 @@ namespace ForLeaseEngine
          Components::UsefulObject*           selUseful;
          Components::DamageOnCollide*        selDamage;
          Components::UsefulObjectInventory*  selInventory;
+         Components::FinaleTwo*              selFinale2;
 
          Entity*                levelCamera;
          Entity*                camera;
@@ -143,6 +144,7 @@ namespace ForLeaseEngine
         comps.push_back(Components::DragWithMouse::Create(dummy));
         comps.push_back(new Components::EnemyAI(dummy));
         comps.push_back(new Components::FadeWithDistance(dummy));
+        comps.push_back(new Components::FinaleTwo(dummy));
         comps.push_back(new Components::Follow(dummy));
         comps.push_back(new Components::Health(dummy));
         comps.push_back(new Components::UsefulObjectInventory(dummy));
@@ -213,6 +215,7 @@ namespace ForLeaseEngine
             leg::componentNames.push_back("Drag with Mouse");
             leg::componentNames.push_back("Enemy AI");
             leg::componentNames.push_back("Fade with Distance");
+            leg::componentNames.push_back("Finale Two");
             leg::componentNames.push_back("Follow");
             leg::componentNames.push_back("Health");
             leg::componentNames.push_back("Inventory");
@@ -293,6 +296,7 @@ namespace ForLeaseEngine
         leg::selUseful       = leg::selection->GetComponent<Components::UsefulObject>();
         leg::selDamage       = leg::selection->GetComponent<Components::DamageOnCollide>();
         leg::selInventory    = leg::selection->GetComponent<Components::UsefulObjectInventory>();
+        leg::selFinale2      = leg::selection->GetComponent<Components::FinaleTwo>();
 
         if (leg::selInventory)
         {

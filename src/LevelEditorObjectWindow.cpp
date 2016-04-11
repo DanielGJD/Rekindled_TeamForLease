@@ -378,6 +378,75 @@ namespace ForLeaseEngine
                 leg::selFade = NULL;
             }
         }
+        if (leg::selFinale2 && ImGui::CollapsingHeader("Finale Two"))
+        {
+            static char dead[128];
+            static char aliveTop[128];
+            static char aliveBot[128];
+            static char pulse[128];
+            static char logo[128];
+            static char credits[128];
+            static char camera[128];
+
+            ImGui::PushItemWidth(width);
+
+            if (ImGui::InputText("Dead Forrest", dead, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale2->DeadForest = dead;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale2->DeadForest.c_str());
+
+            if (ImGui::InputText("Alive Forrest Top", aliveTop, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale2->AliveForestTop = aliveTop;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale2->AliveForestTop.c_str());
+
+            if (ImGui::InputText("Alive Forrest Bot", aliveBot, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale2->AliveForestBottom = aliveBot;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale2->AliveForestBottom.c_str());
+
+            if (ImGui::InputText("Pulse Object", pulse, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale2->PulseObject = pulse;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale2->PulseObject.c_str());
+
+            if (ImGui::InputText("Logo", logo, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale2->Logo = logo;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale2->Logo.c_str());
+
+            if (ImGui::InputText("Credits", credits, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale2->Credits = credits;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale2->Credits.c_str());
+
+            if (ImGui::InputText("Camera##finaletwo", camera, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale2->Camera = camera;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale2->Camera.c_str());
+
+            ImGui::InputFloat("Start Fade In Time", &(leg::selFinale2->StartFadeInTime));
+            ImGui::InputFloat("Delay to Fade Out 1", &(leg::selFinale2->DelayToFadeOut1));
+            ImGui::InputFloat("Fade Out 1 Time", &(leg::selFinale2->FadeOut1Time));
+            ImGui::InputFloat("Screen Shake Amount", &(leg::selFinale2->ScreenShakeAmount));
+            ImGui::InputFloat("Delay to Fade In 1", &(leg::selFinale2->DelayToFadeIn1));
+            ImGui::InputFloat("Fade In 1 Time", &(leg::selFinale2->FadeIn1Time));
+            ImGui::InputFloat("Pulse Speed", &(leg::selFinale2->PulseSpeed));
+            ImGui::InputFloat("Delay to Fade Out 2", &(leg::selFinale2->DelayToFadeOut2));
+            ImGui::InputFloat("Fade Out 2 Time", &(leg::selFinale2->FadeOut2Time));
+            ImGui::InputFloat("Delay to Fade In 2", &(leg::selFinale2->DelayToFadeIn2));
+            ImGui::InputFloat("Fade In 2 Time", &(leg::selFinale2->FadeIn2Time));
+            ImGui::InputFloat("Scroll Speed", &(leg::selFinale2->ScrollSpeed));
+            ImGui::InputFloat("CreditsDelay", &(leg::selFinale2->CreditsDelay));
+
+            ImGui::PopItemWidth();
+
+            if (ImGui::Button("Remove Finale Two"))
+            {
+                leg::selection->DeleteComponent(ComponentType::FinaleTwo);
+                leg::selFinale2 = nullptr;
+            }
+        }
         if (leg::selFollow && ImGui::CollapsingHeader("Follow"))
         {
             ImGui::Checkbox("Active##follow", &(leg::selFollow->Active));
