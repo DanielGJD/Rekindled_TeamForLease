@@ -202,6 +202,7 @@ namespace ForLeaseEngine
         if (leg::startUp)
         {
             ForLease->GameWindow->SetResolution(1600, 900);
+            ForLease->GameWindow->SetFullscreen(false);
             Keys::InitKeymap();
             leg::keyCodes = Keys::GetKeyStrings();
             std::sort(leg::keyCodes.begin(), leg::keyCodes.end());
