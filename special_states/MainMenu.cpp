@@ -23,7 +23,7 @@
 namespace FLE = ForLeaseEngine;
 using namespace ForLeaseEngine;
 
-MainMenu::MainMenu() : State("MainMenu"), MainMenuBGM("Menu2") {}
+MainMenu::MainMenu() : State("MainMenu") , MainMenuBGM("woody title 7.5") {}
 
 void MainMenu::Load() {
 }
@@ -53,19 +53,19 @@ void MainMenu::Initialize() {
     backgroundMask->AddComponent(new Components::Transform(*backgroundMask, 0, 0, 50, 50));
     backgroundMask->AddComponent(new Components::Model(*backgroundMask, true, false, false, "1-1Block.json", "", Color(0.75f, 0.75f, 0.75f), FLE::MULTIPLY));
 
-    Components::SoundEmitter* emitter = background->GetComponent<Components::SoundEmitter>();
+
     //SoundEmitter* emitter = background.GetComponent<SoundEmitter>();
-    if(emitter)
-    {
-        emitter->SetVolume(1.0f, MainMenuBGM);
-        emitter->StopEvent(MainMenuBGM);
-        emitter->PlayEvent(MainMenuBGM);
-        std::cout<< "MENU2 EMITTER HERE" << std::endl;
-    }
-    if(!emitter)
-    {
-        std::cout << "no menu sound" <<std::endl;
-    }
+//    if(emitter)
+//    {
+//        emitter->SetVolume(1.0f, MainMenuBGM);
+//        emitter->StopEvent(MainMenuBGM);
+//        emitter->PlayEvent(MainMenuBGM);
+//        std::cout<< "MENU2 EMITTER HERE" << std::endl;
+//    }
+//    if(!emitter)
+//    {
+//        std::cout << "no menu sound" <<std::endl;
+//    }
    // background->GetComponent<Components::SoundEmitter>(true)->SetVolume(1.0f, "Menu2");
     //background->GetComponent<Components::SoundEmitter>(true)->StopEvent("Menu2");
     //background->GetComponent<Components::SoundEmitter>(true)->PlayEvent("Menu2");
@@ -122,6 +122,15 @@ void MainMenu::Initialize() {
     Components::Menu* quitConfirmComp = quitConfirm->GetComponent<Components::Menu>();
     quitConfirmComp->AddItem(new MenuItems::Quit("Quit"));
     quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("Cancel", "Menu", "QuitConfirm"));
+
+    Entity * title = AddEntity("Title");
+    //Components::SoundEmitter* emitter = title->GetComponent<Components::SoundEmitter>();
+    title->AddComponent(new Components::Transform(*title, 0,0, 45, 25));
+    title->AddComponent(new Components::SoundEmitter(*title));
+    title->GetComponent<Components::SoundEmitter>(title)->SetVolume(1.0f, "Menu2");
+    title->GetComponent<Components::SoundEmitter>(title)->StopEvent("Menu2");
+    title->GetComponent<Components::SoundEmitter>(title)->PlayEvent("Menu2");
+    std::cout<< "BGMMMMMMMMMMMMMM" <<std::endl;
 }
 
 void MainMenu::Update() {
