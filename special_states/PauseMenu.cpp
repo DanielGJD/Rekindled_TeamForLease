@@ -148,13 +148,34 @@ void PauseMenu::OnKeyDown(const Event* e) {
         ForLease->GameStateManager().SetAction(Modules::StateAction::Continue);
     if(ForLease->GameStateManager().GetCurrentAction() ==  Modules::StateAction::Freeze)
         emitter->BeQuiet();
+        continueFromFreeze = true;
+        //continueFromPause = false;
     if(ForLease->GameStateManager().GetCurrentAction() == Modules::StateAction::Pause)
-       {
+    {
+        //continueFromFreeze = false;
+        continueFromPause = true;
+        State &levelState = ForLease->GameStateManager().CurrentState();
+        Entity * bgm = levelState.GetEntityByName("backgroundMusic", false);
+        std::string soundname = bgm->GetComponent<Components::BackgroundMusic>()->MusicName;
+        emitter->SetPause(true, soundname);
+    }
+    else if(ForLease->GameStateManager().GetCurrentAction() == Modules::StateAction::Continue)
+    {
+
+        if(continueFromPause)
+        {
             State &levelState = ForLease->GameStateManager().CurrentState();
             Entity * bgm = levelState.GetEntityByName("backgroundMusic", false);
             std::string soundname = bgm->GetComponent<Components::BackgroundMusic>()->MusicName;
-            emitter->SetPause(true, soundname);
-       }
+            emitter->SetPause(false, soundname);
+            continueFromPause = false;
+        }
+        if(continueFromFreeze)
+        {
+            emitter->Rock();
+            continueFromFreeze = false;
+        }
+    }
 
 
 }
