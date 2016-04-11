@@ -90,6 +90,10 @@ void MainMenu::Initialize() {
     logo->GetComponent<Components::Sprite>(true)->SetSpriteSource("title1b.png");
     logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
 
+    Entity* creditsPic = AddEntity("CreditsPic");
+    creditsPic->AddComponent(new Components::Transform(*creditsPic, Point(0, 0), 30.0f, 30.0f, 0.0f));
+    creditsPic->AddComponent(new Components::Sprite(*creditsPic, "Credits.png", false));
+
     Entity* follow = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(-35.0f, -6.0f), "MenuFollow");
     follow->GetComponent<Components::Follow>()->Offset = Vector(-1.5f, -1.0f);
     follow->GetComponent<Components::Follow>()->Speed = 4;
@@ -102,7 +106,7 @@ void MainMenu::Initialize() {
     menuComp->AddItem(new MenuItems::NextLevel("Play"));
     menuComp->AddItem(new MenuItems::LoadLevel("How to Play", "HowToPlay"));
     menuComp->AddItem(new MenuItems::ActivateAndDeactivate("Options", "OptionsMenu", "Menu"));
-    menuComp->AddItem(new MenuItems::LoadLevel("Credits", "Credits"));
+    menuComp->AddItem(new MenuItems::ActivateAndDeactivateAndMakeVisibleAndMakeInvisible("Credits", "CreditsMenu", "Menu", "CreditsPic", "Logo"));
     menuComp->AddItem(new MenuItems::ActivateAndDeactivate("Quit", "QuitConfirm", "Menu"));
     menuComp->Activate();
 
@@ -122,6 +126,13 @@ void MainMenu::Initialize() {
     Components::Menu* quitConfirmComp = quitConfirm->GetComponent<Components::Menu>();
     quitConfirmComp->AddItem(new MenuItems::Quit("Quit"));
     quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("Cancel", "Menu", "QuitConfirm"));
+
+    Entity* creditsMenu = AddEntity("CreditsMenu");
+    creditsMenu->AddComponent(new Components::Transform(*creditsMenu, Point(-35.0f, -13.0f)));
+    creditsMenu->AddComponent(new Components::Menu(*creditsMenu, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
+    Components::Menu* creditsMenuComp = creditsMenu->GetComponent<Components::Menu>();
+    //creditsMenuComp->AddItem(new MenuItems::Quit("Quit"));
+    creditsMenuComp->AddItem(new MenuItems::ActivateAndDeactivateAndMakeVisibleAndMakeInvisible("Back", "Menu", "CreditsMenu", "Logo", "CreditsPic"));
 
     Entity * title = AddEntity("Title");
     //Components::SoundEmitter* emitter = title->GetComponent<Components::SoundEmitter>();
