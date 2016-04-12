@@ -63,7 +63,7 @@ void HowToPlay::Initialize() {
     Entity* floor = AddEntity("Floor");
     floor->AddComponent(new Components::Transform(*floor, Point(0.0f, -10.0f), 9999999.0f, 1.0f, 0.0f, -7));
     floor->AddComponent(new Components::Collision(*floor, 2.0f, 2.0f));
-    floor->AddComponent(new Components::Model(*floor, true, false, false, "1-1Block.json"));
+    floor->AddComponent(new Components::Model(*floor, false, false, false, "1-1Block.json"));
 
     Entity* left = AddEntity("Left");
     left->AddComponent(new Components::Transform(*left, Point(-40.0f, 0.0f), 1.0f, 9999999.0f));

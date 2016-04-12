@@ -228,7 +228,7 @@ namespace {
 
 
 /*!
-    This is highly dependent on knowing exactly where Blisstopia.exe is in relation
+    This is highly dependent on knowing exactly where Rekindled.exe is in relation
     to the level editor.  I would highly recommend placing both the editor and
     the game binary in the same directory in the repo.
 */
@@ -241,5 +241,5 @@ void SpawnNewLevelProcess(const std::string& level, bool debugDraw) {
         args << " -dDrawCollision";
     }
 
-    SpawnProcess("Blisstopia.exe", args.str(), "");
+    SpawnProcess("Rekindled.exe", args.str(), "");
 }

@@ -65,12 +65,12 @@ void PauseMenu::Initialize() {
     //logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
 
     Entity* player = AddEntity("Player");
-    player->AddComponent(new Components::Transform(*player, Point(15, -15), 15, 15));
-    Components::Model* model = new Components::Model(*player, true, false, true, "fox.json");
-    model->SetAnimation("a");
+    player->AddComponent(new Components::Transform(*player, Point(25.0f, -11.0f), 15, 15));
+    Components::Model* model = new Components::Model(*player, true, false, true, "foxSit.json");
+    model->SetAnimation("foxSitAni.json");
     model->AnimationActive = true;
     model->Looping = true;
-    model->FrameRate = 4;
+    model->FrameRate = 3.0f;
     player->AddComponent(model);
 
     Entity* follow = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(-40.0f, -10.0f), "MenuFollow");
