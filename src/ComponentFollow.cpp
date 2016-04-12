@@ -34,32 +34,32 @@ namespace ForLeaseEngine {
                 return;
             Entity* entity = ForLease->GameStateManager().CurrentState().GetEntityByID(FollowEntityID);
 
-            Components::Sprite* sprite = entity->GetComponent<Components::Sprite>();
-            Components::Model* model = entity->GetComponent<Components::Model>();
-
-            AlteredOffset[0] = Offset[0];
-
-            if(sprite) {
-                if(sprite->FlipY) {
-                    AlteredOffset[0] = -Offset[0];
-                }
-                else {
-                    AlteredOffset[0] = Offset[0];
-                }
-            }
-
-            if(model) {
-                if(model->FlipY) {
-                    AlteredOffset[0] = -Offset[0];
-                }
-                else {
-                    AlteredOffset[0] = Offset[0];
-                }
-            }
-
-            AlteredOffset[1] = Offset[1];
-
             if(entity) {
+                Components::Sprite* sprite = entity->GetComponent<Components::Sprite>();
+                Components::Model* model = entity->GetComponent<Components::Model>();
+
+                AlteredOffset[0] = Offset[0];
+
+                if(sprite) {
+                    if(sprite->FlipY) {
+                        AlteredOffset[0] = -Offset[0];
+                    }
+                    else {
+                        AlteredOffset[0] = Offset[0];
+                    }
+                }
+
+                if(model) {
+                    if(model->FlipY) {
+                        AlteredOffset[0] = -Offset[0];
+                    }
+                    else {
+                        AlteredOffset[0] = Offset[0];
+                    }
+                }
+
+                AlteredOffset[1] = Offset[1];
+
                 Transform* followTrans = entity->GetComponent<Components::Transform>();
                 Transform* myTrans = Parent.GetComponent<Components::Transform>();
 //                float distance = Point::Distance(followTrans->Position, myTrans->Position);
