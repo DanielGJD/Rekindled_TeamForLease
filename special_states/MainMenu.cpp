@@ -129,8 +129,8 @@ void MainMenu::Initialize() {
     title->AddComponent(new Components::SoundEmitter(*title));
 
     //title->GetComponent<Components::SoundEmitter>(title)->SetVolume(1.0f, "woody title 7.5");
-    title->GetComponent<Components::SoundEmitter>(title)->StopEvent("woody title 7.5");
-    title->GetComponent<Components::SoundEmitter>(title)->PlayEvent("woody title 7.5");
+    //title->GetComponent<Components::SoundEmitter>(title)->StopEvent("woody title 7.5");
+    //title->GetComponent<Components::SoundEmitter>(title)->PlayEvent("woody title 7.5");
 
 //    if(ForLease->GameStateManager().GetCurrentAction() == Modules::StateAction::Continue)
 //    {

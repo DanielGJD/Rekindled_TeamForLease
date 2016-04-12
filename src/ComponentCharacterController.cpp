@@ -21,7 +21,7 @@ namespace ForLeaseEngine {
         CharacterController::CharacterController(Entity& owner)
                                                 : Component(owner, ComponentType::Physics | ComponentType::Collision),
                                                   RightKey(Keys::D), LeftKey(Keys::A), JumpKey(Keys::Space),
-                                                  Acceleration(20.0f), JumpSpeed(5.0f), Drag(5.0f),WalkSound(""), JumpSound(""), LandSound(""),
+                                                  Acceleration(20.0f), JumpSpeed(5.0f), Drag(5.0f),/*WalkSound(""),*/ JumpSound(""), LandSound(""),
                                                   WalkAnimation(""), JumpAnimation(""), CanJump(false), RightPressed(false), LeftPressed(false), LastAnimationFrame(0), Timer(0), JumpSoundTimer(0) {};
 
         CharacterController* CharacterController::Create(Entity& owner) {
@@ -49,9 +49,9 @@ namespace ForLeaseEngine {
 //            std::cout << "Animation: " << Parent.GetComponent<Components::Model>()->GetAnimation() << std::endl;
             //std::cout << "Walk ani: " << WalkAnimation << std::endl;
             Components::SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
-//            if(emitter && RightPressed != LeftPressed) {
-//                Timer += ForLease->FrameRateController().GetDt();
-//                //std::cout << "Timer: " << Timer << std::endl;
+            if(/*emitter && */RightPressed != LeftPressed) {
+                Timer += ForLease->FrameRateController().GetDt();
+                std::cout << "Timer: " << Timer << std::endl;
 //                if(Timer >= 0.3) {
 //                    emitter->SetVolume(1.0f, WalkSound);
 //                    emitter->StopEvent(WalkSound);
@@ -64,7 +64,8 @@ namespace ForLeaseEngine {
 //            }
 //            else if(emitter) {
 //                emitter->StopEvent(WalkSound);
-//            }
+            }
+
             Collision* collider = Parent.GetComponent<Collision>();
             Physics* physics = Parent.GetComponent<Physics>();
             bool couldJump = CanJump;
@@ -107,18 +108,23 @@ namespace ForLeaseEngine {
                     model->AnimationActive = true;
                     model->Looping = true;
                     model->SetAnimation("");
+                    ForLease->sound->Volume(1.0f,LandSound);
+                    ForLease->sound->StopSound(LandSound);
+                    ForLease->sound->PlayEvent(LandSound);
                 }
             }
 
             accel[0] = accel[0] - physics->Velocity[0] * Drag;
             physics->Acceleration = accel;
             if(!couldJump && CanJump && JumpSoundTimer > 0.1) {
-                SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
-                if(emitter){
-                    emitter->SetVolume(1.0f, LandSound);
-                    emitter->StopEvent(LandSound);
-                    emitter->PlayEvent(LandSound);
-                }
+                std::cout<< "F" << std::endl;
+//                SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
+//                if(emitter){
+//                    emitter->SetVolume(1.0f, "character_fox_land_grass01");
+//                    emitter->StopEvent("character_fox_land_grass01");
+//                    emitter->PlayEvent("character_fox_land_grass01");
+//
+//                }
             }
 
         };
@@ -140,19 +146,25 @@ namespace ForLeaseEngine {
             else if(key_e->Key == JumpKey) {
                 Physics* Jbody = Parent.GetComponent<Physics>();
                 if(CanJump) {
+                    ForLease->sound->Volume(1.0f,JumpSound);
+                    ForLease->sound->StopSound(JumpSound);
+                    ForLease->sound->PlayEvent(JumpSound);
                     rbody->Velocity[1] = JumpSpeed;
                     if(model) {
                         model->SetAnimation(JumpAnimation);
                         model->Looping = false;
                     }
-                    SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
 
-                    if (emitter) {
-                        emitter->SetVolume(1.0f, JumpSound);
-                        emitter->StopEvent(JumpSound);
-                        emitter->PlayEvent(JumpSound);
-                    }
+//                    SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
+//
+//                    if (emitter) {
+//                        emitter->SetVolume(1.0f, JumpSound);
+//                        emitter->StopEvent(JumpSound);
+//                        emitter->PlayEvent(JumpSound);
+//                        std::cout<< "JumpSound" <<std::endl;
+//                    }
                     CanJump = false;
+
                 }
             }
             else if (key_e->Key == Keys::Q) {
