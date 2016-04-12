@@ -113,6 +113,11 @@ void PauseMenu::Initialize() {
     mainMenuConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("Cancel", "Menu", "MainMenuConfirm"));
 
     ForLease->Dispatcher.Attach(NULL, this, "KeyDown", &PauseMenu::OnKeyDown);
+
+    Entity* lowerVolume = AddEntity("LowerVolume");
+    lowerVolume->AddComponent(new Components::SoundEmitter(*lowerVolume));
+    Components::SoundEmitter * emitter = lowerVolume->GetComponent<Components::SoundEmitter>();
+    emitter->SetGlobalVol(0.2f);
 }
 
 void PauseMenu::Update() {
@@ -142,40 +147,56 @@ void PauseMenu::Unload() {}
 
 void PauseMenu::OnKeyDown(const Event* e) {
     const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
+   // ForLease->GameStateManager().SetAction(Modules::StateAction::Pause);
     Entity * pause = AddEntity("Pause");
+    pause->AddComponent(new Components::SoundEmitter(*pause));
     Components::SoundEmitter * emitter = pause->GetComponent<Components::SoundEmitter>();
-    if (key_e->Key == Keys::Escape)
-        ForLease->GameStateManager().SetAction(Modules::StateAction::Continue);
-    if(ForLease->GameStateManager().GetCurrentAction() ==  Modules::StateAction::Freeze)
-        emitter->BeQuiet();
-        continueFromFreeze = true;
-        //continueFromPause = false;
-    if(ForLease->GameStateManager().GetCurrentAction() == Modules::StateAction::Pause)
-    {
-        //continueFromFreeze = false;
-        continueFromPause = true;
-        State &levelState = ForLease->GameStateManager().CurrentState();
-        Entity * bgm = levelState.GetEntityByName("backgroundMusic", false);
-        std::string soundname = bgm->GetComponent<Components::BackgroundMusic>()->MusicName;
-        emitter->SetPause(true, soundname);
-    }
-    else if(ForLease->GameStateManager().GetCurrentAction() == Modules::StateAction::Continue)
-    {
+//    if(ForLease->GameStateManager().GetCurrentAction() ==  Modules::StateAction::Pause)
+//        emitter->SetGlobalVol(0.2f);
 
-        if(continueFromPause)
-        {
-            State &levelState = ForLease->GameStateManager().CurrentState();
-            Entity * bgm = levelState.GetEntityByName("backgroundMusic", false);
-            std::string soundname = bgm->GetComponent<Components::BackgroundMusic>()->MusicName;
-            emitter->SetPause(false, soundname);
-            continueFromPause = false;
-        }
-        if(continueFromFreeze)
-        {
-            emitter->Rock();
-            continueFromFreeze = false;
-        }
-    }
+    if (key_e->Key == Keys::Escape)
+
+        ForLease->GameStateManager().SetAction(Modules::StateAction::Continue);
+        std::cout<< "AAAAAAAAA" <<std::endl;
+        emitter->SetGlobalVol(1.0f);
+
+    //if(ForLease->GameStateManager().GetCurrentAction() ==  Modules::StateAction::Freeze)
+      //  emitter->BeQuiet();
+    //    continueFromFreeze = true;
+        //continueFromPause = false;
+    //if(ForLease->GameStateManager().GetCurrentAction() == Modules::StateAction::Pause)
+    //{
+
+//        continueFromPause = true;
+//        State &levelState = ForLease->GameStateManager().CurrentState();
+//        Entity * bgm = levelState.GetEntityByName("backgroundMusic", false);
+//        bgm->AddComponent(new Components::Transform(*bgm, 0,0, 45, 25));
+//        bgm->AddComponent(new Components::SoundEmitter(*bgm));
+//        std::string soundname = bgm->GetComponent<Components::BackgroundMusic>()->MusicName;
+//        emitter->SetPause(true, soundname);
+    //    emitter->SetGlobalVol(0.2f);
+   //     continueFromFreeze = true;
+   // }
+    //else if(ForLease->GameStateManager().GetCurrentAction() == Modules::StateAction::Continue)
+    //{
+       // emitter->SetGlobalVol(1.0f);
+//
+//        if(continueFromPause)
+//        {
+//            State &levelState = ForLease->GameStateManager().CurrentState();
+//            Entity * bgm = levelState.GetEntityByName("backgroundMusic", false);
+//            bgm->AddComponent(new Components::Transform(*bgm, 0,0, 45, 25));
+//            bgm->AddComponent(new Components::SoundEmitter(*bgm));
+//            std::string soundname = bgm->GetComponent<Components::BackgroundMusic>()->MusicName;
+//            emitter->SetPause(false, soundname);
+//            continueFromPause = false;
+//        }
+//        if(continueFromFreeze)
+//        {
+//            emitter->Rock();
+//            continueFromFreeze = false;
+//        }
+   // }
 
 
 }
