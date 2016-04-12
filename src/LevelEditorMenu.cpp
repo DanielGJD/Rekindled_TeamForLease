@@ -355,6 +355,7 @@ namespace ForLeaseEngine
             ImGui::EndChild();
         }
 
+        ImGui::Text("Checkpoint Trigger ID: %lu", leg::levelCheckpoint->TriggerEntityID);
         ImGui::End();
     }
 

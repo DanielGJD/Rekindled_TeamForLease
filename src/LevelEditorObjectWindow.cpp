@@ -1284,7 +1284,14 @@ namespace ForLeaseEngine
 
         ImGui::Separator();
         if (ImGui::Button("Set Checkpoint Trigger"))
+        {
+            auto check = leg::levelCheckpoint->TriggerEntityID;
+            auto sel = leg::selection->GetID();
             leg::levelCheckpoint->TriggerEntityID = leg::selection->GetID();
+            check = leg::levelCheckpoint->TriggerEntityID;
+            check = sel;
+        }
+
         if (ImGui::Button("Delete Object"))
             leg::delobj = true;
 

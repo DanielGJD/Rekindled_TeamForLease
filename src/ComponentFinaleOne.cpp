@@ -2,6 +2,8 @@
 #include "Interpolation.h"
 #include "State.h"
 #include <iostream>
+#include "Random.h"
+
 namespace ForLeaseEngine
 {
     namespace Components
@@ -10,7 +12,7 @@ namespace ForLeaseEngine
                                               CameraDest(""), Light(""), Eyes(""), Trigger(""), CameraSpeed(0),
                                               CameraSize(0), CameraGrowth(0), WispSpeed(0), PlayerMoveDistance(0),
                                               PlayerMoveSpeed(0), OverlaySpeed(0), LightGrowth(0), start(false),
-                                              distance(0), currentAction(Action::MOVE), setup(false)
+                                              distance(0), currentAction(Action::MOVE), setup(false), transitionDelay(0)
         { }
 
         FinaleOne::~FinaleOne()
@@ -75,21 +77,24 @@ namespace ForLeaseEngine
         void FinaleOne::Move(float dt)
         {
             Entity* cam = ForLease->GameStateManager().CurrentState().GetEntityByName(Camera);
+            Entity* w = ForLease->GameStateManager().CurrentState().GetEntityByName(Wisp);
+            float& wispSize = w->GetComponent<Components::ParticleEmitter>()->Size;
             float& size = cam->GetComponent<Components::Camera>()->Size;
             float& position = Parent.GetComponent<Components::Transform>()->Position[0];
             bool done1 = false, done2 = false;
             Components::Model* ParentModel = Parent.GetComponent<Components::Model>();
-
             if (!setup)
             {
+                targetSize = size + CameraSize;
                 ParentModel->SetAnimation(Parent.GetComponent<Components::CharacterController>()->WalkAnimation);
+                ParentModel->FrameRate *= 0.5;
                 Parent.DeleteComponent(ComponentType::PlayerController);
                 Parent.GetComponent<Components::Physics>()->Velocity[0] = 0;
                 Parent.GetComponent<Components::Physics>()->UnaffectedByGravity = false;
-                Entity* w = ForLease->GameStateManager().CurrentState().GetEntityByName(Wisp);
                 Entity* wd = ForLease->GameStateManager().CurrentState().GetEntityByName(WispDest);
                 Entity* cam = ForLease->GameStateManager().CurrentState().GetEntityByName(Camera);
                 Entity* cd = ForLease->GameStateManager().CurrentState().GetEntityByName(CameraDest);
+                cameraPos = cd->GetComponent<Components::Transform>()->Position;
                 Components::Follow* wispFollow = w->GetComponent<Components::Follow>();
                 wispFollow->Active = true;
                 //wispFollow->FollowBeginDistance = 0;
@@ -107,7 +112,10 @@ namespace ForLeaseEngine
                 setup = true;
             }
 
-            if (size <= CameraSize)
+            if(wispSize <= 5)
+                wispSize += dt;
+
+            if (size <= targetSize)
                 size += CameraGrowth * dt;
             else
                 done1 = true;
@@ -125,13 +133,36 @@ namespace ForLeaseEngine
             }
 
             if (done1 && done2)
+            {
                 currentAction = Action::TRANSITION;
-
+                setup = false;
+            }
         }
 
         void FinaleOne::Transition(float dt)
         {
+            Point& position = ForLease->GameStateManager().CurrentState().GetEntityByName(Camera)->GetComponent<Components::Transform>()->Position;
+            transitionDelay += dt;
+            LevelComponents::Renderer* render = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
+            if (!setup)
+            {
+                render->SetOverlayColor(1, 1, 1, 0);
+                Components::Model* eyeModel = ForLease->GameStateManager().CurrentState().GetEntityByName(Eyes)->GetComponent<Components::Model>();
+                eyeModel->SetAnimation("ForestSpirit2AniEyeOpen.json");
+                eyeModel->AnimationActive = true;
+                eyeModel->Looping = false;
+                setup = true;
+            }
 
+            float& radius = ForLease->GameStateManager().CurrentState().GetEntityByName(Light)->GetComponent<Components::Light>()->Radius;
+            float alpha = render->GetOverlayColor().GetA();
+            radius += LightGrowth * dt;
+            if (alpha <= 1 && transitionDelay >= 1)
+            {
+                position = cameraPos + Vector(RandomFloat(-2, 2), RandomFloat(-2, 2));
+                alpha += OverlaySpeed * dt;
+                render->SetOverlayColor(1, 1, 1, alpha);
+            }
         }
 
         void FinaleOne::Serialize(Serializer& root)

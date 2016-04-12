@@ -472,6 +472,7 @@ namespace ForLeaseEngine
             leg::render = GetLevelComponent<LevelComponents::Renderer>();
             leg::levelLight = GetLevelComponent<LevelComponents::Light>();
             leg::levelUseful = GetLevelComponent<LevelComponents::UsefulObject>();
+            leg::levelCheckpoint = GetLevelComponent<LevelComponents::Checkpoint>();
             if (!leg::render)
             {
                 leg::render = new LevelComponents::Renderer(*this);
@@ -506,6 +507,12 @@ namespace ForLeaseEngine
             {
                 leg::levelUseful = new LevelComponents::UsefulObject(*this, "", "");
                 AddLevelComponent(leg::levelUseful);
+            }
+            if (!leg::levelCheckpoint)
+            {
+                Serializer root;
+                leg::levelCheckpoint = new LevelComponents::Checkpoint(*this, root);
+                AddLevelComponent(leg::levelCheckpoint);
             }
 
             leg::gravity = leg::levelPhysics->GetGravity();
