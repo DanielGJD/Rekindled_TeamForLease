@@ -91,6 +91,7 @@ void PauseMenu::Initialize() {
     menu->AddComponent(new Components::Menu(*menu, Vector(0, -1), true, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
     menuComp->AddItem(new MenuItems::ResumeGame("Resume Game"));
+    menuComp->AddItem(new MenuItems::ActivateAndDeactivate("Restart Level", "RestartConfirm", "Menu"));
     //menuComp->AddItem(new MenuItems::LoadLevel("How to Play", "HowToPlay"));
     //menuComp->AddItem(new MenuItems::LoadLevel("How to Play", "HowToPlay"));  // THIS NEEDS TO BE FIXED
     menuComp->AddItem(new MenuItems::ActivateAndDeactivateAndMakeVisible("How To Play", "HowToPlayMenu", "Menu", "HowToPlayPic"));
@@ -109,6 +110,13 @@ void PauseMenu::Initialize() {
     opMenuComp->AddItem(new OptionMenuItems::Volume());
     opMenuComp->AddItem(new OptionMenuItems::FinalAccept("OptionsMenu"));
     opMenuComp->AddItem(new MenuItems::ActivateAndDeactivate("Back", "Menu", "OptionsMenu"));
+
+    Entity* restartConfirm = AddEntity("RestartConfirm");
+    restartConfirm->AddComponent(new Components::Transform(*restartConfirm, Point(-35.0f, -13.0f)));
+    restartConfirm->AddComponent(new Components::Menu(*restartConfirm, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
+    Components::Menu* restartConfirmComp = restartConfirm->GetComponent<Components::Menu>();
+    restartConfirmComp->AddItem(new MenuItems::RestartLevel("Restart Level"));
+    restartConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("Cancel", "Menu", "RestartConfirm"));
 
     Entity* quitConfirm = AddEntity("QuitConfirm");
     quitConfirm->AddComponent(new Components::Transform(*quitConfirm, Point(-35.0f, -13.0f)));

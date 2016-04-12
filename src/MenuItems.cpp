@@ -283,6 +283,12 @@ namespace ForLeaseEngine {
             invis->Visible = false;
         }
 
+        RestartLevel::RestartLevel(std::string text) : MenuItem(MenuItemType::RestartLevel, text) {}
+
+        void RestartLevel::Action() {
+            ForLease->GameStateManager().SetAction(Modules::StateAction::Restart);
+        }
+
     } // MenuItems
 
     OptionMenuItem::OptionMenuItem(MenuItemType type, std::string text, bool affectsWindow)
