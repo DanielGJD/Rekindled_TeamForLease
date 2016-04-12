@@ -17,7 +17,7 @@ All content 2015 DigiPen (USA) Corporation, all rights reserved.
 
 namespace ForLeaseEngine{
 	namespace Components{
-SoundEmitter::SoundEmitter(Entity& Owner) : playSoundOnStart(true),Component(Owner, ComponentType::Transform)
+SoundEmitter::SoundEmitter(Entity& Owner) : playSoundOnStart(true),Component(Owner)
 {
 	m_manager = ForLease->sound;
 	if (playSoundOnStart)

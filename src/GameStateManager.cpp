@@ -63,11 +63,13 @@ namespace ForLeaseEngine {
                             Parent.FrameRateController().Start();   // Start the current frame
                             States[StateIndex]->Update();       // Do all the game stuff
                             Parent.FrameRateController().End();     // End the current frame
-                            State &levelState = ForLease->GameStateManager().CurrentState();
-                            Entity * mute = levelState.AddEntity("Mute");
-                            mute->AddComponent(new Components::SoundEmitter(*mute));
-                            Components::SoundEmitter * emitter = mute->GetComponent<Components::SoundEmitter>();
-                            emitter->Rock();
+                            //State &levelState = ForLease->GameStateManager().CurrentState();
+                            //Entity * mute = levelState.AddEntity("Mute");
+                            //mute->AddComponent(new Components::SoundEmitter(*mute));
+                            //Components::SoundEmitter * emitter = mute->GetComponent<Components::SoundEmitter>(true);
+                            //emitter->Rock();
+                            ForLease->sound->ResumeAll();
+                            ForLease->sound->Update(0.0f);
 
 
                         }
@@ -79,12 +81,13 @@ namespace ForLeaseEngine {
                             frozenLastFrame = true;
                             Parent.FrameRateController().SleepFor(0.1);
                             ForLease->OSInput.ProcessAllInput();
-                            State &levelState = ForLease->GameStateManager().CurrentState();
-                            Entity * mute = levelState.AddEntity("Mute");
-                            mute->AddComponent(new Components::SoundEmitter(*mute));
-                            Components::SoundEmitter * emitter = mute->GetComponent<Components::SoundEmitter>();
-                            emitter->BeQuiet();
-                        }
+//                            State &levelState = ForLease->GameStateManager().CurrentState();
+//                            Entity * mute = levelState.AddEntity("Mute");
+//                            mute->AddComponent(new Components::SoundEmitter(*mute));
+//                            Components::SoundEmitter * emitter = mute->GetComponent<Components::SoundEmitter>(true);
+//                            emitter->BeQuiet();
+                            ForLease->sound->PauseAll();
+                            ForLease->sound->Update(0.0f);                       }
 
 
 

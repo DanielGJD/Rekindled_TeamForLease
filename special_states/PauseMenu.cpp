@@ -114,10 +114,12 @@ void PauseMenu::Initialize() {
 
     ForLease->Dispatcher.Attach(NULL, this, "KeyDown", &PauseMenu::OnKeyDown);
 
-    Entity* lowerVolume = AddEntity("LowerVolume");
-    lowerVolume->AddComponent(new Components::SoundEmitter(*lowerVolume));
-    Components::SoundEmitter * emitter = lowerVolume->GetComponent<Components::SoundEmitter>();
-    emitter->SetGlobalVol(0.2f);
+    //Entity* lowerVolume = AddEntity("LowerVolume");
+    //lowerVolume->AddComponent(new Components::SoundEmitter(*lowerVolume));
+    //Components::SoundEmitter * emitter = lowerVolume->GetComponent<Components::SoundEmitter>();
+    //emitter->SetGlobalVol(0.0f);
+    ForLease->sound->SetGlobalVolume(0.0f);
+    ForLease->sound->Update(0.0f);
 }
 
 void PauseMenu::Update() {
@@ -141,6 +143,8 @@ void PauseMenu::Deinitialize() {
     DeleteAllEntities();
     DeleteAllLevelComponents();
     ForLease->Dispatcher.Detach(this, "KeyDown");
+    ForLease->sound->SetGlobalVolume(1.0f);
+    ForLease->sound->Update(0.0f);
 }
 
 void PauseMenu::Unload() {}
@@ -148,9 +152,9 @@ void PauseMenu::Unload() {}
 void PauseMenu::OnKeyDown(const Event* e) {
     const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
    // ForLease->GameStateManager().SetAction(Modules::StateAction::Pause);
-    Entity * pause = AddEntity("Pause");
-    pause->AddComponent(new Components::SoundEmitter(*pause));
-    Components::SoundEmitter * emitter = pause->GetComponent<Components::SoundEmitter>();
+    //Entity * pause = AddEntity("Pause");
+    //pause->AddComponent(new Components::SoundEmitter(*pause));
+    //Components::SoundEmitter * emitter = pause->GetComponent<Components::SoundEmitter>();
 //    if(ForLease->GameStateManager().GetCurrentAction() ==  Modules::StateAction::Pause)
 //        emitter->SetGlobalVol(0.2f);
 
@@ -158,7 +162,8 @@ void PauseMenu::OnKeyDown(const Event* e) {
 
         ForLease->GameStateManager().SetAction(Modules::StateAction::Continue);
         std::cout<< "AAAAAAAAA" <<std::endl;
-        emitter->SetGlobalVol(1.0f);
+
+        //emitter->SetGlobalVol(1.0f);
 
     //if(ForLease->GameStateManager().GetCurrentAction() ==  Modules::StateAction::Freeze)
       //  emitter->BeQuiet();
