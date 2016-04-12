@@ -18,6 +18,7 @@
 #include "Mesh.h"
 #include "GameStateManager.h"
 #include "Ray.h"
+#include "Mouse.h"
 #include "SoundEmitter.h"
 
 #include <iostream>
@@ -32,6 +33,7 @@ void PauseMenu::Load() {
 }
 
 void PauseMenu::Initialize() {
+    Mouse::SetMouseVisible(true);
     FLE::LevelComponents::Renderer* renderer = new FLE::LevelComponents::Renderer(*this);
     FLE::Entity* camera = AddEntity("Camera");
     camera->AddComponent(new FLE::Components::Transform(*camera, FLE::Point(0, 0), 1, 1, 0));
@@ -76,20 +78,31 @@ void PauseMenu::Initialize() {
     follow->GetComponent<Components::Follow>()->Speed = 4;
     follow->GetComponent<Components::Light>()->Radius = 5.0f;
 
+    Entity* creditsPic = AddEntity("CreditsPic");
+    creditsPic->AddComponent(new Components::Transform(*creditsPic, Point(0, 0), 30.0f, 30.0f, 0.0f));
+    creditsPic->AddComponent(new Components::Sprite(*creditsPic, "Credits.png", false));
+
+    Entity* htpPic = AddEntity("HowToPlayPic");
+    htpPic->AddComponent(new Components::Transform(*htpPic, Point(0, 0), 30.0f, 30.0f, 0.0f));
+    htpPic->AddComponent(new Components::Sprite(*htpPic, "HowToPlay.png", false));
 
     Entity* menu = AddEntity("Menu");
-    menu->AddComponent(new Components::Transform(*menu, Point(-40.0f, -10.0f)));
+    menu->AddComponent(new Components::Transform(*menu, Point(-35.0f, -6.0f)));
     menu->AddComponent(new Components::Menu(*menu, Vector(0, -1), true, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
-    menuComp->AddItem(new MenuItems::ResumeGame("Resume"));
-    //menuComp->AddItem(new MenuItems::LoadLevel("ButtonHowTo.png", "HowToPlay"));
+    menuComp->AddItem(new MenuItems::ResumeGame("Resume Game"));
+    menuComp->AddItem(new MenuItems::ActivateAndDeactivate("Restart Level", "RestartConfirm", "Menu"));
+    //menuComp->AddItem(new MenuItems::LoadLevel("How to Play", "HowToPlay"));
+    //menuComp->AddItem(new MenuItems::LoadLevel("How to Play", "HowToPlay"));  // THIS NEEDS TO BE FIXED
+    menuComp->AddItem(new MenuItems::ActivateAndDeactivateAndMakeVisible("How To Play", "HowToPlayMenu", "Menu", "HowToPlayPic"));
     menuComp->AddItem(new MenuItems::ActivateAndDeactivate("Options", "OptionsMenu", "Menu"));
+    menuComp->AddItem(new MenuItems::ActivateAndDeactivateAndMakeVisible("Credits", "CreditsMenu", "Menu", "CreditsPic"));
     menuComp->AddItem(new MenuItems::ActivateAndDeactivate("Main Menu", "MainMenuConfirm", "Menu"));
-    menuComp->AddItem(new MenuItems::ActivateAndDeactivate("Quit", "QuitConfirm", "Menu"));
+    menuComp->AddItem(new MenuItems::ActivateAndDeactivate("Quit Game", "QuitConfirm", "Menu"));
     menuComp->Activate();
 
     Entity* opMenu = AddEntity("OptionsMenu");
-    opMenu->AddComponent(new Components::Transform(*opMenu, Point(-40.0f, -10.0f)));
+    opMenu->AddComponent(new Components::Transform(*opMenu, Point(-35.0f, -6.0f)));
     opMenu->AddComponent(new Components::Menu(*opMenu, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* opMenuComp = opMenu->GetComponent<Components::Menu>();
     opMenuComp->AddItem(new OptionMenuItems::Resolution());
@@ -98,15 +111,36 @@ void PauseMenu::Initialize() {
     opMenuComp->AddItem(new OptionMenuItems::FinalAccept("OptionsMenu"));
     opMenuComp->AddItem(new MenuItems::ActivateAndDeactivate("Back", "Menu", "OptionsMenu"));
 
+    Entity* restartConfirm = AddEntity("RestartConfirm");
+    restartConfirm->AddComponent(new Components::Transform(*restartConfirm, Point(-35.0f, -13.0f)));
+    restartConfirm->AddComponent(new Components::Menu(*restartConfirm, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
+    Components::Menu* restartConfirmComp = restartConfirm->GetComponent<Components::Menu>();
+    restartConfirmComp->AddItem(new MenuItems::RestartLevel("Restart Level"));
+    restartConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("Cancel", "Menu", "RestartConfirm"));
+
     Entity* quitConfirm = AddEntity("QuitConfirm");
-    quitConfirm->AddComponent(new Components::Transform(*quitConfirm, Point(-40.0f, -10.0f)));
+    quitConfirm->AddComponent(new Components::Transform(*quitConfirm, Point(-35.0f, -13.0f)));
     quitConfirm->AddComponent(new Components::Menu(*quitConfirm, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* quitConfirmComp = quitConfirm->GetComponent<Components::Menu>();
-    quitConfirmComp->AddItem(new MenuItems::Quit("Quit"));
+    quitConfirmComp->AddItem(new MenuItems::Quit("Quit Game"));
     quitConfirmComp->AddItem(new MenuItems::ActivateAndDeactivate("Cancel", "Menu", "QuitConfirm"));
 
+    Entity* creditsMenu = AddEntity("CreditsMenu");
+    creditsMenu->AddComponent(new Components::Transform(*creditsMenu, Point(-35.0f, -13.0f)));
+    creditsMenu->AddComponent(new Components::Menu(*creditsMenu, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
+    Components::Menu* creditsMenuComp = creditsMenu->GetComponent<Components::Menu>();
+    //creditsMenuComp->AddItem(new MenuItems::Quit("Quit"));
+    creditsMenuComp->AddItem(new MenuItems::ActivateAndDeactivateAndMakeInvisible("Back", "Menu", "CreditsMenu", "CreditsPic"));
+
+    Entity* htpMenu = AddEntity("HowToPlayMenu");
+    htpMenu->AddComponent(new Components::Transform(*htpMenu, Point(-35.0f, -13.0f)));
+    htpMenu->AddComponent(new Components::Menu(*htpMenu, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
+    Components::Menu* htpMenuComp = htpMenu->GetComponent<Components::Menu>();
+    //creditsMenuComp->AddItem(new MenuItems::Quit("Quit"));
+    htpMenuComp->AddItem(new MenuItems::ActivateAndDeactivateAndMakeInvisible("Back", "Menu", "HowToPlayMenu", "HowToPlayPic"));
+
     Entity* mainMenuConfirm = AddEntity("MainMenuConfirm");
-    mainMenuConfirm->AddComponent(new Components::Transform(*mainMenuConfirm, Point(-40.0f, -10.0f)));
+    mainMenuConfirm->AddComponent(new Components::Transform(*mainMenuConfirm, Point(-35.0f, -13.0f)));
     mainMenuConfirm->AddComponent(new Components::Menu(*mainMenuConfirm, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* mainMenuConfirmComp = mainMenuConfirm->GetComponent<Components::Menu>();
     mainMenuConfirmComp->AddItem(new MenuItems::LoadLevel("Main Menu", "MainMenu"));
@@ -136,46 +170,47 @@ void PauseMenu::Deinitialize() {
     DeleteAllEntities();
     DeleteAllLevelComponents();
     ForLease->Dispatcher.Detach(this, "KeyDown");
+    Mouse::SetMouseVisible(false);
 }
 
 void PauseMenu::Unload() {}
 
 void PauseMenu::OnKeyDown(const Event* e) {
     const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
-    Entity * pause = AddEntity("Pause");
-    Components::SoundEmitter * emitter = pause->GetComponent<Components::SoundEmitter>();
+    /*Entity * pause = AddEntity("Pause");
+    Components::SoundEmitter * emitter = pause->GetComponent<Components::SoundEmitter>();*/
     if (key_e->Key == Keys::Escape)
         ForLease->GameStateManager().SetAction(Modules::StateAction::Continue);
-    if(ForLease->GameStateManager().GetCurrentAction() ==  Modules::StateAction::Freeze)
-        emitter->BeQuiet();
-        continueFromFreeze = true;
-        //continueFromPause = false;
-    if(ForLease->GameStateManager().GetCurrentAction() == Modules::StateAction::Pause)
-    {
-        //continueFromFreeze = false;
-        continueFromPause = true;
-        State &levelState = ForLease->GameStateManager().CurrentState();
-        Entity * bgm = levelState.GetEntityByName("backgroundMusic", false);
-        std::string soundname = bgm->GetComponent<Components::BackgroundMusic>()->MusicName;
-        emitter->SetPause(true, soundname);
-    }
-    else if(ForLease->GameStateManager().GetCurrentAction() == Modules::StateAction::Continue)
-    {
+    //if(ForLease->GameStateManager().GetCurrentAction() ==  Modules::StateAction::Freeze)
+    //    emitter->BeQuiet();
+    //    continueFromFreeze = true;
+    //    //continueFromPause = false;
+    //if(ForLease->GameStateManager().GetCurrentAction() == Modules::StateAction::Pause)
+    //{
+    //    //continueFromFreeze = false;
+    //    continueFromPause = true;
+    //    State &levelState = ForLease->GameStateManager().CurrentState();
+    //    Entity * bgm = levelState.GetEntityByName("backgroundMusic", false);
+    //    std::string soundname = bgm->GetComponent<Components::BackgroundMusic>()->MusicName;
+    //    emitter->SetPause(true, soundname);
+    //}
+    //else if(ForLease->GameStateManager().GetCurrentAction() == Modules::StateAction::Continue)
+    //{
 
-        if(continueFromPause)
-        {
-            State &levelState = ForLease->GameStateManager().CurrentState();
-            Entity * bgm = levelState.GetEntityByName("backgroundMusic", false);
-            std::string soundname = bgm->GetComponent<Components::BackgroundMusic>()->MusicName;
-            emitter->SetPause(false, soundname);
-            continueFromPause = false;
-        }
-        if(continueFromFreeze)
-        {
-            emitter->Rock();
-            continueFromFreeze = false;
-        }
-    }
+    //    if(continueFromPause)
+    //    {
+    //        State &levelState = ForLease->GameStateManager().CurrentState();
+    //        Entity * bgm = levelState.GetEntityByName("backgroundMusic", false);
+    //        std::string soundname = bgm->GetComponent<Components::BackgroundMusic>()->MusicName;
+    //        emitter->SetPause(false, soundname);
+    //        continueFromPause = false;
+    //    }
+    //    if(continueFromFreeze)
+    //    {
+    //        emitter->Rock();
+    //        continueFromFreeze = false;
+    //    }
+    //}
 
 
 }

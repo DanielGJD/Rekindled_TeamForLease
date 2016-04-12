@@ -53,7 +53,7 @@ namespace ForLeaseEngine {
 //            ////////////////////////////////////////////
             ViewMesh.ClearData();
             if(!Active) {
-                std::cout << "Vision cone not active" << std::endl;
+                //std::cout << "Vision cone not active" << std::endl;
                 return;
             }
             Vector normalized = Vector(Direction);

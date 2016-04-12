@@ -16,7 +16,6 @@
 #include "Level.h"
 #include "MainMenu.h"
 #include "HowToPlay.h"
-#include "Credits.h"
 #include "Utilities.h"
 #include "Platforms.h"
 #include "Loading.h"
@@ -45,7 +44,6 @@ int Start(int argc = 0, char** argv = 0) {
         states.push_back(new Loading("Game.json"));
         states.push_back(new MainMenu());
         states = LoadLevels("Game.json", states);
-        states.push_back(new Credits());
         states.push_back(new HowToPlay());
     }
     else { // This is a pretty screwed-up place to be.  Just loads the main menu and the how to play screen.  No gameplay is loaded.

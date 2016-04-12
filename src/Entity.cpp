@@ -337,6 +337,7 @@ for (unsigned i = 0; i < jsonComponents.Size(); ++i) {
                 break;
             case ComponentType::ChangeLevelOnCollide:
                 component = new Components::ChangeLevelOnCollide(entity);
+                component->Initialize();
                 break;
             case ComponentType::BackgroundMusic:
                 component = new Components::BackgroundMusic(entity);

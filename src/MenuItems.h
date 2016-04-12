@@ -35,7 +35,9 @@ namespace ForLeaseEngine {
         OptionVolume            = 10,
         OptionAccept            = 11,
         OptionFullscreen        = 12,
-        OptionBorderless        = 13
+        OptionBorderless        = 13,
+        ActDeactVisInvis        = 14,
+        RestartLevel            = 15
     };
 
     class MenuItem : public Serializable {
@@ -142,6 +144,24 @@ namespace ForLeaseEngine {
                 std::string ToDeactivate;
                 std::string ToActivate;
                 std::string ToMakeVisible;
+        };
+
+        class ActivateAndDeactivateAndMakeVisibleAndMakeInvisible : public MenuItem {
+            public:
+                ActivateAndDeactivateAndMakeVisibleAndMakeInvisible(std::string text, std::string toActivate, std::string toDeactivate, std::string toMakeVisible, std::string toMakeInvisible);
+                virtual void Action();
+
+
+                std::string ToDeactivate;
+                std::string ToActivate;
+                std::string ToMakeVisible;
+                std::string ToMakeInvisible;
+        };
+
+        class RestartLevel : public MenuItem {
+            public:
+                RestartLevel(std::string text);
+                virtual void Action();
         };
 
     } // MenuItems
