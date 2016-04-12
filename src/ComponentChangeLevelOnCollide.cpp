@@ -35,7 +35,6 @@ namespace ForLeaseEngine {
 
         void ChangeLevelOnCollide::Initialize() {
             ForLease->Dispatcher.Attach(NULL, this, "Collision", &ChangeLevelOnCollide::CollisionStarted, &Parent);
-            if(!Parent.HasComponent(ComponentType::Collision))
         }
 
         void ChangeLevelOnCollide::Update() {
