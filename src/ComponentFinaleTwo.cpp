@@ -181,10 +181,22 @@ namespace ForLeaseEngine {
                 }
             }
             else if(CurrentState == CREDITS_SCROLL) {
+                float t = StateTimer / ScrollSpeed;
+                Components::Transform* logoTrans = ForLease->GameStateManager().CurrentState().GetEntityByName(Logo)->GetComponent<Components::Transform>();
+                Components::Transform* creditsTrans = ForLease->GameStateManager().CurrentState().GetEntityByName(Credits)->GetComponent<Components::Transform>();
+                Components::Transform* cameraTrans = ForLease->GameStateManager().CurrentState().GetEntityByName(Camera)->GetComponent<Components::Transform>();
 
+                cameraTrans->Position[1] = Interpolation::Linear(logoTrans->Position[1], creditsTrans->Position[1], t);
+
+                if(StateTimer >= ScrollSpeed) {
+                    StateTimer = 0;
+                    CurrentState = CREDITS_DELAY;
+                }
             }
             else if(CurrentState == CREDITS_DELAY) {
-
+                if(StateTimer >= CreditsDelay) {
+                    ForLease->GameStateManager().SetState("MainMenu");
+                }
             }
         }
 
