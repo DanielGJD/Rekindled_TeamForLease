@@ -127,16 +127,9 @@ void MainMenu::Initialize() {
     //Components::SoundEmitter* emitter = title->GetComponent<Components::SoundEmitter>();
     title->AddComponent(new Components::Transform(*title, 0,0, 45, 25));
     title->AddComponent(new Components::SoundEmitter(*title));
-
-    //title->GetComponent<Components::SoundEmitter>(title)->SetVolume(1.0f, "woody title 7.5");
+    title->GetComponent<Components::SoundEmitter>(title)->SetVolume(1.0f, "woody title 7.5");
     title->GetComponent<Components::SoundEmitter>(title)->StopEvent("woody title 7.5");
     title->GetComponent<Components::SoundEmitter>(title)->PlayEvent("woody title 7.5");
-
-//    if(ForLease->GameStateManager().GetCurrentAction() == Modules::StateAction::Continue)
-//    {
-//        title->GetComponent<Components::SoundEmitter>(title)->SetVolume(0.2f, "woody title 7.5");
-//        std::cout<<"im doing things" <<std::endl;
-//    }
     std::cout<< "BGMMMMMMMMMMMMMM" <<std::endl;
 }
 
