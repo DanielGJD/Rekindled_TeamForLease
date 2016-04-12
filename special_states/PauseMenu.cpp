@@ -118,7 +118,7 @@ void PauseMenu::Initialize() {
     //lowerVolume->AddComponent(new Components::SoundEmitter(*lowerVolume));
     //Components::SoundEmitter * emitter = lowerVolume->GetComponent<Components::SoundEmitter>();
     //emitter->SetGlobalVol(0.0f);
-    ForLease->sound->SetGlobalVolume(0.0f);
+    ForLease->sound->SetGlobalVolume(0.2f);
     ForLease->sound->Update(0.0f);
 }
 

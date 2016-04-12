@@ -87,7 +87,7 @@ namespace ForLeaseEngine {
 //                            Components::SoundEmitter * emitter = mute->GetComponent<Components::SoundEmitter>(true);
 //                            emitter->BeQuiet();
                             ForLease->sound->PauseAll();
-                            ForLease->sound->Update(0.0f);                       }
+                            ForLease->sound->Update(0.0f);  }
 
 
 
