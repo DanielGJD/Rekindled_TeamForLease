@@ -378,6 +378,16 @@ namespace ForLeaseEngine
                 leg::selFade = NULL;
             }
         }
+        if (leg::selFinale1 && ImGui::CollapsingHeader("Finale One"))
+        {
+            static char camera[128];
+            static char wisp[128];
+            static char wispdest[128];
+            static char cameradest[128];
+            static char light[128];
+            static char eyes[128];
+            static char trigger[128];
+        }
         if (leg::selFinale2 && ImGui::CollapsingHeader("Finale Two"))
         {
             static char dead[128];

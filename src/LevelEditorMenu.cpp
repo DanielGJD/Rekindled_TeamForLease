@@ -423,6 +423,13 @@ namespace ForLeaseEngine
                 leg::selFade = NULL;
             return;
         }
+        if (!(component.compare("Finale One")) && !leg::selFinale1)
+        {
+            leg::selFinale1 = Components::FinaleOne::Create(*leg::selection);
+            if (!leg::selection->AddComponent(leg::selFinale1))
+                leg::selFinale1 = nullptr;
+            return;
+        }
         if (!(component.compare("Finale Two")) && !leg::selFinale2)
         {
             leg::selFinale2 = new Components::FinaleTwo(*leg::selection);
