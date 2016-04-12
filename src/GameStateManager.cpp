@@ -112,7 +112,10 @@ namespace ForLeaseEngine {
 
                 States[StateIndex]->Unload(); // Free memory allocated by the state
 
-                if (Action == StateAction::Next) ++StateIndex; // If we're just going to the next level, increment the state index
+                if (Action == StateAction::Next) {
+                    ++StateIndex; // If we're just going to the next level, increment the state index
+                    if (StateIndex >= States.size()) StateIndex = 0; // Fixes that crash.
+                }
                 if (Action == StateAction::Skip) StateIndex = NextStateIndex; // Go to the next requested level
             }
         }
