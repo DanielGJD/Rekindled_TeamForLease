@@ -2,9 +2,8 @@
 #define FINALE_ONE_H
 
 #include "Component.h"
-#include "State.h"
 #include <string>
-
+#include "Event.h"
 namespace ForLeaseEngine
 {
     namespace Components
@@ -33,11 +32,11 @@ namespace ForLeaseEngine
             ~FinaleOne();
             virtual ComponentType GetType();
             void Update();
-            static FinaleOne* Create();
+            static FinaleOne* Create(Entity& owner);
             void Initialize();
             void Serialize(Serializer& root);
             void Deserialize(Serializer& root);
-            void OnCollisionStart();
+            void OnCollisionStart(const Event* e);
 
         private:
             enum Action
@@ -47,10 +46,11 @@ namespace ForLeaseEngine
             };
 
             FinaleOne(Entity& owner);
-            void Move();
-            void Transition();
+            void Move(float dt);
+            void Transition(float dt);
             bool start;
             float distance;
+            float savePos;
             Action currentAction;
             bool setup;
         };
