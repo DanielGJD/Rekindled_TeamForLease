@@ -47,6 +47,10 @@ namespace ForLeaseEngine {
             Vector ThrowVector;
             float BalloonMass;
             float NormalMass;
+            float BalloonJumpSpeed;
+            float NormalJumpSpeed;
+
+
 
         private:
             UsefulObjectInventory() = delete;
