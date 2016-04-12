@@ -80,13 +80,18 @@ void PauseMenu::Initialize() {
     creditsPic->AddComponent(new Components::Transform(*creditsPic, Point(0, 0), 30.0f, 30.0f, 0.0f));
     creditsPic->AddComponent(new Components::Sprite(*creditsPic, "Credits.png", false));
 
+    Entity* htpPic = AddEntity("HowToPlayPic");
+    htpPic->AddComponent(new Components::Transform(*htpPic, Point(0, 0), 30.0f, 30.0f, 0.0f));
+    htpPic->AddComponent(new Components::Sprite(*htpPic, "HowToPlay.png", false));
+
     Entity* menu = AddEntity("Menu");
     menu->AddComponent(new Components::Transform(*menu, Point(-35.0f, -6.0f)));
     menu->AddComponent(new Components::Menu(*menu, Vector(0, -1), true, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
     Components::Menu* menuComp = menu->GetComponent<Components::Menu>();
     menuComp->AddItem(new MenuItems::ResumeGame("Resume Game"));
     //menuComp->AddItem(new MenuItems::LoadLevel("How to Play", "HowToPlay"));
-    menuComp->AddItem(new MenuItems::LoadLevel("How to Play", "HowToPlay"));  // THIS NEEDS TO BE FIXED
+    //menuComp->AddItem(new MenuItems::LoadLevel("How to Play", "HowToPlay"));  // THIS NEEDS TO BE FIXED
+    menuComp->AddItem(new MenuItems::ActivateAndDeactivateAndMakeVisible("How To Play", "HowToPlayMenu", "Menu", "HowToPlayPic"));
     menuComp->AddItem(new MenuItems::ActivateAndDeactivate("Options", "OptionsMenu", "Menu"));
     menuComp->AddItem(new MenuItems::ActivateAndDeactivateAndMakeVisible("Credits", "CreditsMenu", "Menu", "CreditsPic"));
     menuComp->AddItem(new MenuItems::ActivateAndDeactivate("Main Menu", "MainMenuConfirm", "Menu"));
@@ -116,6 +121,13 @@ void PauseMenu::Initialize() {
     Components::Menu* creditsMenuComp = creditsMenu->GetComponent<Components::Menu>();
     //creditsMenuComp->AddItem(new MenuItems::Quit("Quit"));
     creditsMenuComp->AddItem(new MenuItems::ActivateAndDeactivateAndMakeInvisible("Back", "Menu", "CreditsMenu", "CreditsPic"));
+
+    Entity* htpMenu = AddEntity("HowToPlayMenu");
+    htpMenu->AddComponent(new Components::Transform(*htpMenu, Point(-35.0f, -13.0f)));
+    htpMenu->AddComponent(new Components::Menu(*htpMenu, Vector(0, -1), false, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
+    Components::Menu* htpMenuComp = htpMenu->GetComponent<Components::Menu>();
+    //creditsMenuComp->AddItem(new MenuItems::Quit("Quit"));
+    htpMenuComp->AddItem(new MenuItems::ActivateAndDeactivateAndMakeInvisible("Back", "Menu", "HowToPlayMenu", "HowToPlayPic"));
 
     Entity* mainMenuConfirm = AddEntity("MainMenuConfirm");
     mainMenuConfirm->AddComponent(new Components::Transform(*mainMenuConfirm, Point(-35.0f, -13.0f)));
