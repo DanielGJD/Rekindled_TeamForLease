@@ -40,6 +40,7 @@ namespace ForLeaseEngine {
                 void Deserialize(Serializer& root);
             private:
                 enum State {
+                    START,
                     START_FADE_IN,
                     DELAY_FADE_OUT_1,
                     FADE_OUT_1,
