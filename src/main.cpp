@@ -41,7 +41,7 @@ int Start(int argc = 0, char** argv = 0) {
         states = LoadSingleLevel(testingLevel.second, states);
     else if (ForLeaseEngine::Modules::Filesystem::PathExists("Game.json")) {
         states.push_back(new DigiPenLogo());
-//        states.push_back(new Loading("Game.json"));  THIS NEEDS TO GO BACK IN BEFORE SUBMISSION
+        states.push_back(new Loading("Game.json"));
         states.push_back(new MainMenu());
         states = LoadLevels("Game.json", states);
         states.push_back(new HowToPlay());

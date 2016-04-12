@@ -14,6 +14,7 @@
 */
 
 #include "Level.h"
+#include "Mouse.h"
 
 namespace ForLeaseEngine {
 
@@ -33,6 +34,7 @@ namespace ForLeaseEngine {
         serial.ReadFile(File);
         Deserialize(serial);
         ForLease->FrameRateController().TimeScaling(1);
+        Mouse::SetMouseVisible(false);
     }
 
     void Level::Update() {
@@ -65,6 +67,7 @@ namespace ForLeaseEngine {
     void Level::Deinitialize() {
         DeleteAllEntities();
         DeleteAllLevelComponents();
+        Mouse::SetMouseVisible(true);
     }
 
     void Level::Unload() {}
