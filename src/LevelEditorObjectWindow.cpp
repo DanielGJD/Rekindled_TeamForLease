@@ -556,6 +556,8 @@ namespace ForLeaseEngine
         {
             ImGui::InputFloat("Balloon Mass##inventory", &(leg::selInventory->BalloonMass));
             ImGui::InputFloat("Normal Mass##inventory", &(leg::selInventory->NormalMass));
+            ImGui::InputFloat("Balloon Jump Speed##inventory", &(leg::selInventory->BalloonJumpSpeed));
+            ImGui::InputFloat("Normal Jump Speed##inventory", &(leg::selInventory->NormalJumpSpeed));
             ImGui::InputText("Follow Name##inventory", leg::usefulFollowName, 128);
             leg::selInventory->FollowName = leg::usefulFollowName;
             ImGui::PushItemWidth(width);
@@ -1284,13 +1286,7 @@ namespace ForLeaseEngine
 
         ImGui::Separator();
         if (ImGui::Button("Set Checkpoint Trigger"))
-        {
-            auto check = leg::levelCheckpoint->TriggerEntityID;
-            auto sel = leg::selection->GetID();
             leg::levelCheckpoint->TriggerEntityID = leg::selection->GetID();
-            check = leg::levelCheckpoint->TriggerEntityID;
-            check = sel;
-        }
 
         if (ImGui::Button("Delete Object"))
             leg::delobj = true;
