@@ -34,6 +34,9 @@ namespace ForLeaseEngine {
                 void Update();
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
+
+                void Initialize();
+                void CollisionStarted(const Event* e);
             private:
                 bool Switching;
                 float Timer;

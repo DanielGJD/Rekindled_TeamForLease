@@ -15,6 +15,7 @@
 #include "ComponentCamera.h"
 #include "ComponentTransform.h"
 #include "ComponentSoundEmitter.h"
+#include "CollisionEvent.h"
 
 namespace ForLeaseEngine {
     namespace Components {
@@ -26,9 +27,16 @@ namespace ForLeaseEngine {
                                                     OnSwitchTimeScale(onSwitchTimeScale), FadeOutTime(fadeOutTime),
                                                     Switching(false), Timer(0) {}
 
-        ChangeLevelOnCollide::~ChangeLevelOnCollide() {}
+        ChangeLevelOnCollide::~ChangeLevelOnCollide() {
+            ForLease->Dispatcher.Detach(this, "CollisionStarted");
+        }
 
         ComponentType ChangeLevelOnCollide::GetType() { return Type; }
+
+        void ChangeLevelOnCollide::Initialize() {
+            ForLease->Dispatcher.Attach(NULL, this, "Collision", &ChangeLevelOnCollide::CollisionStarted, &Parent);
+            if(!Parent.HasComponent(ComponentType::Collision))
+        }
 
         void ChangeLevelOnCollide::Update() {
             if(!Active)
@@ -42,19 +50,19 @@ namespace ForLeaseEngine {
                 LevelComponents::Renderer* render = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
                 render->SetOverlayColor(0, 0, 0, Timer / FadeOutTime);
             }
-            else {
-                Collision* collider = Parent.GetComponent<Collision>();
-                if(collider->CollidedWith(TriggerObjectName)) {
-                    Switching = true;
-                    SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
-                    if(TriggerSoundName.compare("") && emitter) {
-                        emitter->SetVolume(1.0f,TriggerSoundName);
-                        emitter->StopEvent(TriggerSoundName);
-                        emitter->PlayEvent(TriggerSoundName);
-                    }
-                    ForLease->FrameRateController().TimeScaling(OnSwitchTimeScale);
-                }
-            }
+//            else {
+//                Collision* collider = Parent.GetComponent<Collision>();
+//                if(collider->CollidedWith(TriggerObjectName)) {
+//                    Switching = true;
+//                    SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
+//                    if(TriggerSoundName.compare("") && emitter) {
+//                        emitter->SetVolume(1.0f,TriggerSoundName);
+//                        emitter->StopEvent(TriggerSoundName);
+//                        emitter->PlayEvent(TriggerSoundName);
+//                    }
+//                    ForLease->FrameRateController().TimeScaling(OnSwitchTimeScale);
+//                }
+//            }
         }
 
         void ChangeLevelOnCollide::Serialize(Serializer& root) {
@@ -78,6 +86,22 @@ namespace ForLeaseEngine {
             changeLevel.ReadString("TriggerSoundName", TriggerSoundName);
             changeLevel.ReadFloat("OnSwitchTimeScale", OnSwitchTimeScale);
             changeLevel.ReadFloat("FadeOutTime", FadeOutTime);
+        }
+
+        void ChangeLevelOnCollide::CollisionStarted(const Event* e) {
+            const CollisionEvent* collision_e = reinterpret_cast<const CollisionEvent*>(e);
+            std::cout << "COLLISION STARTED ON CHANGE LEVEL" << std::endl;
+
+            if(collision_e->With->GetName().compare(TriggerObjectName) == 0) {
+                Switching = true;
+                SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
+                if(TriggerSoundName.compare("") && emitter) {
+                    emitter->SetVolume(1.0f,TriggerSoundName);
+                    emitter->StopEvent(TriggerSoundName);
+                    emitter->PlayEvent(TriggerSoundName);
+                }
+                ForLease->FrameRateController().TimeScaling(OnSwitchTimeScale);
+            }
         }
     }
 }

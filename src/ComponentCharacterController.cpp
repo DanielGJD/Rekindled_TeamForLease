@@ -197,7 +197,7 @@ namespace ForLeaseEngine {
         void CharacterController::OnCollisionStarted(const Event* e) {
             const CollisionStartedEvent* collision_e = reinterpret_cast<const CollisionStartedEvent*>(e);
             if(collision_e->SelfSide == CollisionSide::Bottom) {
-                std::cout << "Collided with bottom" << std::endl;
+                //std::cout << "Collided with bottom" << std::endl;
                 FloorContacts.insert(collision_e->With);
                 CanJump = true;
             }
@@ -205,7 +205,7 @@ namespace ForLeaseEngine {
 
         void CharacterController::OnCollisionEnded(const Event* e) {
             const CollisionEndedEvent* collision_e = reinterpret_cast<const CollisionEndedEvent*>(e);
-                std::cout << "Ended collision" << std::endl;
+                //std::cout << "Ended collision" << std::endl;
             FloorContacts.erase(collision_e->With);
             if(FloorContacts.empty()) {
                 CanJump = false;
