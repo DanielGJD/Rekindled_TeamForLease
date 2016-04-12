@@ -378,6 +378,70 @@ namespace ForLeaseEngine
                 leg::selFade = NULL;
             }
         }
+        if (leg::selFinale1 && ImGui::CollapsingHeader("Finale One"))
+        {
+            static char camera[128];
+            static char wisp[128];
+            static char wispdest[128];
+            static char cameradest[128];
+            static char light[128];
+            static char eyes[128];
+            static char trigger[128];
+
+            ImGui::PushItemWidth(width);
+
+            if (ImGui::InputText("Camera##finale1", camera, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale1->Camera = camera;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale1->Camera.c_str());
+
+            if (ImGui::InputText("Camera Destination##finale1", cameradest, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale1->CameraDest = cameradest;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale1->CameraDest.c_str());
+
+            if (ImGui::InputText("Wisp##finale1", wisp, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale1->Wisp = wisp;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale1->Wisp.c_str());
+
+            if (ImGui::InputText("Wisp Destination##finale1", wispdest, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale1->WispDest = wispdest;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale1->WispDest.c_str());
+
+            if (ImGui::InputText("Light##finale1", light, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale1->Light = light;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale1->Light.c_str());
+
+            if (ImGui::InputText("Eyes##finale1", eyes, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale1->Eyes = eyes;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale1->Eyes.c_str());
+
+            if (ImGui::InputText("Trigger Object##finale1", trigger, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale1->Trigger = trigger;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale1->Trigger.c_str());
+
+            ImGui::InputFloat("Camera Speed##finale1", &(leg::selFinale1->CameraSpeed));
+            ImGui::InputFloat("Camera Size##finale1", &(leg::selFinale1->CameraSize));
+            ImGui::InputFloat("Camera Growth##finale1", &(leg::selFinale1->CameraGrowth));
+            ImGui::InputFloat("Wisp Speed##finale1", &(leg::selFinale1->WispSpeed));
+            ImGui::InputFloat("Player Move Distance##finale1", &(leg::selFinale1->PlayerMoveDistance));
+            ImGui::InputFloat("Player Speed##finale1", &(leg::selFinale1->PlayerMoveSpeed));
+            ImGui::InputFloat("Overlay Speed##finale1", &(leg::selFinale1->OverlaySpeed));
+            ImGui::InputFloat("Light Growth##finale1", &(leg::selFinale1->LightGrowth));
+
+            ImGui::PopItemWidth();
+
+            if (ImGui::Button("Remove Finale One"))
+            {
+                leg::selection->DeleteComponent(ComponentType::FinaleOne);
+                leg::selFinale1 = nullptr;
+            }
+        }
         if (leg::selFinale2 && ImGui::CollapsingHeader("Finale Two"))
         {
             static char dead[128];

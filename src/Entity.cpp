@@ -386,6 +386,9 @@ for (unsigned i = 0; i < jsonComponents.Size(); ++i) {
                 component = new Components::DamageOnCollide(entity);
                 component->Initialize();
                 break;
+            case ComponentType::FinaleOne:
+                component = Components::FinaleOne::Create(entity);
+                break;
             default:
                 std::cout << "Unknown Type: " << type << std::endl;
                 return 0;
