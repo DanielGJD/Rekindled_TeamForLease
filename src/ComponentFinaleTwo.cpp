@@ -13,12 +13,8 @@ namespace ForLeaseEngine {
                                  ScreenShakeAmount(0), DelayToFadeIn1(0), FadeIn1Time(0),
                                  PulseSpeed(0), DelayToFadeOut2(0), FadeOut2Time(0),
                                  DelayToFadeIn2(0), FadeIn2Time(0), ScrollSpeed(0),
-                                 CreditsDelay(0), CurrentState(START_FADE_IN), StateTimer(0),
+                                 CreditsDelay(0), CurrentState(START), StateTimer(0),
                                  PulseTimer(0) {
-            Entity* cameraObject = ForLease->GameStateManager().CurrentState().GetEntityByName(Camera);
-            if(cameraObject) {
-                CameraStartPosition = cameraObject->GetComponent<Components::Transform>()->Position;
-            }
         }
 
         FinaleTwo::~FinaleTwo() {}
@@ -31,6 +27,15 @@ namespace ForLeaseEngine {
 
             if(CurrentState == START) {
                 ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>()->SetOverlayColor(1, 1, 1, 1);
+
+                Entity* cameraObject = ForLease->GameStateManager().CurrentState().GetEntityByName(Camera);
+                if(cameraObject) {
+                    CameraStartPosition = cameraObject->GetComponent<Components::Transform>()->Position;
+                    std::cout << "CAM(" << Camera << ") START: " << CameraStartPosition[1] << std::endl;
+                }
+                else {
+                    std::cout << "CAM(" << Camera << ") NOT FOUND" << std::endl;
+                }
 
                 StateTimer = 0;
                 CurrentState = START_FADE_IN;
@@ -143,6 +148,7 @@ namespace ForLeaseEngine {
                     Components::Transform* pulseTrans = pulseObject->GetComponent<Components::Transform>();
                     pulseTrans->Position += Vector(0, PulseSpeed * ForLease->FrameRateController().GetDt());
                     Components::Transform* cameraTrans = cameraObject->GetComponent<Components::Transform>();
+                    cameraTrans->Position[1] = Interpolation::PowerOut(2 , -CameraStartPosition[1], CameraStartPosition[1], fadeVal);
 
                     if(pulseTrans->Position[1] - pulseTrans->ScaleY >= cameraTrans->Position[1] + cameraObject->GetComponent<Components::Camera>()->Size / 2) {
                         pulseTrans->Position = cameraTrans->Position - Vector(0, pulseTrans->ScaleY + cameraObject->GetComponent<Components::Camera>()->Size / 2);
@@ -168,6 +174,7 @@ namespace ForLeaseEngine {
                     Entity* camera = ForLease->GameStateManager().CurrentState().GetEntityByName(Camera);
                     if(logo && camera) {
                         camera->GetComponent<Components::Transform>()->Position = logo->GetComponent<Components::Transform>()->Position;
+                        camera->GetComponent<Components::Camera>()->Size = 10;
                     }
                 }
             }
@@ -186,7 +193,7 @@ namespace ForLeaseEngine {
                 Components::Transform* creditsTrans = ForLease->GameStateManager().CurrentState().GetEntityByName(Credits)->GetComponent<Components::Transform>();
                 Components::Transform* cameraTrans = ForLease->GameStateManager().CurrentState().GetEntityByName(Camera)->GetComponent<Components::Transform>();
 
-                cameraTrans->Position[1] = Interpolation::Linear(logoTrans->Position[1], creditsTrans->Position[1], t);
+                cameraTrans->Position[1] = Interpolation::Trigonomentric(logoTrans->Position[1], creditsTrans->Position[1], t);
 
                 if(StateTimer >= ScrollSpeed) {
                     StateTimer = 0;

@@ -32,6 +32,8 @@ namespace ForLeaseEngine {
                 float ScrollSpeed;
                 float CreditsDelay;
 
+                std::string RumbleSound;
+
                 FinaleTwo(Entity& owner);
                 ~FinaleTwo();
                 virtual ComponentType GetType();
