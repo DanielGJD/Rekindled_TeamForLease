@@ -48,5 +48,6 @@
 #include "ComponentDamageOnCollide.h"
 //#include "ComponentBackgroundMask.h"
 #include "ComponentFinaleTwo.h"
+#include "ComponentFinaleOne.h"
 
 #endif
