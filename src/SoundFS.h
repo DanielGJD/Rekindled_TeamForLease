@@ -24,61 +24,56 @@ All content 2015 DigiPen (USA) Corporation, all rights reserved.
 #include <vector>
 #include <fstream>
 
-//#include "SoundEmitter.h"
-
-
-//#pragma  comment (lib, "fmodstudio_vc")
-
-
-
-
 namespace ForLeaseEngine{
-	namespace Systems{
+    namespace Systems{
 
-typedef FMOD::Studio::System * SoundSys;
-typedef FMOD::Studio::Bank * SoundBank;
-typedef std::unordered_map<std::string, FMOD::Studio::EventInstance *> SoundCollection;
-typedef std::unordered_map<std::string, FMOD::Studio::EventInstance *>::iterator Soundit;
-typedef FMOD::Studio::ID * EventID;
-typedef FMOD::Studio::Bus * Buslist;
+        typedef FMOD::Studio::System * SoundSys;
+        typedef FMOD::System * LowLevelSoundSys;
+        typedef FMOD::Studio::Bank * SoundBank;
+        typedef std::unordered_map<std::string, FMOD::Studio::EventInstance *> SoundCollection;
+        typedef std::unordered_map<std::string, FMOD::Studio::EventInstance *>::iterator Soundit;
+        typedef FMOD::ChannelGroup * ChannelGroup;
+        typedef FMOD::Studio::ID * EventID;
+        typedef FMOD::Studio::Bus * Buslist;
 
-class SoundManager //: public ISystem
-{
-	public:
-		SoundManager();
-		~SoundManager();
+        class SoundManager //: public ISystem
+        {
+            public:
+                SoundManager();
+                ~SoundManager();
 
 
-		void Initialize(const char* PathFileName, const char *StringBank);
-		void Update(float dt);
-		void ShutDown();
+                void Initialize(const char* PathFileName, const char *StringBank);
+                void Update(float dt);
+                void ShutDown();
 
-		bool PlayEvent(std::string name);
-		bool StopSound(std::string name);
-		void Pause(bool pause, std::string name);
-		void PauseAll();
-		void StopAll(void);
-		void ResumeAll(void);
-		void Resume(void);
-		void Volume(float vol, std::string name);
-        void SetGlobalVol(float vol);
-        void SetGlobalVolume(float vol);
-		std::vector<std::string>GetName();
+                bool PlayEvent(std::string name);
+                bool StopSound(std::string name);
+                void Pause(bool pause, std::string name);
+                void PauseAll();
+                void StopAll(void);
+                void ResumeAll(void);
+                void Resume(void);
+                void Volume(float vol, std::string name);
+                void SetGlobalVol(float vol);
+                void SetGlobalVolume(float vol);
+                std::vector<std::string>GetName();
 
-	private:
-		SoundSys m_Sys;
-		SoundBank m_AmbienceBank;
-		SoundBank m_MusicBank;
-		SoundBank m_MasterBank;
-		SoundBank m_StringsBank;
-		SoundCollection m_LoopSounds;
-        EventID m_EventID;
-        Buslist m_Bus;
-};
+            private:
+                SoundSys m_Sys;
+                LowLevelSoundSys m_llSys;
+                SoundBank m_AmbienceBank;
+                SoundBank m_MusicBank;
+                SoundBank m_MasterBank;
+                SoundBank m_StringsBank;
+                SoundCollection m_LoopSounds;
+                EventID m_EventID;
+                Buslist m_Bus;
+                ChannelGroup Background;
+                ChannelGroup Effects;
+        };
 
-extern SoundManager * sound;
-
-	}
+    }
 }
 
 #endif

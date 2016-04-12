@@ -188,6 +188,14 @@ void SeanState::Load() {
     //lcCheckpoint->LastCheckpointState = serial2;
 
     //serial2.WriteFile("StateTest.json");
+
+    Entity* sound = AddEntity("Sound");
+    sound->AddComponent(new Components::Transform(*sound));
+    Components::SoundEmitter* emitter = new Components::SoundEmitter(*sound);
+    emitter->StopEvent("woody title 7.5");
+    emitter->SetVolume(1.0f, "woody title 7.5");
+    emitter->PlayEvent("woody title 7.5");
+    sound->AddComponent(emitter);
 }
 
 void SeanState::Initialize() {
