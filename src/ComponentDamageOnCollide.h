@@ -13,8 +13,9 @@ namespace ForLeaseEngine {
 
                 float Damage;
                 bool Continuous;
+                bool Kill;
 
-                DamageOnCollide(Entity& parent, float damage = 10, bool continuous = false);
+                DamageOnCollide(Entity& parent, float damage = 10, bool continuous = false, bool kill = false);
                 ~DamageOnCollide();
 
                 void Initialize();
