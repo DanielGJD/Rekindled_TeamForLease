@@ -52,6 +52,18 @@ namespace ForLeaseEngine {
 
             if (collision->With->GetID() == lcCheckpoint->TriggerEntityID && !Active) {
                 Active = true;
+
+                Components::Light* light = Parent.GetComponent<Components::Light>();
+                Components::ParticleEmitter* pemit = Parent.GetComponent<Components::ParticleEmitter>();
+
+                if (light) {
+                    light->Active = true;
+                }
+
+                if (pemit) {
+                    pemit->Active = true;
+                }
+
                 Event activatedEvent = Event("CheckpointActivated");
                 ForLease->Dispatcher.Dispatch(&activatedEvent, this);
             }

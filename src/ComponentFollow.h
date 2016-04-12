@@ -35,6 +35,7 @@ namespace ForLeaseEngine {
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
             private:
+                Vector AlteredOffset;
         };
     }
 }

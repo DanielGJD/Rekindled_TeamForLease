@@ -71,8 +71,8 @@ namespace ForLeaseEngine {
                 broadDetected = ForLease->GameStateManager().CurrentState().GetEntitiesInCone(trans->Position + Offset, 0, normalized, Angle);
             }
             else {
-                //broadDetected = ForLease->GameStateManager().CurrentState().GetEntitiesInRadius(trans->Position + Offset, Radius);
-                broadDetected = ForLease->GameStateManager().CurrentState().GetAllEntities();
+                broadDetected = ForLease->GameStateManager().CurrentState().GetEntitiesInRadius(trans->Position + Offset, Radius);
+                //broadDetected = ForLease->GameStateManager().CurrentState().GetAllEntities();
             }
             std::vector<Entity*> detected;
             for(std::vector<Entity*>::iterator i = broadDetected.begin(); i != broadDetected.end(); ++i) {
