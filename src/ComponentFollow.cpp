@@ -37,6 +37,8 @@ namespace ForLeaseEngine {
             Components::Sprite* sprite = entity->GetComponent<Components::Sprite>();
             Components::Model* model = entity->GetComponent<Components::Model>();
 
+            AlteredOffset[0] = Offset[0];
+
             if(sprite) {
                 if(sprite->FlipY) {
                     AlteredOffset[0] = -Offset[0];
@@ -54,6 +56,8 @@ namespace ForLeaseEngine {
                     AlteredOffset[0] = Offset[0];
                 }
             }
+
+            AlteredOffset[1] = Offset[1];
 
             if(entity) {
                 Transform* followTrans = entity->GetComponent<Components::Transform>();
@@ -120,6 +124,7 @@ namespace ForLeaseEngine {
             follow.ReadFloat("Speed", Speed);
             if (Speed == 0.0f) Speed = 1.0f; // Fix?
             follow.ReadVec("Offset", Offset);
+            AlteredOffset = Offset;
         }
     }
 }
