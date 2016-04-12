@@ -29,7 +29,7 @@ namespace ForLeaseEngine {
             \brief
                 Creates a WindowProperties containing the default properties
         */
-        WindowProperties::WindowProperties() : windowTitle("For Lease Engine") {
+        WindowProperties::WindowProperties() : windowTitle("Rekindled") {
             xResolution = 1280;
             yResolution = 720;
             visible = true;

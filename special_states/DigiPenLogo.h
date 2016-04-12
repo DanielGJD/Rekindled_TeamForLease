@@ -27,7 +27,8 @@ public:
     void Deinitialize();
     void Unload();
     
-    void OnMouseButtonEvent(const ForLeaseEngine::Event* e);
+    void EventAndSkip(const ForLeaseEngine::Event* e);
+    //void OnKeyDown(const ForLeaseEngine::Event* e);
 private:
     enum FadeState : unsigned {
         FadingIn,

@@ -47,7 +47,7 @@ namespace ForLeaseEngine {
             #else
             std::chrono::high_resolution_clock::time_point StartTime;
             #endif
-            
+
             std::string Name;
     };
 

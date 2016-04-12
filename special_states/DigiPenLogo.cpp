@@ -80,7 +80,8 @@ void DigiPenLogo::Initialize() {
 
     CurrentFadeState = FadeState::FadingIn;
 
-    ForLease->Dispatcher.Attach(NULL, this, "MouseButtonDown", &DigiPenLogo::OnMouseButtonEvent, NULL);
+    ForLease->Dispatcher.Attach(NULL, this, "MouseButtonDown", &DigiPenLogo::EventAndSkip, NULL);
+    ForLease->Dispatcher.Attach(NULL, this, "KeyDown", &DigiPenLogo::EventAndSkip, NULL);
 
 
     //Entity* menu = AddEntity("Menu");
@@ -175,11 +176,12 @@ void DigiPenLogo::Deinitialize() {
     DeleteAllEntities();
     DeleteAllLevelComponents();
     ForLease->Dispatcher.Detach(this, "MouseButtonDown");
+    ForLease->Dispatcher.Detach(this, "KeyDown");
 }
 
 void DigiPenLogo::Unload() {}
 
-void DigiPenLogo::OnMouseButtonEvent(const ForLeaseEngine::Event* e) {
-    const MouseButtonEvent* mouse_e = reinterpret_cast<const MouseButtonEvent*>(e);
-    if (mouse_e->Button == 1) ForLease->GameStateManager().SetAction(ForLeaseEngine::Modules::StateAction::Next);
+void DigiPenLogo::EventAndSkip(const ForLeaseEngine::Event* e) {
+    //const MouseButtonEvent* mouse_e = reinterpret_cast<const MouseButtonEvent*>(e);
+    ForLease->GameStateManager().SetAction(ForLeaseEngine::Modules::StateAction::Next);
 }

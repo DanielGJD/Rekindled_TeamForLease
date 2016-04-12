@@ -5,10 +5,11 @@ namespace ForLeaseEngine
         extern SDL_Window* window;
         extern Point       mousePos;
 
-        extern LevelComponents::Renderer*   render;
-        extern LevelComponents::Physics*    levelPhysics;
-        extern LevelComponents::Light*      levelLight;
-        extern LevelComponents::Checkpoint* levelCheckpoint;
+        extern LevelComponents::Renderer*     render;
+        extern LevelComponents::Physics*      levelPhysics;
+        extern LevelComponents::Light*        levelLight;
+        extern LevelComponents::Checkpoint*   levelCheckpoint;
+        extern LevelComponents::UsefulObject* levelUseful;
         extern Vector gravity;
 
         extern Entity*                             selection;
@@ -42,6 +43,11 @@ namespace ForLeaseEngine
         extern Components::EnemyPace*              selPace;
         extern Components::Health*                 selHealth;
         extern Components::OwlAI*                  selOwl;
+        extern Components::MovingPlatform*         selMoving;
+        extern Components::UsefulObject*           selUseful;
+        extern Components::DamageOnCollide*        selDamage;
+        extern Components::UsefulObjectInventory*  selInventory;
+        extern Components::FinaleTwo*              selFinale2;
 
         extern Entity*                levelCamera;
         extern Entity*                camera;
@@ -74,22 +80,12 @@ namespace ForLeaseEngine
         extern char spriteTextBuf[512];
         extern char statefile[128];
         extern char statename[128];
-        extern char meshfile[128];
         extern char archetypefile[128];
-        extern char soundfile[128];
-        extern char fontfile[128];
-        extern char enemyHateN[128];
-        extern char enemyLikeN[128];
-        extern char enemyHateS[128];
-        extern char enemyLikeS[128];
-        extern char animationfile[128];
-        extern char spriteSource[128];
         extern char changeLevel[128];
         extern char changeObject[128];
-        extern char scaleSound[128];
-        extern char particleSource[128];
         extern char enemyHateName[128];
         extern char enemyLikeName[128];
+        extern char usefulFollowName[128];
 
         extern const char* archToSpawn;
         extern int eCount;
@@ -97,10 +93,12 @@ namespace ForLeaseEngine
         extern int particleBlend;
         extern int modelBlend;
         extern int lightBlend;
+        extern int usefulCategory;
         extern float lightAngle;
         extern float visionAngle;
         extern float owlDir1;
         extern float owlDir2;
+        extern float overlayColor[4];
 
         extern std::string levelDir;
         extern std::string blueprintDir;
