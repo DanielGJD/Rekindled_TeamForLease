@@ -48,6 +48,7 @@ namespace ForLeaseEngine
         extern Components::DamageOnCollide*        selDamage;
         extern Components::UsefulObjectInventory*  selInventory;
         extern Components::FinaleTwo*              selFinale2;
+        extern Components::FinaleOne*              selFinale1;
 
         extern Entity*                levelCamera;
         extern Entity*                camera;

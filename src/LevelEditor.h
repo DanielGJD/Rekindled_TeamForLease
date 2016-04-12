@@ -21,6 +21,7 @@
 #include "Event.h"
 #include "Entity.h"
 #include "ComponentsInclude.h"
+#include "ComponentFinaleOne.h"
 
 namespace ForLeaseEngine
 {
