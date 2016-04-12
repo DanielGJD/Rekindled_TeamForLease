@@ -273,5 +273,10 @@ void SoundManager::SetGlobalVolume(float vol)
         }
 }
 
+void SoundManager::SetMute(bool muteSound)
+{
+    FMOD_Studio_Bus_SetMute(reinterpret_cast<FMOD_STUDIO_BUS *>(m_Bus), (muteSound));
+}
+
  }
 }
