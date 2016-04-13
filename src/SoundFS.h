@@ -60,7 +60,8 @@ class SoundManager //: public ISystem
 		void StopAll(void);
 		void ResumeAll(void);
 		void Resume(void);
-		void SetMute(bool muteSound);
+		void SetMuteBGM(bool muteSound);
+		void SetMuteEffects(bool muteEffects);
 		void Volume(float vol, std::string name);
         void SetGlobalVol(float vol);
         void SetGlobalVolume(float vol);

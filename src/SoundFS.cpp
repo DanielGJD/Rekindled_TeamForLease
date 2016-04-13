@@ -273,11 +273,16 @@ void SoundManager::SetGlobalVolume(float vol)
         }
 }
 
-void SoundManager::SetMute(bool muteSound)
+void SoundManager::SetMuteBGM(bool muteSound)
 {
     FMOD_Studio_System_GetBus(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),"bus:/BGM", reinterpret_cast<FMOD_STUDIO_BUS**>(&m_Bus));
     FMOD_Studio_Bus_SetMute(reinterpret_cast<FMOD_STUDIO_BUS *>(m_Bus), (muteSound));
 }
 
+void SoundManager::SetMuteEffects(bool muteEffects)
+{
+    FMOD_Studio_System_GetBus(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),"bus:/Effects", reinterpret_cast<FMOD_STUDIO_BUS**>(&m_Bus));
+    FMOD_Studio_Bus_SetMute(reinterpret_cast<FMOD_STUDIO_BUS *>(m_Bus), (muteEffects));
+}
  }
 }

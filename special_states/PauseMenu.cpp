@@ -120,7 +120,7 @@ void PauseMenu::Initialize() {
     //emitter->SetGlobalVol(0.0f);
     float dt = ForLease->FrameRateController().GetDt();
     //ForLease->sound->SetGlobalVolume(0.2f);
-    ForLease->sound->SetMute(true);
+    ForLease->sound->SetMuteBGM(true);
     ForLease->sound->Update(dt);
 }
 
@@ -146,7 +146,8 @@ void PauseMenu::Deinitialize() {
     DeleteAllLevelComponents();
     ForLease->Dispatcher.Detach(this, "KeyDown");
     float dt = ForLease->FrameRateController().GetDt();
-    ForLease->sound->SetGlobalVolume(1.0f);
+    //ForLease->sound->SetGlobalVolume(1.0f);
+    ForLease->sound->SetMuteBGM(false);
     ForLease->sound->Update(dt);
 }
 
