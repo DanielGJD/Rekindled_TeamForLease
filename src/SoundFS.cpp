@@ -26,8 +26,6 @@ namespace ForLeaseEngine{
 
             result_ = FMOD_Studio_System_Initialize(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),1024, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, 0);
 
-            result_ = m_Sys->getLowLevelSystem(&m_llSys);
-
             Initialize("sounds/Master\ Bank.bank", "sounds/Master\ Bank.strings.bank");
         }
 
@@ -56,172 +54,148 @@ namespace ForLeaseEngine{
             // we loop through the sounds list and call the built in release function
             for (Soundit iter = m_LoopSounds.begin(); iter != m_LoopSounds.end(); iter++)
             {
-            FMOD_Studio_EventInstance_Release(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*>(iter->second));
+                FMOD_Studio_EventInstance_Release(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*>(iter->second));
             }
-            // release the string bank;
-            //m_StringsBank->unload();
             FMOD_Studio_Bank_Unload(reinterpret_cast<FMOD_STUDIO_BANK*>(m_StringsBank));
-            //m_MasterBank->unload();
             FMOD_Studio_Bank_Unload(reinterpret_cast<FMOD_STUDIO_BANK*>(m_MasterBank));
-            //
-            //m_Sys->unloadAll();
             FMOD_Studio_System_UnloadAll(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys));
-            //m_Sys->release();
             FMOD_Studio_System_Release(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys));
         }
 
         std::vector<std::string>SoundManager::GetName()
         {
-        // Just to make sure, this function is to provide level
-        // editor a list of sound file's name generated in GUIDS.txt
-        // Not the actual function to read GUIDs.txt
-        std::string temptext;
-        std::vector<std::string> SoundsList;
-        std::ifstream readfile("sounds/GUIDs.txt");
+            // Just to make sure, this function is to provide level
+            // editor a list of sound file's name generated in GUIDS.txt
+            // Not the actual function to read GUIDs.txt
+            std::string temptext;
+            std::vector<std::string> SoundsList;
+            std::ifstream readfile("sounds/GUIDs.txt");
 
-        while(std::getline(readfile,temptext))
-        {
-        std::string key = "event:/";
-        unsigned pos = temptext.find(key);
-        if(pos != std::string::npos)
-        {
-        pos += key.length();
-        SoundsList.push_back(temptext.substr(pos));
-        }
-        }
-        return SoundsList;
+            while(std::getline(readfile,temptext))
+            {
+                std::string key = "event:/";
+                unsigned pos = temptext.find(key);
+
+                if(pos != std::string::npos)
+                {
+                    pos += key.length();
+                    SoundsList.push_back(temptext.substr(pos));
+                }
+            }
+
+            return SoundsList;
         }
 
         bool SoundManager::PlayEvent(std::string name)
         {
-        FMOD::Studio::EventDescription * SoundDescription = nullptr;
-        FMOD::Studio::EventInstance * SoundInstance = nullptr;
+            FMOD::Studio::EventDescription * SoundDescription = nullptr;
+            FMOD::Studio::EventInstance * SoundInstance = nullptr;
 
-        std::string temptext = "event:/" + name;
+            std::string temptext = "event:/" + name;
 
 
-        // this is where we actually read in the GUIDs.txt and find the music's name
-        FMOD_RESULT SoundResult = FMOD_Studio_System_GetEvent(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),temptext.c_str(), reinterpret_cast<FMOD_STUDIO_EVENTDESCRIPTION**>(&SoundDescription));
+            // this is where we actually read in the GUIDs.txt and find the music's name
+            FMOD_RESULT SoundResult = FMOD_Studio_System_GetEvent(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),temptext.c_str(), reinterpret_cast<FMOD_STUDIO_EVENTDESCRIPTION**>(&SoundDescription));
 
-        if (SoundResult == FMOD_ERR_EVENT_NOTFOUND)
-        {
-        return false;
-        }
+            if (SoundResult == FMOD_ERR_EVENT_NOTFOUND)
+            {
+                return false;
+            }
 
-        //SoundDescription->createInstance(&SoundInstance);
-        FMOD_Studio_EventDescription_CreateInstance(reinterpret_cast<FMOD_STUDIO_EVENTDESCRIPTION*>(SoundDescription), reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE**>(&SoundInstance));
-        bool OneShot = false;
-        //properties access
-        //SoundDescription->isOneshot(&OneShot);
-        FMOD_Studio_EventDescription_IsOneshot(reinterpret_cast<FMOD_STUDIO_EVENTDESCRIPTION *>(SoundDescription),reinterpret_cast<FMOD_BOOL*>(OneShot));
+            FMOD_Studio_EventDescription_CreateInstance(reinterpret_cast<FMOD_STUDIO_EVENTDESCRIPTION*>(SoundDescription), reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE**>(&SoundInstance));
+            bool OneShot = false;
+            //properties access
+            FMOD_Studio_EventDescription_IsOneshot(reinterpret_cast<FMOD_STUDIO_EVENTDESCRIPTION *>(SoundDescription),reinterpret_cast<FMOD_BOOL*>(OneShot));
 
-        //if we cant find the music file in the list
-        if (!OneShot && m_LoopSounds.find(name) != m_LoopSounds.end())
-        {
-        return false;
-        }
+            //if we cant find the music file in the list
+            if (!OneShot && m_LoopSounds.find(name) != m_LoopSounds.end())
+            {
+                return false;
+            }
 
-        // start the sound
-        //SoundInstance->start();
-        FMOD_Studio_EventInstance_Start(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*> (SoundInstance));
+            // start the sound
+            //SoundInstance->start();
+            FMOD_Studio_EventInstance_Start(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*> (SoundInstance));
 
-        if (OneShot)
-        //SoundInstance->release();
-        FMOD_Studio_EventInstance_Release(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*>(SoundInstance));
-        else
-        m_LoopSounds.insert(std::pair<std::string, FMOD::Studio::EventInstance *>(name, SoundInstance));
+            if (OneShot)
+                FMOD_Studio_EventInstance_Release(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*>(SoundInstance));
+            else
+                m_LoopSounds.insert(std::pair<std::string, FMOD::Studio::EventInstance *>(name, SoundInstance));
 
-        return true;
+            return true;
         }
 
 
         bool SoundManager::StopSound(std::string name)
         {
-        if (m_LoopSounds.find(name) == m_LoopSounds.end())
-        return true;
-        //if (m_LoopSounds[name]->isValid())
-        //if(FMOD_Studio_CueInstance_IsValid(reinterpret_cast<FMOD_STUDIO_CUEINSTANCE*>(m_LoopSounds[name])))
-        if(FMOD_Studio_EventInstance_IsValid(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*>(m_LoopSounds[name])))
-        {
-        FMOD_STUDIO_PLAYBACK_STATE rock = FMOD_STUDIO_PLAYBACK_PLAYING;
-        //m_LoopSounds[name]->getPlaybackState(&rock);
-        FMOD_Studio_EventInstance_GetPlaybackState(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE *>(m_LoopSounds[name]),reinterpret_cast<FMOD_STUDIO_PLAYBACK_STATE *>(rock));
-
-        //m_LoopSounds[name]->setPaused(true);
-        FMOD_Studio_EventInstance_SetPaused(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*>(m_LoopSounds[name]), (true));
-        // Don't neet to pause before stopping.
-        //m_LoopSounds[name]->stop(FMOD_STUDIO_STOP_IMMEDIATE);
-        FMOD_Studio_EventInstance_Stop(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE *>(m_LoopSounds[name]),FMOD_STUDIO_STOP_IMMEDIATE);
-
-        //m_LoopSounds[name]->getPlaybackState(&rock);
-        FMOD_Studio_EventInstance_GetPlaybackState(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE *>(m_LoopSounds[name]),reinterpret_cast<FMOD_STUDIO_PLAYBACK_STATE *>(rock));
-
-        //m_LoopSounds[name]->release();
-        FMOD_Studio_EventInstance_Release(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*>(m_LoopSounds[name]));
-        }
+            if (m_LoopSounds.find(name) == m_LoopSounds.end())
+                return true;
+            //if (m_LoopSounds[name]->isValid())
+            //if(FMOD_Studio_CueInstance_IsValid(reinterpret_cast<FMOD_STUDIO_CUEINSTANCE*>(m_LoopSounds[name])))
+            if(FMOD_Studio_EventInstance_IsValid(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*>(m_LoopSounds[name])))
+            {
+                FMOD_STUDIO_PLAYBACK_STATE rock = FMOD_STUDIO_PLAYBACK_PLAYING;
+                FMOD_Studio_EventInstance_GetPlaybackState(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE *>(m_LoopSounds[name]),reinterpret_cast<FMOD_STUDIO_PLAYBACK_STATE *>(rock));
+                FMOD_Studio_EventInstance_SetPaused(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*>(m_LoopSounds[name]), (true));
+                FMOD_Studio_EventInstance_Stop(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE *>(m_LoopSounds[name]),FMOD_STUDIO_STOP_IMMEDIATE);
+                FMOD_Studio_EventInstance_GetPlaybackState(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE *>(m_LoopSounds[name]),reinterpret_cast<FMOD_STUDIO_PLAYBACK_STATE *>(rock));
+                FMOD_Studio_EventInstance_Release(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*>(m_LoopSounds[name]));
+            }
 
 
-        m_LoopSounds.erase(name);
-        return true;
+            m_LoopSounds.erase(name);
+            return true;
         }
 
 
         void SoundManager::Pause(bool pauseSound, std::string name)
         {
-        //m_LoopSounds[name]->setPaused(pauseSound);
-        FMOD_Studio_EventInstance_SetPaused(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*>(m_LoopSounds[name]), (pauseSound));
+            FMOD_Studio_EventInstance_SetPaused(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*>(m_LoopSounds[name]), (pauseSound));
         }
 
 
         void SoundManager::PauseAll()
         {
-        for (Soundit it = m_LoopSounds.begin(); it != m_LoopSounds.end(); ++it)
-        {
-        //FMOD_RESULT myfuckingresult = it->second->setPaused(true);
-        FMOD_Studio_EventInstance_SetPaused(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*>(it->second), (true));
-        //int randonum = 0;
-        }
+            for (Soundit it = m_LoopSounds.begin(); it != m_LoopSounds.end(); ++it)
+            {
+                FMOD_Studio_EventInstance_SetPaused(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*>(it->second), (true));
+            }
         }
 
         void SoundManager::StopAll()
         {
-        for (Soundit it = m_LoopSounds.begin(); it != m_LoopSounds.end(); ++it)
-        {
-        //FMOD_RESULT myfuckingresult = it->second->setPaused(true);
-        FMOD_Studio_EventInstance_SetPaused(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*>(it->second), (true));
-        //int randonum = 0;
-        }
+            for (Soundit it = m_LoopSounds.begin(); it != m_LoopSounds.end(); ++it)
+            {
+                FMOD_Studio_EventInstance_SetPaused(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*>(it->second), (true));
+            }
         }
 
         void SoundManager::ResumeAll()
         {
-        for (Soundit it = m_LoopSounds.begin(); it != m_LoopSounds.end(); ++it)
-        {
-        //FMOD_RESULT myfuckingresult = it->second->setPaused(false);
-        FMOD_Studio_EventInstance_SetPaused(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*>(it->second), (false));
-        //int randonumshit = 9;
-        }
+            for (Soundit it = m_LoopSounds.begin(); it != m_LoopSounds.end(); ++it)
+            {
+                FMOD_Studio_EventInstance_SetPaused(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*>(it->second), (false));
+            }
         }
 
 
         void SoundManager::Volume(float vol, std::string name)
         {
-        //m_LoopSounds[name]->setVolume(vol);
-        FMOD_Studio_EventInstance_SetVolume(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*> (m_LoopSounds[name]),vol);
+            FMOD_Studio_EventInstance_SetVolume(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*> (m_LoopSounds[name]),vol);
         }
 
-        void SoundManager::SetGlobalVol(float vol)
+        void SoundManager::SetGlobalVolume(float volume)
         {
-        FMOD_Studio_Bus_SetFaderLevel(reinterpret_cast<FMOD_STUDIO_BUS*> (m_Bus), vol);
+            SetBackgroundVolume(volume);
+            SetBackgroundVolume(volume);
         }
 
-        void SoundManager::SetGlobalVolume(float vol)
-        {
-        for (Soundit it = m_LoopSounds.begin(); it != m_LoopSounds.end(); ++it)
-        {
-        FMOD_Studio_EventInstance_SetVolume(reinterpret_cast<FMOD_STUDIO_EVENTINSTANCE*> (it->second),vol);
-        }
+        void SoundManager::SetBackgroundVolume(float volume) {
+            FMOD_Studio_Bus_SetFaderLevel(reinterpret_cast<FMOD_STUDIO_BUS*>(m_Background), volume);
         }
 
+        void SoundManager::SetEffectsVolume(float volume) {
+            FMOD_Studio_Bus_SetFaderLevel(reinterpret_cast<FMOD_STUDIO_BUS*>(m_Effects), volume);
+        }
     }
 }

@@ -32,8 +32,7 @@ namespace ForLeaseEngine{
         typedef FMOD::Studio::Bank * SoundBank;
         typedef std::unordered_map<std::string, FMOD::Studio::EventInstance *> SoundCollection;
         typedef std::unordered_map<std::string, FMOD::Studio::EventInstance *>::iterator Soundit;
-        typedef FMOD::ChannelGroup * ChannelGroup;
-        typedef FMOD::Studio::ID * EventID;
+        typedef FMOD_GUID * EventID;
         typedef FMOD::Studio::Bus * Buslist;
 
         class SoundManager //: public ISystem
@@ -47,30 +46,36 @@ namespace ForLeaseEngine{
                 void Update(float dt);
                 void ShutDown();
 
+                // Play/pause controls
                 bool PlayEvent(std::string name);
                 bool StopSound(std::string name);
                 void Pause(bool pause, std::string name);
                 void PauseAll();
                 void StopAll(void);
                 void ResumeAll(void);
-                void Resume(void);
+                
+                void PauseBackground();
+                void ResumeBackground();
+                void PauseEffects();
+                void ResumeEffects();
+
+                // Volume controls
                 void Volume(float vol, std::string name);
-                void SetGlobalVol(float vol);
-                void SetGlobalVolume(float vol);
+                void SetGlobalVolume(float volume);
+                void SetBackgroundVolume(float volume);
+                void SetEffectsVolume(float volume);
+
+                // Get list of all names
                 std::vector<std::string>GetName();
 
             private:
-                SoundSys m_Sys;
-                LowLevelSoundSys m_llSys;
-                SoundBank m_AmbienceBank;
-                SoundBank m_MusicBank;
-                SoundBank m_MasterBank;
-                SoundBank m_StringsBank;
-                SoundCollection m_LoopSounds;
-                EventID m_EventID;
-                Buslist m_Bus;
-                ChannelGroup Background;
-                ChannelGroup Effects;
+                FMOD::Studio::System* m_Sys;
+                FMOD::Studio::Bank* m_MasterBank;
+                FMOD::Studio::Bank* m_StringsBank;
+                //SoundCollection m_LoopSounds;
+                //FMOD_GUID m_EventID;
+                FMOD::Studio::Bus* m_Background;
+                FMOD::Studio::Bus* m_Effects;
         };
 
     }
