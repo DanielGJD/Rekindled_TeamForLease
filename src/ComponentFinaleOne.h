@@ -68,6 +68,7 @@ namespace ForLeaseEngine
             float transitionDelay2;
             float wispLightDelay;
             bool lightSwitch;
+            bool playSound;
         };
     }
 }
