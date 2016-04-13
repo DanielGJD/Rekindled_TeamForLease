@@ -160,7 +160,7 @@ namespace ForLeaseEngine {
 
             //if (pPlatform->Direction == Components::MovingPlatform::Axis::Horizontal)
             //    HorizontalMovingPlatformPushOut(platform, toPush);
-                
+
         }
 
         void Collision::HorizontalMovingPlatformPushOut(Entity* platform, Entity* toPush) {
@@ -281,7 +281,7 @@ namespace ForLeaseEngine {
             else yDist = cTransform->Position.y - eTransform->Position.y;
             yDist = std::abs(yDist);
 
-            
+
 
             xDist -= (eCollision->ScaledHalfWidth() + cCollision->ScaledHalfWidth());
             yDist -= (eCollision->ScaledHalfHeight() + cCollision->ScaledHalfHeight());
@@ -327,8 +327,8 @@ namespace ForLeaseEngine {
                         if (collision->CollidedWithLastFrame.find(checkAgainst) == collision->CollidedWithLastFrame.end()) {
                             CollisionStartedEvent toCAStart = CollisionStartedEvent(entity, CollisionSide::None);
                             CollisionStartedEvent toEntityStart = CollisionStartedEvent(checkAgainst, CollisionSide::None);
-                            ForLease->Dispatcher.DispatchToParent(&toCA, checkAgainst);
-                            ForLease->Dispatcher.DispatchToParent(&toEntity, entity);
+                            ForLease->Dispatcher.DispatchToParent(&toCAStart, checkAgainst);
+                            ForLease->Dispatcher.DispatchToParent(&toEntityStart, entity);
                         }
 
                         collidedWithThisFrame.insert(checkAgainst);
@@ -398,7 +398,7 @@ namespace ForLeaseEngine {
             //    if (caEntity == entity) continue;
             //    Components::Collision* caCollision = caEntity->GetComponent<Components::Collision>();
             //    if (!caCollision->ResolveCollisions) continue;
-            //    
+            //
             //    if (BoxesIntersect(collision->BotRight(), collision->TopLeft(), caCollision->BotRight(), caCollision->TopLeft()))
             //        PostfixCollision(entity, caEntity);
             //}
