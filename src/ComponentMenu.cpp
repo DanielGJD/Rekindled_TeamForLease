@@ -84,8 +84,6 @@ namespace ForLeaseEngine {
                     Representations[i]->GetComponent<Components::SpriteText>()->TextColor = UnavailableColor;
             }
 
-            LastActive = 0;
-
             const MouseMotionEvent* mouseEvent = static_cast<const MouseMotionEvent *>(e);
             Point position(mouseEvent->X, mouseEvent->Y);
             position = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>(true)->ScreenToWorld(position);
@@ -103,6 +101,11 @@ namespace ForLeaseEngine {
                 //Components::Sprite* sprite = rep->GetComponent<Components::Sprite>(true);
                 //rep->GetComponent<Components::Transform>()->ScaleX = FocusedScale;
                 //rep->GetComponent<Components::Transform>()->ScaleY = FocusedScale;
+                if (LastActive != rep) {
+                    ForLease->sound->Volume(0.2f, "menu_move01");
+                    ForLease->sound->PlayEvent("menu_move01");
+                }
+
                 LastActive = rep;
                 Entity* follow = ForLease->GameStateManager().CurrentState().GetEntityByName(FollowName);
                 if (follow) {
@@ -110,6 +113,8 @@ namespace ForLeaseEngine {
                     if (followFollow) followFollow->FollowEntityID = rep->GetID();
                 }
                 rep->GetComponent<Components::SpriteText>()->TextColor = FocusedColor;
+            } else {
+                LastActive = 0;
             }
         }
 
@@ -117,6 +122,7 @@ namespace ForLeaseEngine {
             for (unsigned i = 0; i < Representations.size(); ++i) {
                 if (Representations[i] == LastActive) {
                     Items[i]->Action();
+                    ForLease->sound->PlayEvent("menu_select01");
                 }
             }
         }

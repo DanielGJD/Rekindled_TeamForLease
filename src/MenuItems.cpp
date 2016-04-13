@@ -473,6 +473,77 @@ namespace ForLeaseEngine {
             std::cout << CurrentVolume << std::endl;
         }
 
+        ToggleAudio::ToggleAudio(std::string text) : OptionMenuItem(MenuItemType::OptionToggleAudio, text) {
+            SetLocalMuting();
+            OriginalMuting = CurrentMuting;
+            SetText();
+        }
+
+        void ToggleAudio::SetLocalMuting() {
+            Systems::SoundManager::CurrentMuting currentMuting = ForLease->sound->GetMuting();
+
+            if (currentMuting.BackgroundMuted && currentMuting.EffectsMuted)
+                CurrentMuting = Muting::All;
+            else if (currentMuting.BackgroundMuted && !currentMuting.EffectsMuted)
+                CurrentMuting = Muting::Music;
+            else
+                CurrentMuting = Muting::None;
+        }
+
+        void ToggleAudio::IncrementLocalMuting() {
+            switch (CurrentMuting) {
+                case Muting::None:
+                    CurrentMuting = Muting::Music;
+                    break;
+                case Muting::Music:
+                    CurrentMuting = Muting::All;
+                    break;
+                case Muting::All:
+                    CurrentMuting = Muting::None;
+                    break;
+            }
+        }
+
+        void ToggleAudio::SetText() {            
+            std::stringstream ss;
+            ss << FirstText;
+
+            if (CurrentMuting == Muting::All) {
+                ss << "All Audio";
+            } else if (CurrentMuting == Muting::Music) {
+                ss << "Music/Ambience";
+            } else if (CurrentMuting == Muting::None) {
+                ss << "None";
+            }
+
+            Text = ss.str();
+        }
+
+        void ToggleAudio::Action() {
+            IncrementLocalMuting();
+            SetText();
+            if (OriginalMuting != CurrentMuting)
+                Dirty = true;
+            else
+                Dirty = false;
+        }
+
+        void ToggleAudio::Accept(Systems::WindowProperties& windowProperties) {
+            ForLease->sound->UnmuteGlobal();
+
+            if (CurrentMuting == Muting::None) {
+                ForLease->sound->UnmuteGlobal();
+            } else if (CurrentMuting == Muting::All) {
+                ForLease->sound->MuteGlobal();
+            } else if (CurrentMuting == Muting::Music) {
+                ForLease->sound->MuteBackground();
+            }
+
+            OriginalMuting = CurrentMuting;
+
+            Dirty = false;
+        }
+
     } // OptionMenuItems
 
 } // ForLeaseEngine

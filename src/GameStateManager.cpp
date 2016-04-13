@@ -61,7 +61,7 @@ namespace ForLeaseEngine {
                     do {
                         if (!frozenLastFrame) {
                             Parent.FrameRateController().Start();   // Start the current frame
-                            States[StateIndex]->Update();       // Do all the game stuff
+                            States[StateIndex]->Update();           // Do all the game stuff
                             Parent.FrameRateController().End();     // End the current frame
                         }
                         else {
@@ -72,11 +72,13 @@ namespace ForLeaseEngine {
                             frozenLastFrame = true;
                             Parent.FrameRateController().SleepFor(0.1);
                             ForLease->OSInput.ProcessAllInput();
+                            ForLease->sound->Update();
                         }
 
                         if (Action == StateAction::Pause) {
 
                             StateCurrentlyExecuting = PauseScreen;
+                            ForLease->sound->SetBackgroundVolume(0.2f);
 
                             PauseScreen->Load();
                             PauseScreen->Initialize();
@@ -99,6 +101,7 @@ namespace ForLeaseEngine {
 
                             PauseScreen->Deinitialize();
                             PauseScreen->Unload();
+                            ForLease->sound->SetBackgroundVolume(1.0f);
 
                             StateCurrentlyExecuting = States[StateIndex];
 
@@ -171,6 +174,7 @@ namespace ForLeaseEngine {
             if(FreezeCount == 0) {
                 UnfreezeAction = Action;
                 Action = StateAction::Freeze;
+                ForLease->sound->PauseGlobal();
             }
             if(FreezeCount < 0) {
                 throw(Exception("FreezeCount < 0"));
@@ -188,6 +192,8 @@ namespace ForLeaseEngine {
                     Action = UnfreezeAction;
                     Parent.FrameRateController().Start();
                     Parent.FrameRateController().End();
+
+                    ForLease->sound->ResumeGlobal();
                 }
             }
         }

@@ -1,3 +1,9 @@
+/*!
+    \author Sam Montanari
+
+    \copyright ©Copyright 2016 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 namespace ForLeaseEngine
 {
      namespace LevelEditorGlobals

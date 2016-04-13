@@ -99,6 +99,14 @@ void MainMenu::Initialize() {
     follow->GetComponent<Components::Follow>()->Speed = 4;
     follow->GetComponent<Components::Light>()->Radius = 5.0f;
 
+    Entity* l1 = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(-25.0f, 10.0f), "Light1");
+    l1->DeleteComponent(ComponentType::Follow);
+    l1->GetComponent<Components::Light>()->Radius = 10.0f;
+
+    Entity* l2 = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(25.0f, 10.0f), "Light2");
+    l2->DeleteComponent(ComponentType::Follow);
+    l2->GetComponent<Components::Light>()->Radius = 10.0f;
+
     Entity* menu = AddEntity("Menu");
     menu->AddComponent(new Components::Transform(*menu, Point(-35.0f, -6.0f)));
     menu->AddComponent(new Components::Menu(*menu, Vector(0, -1), true, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));
@@ -117,6 +125,7 @@ void MainMenu::Initialize() {
     opMenuComp->AddItem(new OptionMenuItems::Resolution());
     opMenuComp->AddItem(new OptionMenuItems::Fullscreen());
     opMenuComp->AddItem(new OptionMenuItems::Volume());
+    opMenuComp->AddItem(new OptionMenuItems::ToggleAudio());
     opMenuComp->AddItem(new OptionMenuItems::FinalAccept("OptionsMenu"));
     opMenuComp->AddItem(new MenuItems::ActivateAndDeactivate("Back", "Menu", "OptionsMenu"));
 
@@ -135,7 +144,7 @@ void MainMenu::Initialize() {
     creditsMenuComp->AddItem(new MenuItems::ActivateAndDeactivateAndMakeVisibleAndMakeInvisible("Back", "Menu", "CreditsMenu", "Logo", "CreditsPic"));
 
     Entity* bgMusic = AddEntity("BackgroundMusic");
-    bgMusic->AddComponent(new Components::BackgroundMusic(*bgMusic, "ambience_forest_night01"));
+    bgMusic->AddComponent(new Components::BackgroundMusic(*bgMusic, "sunny romp"));
 }
 
 void MainMenu::Update() {

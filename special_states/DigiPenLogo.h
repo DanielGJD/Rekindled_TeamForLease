@@ -31,9 +31,12 @@ public:
     //void OnKeyDown(const ForLeaseEngine::Event* e);
 private:
     enum FadeState : unsigned {
-        FadingIn,
-        FadingOut,
-        Hold
+        DPFadingIn,
+        DPFadingOut,
+        DPHold,
+        TFLFadingIn,
+        TFLFadingOut,
+        TFLHold
     };
     float FadeInTime = 1.0f;
     float HoldTime = 2.0f;

@@ -1,7 +1,7 @@
 /*!
     \file   ComponentMovingPlatform.cpp
     \author Sean McGeer
-    \author Sam Montanari
+    \author Sam Montanari -- The general design of this is copied from ComponentEnemyPace.cpp, although no code is directly shared.
     \date   3/23/16
     \brief
         Implements the Moving Platform component.

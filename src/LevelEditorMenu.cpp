@@ -1,3 +1,9 @@
+/*!
+    \author Sam Montanari
+
+    \copyright ©Copyright 2016 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "LevelEditor.h"
 #include "LevelEditorGlobals.h"
 #include "imgui.h"

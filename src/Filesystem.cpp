@@ -41,7 +41,7 @@ namespace ForLeaseEngine {
             if (PathExists("animations/")) AssetPaths.insert({ AssetType::Animation, "animations/" });
             if (PathExists("images/")) AssetPaths.insert({ AssetType::Image, "images/" });
             if (PathExists("fonts/")) AssetPaths.insert({ AssetType::Font, "fonts/" });
-            AssetPaths.insert({ AssetType::Save, "Rekindled/" });
+            AssetPaths.insert({ AssetType::Save, "DigiPen/Rekindled/" });
         }
 
         void Filesystem::PreinitializePlatforms() {

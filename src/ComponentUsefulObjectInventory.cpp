@@ -92,9 +92,9 @@ namespace ForLeaseEngine {
             std::cout << "Picked up ";
 
             if (Category == UsefulObjectCategory::Balloon)
-                std::cout << "balloon" << std::endl;
+                ForLease->sound->PlayEvent("item_balloon_pickup01");
             else if (Category == UsefulObjectCategory::Distraction)
-                std::cout << "distraction" << std::endl;
+                ForLease->sound->PlayEvent("item_jar_pickup01");
         }
 
         void UsefulObjectInventory::OnKeyDown(const Event* e) {
@@ -140,6 +140,8 @@ namespace ForLeaseEngine {
             newObject->GetComponent<Components::Transform>()->Position = spawn;
 
             newObject->GetComponent<Components::Physics>()->Velocity = throwVector;
+
+            ForLease->sound->PlayEvent("character_fox_throw_item01");
 
             Category = UsefulObjectCategory::None;
         }
