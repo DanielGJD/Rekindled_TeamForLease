@@ -78,7 +78,7 @@ namespace ForLeaseEngine {
                         if (Action == StateAction::Pause) {
 
                             StateCurrentlyExecuting = PauseScreen;
-                            ForLease->sound->SetBackgroundVolume(0.2f);
+                            ForLease->sound->SetGameplayVolume(0.2f);
 
                             PauseScreen->Load();
                             PauseScreen->Initialize();
@@ -101,7 +101,7 @@ namespace ForLeaseEngine {
 
                             PauseScreen->Deinitialize();
                             PauseScreen->Unload();
-                            ForLease->sound->SetBackgroundVolume(1.0f);
+                            ForLease->sound->SetGameplayVolume(1.0f);
 
                             StateCurrentlyExecuting = States[StateIndex];
 
