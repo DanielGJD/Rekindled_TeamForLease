@@ -119,7 +119,8 @@ void PauseMenu::Initialize() {
     //Components::SoundEmitter * emitter = lowerVolume->GetComponent<Components::SoundEmitter>();
     //emitter->SetGlobalVol(0.0f);
     float dt = ForLease->FrameRateController().GetDt();
-    ForLease->sound->SetGlobalVolume(0.2f);
+    //ForLease->sound->SetGlobalVolume(0.2f);
+    ForLease->sound->SetMute(true);
     ForLease->sound->Update(dt);
 }
 
