@@ -49,5 +49,6 @@
 //#include "ComponentBackgroundMask.h"
 #include "ComponentFinaleTwo.h"
 #include "ComponentFinaleOne.h"
+#include "ComponentAutoplay.h"
 
 #endif

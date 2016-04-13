@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentParticleSystem.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a component that manages a particle system
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "ComponentParticleSystem.h"
 #include "Engine.h"
 #include <iostream>

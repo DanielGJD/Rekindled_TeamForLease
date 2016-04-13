@@ -72,6 +72,7 @@ namespace ForLeaseEngine
          Components::UsefulObjectInventory*  selInventory;
          Components::FinaleTwo*              selFinale2;
          Components::FinaleOne*              selFinale1;
+         Components::Autoplay*               selAutoplay;
 
          Entity*                levelCamera;
          Entity*                camera;
@@ -136,6 +137,7 @@ namespace ForLeaseEngine
     {
         std::vector<Component*> comps;
         Entity dummy;
+        comps.push_back(new Components::Autoplay(dummy));
         comps.push_back(new Components::BackgroundMusic(dummy));
         comps.push_back(new Components::Camera(dummy, 0, 0, 0));
         comps.push_back(new Components::ChangeLevelOnCollide(dummy));
@@ -192,23 +194,24 @@ namespace ForLeaseEngine
         Serializer root;
         leg::levelCheckpoint = new LevelComponents::Checkpoint(*this, root);
         leg::levelUseful = new LevelComponents::UsefulObject(*this);
-        AddLevelComponent(leg::render);
         AddLevelComponent(leg::levelPhysics);
         AddLevelComponent(new LevelComponents::Menu(*this));
         AddLevelComponent(new LevelComponents::Collision(*this));
         AddLevelComponent(leg::levelCheckpoint);
         AddLevelComponent(leg::levelUseful);
+        AddLevelComponent(leg::render);
         leg::gravity = leg::levelPhysics->GetGravity();
-        leg::window = ForLease->GameWindow->DangerousGetRawWindow();
         strcpy(leg::statename, Name.c_str());
         if (leg::startUp)
         {
             ForLease->GameWindow->SetResolution(1600, 900);
             ForLease->GameWindow->SetFullscreen(false);
+            leg::window = ForLease->GameWindow->DangerousGetRawWindow();
             Keys::InitKeymap();
             leg::keyCodes = Keys::GetKeyStrings();
             std::sort(leg::keyCodes.begin(), leg::keyCodes.end());
             LoadFiles();
+            leg::componentNames.push_back("Autoplay");
             leg::componentNames.push_back("Background Music");
             leg::componentNames.push_back("Camera");
             leg::componentNames.push_back("Change Level on Collide");
@@ -302,6 +305,7 @@ namespace ForLeaseEngine
         leg::selInventory    = leg::selection->GetComponent<Components::UsefulObjectInventory>();
         leg::selFinale2      = leg::selection->GetComponent<Components::FinaleTwo>();
         leg::selFinale1      = leg::selection->GetComponent<Components::FinaleOne>();
+        leg::selAutoplay     = leg::selection->GetComponent<Components::Autoplay>();
 
         if (leg::selInventory)
         {
@@ -472,6 +476,7 @@ namespace ForLeaseEngine
             leg::render = GetLevelComponent<LevelComponents::Renderer>();
             leg::levelLight = GetLevelComponent<LevelComponents::Light>();
             leg::levelUseful = GetLevelComponent<LevelComponents::UsefulObject>();
+            leg::levelCheckpoint = GetLevelComponent<LevelComponents::Checkpoint>();
             if (!leg::render)
             {
                 leg::render = new LevelComponents::Renderer(*this);
@@ -506,6 +511,12 @@ namespace ForLeaseEngine
             {
                 leg::levelUseful = new LevelComponents::UsefulObject(*this, "", "");
                 AddLevelComponent(leg::levelUseful);
+            }
+            if (!leg::levelCheckpoint)
+            {
+                Serializer root;
+                leg::levelCheckpoint = new LevelComponents::Checkpoint(*this, root);
+                AddLevelComponent(leg::levelCheckpoint);
             }
 
             leg::gravity = leg::levelPhysics->GetGravity();

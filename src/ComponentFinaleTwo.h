@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentFinaleTwo.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a component to control the second finale scene
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef FINALE_TWO_H
 #define FINALE_TWO_H
 
@@ -32,6 +42,9 @@ namespace ForLeaseEngine {
                 float ScrollSpeed;
                 float CreditsDelay;
 
+                std::string RumbleSound;
+                std::string Music;
+
                 FinaleTwo(Entity& owner);
                 ~FinaleTwo();
                 virtual ComponentType GetType();
@@ -40,6 +53,7 @@ namespace ForLeaseEngine {
                 void Deserialize(Serializer& root);
             private:
                 enum State {
+                    START,
                     START_FADE_IN,
                     DELAY_FADE_OUT_1,
                     FADE_OUT_1,

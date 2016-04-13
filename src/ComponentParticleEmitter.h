@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentParticleEmitter.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a component that emits particles from a particle system
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef COMPONENT_PARTICLE_EMITTER_H
 #define COMPONENT_PARTICLE_EMITTER_H
 

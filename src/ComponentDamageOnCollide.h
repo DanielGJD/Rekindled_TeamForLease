@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentDamageOnCollide.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a component to send damage to any entity that collides with it
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef DAMAGE_ON_COLLIDE_H
 #define DAMAGE_ON_COLLIDE_H
 
@@ -13,8 +23,9 @@ namespace ForLeaseEngine {
 
                 float Damage;
                 bool Continuous;
+                bool Kill;
 
-                DamageOnCollide(Entity& parent, float damage = 10, bool continuous = false);
+                DamageOnCollide(Entity& parent, float damage = 10, bool continuous = false, bool kill = false);
                 ~DamageOnCollide();
 
                 void Initialize();

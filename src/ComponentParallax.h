@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentParallax.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a component that parallaxes sprites
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef COMPONENT_PARALLAX_H
 #define COMPONENT_PARALLAX_H
 
