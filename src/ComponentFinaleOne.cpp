@@ -188,6 +188,11 @@ namespace ForLeaseEngine
                     alpha += OverlaySpeed * dt;
                     render->SetOverlayColor(1, 1, 1, alpha);
                 }
+
+                if (alpha >= 0.99)
+                {
+                    ForLease->GameStateManager().SetState("FinaleTwo");
+                }
             }
 
         }
