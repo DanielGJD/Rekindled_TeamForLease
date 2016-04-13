@@ -49,11 +49,10 @@ namespace ForLeaseEngine{
                 // Play/pause controls
                 bool PlayEvent(std::string name);
                 bool StopSound(std::string name);
-                void Pause(bool pause, std::string name);
-                void PauseAll();
-                void StopAll(void);
-                void ResumeAll(void);
-                
+                void Pause(std::string name);
+                void Resume(std::string name);
+                void PauseGlobal();
+                void ResumeGlobal();
                 void PauseBackground();
                 void ResumeBackground();
                 void PauseEffects();
@@ -64,6 +63,13 @@ namespace ForLeaseEngine{
                 void SetGlobalVolume(float volume);
                 void SetBackgroundVolume(float volume);
                 void SetEffectsVolume(float volume);
+
+                void MuteGlobal();
+                void MuteBackground();
+                void MuteEffects();
+                void UnmuteGlobal();
+                void UnmuteBackground();
+                void UnmuteEffects();
 
                 // Get list of all names
                 std::vector<std::string>GetName();
