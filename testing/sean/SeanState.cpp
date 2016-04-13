@@ -197,6 +197,7 @@ void SeanState::Load() {
 }
 
 void SeanState::Initialize() {
+    ForLease->sound->PlayEvent("ambience_forest_night01");
 }
 
 void SeanState::Update() {

@@ -93,12 +93,7 @@ namespace ForLeaseEngine {
 
             if(collision_e->With->GetName().compare(TriggerObjectName) == 0) {
                 Switching = true;
-                SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
-                if(TriggerSoundName.compare("") && emitter) {
-                    emitter->SetVolume(1.0f,TriggerSoundName);
-                    emitter->StopEvent(TriggerSoundName);
-                    emitter->PlayEvent(TriggerSoundName);
-                }
+                ForLease->sound->PlayEvent(TriggerSoundName);
                 ForLease->FrameRateController().TimeScaling(OnSwitchTimeScale);
             }
         }

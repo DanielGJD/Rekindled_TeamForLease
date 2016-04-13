@@ -64,6 +64,8 @@ namespace ForLeaseEngine {
                     pemit->Active = true;
                 }
 
+                ForLease->sound->PlayEvent(ActivateSound);
+
                 Event activatedEvent = Event("CheckpointActivated");
                 ForLease->Dispatcher.Dispatch(&activatedEvent, this);
             }
@@ -73,6 +75,7 @@ namespace ForLeaseEngine {
             root.WriteUint("Type", static_cast<unsigned>(Type));
             Serializer checkpoint = root.GetChild("Checkpoint");
             checkpoint.WriteBool("Active", Active);
+            checkpoint.WriteString("ActivateSound", ActivateSound);
             checkpoint.WriteUint("Type", static_cast<unsigned>(Type));
             root.Append(checkpoint, "Checkpoint");
         }
@@ -80,6 +83,7 @@ namespace ForLeaseEngine {
         void Checkpoint::Deserialize(Serializer& root) {
             Serializer checkpoint = root.GetChild("Checkpoint");
             checkpoint.ReadBool("Active", Active);
+            checkpoint.ReadString("ActivateSound", ActivateSound);
         }
     } // Components
 

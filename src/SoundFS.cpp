@@ -169,8 +169,8 @@ namespace ForLeaseEngine{
                 std::cout << result << std::endl;
                 std::cout << "NOT OK" << std::endl;
             }
-            bool oneShot = false;
-            FMOD_Studio_EventDescription_IsOneshot(eventDescription, reinterpret_cast<FMOD_BOOL*>(&oneShot));
+            FMOD_BOOL oneShot = false;
+            FMOD_Studio_EventDescription_IsOneshot(eventDescription, &oneShot);
             
             FMOD_Studio_EventInstance_Start(event);
 
