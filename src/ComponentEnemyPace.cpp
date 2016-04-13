@@ -1,3 +1,9 @@
+/*!
+    \author Sam Montanari
+
+    \copyright ©Copyright 2016 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "ComponentEnemyPace.h"
 #include "ComponentPhysics.h"
 #include "ComponentTransform.h"

@@ -1,3 +1,9 @@
+/*!
+    \author Sam Montanari
+
+    \copyright ©Copyright 2016 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef COMPONENT_OWL_AI_H
 #define COMPONENT_OWL_AI_H
 
