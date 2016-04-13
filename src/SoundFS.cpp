@@ -162,14 +162,14 @@ namespace ForLeaseEngine{
             if (result != FMOD_OK) {
                 std::cout << result << std::endl;
                 std::cout << "NOT OK" << std::endl;
-                return;
+                return false;
             }
 
             result = FMOD_Studio_EventDescription_CreateInstance(reinterpret_cast<FMOD_STUDIO_EVENTDESCRIPTION*>(eventDescription), &event);
             if (result != FMOD_OK) {
                 std::cout << result << std::endl;
                 std::cout << "NOT OK" << std::endl;
-                return;
+                return false;
             }
             FMOD_BOOL oneShot = false;
             FMOD_Studio_EventDescription_IsOneshot(eventDescription, &oneShot);
@@ -179,7 +179,7 @@ namespace ForLeaseEngine{
             if (result != FMOD_OK) {
                 std::cout << result << std::endl;
                 std::cout << "NOT OK" << std::endl;
-                return;
+                return false;
             }
 
             if (oneShot) {
