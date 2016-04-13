@@ -27,6 +27,8 @@ namespace ForLeaseEngine
             float PlayerMoveSpeed;
             float OverlaySpeed;
             float LightGrowth;
+            float TransitionTimer;
+            float TransitionTimer2;
 
 
             ~FinaleOne();
@@ -56,6 +58,7 @@ namespace ForLeaseEngine
             Action currentAction;
             bool setup;
             float transitionDelay;
+            float transitionDelay2;
         };
     }
 }

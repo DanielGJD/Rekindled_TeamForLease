@@ -30,7 +30,7 @@ namespace ForLeaseEngine
                 ~EnemyPace();
                 virtual ComponentType GetType() { return Type; }
 
-                std::string PaceSound;
+                std::string Animation;
                 float PaceSpeed;
                 float MaxPaceDistance;
                 float PauseTimer;

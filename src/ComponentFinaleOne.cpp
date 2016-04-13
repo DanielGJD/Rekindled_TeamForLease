@@ -11,8 +11,9 @@ namespace ForLeaseEngine
         FinaleOne::FinaleOne(Entity& owner) : Component(owner, ComponentType::Collision), Camera(""), Wisp(""), WispDest(""),
                                               CameraDest(""), Light(""), Eyes(""), Trigger(""), CameraSpeed(0),
                                               CameraSize(0), CameraGrowth(0), WispSpeed(0), PlayerMoveDistance(0),
-                                              PlayerMoveSpeed(0), OverlaySpeed(0), LightGrowth(0), start(false),
-                                              distance(0), currentAction(Action::MOVE), setup(false), transitionDelay(0)
+                                              PlayerMoveSpeed(0), OverlaySpeed(0), LightGrowth(0), TransitionTimer(1),
+                                              TransitionTimer2(1), start(false), distance(0), currentAction(Action::MOVE),
+                                              setup(false), transitionDelay(0), transitionDelay2(0)
         { }
 
         FinaleOne::~FinaleOne()
@@ -144,25 +145,31 @@ namespace ForLeaseEngine
             Point& position = ForLease->GameStateManager().CurrentState().GetEntityByName(Camera)->GetComponent<Components::Transform>()->Position;
             transitionDelay += dt;
             LevelComponents::Renderer* render = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
-            if (!setup)
+            if (transitionDelay >= TransitionTimer)
             {
-                render->SetOverlayColor(1, 1, 1, 0);
-                Components::Model* eyeModel = ForLease->GameStateManager().CurrentState().GetEntityByName(Eyes)->GetComponent<Components::Model>();
-                eyeModel->SetAnimation("ForestSpirit2AniEyeOpen.json");
-                eyeModel->AnimationActive = true;
-                eyeModel->Looping = false;
-                setup = true;
+                transitionDelay2 += dt;
+
+                if (!setup)
+                {
+                    render->SetOverlayColor(1, 1, 1, 0);
+                    Components::Model* eyeModel = ForLease->GameStateManager().CurrentState().GetEntityByName(Eyes)->GetComponent<Components::Model>();
+                    eyeModel->SetAnimation("ForestSpirit2AniEyeOpen.json");
+                    eyeModel->AnimationActive = true;
+                    eyeModel->Looping = false;
+                    setup = true;
+                }
+
+                float& radius = ForLease->GameStateManager().CurrentState().GetEntityByName(Light)->GetComponent<Components::Light>()->Radius;
+                float alpha = render->GetOverlayColor().GetA();
+                radius += LightGrowth * dt;
+                if (alpha <= 1 && transitionDelay2 >= TransitionTimer2)
+                {
+                    position = cameraPos + Vector(RandomFloat(-2, 2), RandomFloat(-2, 2));
+                    alpha += OverlaySpeed * dt;
+                    render->SetOverlayColor(1, 1, 1, alpha);
+                }
             }
 
-            float& radius = ForLease->GameStateManager().CurrentState().GetEntityByName(Light)->GetComponent<Components::Light>()->Radius;
-            float alpha = render->GetOverlayColor().GetA();
-            radius += LightGrowth * dt;
-            if (alpha <= 1 && transitionDelay >= 1)
-            {
-                position = cameraPos + Vector(RandomFloat(-2, 2), RandomFloat(-2, 2));
-                alpha += OverlaySpeed * dt;
-                render->SetOverlayColor(1, 1, 1, alpha);
-            }
         }
 
         void FinaleOne::Serialize(Serializer& root)
@@ -186,6 +193,8 @@ namespace ForLeaseEngine
             finale.WriteFloat("PlayerMoveSpeed", PlayerMoveSpeed);
             finale.WriteFloat("OverlaySpeed", OverlaySpeed);
             finale.WriteFloat("LightGrowth", LightGrowth);
+            finale.WriteFloat("TransitionTimer", TransitionTimer);
+            finale.WriteFloat("TransitionTimer2", TransitionTimer2);
 
             root.Append(finale, "FinaleOne");
         }
@@ -210,6 +219,8 @@ namespace ForLeaseEngine
             finale.ReadFloat("PlayerMoveSpeed", PlayerMoveSpeed);
             finale.ReadFloat("OverlaySpeed", OverlaySpeed);
             finale.ReadFloat("LightGrowth", LightGrowth);
+            finale.ReadFloat("TransitionTimer", TransitionTimer);
+            finale.ReadFloat("TransitionTimer2", TransitionTimer2);
         }
     }
 }

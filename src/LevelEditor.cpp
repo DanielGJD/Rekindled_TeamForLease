@@ -192,19 +192,19 @@ namespace ForLeaseEngine
         Serializer root;
         leg::levelCheckpoint = new LevelComponents::Checkpoint(*this, root);
         leg::levelUseful = new LevelComponents::UsefulObject(*this);
-        AddLevelComponent(leg::render);
         AddLevelComponent(leg::levelPhysics);
         AddLevelComponent(new LevelComponents::Menu(*this));
         AddLevelComponent(new LevelComponents::Collision(*this));
         AddLevelComponent(leg::levelCheckpoint);
         AddLevelComponent(leg::levelUseful);
+        AddLevelComponent(leg::render);
         leg::gravity = leg::levelPhysics->GetGravity();
-        leg::window = ForLease->GameWindow->DangerousGetRawWindow();
         strcpy(leg::statename, Name.c_str());
         if (leg::startUp)
         {
             ForLease->GameWindow->SetResolution(1600, 900);
             ForLease->GameWindow->SetFullscreen(false);
+            leg::window = ForLease->GameWindow->DangerousGetRawWindow();
             Keys::InitKeymap();
             leg::keyCodes = Keys::GetKeyStrings();
             std::sort(leg::keyCodes.begin(), leg::keyCodes.end());

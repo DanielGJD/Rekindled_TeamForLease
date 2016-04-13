@@ -433,6 +433,8 @@ namespace ForLeaseEngine
             ImGui::InputFloat("Player Speed##finale1", &(leg::selFinale1->PlayerMoveSpeed));
             ImGui::InputFloat("Overlay Speed##finale1", &(leg::selFinale1->OverlaySpeed));
             ImGui::InputFloat("Light Growth##finale1", &(leg::selFinale1->LightGrowth));
+            ImGui::InputFloat("Transition Delay##finale1", &(leg::selFinale1->TransitionTimer));
+            ImGui::InputFloat("Transition Delay2##finale1", &(leg::selFinale1->TransitionTimer2));
 
             ImGui::PopItemWidth();
 
@@ -689,6 +691,27 @@ namespace ForLeaseEngine
             leg::selOwl->Direction2[0] = cos(leg::owlDir2);
             leg::selOwl->Direction2[1] = sin(leg::owlDir2);
 
+            if (ImGui::TreeNode("Edit Animation##owl"))
+            {
+                ImGui::Text("Current Animation: %s", leg::selOwl->Animation.c_str());
+                if (ImGui::Button("Clear Animation##owl"))
+                    leg::selOwl->Animation = "";
+                static ImGuiTextFilter animations;
+                animations.Draw("##Animationowl", 250);
+                ImGui::Text("Available Animations");
+                ImGui::BeginChild("Animationowl", ImVec2(0, 100), true);
+                for (std::string s : leg::animationNames)
+                {
+                    if (animations.PassFilter(s.c_str()))
+                    {
+                        if (ImGui::MenuItem(s.c_str()))
+                            leg::selOwl->Animation = s;
+                    }
+                }
+                ImGui::EndChild();
+                ImGui::TreePop();
+            }
+
             if (ImGui::Button("Remove OwlAI"))
             {
                 leg::selection->DeleteComponent(ComponentType::OwlAI);
@@ -705,6 +728,27 @@ namespace ForLeaseEngine
             ImGui::InputFloat("Resume Delay##pace", &(leg::selPace->ResumeTime));
             ImGui::RadioButton("Horizontal", &(leg::selPace->Direction), 0);
             ImGui::RadioButton("Vertical", &(leg::selPace->Direction), 1);
+
+            if (ImGui::TreeNode("Edit Animation##pace"))
+            {
+                ImGui::Text("Current Animation: %s", leg::selPace->Animation.c_str());
+                if (ImGui::Button("Clear Animation##pace"))
+                    leg::selPace->Animation = "";
+                static ImGuiTextFilter animations;
+                animations.Draw("##Animationpace", 250);
+                ImGui::Text("Available Animations");
+                ImGui::BeginChild("Animationpace", ImVec2(0, 100), true);
+                for (std::string s : leg::animationNames)
+                {
+                    if (animations.PassFilter(s.c_str()))
+                    {
+                        if (ImGui::MenuItem(s.c_str()))
+                            leg::selPace->Animation = s;
+                    }
+                }
+                ImGui::EndChild();
+                ImGui::TreePop();
+            }
 
             if (ImGui::Button("Remove PaceAI"))
             {

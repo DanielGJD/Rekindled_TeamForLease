@@ -32,6 +32,7 @@ namespace ForLeaseEngine
                 float WatchTime;
                 Vector Direction1;
                 Vector Direction2;
+                std::string Animation;
             private:
                 void Look(float dt);
                 void Blink(float dt);
