@@ -221,9 +221,13 @@ namespace ForLeaseEngine{
             auto eventFind = m_Sounds.find(name);
             if (eventFind != m_Sounds.end()) {
                 FMOD_Studio_EventInstance_Stop(eventFind->second, FMOD_STUDIO_STOP_IMMEDIATE);
+                FMOD_Studio_EventInstance_Release(eventFind->second);
+                m_Sounds.erase(eventFind->first);
+
+                Update();
             }
 
-            return false;
+            return true;
         }
 
 
