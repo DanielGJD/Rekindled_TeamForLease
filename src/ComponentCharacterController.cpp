@@ -164,6 +164,9 @@ namespace ForLeaseEngine {
                 Components::Health* health = Parent.GetComponent<Components::Health>();
                 if (health) health->DamageScale = 0.0f;
             }
+            else if (key_e->Key == Keys::I) {
+                ForLease->sound->MuteGlobal();
+            }
         }
 
         void CharacterController::OnKeyUp(const Event* e) {

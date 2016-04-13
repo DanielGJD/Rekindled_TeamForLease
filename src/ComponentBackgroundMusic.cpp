@@ -13,16 +13,22 @@
 
 namespace ForLeaseEngine {
     namespace Components {
-        BackgroundMusic::BackgroundMusic(Entity& parent, std::string const& musicName)
-                                        : Component(parent, ComponentType::SoundEmitter), MusicName(musicName), Active(true) {}
+        BackgroundMusic::BackgroundMusic(Entity& parent, std::string const& musicName) : Component(parent), MusicName(musicName), Active(true)
+        {
+            std::cout << musicName << std::endl;
+        }
 
-        BackgroundMusic::~BackgroundMusic() {}
+        BackgroundMusic::~BackgroundMusic() {
+            ForLease->sound->StopSound(MusicName);
+        }
 
         ComponentType BackgroundMusic::GetType() { return Type; }
 
         void BackgroundMusic::Update() {
+            std::cout << MusicName << std::endl;
             if(Active) {
-                Parent.GetComponent<Components::SoundEmitter>()->PlayEvent(MusicName);
+                ForLease->sound->PlayEvent(MusicName);
+                ForLease->sound->Volume(1.0f, MusicName);
                 Active = false;
             }
         }

@@ -30,12 +30,12 @@ namespace ForLeaseEngine{
         typedef FMOD::Studio::System * SoundSys;
         typedef FMOD::System * LowLevelSoundSys;
         typedef FMOD::Studio::Bank * SoundBank;
-        typedef std::unordered_map<std::string, FMOD::Studio::EventInstance *> SoundCollection;
+        typedef std::unordered_map<std::string, FMOD_STUDIO_EVENTINSTANCE *> SoundCollection;
         typedef std::unordered_map<std::string, FMOD::Studio::EventInstance *>::iterator Soundit;
         typedef FMOD_GUID * EventID;
         typedef FMOD::Studio::Bus * Buslist;
 
-        class SoundManager //: public ISystem
+        class SoundManager
         {
             public:
                 SoundManager();
@@ -43,7 +43,7 @@ namespace ForLeaseEngine{
 
 
                 void Initialize(const char* PathFileName, const char *StringBank);
-                void Update(float dt);
+                void Update();
                 void ShutDown();
 
                 // Play/pause controls
@@ -78,7 +78,7 @@ namespace ForLeaseEngine{
                 FMOD::Studio::System* m_Sys;
                 FMOD::Studio::Bank* m_MasterBank;
                 FMOD::Studio::Bank* m_StringsBank;
-                //SoundCollection m_LoopSounds;
+                SoundCollection m_Sounds;
                 //FMOD_GUID m_EventID;
                 FMOD::Studio::Bus* m_Background;
                 FMOD::Studio::Bus* m_Effects;
