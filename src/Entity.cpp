@@ -392,6 +392,9 @@ for (unsigned i = 0; i < jsonComponents.Size(); ++i) {
             case ComponentType::Autoplay:
                 component = new Components::Autoplay(entity);
                 break;
+            case ComponentType::FinaleTwo:
+                component = new Components::FinaleTwo(entity);
+                break;
             default:
                 std::cout << "Unknown Type: " << type << std::endl;
                 return 0;

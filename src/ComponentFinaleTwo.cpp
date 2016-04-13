@@ -31,10 +31,6 @@ namespace ForLeaseEngine {
                 Entity* cameraObject = ForLease->GameStateManager().CurrentState().GetEntityByName(Camera);
                 if(cameraObject) {
                     CameraStartPosition = cameraObject->GetComponent<Components::Transform>()->Position;
-                    std::cout << "CAM(" << Camera << ") START: " << CameraStartPosition[1] << std::endl;
-                }
-                else {
-                    std::cout << "CAM(" << Camera << ") NOT FOUND" << std::endl;
                 }
 
                 StateTimer = 0;
@@ -83,6 +79,7 @@ namespace ForLeaseEngine {
                     cameraObject->GetComponent<Components::Transform>()->Position = CameraStartPosition;
                     StateTimer = 0;
                     CurrentState = DELAY_FADE_IN_1;
+                    ForLease->sound->Pause(true, RumbleSound);
                 }
             }
             else if(CurrentState == DELAY_FADE_IN_1) {
@@ -202,6 +199,7 @@ namespace ForLeaseEngine {
             }
             else if(CurrentState == CREDITS_DELAY) {
                 if(StateTimer >= CreditsDelay) {
+                    ForLease->sound->Pause(true, Music);
                     ForLease->GameStateManager().SetState("MainMenu");
                 }
             }
@@ -233,6 +231,9 @@ namespace ForLeaseEngine {
             finale.WriteFloat("ScrollSpeed", ScrollSpeed);
             finale.WriteFloat("CreditsDelay", CreditsDelay);
 
+            finale.WriteString("RumbleSound", RumbleSound);
+            finale.WriteString("Music", Music);
+
             root.Append(finale, "FinaleTwo");
         }
 
@@ -259,6 +260,9 @@ namespace ForLeaseEngine {
             finale.ReadFloat("FadeIn2Time", FadeIn2Time);
             finale.ReadFloat("ScrollSpeed", ScrollSpeed);
             finale.ReadFloat("CreditsDelay", CreditsDelay);
+
+            finale.ReadString("RumbleSound", RumbleSound);
+            finale.ReadString("Music", Music);
         }
     }
 }

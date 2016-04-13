@@ -33,6 +33,7 @@ namespace ForLeaseEngine {
                 float CreditsDelay;
 
                 std::string RumbleSound;
+                std::string Music;
 
                 FinaleTwo(Entity& owner);
                 ~FinaleTwo();
