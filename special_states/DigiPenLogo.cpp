@@ -102,7 +102,7 @@ void DigiPenLogo::Initialize() {
 }
 
 void DigiPenLogo::Update() {
-
+    ForLease->sound->Update();
     ForLease->OSInput.ProcessAllInput();
 
     float dt = ForLease->FrameRateController().GetDt();

@@ -73,7 +73,7 @@ void PauseMenu::Initialize() {
     model->FrameRate = 3.0f;
     player->AddComponent(model);
 
-    Entity* follow = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(-40.0f, -10.0f), "MenuFollow");
+    Entity* follow = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(-35.0f, -6.0f), "MenuFollow");
     follow->GetComponent<Components::Follow>()->Offset = Vector(-1.5f, -1.0f);
     follow->GetComponent<Components::Follow>()->Speed = 4;
     follow->GetComponent<Components::Light>()->Radius = 5.0f;
@@ -151,7 +151,7 @@ void PauseMenu::Initialize() {
 }
 
 void PauseMenu::Update() {
-
+    ForLease->sound->Update();
     ForLease->OSInput.ProcessAllInput();
 
     for (FLE::Entity* entity : Entities) {
@@ -178,40 +178,6 @@ void PauseMenu::Unload() {}
 
 void PauseMenu::OnKeyDown(const Event* e) {
     const KeyboardEvent* key_e = static_cast<const KeyboardEvent*>(e);
-    /*Entity * pause = AddEntity("Pause");
-    Components::SoundEmitter * emitter = pause->GetComponent<Components::SoundEmitter>();*/
     if (key_e->Key == Keys::Escape)
         ForLease->GameStateManager().SetAction(Modules::StateAction::Continue);
-    //if(ForLease->GameStateManager().GetCurrentAction() ==  Modules::StateAction::Freeze)
-    //    emitter->BeQuiet();
-    //    continueFromFreeze = true;
-    //    //continueFromPause = false;
-    //if(ForLease->GameStateManager().GetCurrentAction() == Modules::StateAction::Pause)
-    //{
-    //    //continueFromFreeze = false;
-    //    continueFromPause = true;
-    //    State &levelState = ForLease->GameStateManager().CurrentState();
-    //    Entity * bgm = levelState.GetEntityByName("backgroundMusic", false);
-    //    std::string soundname = bgm->GetComponent<Components::BackgroundMusic>()->MusicName;
-    //    emitter->SetPause(true, soundname);
-    //}
-    //else if(ForLease->GameStateManager().GetCurrentAction() == Modules::StateAction::Continue)
-    //{
-
-    //    if(continueFromPause)
-    //    {
-    //        State &levelState = ForLease->GameStateManager().CurrentState();
-    //        Entity * bgm = levelState.GetEntityByName("backgroundMusic", false);
-    //        std::string soundname = bgm->GetComponent<Components::BackgroundMusic>()->MusicName;
-    //        emitter->SetPause(false, soundname);
-    //        continueFromPause = false;
-    //    }
-    //    if(continueFromFreeze)
-    //    {
-    //        emitter->Rock();
-    //        continueFromFreeze = false;
-    //    }
-    //}
-
-
 }

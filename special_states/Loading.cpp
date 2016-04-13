@@ -101,7 +101,7 @@ void Loading::Initialize() {
 }
 
 void Loading::Update() {
-
+    ForLease->sound->Update();
     ForLease->OSInput.ProcessAllInput();
 
     for (FLE::Entity* entity : Entities) {

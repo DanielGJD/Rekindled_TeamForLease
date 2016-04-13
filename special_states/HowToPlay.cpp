@@ -110,7 +110,7 @@ void HowToPlay::Initialize() {
 }
 
 void HowToPlay::Update() {
-
+    ForLease->sound->Update();
     ForLease->OSInput.ProcessAllInput();
 
     for (FLE::Entity* entity : Entities) {
