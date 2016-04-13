@@ -60,6 +60,9 @@ void HowToPlay::Initialize() {
 
     Entity* player = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Player");
 
+    Entity* balloon = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Balloon", Point(-5, 0));
+    Entity* distraction = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "FireJar", Point(5,0));
+
     Entity* floor = AddEntity("Floor");
     floor->AddComponent(new Components::Transform(*floor, Point(0.0f, -10.0f), 9999999.0f, 1.0f, 0.0f, -7));
     floor->AddComponent(new Components::Collision(*floor, 2.0f, 2.0f));

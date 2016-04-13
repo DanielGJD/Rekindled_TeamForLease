@@ -64,13 +64,22 @@ namespace ForLeaseEngine {
 
             if (!follow->HasComponent(ComponentType::Model)) return;
 
-            if (Category == UsefulObjectCategory::Balloon)
+            Components::ParticleEmitter* pEmit = follow->GetComponent<Components::ParticleEmitter>();
+            Components::Light* light = follow->GetComponent<Components::Light>();
+
+            if (Category == UsefulObjectCategory::Balloon) {
                 follow->GetComponent<Components::Model>()->ModelMesh = lcUsefulObject->BalloonMesh;
-            else if (Category == UsefulObjectCategory::Distraction)
+                if (pEmit) pEmit->Active = false;
+                if (light) light->Active = false;
+            } else if (Category == UsefulObjectCategory::Distraction) {
                 follow->GetComponent<Components::Model>()->ModelMesh = lcUsefulObject->DistractionMesh;
-            else
+                if (pEmit) pEmit->Active = true;
+                if (light) light->Active = true;
+            } else {
                 follow->GetComponent<Components::Model>()->ModelMesh = "";
-            
+                if (pEmit) pEmit->Active = false;
+                if (light) light->Active = false;
+            }
         }
 
         void UsefulObjectInventory::OnCollide(const Event* e) {

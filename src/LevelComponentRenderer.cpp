@@ -291,7 +291,7 @@ namespace ForLeaseEngine {
                         Components::ParticleSystem* pSystem = entity->GetComponent<Components::ParticleSystem>();
                         DrawParticleSystem(pSystem);
                     }
-                    if(entity->HasComponent(ComponentType::Light)) {
+                    if(entity->HasComponent(ComponentType::Light) && entity->GetComponent<Components::Light>()->Active) {
                         Components::Light* light = entity->GetComponent<Components::Light>();
                         ModelView = Matrix::Translation(trans->Position);
 
