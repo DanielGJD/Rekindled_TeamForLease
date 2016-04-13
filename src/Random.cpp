@@ -1,3 +1,13 @@
+/*!
+    \file   Random.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines functions for generating random numbers
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "Random.h"
 
 namespace ForLeaseEngine {

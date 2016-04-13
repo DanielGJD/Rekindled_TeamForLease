@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentParallax.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a component that parallaxes sprites
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "ComponentParallax.h"
 
 namespace ForLeaseEngine {

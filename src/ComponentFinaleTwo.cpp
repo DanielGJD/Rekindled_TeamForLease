@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentFinaleTwo.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a component to control the second finale scene
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "ComponentFinaleTwo.h"
 #include "Engine.h"
 #include "State.h"
@@ -79,7 +89,7 @@ namespace ForLeaseEngine {
                     cameraObject->GetComponent<Components::Transform>()->Position = CameraStartPosition;
                     StateTimer = 0;
                     CurrentState = DELAY_FADE_IN_1;
-                    ForLease->sound->Pause(true, RumbleSound);
+                    ForLease->sound->Pause(RumbleSound);
                 }
             }
             else if(CurrentState == DELAY_FADE_IN_1) {
@@ -199,7 +209,7 @@ namespace ForLeaseEngine {
             }
             else if(CurrentState == CREDITS_DELAY) {
                 if(StateTimer >= CreditsDelay) {
-                    ForLease->sound->Pause(true, Music);
+                    ForLease->sound->Pause(Music);
                     ForLease->GameStateManager().SetState("MainMenu");
                 }
             }

@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentAutoplay.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a class to dispatch input to the character controller
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "ComponentAutoplay.h"
 #include "Engine.h"
 #include "KeyboardEvent.h"

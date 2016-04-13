@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentHealth.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a component to keep track of health of an entity
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "ComponentHealth.h"
 #include "DamageEvent.h"
 #include "Engine.h"

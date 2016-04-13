@@ -134,17 +134,12 @@ void MainMenu::Initialize() {
     //creditsMenuComp->AddItem(new MenuItems::Quit("Quit"));
     creditsMenuComp->AddItem(new MenuItems::ActivateAndDeactivateAndMakeVisibleAndMakeInvisible("Back", "Menu", "CreditsMenu", "Logo", "CreditsPic"));
 
-    Entity * title = AddEntity("Title");
-    //Components::SoundEmitter* emitter = title->GetComponent<Components::SoundEmitter>();
-    title->AddComponent(new Components::Transform(*title, 0,0, 45, 25));
-    title->AddComponent(new Components::SoundEmitter(*title));
-    title->GetComponent<Components::SoundEmitter>(title)->SetVolume(1.0f, "woody title 7.5");
-    title->GetComponent<Components::SoundEmitter>(title)->StopEvent("woody title 7.5");
-    title->GetComponent<Components::SoundEmitter>(title)->PlayEvent("woody title 7.5");
-    std::cout<< "BGMMMMMMMMMMMMMM" <<std::endl;
+    Entity* bgMusic = AddEntity("BackgroundMusic");
+    bgMusic->AddComponent(new Components::BackgroundMusic(*bgMusic, "ambience_forest_night01"));
 }
 
 void MainMenu::Update() {
+    ForLease->sound->Update();
 
     ForLease->OSInput.ProcessAllInput();
 

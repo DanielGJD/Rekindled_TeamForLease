@@ -197,9 +197,11 @@ void SeanState::Load() {
 }
 
 void SeanState::Initialize() {
+    ForLease->sound->PlayEvent("ambience_forest_night01");
 }
 
 void SeanState::Update() {
+    ForLease->sound->Update();
     //std::cout << ForLease->FrameRateController().FrameNumber << " " << ForLease->FrameRateController().GetDt() << std::endl;
 
     ForLease->OSInput.ProcessAllInput();

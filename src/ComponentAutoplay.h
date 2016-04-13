@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentAutoplay.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a class for controlling the character by sending arbitrary keyboard events
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef COMPONENT_AUTOPLAY_H
 #define COMPONENT_AUTOPLAY_H
 
