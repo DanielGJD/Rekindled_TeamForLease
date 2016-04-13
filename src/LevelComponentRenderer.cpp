@@ -318,7 +318,7 @@ namespace ForLeaseEngine {
                         }
 
                         glBindFramebuffer(GL_FRAMEBUFFER, LightFBO);
-                        DrawMesh(light->GetLightMesh(), false, true);
+                        DrawMesh(light->GetLightMesh(), false, false);
                         if(trans->UILayer) {
                             glBindFramebuffer(GL_FRAMEBUFFER, UIFBO);
                         }
