@@ -162,21 +162,28 @@ namespace ForLeaseEngine{
             if (result != FMOD_OK) {
                 std::cout << result << std::endl;
                 std::cout << "NOT OK" << std::endl;
+                return;
             }
 
             result = FMOD_Studio_EventDescription_CreateInstance(reinterpret_cast<FMOD_STUDIO_EVENTDESCRIPTION*>(eventDescription), &event);
             if (result != FMOD_OK) {
                 std::cout << result << std::endl;
                 std::cout << "NOT OK" << std::endl;
+                return;
             }
             FMOD_BOOL oneShot = false;
             FMOD_Studio_EventDescription_IsOneshot(eventDescription, &oneShot);
             
-            FMOD_Studio_EventInstance_Start(event);
+            result = FMOD_Studio_EventInstance_Start(event);
+
+            if (result != FMOD_OK) {
+                std::cout << result << std::endl;
+                std::cout << "NOT OK" << std::endl;
+                return;
+            }
 
             if (oneShot) {
-                //FMOD_Studio_EventInstance_Release(event);
-                std::cout << "one shot to drop ya ass foo" << std::endl;
+                FMOD_Studio_EventInstance_Release(event);
             } else {
                 m_Sounds.insert(std::pair<std::string, FMOD_STUDIO_EVENTINSTANCE *>(name, event));
             }
