@@ -5,8 +5,8 @@
 
 namespace ForLeaseEngine {
     namespace Components {
-        DamageOnCollide::DamageOnCollide(Entity& parent, float damage, bool continuous)
-                                        : Component(parent, ComponentType::Collision), Damage(damage), Continuous(continuous) {}
+        DamageOnCollide::DamageOnCollide(Entity& parent, float damage, bool continuous, bool kill)
+                                        : Component(parent, ComponentType::Collision), Damage(damage), Continuous(continuous), Kill(kill) {}
 
         DamageOnCollide::~DamageOnCollide() {
             ForLease->Dispatcher.Detach(this, "CollisionStarted");
@@ -25,6 +25,7 @@ namespace ForLeaseEngine {
             Serializer damage = root.GetChild("DamageOnCollide");
             damage.WriteFloat("Damage", Damage);
             damage.WriteBool("Continuous", Continuous);
+            damage.WriteBool("Kill", Kill);
             root.Append(damage, "DamageOnCollide");
         }
 
@@ -32,12 +33,13 @@ namespace ForLeaseEngine {
             Serializer damage = root.GetChild("DamageOnCollide");
             damage.ReadBool("Continuous", Continuous);
             damage.ReadFloat("Damage", Damage);
+            damage.ReadBool("Kill", Kill);
         }
 
         void DamageOnCollide::OnCollisionStarted(const Event* e) {
             if(!Continuous) {
                 const CollisionStartedEvent* collision_e = reinterpret_cast<const CollisionStartedEvent*>(e);
-                DamageEvent damage_e = DamageEvent(Damage);
+                DamageEvent damage_e = DamageEvent(Damage, Kill);
                 ForLease->Dispatcher.DispatchToParent(&damage_e, collision_e->With);
             }
         }
@@ -45,7 +47,7 @@ namespace ForLeaseEngine {
         void DamageOnCollide::OnCollision(const Event* e) {
             if(Continuous) {
                 const CollisionEvent* collision_e = reinterpret_cast<const CollisionEvent*>(e);
-                DamageEvent damage_e = DamageEvent(Damage * ForLease->FrameRateController().GetDt());
+                DamageEvent damage_e = DamageEvent(Damage * ForLease->FrameRateController().GetDt(), Kill);
                 ForLease->Dispatcher.DispatchToParent(&damage_e, collision_e->With);
             }
         }

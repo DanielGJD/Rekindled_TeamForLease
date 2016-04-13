@@ -45,9 +45,16 @@ namespace ForLeaseEngine {
             entity->Update();
         }
 
+        LevelComponents::Renderer* renderer = 0;
+
         for (LevelComponent* levelComponent : LevelComponents) {
-            levelComponent->Update(Entities);
+            if (levelComponent->Type == ComponentType::Renderer)
+                renderer = reinterpret_cast<LevelComponents::Renderer*>(levelComponent);
+            else
+                levelComponent->Update(Entities);
         }
+
+        if (renderer) renderer->Update(Entities);
 
         UpdateDebug();
 
