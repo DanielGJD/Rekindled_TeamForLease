@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentHealth.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a component to keep track of health of an entity
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef COMPONENT_HEALTH_H
 #define COMPONENT_HEALTH_H
 

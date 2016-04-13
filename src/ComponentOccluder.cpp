@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentOccluder.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a component that causes an entity to block light/sight
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "ComponentOccluder.h"
 
 namespace ForLeaseEngine {

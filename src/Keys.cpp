@@ -1,3 +1,13 @@
+/*!
+    \file   Keys.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a map to translate strings to keycodes
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "Keys.h"
 #include <iostream>
 

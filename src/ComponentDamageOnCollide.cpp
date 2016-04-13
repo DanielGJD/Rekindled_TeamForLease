@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentDamageOnCollide.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a component to send damage to any entity that collides with it
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "ComponentDamageOnCollide.h"
 #include "CollisionEvent.h"
 #include "Engine.h"

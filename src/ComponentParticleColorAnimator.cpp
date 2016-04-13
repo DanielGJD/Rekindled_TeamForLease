@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentParticleColorAnimator.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a component that animates particle colors
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "ComponentParticleColorAnimator.h"
 #include "ComponentParticleSystem.h"
 #include "Interpolation.h"

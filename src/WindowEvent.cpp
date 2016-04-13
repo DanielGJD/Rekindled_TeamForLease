@@ -1,3 +1,13 @@
+/*!
+    \file   WindowEvent.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a class containing info on window changes
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "WindowEvent.h"
 
 namespace ForLeaseEngine {

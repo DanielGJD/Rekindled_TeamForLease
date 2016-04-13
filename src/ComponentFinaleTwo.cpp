@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentFinaleTwo.cpp
+    \author Christopher Hudson
+
+    \brief
+        Defines a component to control the second finale scene
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #include "ComponentFinaleTwo.h"
 #include "Engine.h"
 #include "State.h"

@@ -1,3 +1,13 @@
+/*!
+    \file   Random.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a functions for generating random numbers
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef FLE_RANDOM_H
 #define FLE_RANDOM_H
 

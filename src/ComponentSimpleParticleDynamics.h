@@ -1,3 +1,13 @@
+/*!
+    \file   ComponentSimpleParticleDynamics.h
+    \author Christopher Hudson
+
+    \brief
+        Defines a component to apply simple dynamics to a particle system
+
+    \copyright ©Copyright 2015 DigiPen Institute of Technology, All Rights Reserved
+*/
+
 #ifndef COMPONENT_SIMPLE_PARTICLE_DYNAMICS_H
 #define COMPONENT_SIMPLE_PARTICLE_DYNAMICS_H
 
