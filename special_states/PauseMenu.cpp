@@ -108,6 +108,7 @@ void PauseMenu::Initialize() {
     opMenuComp->AddItem(new OptionMenuItems::Resolution());
     opMenuComp->AddItem(new OptionMenuItems::Fullscreen());
     opMenuComp->AddItem(new OptionMenuItems::Volume());
+    opMenuComp->AddItem(new OptionMenuItems::ToggleAudio());
     opMenuComp->AddItem(new OptionMenuItems::FinalAccept("OptionsMenu"));
     opMenuComp->AddItem(new MenuItems::ActivateAndDeactivate("Back", "Menu", "OptionsMenu"));
 

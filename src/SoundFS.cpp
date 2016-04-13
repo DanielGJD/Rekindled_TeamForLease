@@ -339,5 +339,19 @@ namespace ForLeaseEngine{
         void SoundManager::UnmuteEffects() {
             FMOD_Studio_Bus_SetMute(reinterpret_cast<FMOD_STUDIO_BUS*>(m_Background), false);
         }
+
+        SoundManager::CurrentMuting SoundManager::GetMuting() {
+            FMOD_BOOL bgMute = false;
+            FMOD_BOOL fxMute = false;
+
+            FMOD_Studio_Bus_GetMute(reinterpret_cast<FMOD_STUDIO_BUS *>(m_Background), &bgMute);
+            FMOD_Studio_Bus_GetMute(reinterpret_cast<FMOD_STUDIO_BUS *>(m_Effects), &fxMute);
+
+            CurrentMuting currentMuting;
+            currentMuting.BackgroundMuted = bgMute;
+            currentMuting.EffectsMuted = fxMute;
+
+            return currentMuting;
+        }
     }
 }

@@ -108,7 +108,7 @@ namespace ForLeaseEngine {
                     model->Looping = true;
                     model->SetAnimation("");
                 }
-                ForLease->sound->PlayEvent(LandSound);
+                
             }
 
             accel[0] = accel[0] - physics->Velocity[0] * Drag;
@@ -183,6 +183,7 @@ namespace ForLeaseEngine {
                 //std::cout << "Collided with bottom" << std::endl;
                 FloorContacts.insert(collision_e->With);
                 CanJump = true;
+                ForLease->sound->PlayEvent(LandSound);
             }
         }
 

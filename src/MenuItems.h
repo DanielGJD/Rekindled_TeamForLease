@@ -37,7 +37,8 @@ namespace ForLeaseEngine {
         OptionFullscreen        = 12,
         OptionBorderless        = 13,
         ActDeactVisInvis        = 14,
-        RestartLevel            = 15
+        RestartLevel            = 15,
+        OptionToggleAudio       = 16
     };
 
     class MenuItem : public Serializable {
@@ -234,6 +235,27 @@ namespace ForLeaseEngine {
                 unsigned CurrentVolume;
                 unsigned VolumeIncrement;
                 unsigned MaxVolume;
+        };
+
+        class ToggleAudio : public OptionMenuItem {
+            private:
+                enum class Muting : char {
+                    None,
+                    Music,
+                    All
+                };
+
+                void SetLocalMuting();
+                void IncrementLocalMuting();
+
+            public:
+                ToggleAudio(std::string text = "Muted: ");
+                void SetText();
+                void Action();
+                void Accept(Systems::WindowProperties& windowProperties);
+
+                Muting OriginalMuting;
+                Muting CurrentMuting;
         };
 
     } // OptionMenuItems

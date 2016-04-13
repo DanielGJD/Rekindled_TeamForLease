@@ -38,6 +38,10 @@ namespace ForLeaseEngine{
         class SoundManager
         {
             public:
+                struct CurrentMuting {
+                    bool BackgroundMuted = false;
+                    bool EffectsMuted = false;
+                };
                 SoundManager();
                 ~SoundManager();
 
@@ -70,6 +74,8 @@ namespace ForLeaseEngine{
                 void UnmuteGlobal();
                 void UnmuteBackground();
                 void UnmuteEffects();
+
+                CurrentMuting GetMuting();
 
                 // Get list of all names
                 std::vector<std::string>GetName();
