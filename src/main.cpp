@@ -11,6 +11,7 @@
 
 #include <vector>
 #include <string>
+#include <exception>
 #include "State.h"
 #include "Engine.h"
 #include "Level.h"
@@ -23,7 +24,7 @@
 #include "Debug.h"
 #include "Exception.h"
 #include "DigiPenLogo.h"
-#include "Interpolation.h" 
+#include "Interpolation.h"
 
 #undef main
 
@@ -80,6 +81,9 @@ int Start(int argc = 0, char** argv = 0) {
     }
     catch(ForLeaseEngine::Exception& e) {
         std::cout << e.GetInfo() << std::endl;
+    }
+    catch(std::exception& e) {
+        std::cout << e.what() << std::endl;
     }
 
     return 0;

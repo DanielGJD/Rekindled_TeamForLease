@@ -173,7 +173,7 @@ namespace ForLeaseEngine{
             }
             FMOD_BOOL oneShot = false;
             FMOD_Studio_EventDescription_IsOneshot(eventDescription, &oneShot);
-            
+
             result = FMOD_Studio_EventInstance_Start(event);
 
             if (result != FMOD_OK) {

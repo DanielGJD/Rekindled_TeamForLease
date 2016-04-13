@@ -34,7 +34,7 @@ namespace ForLeaseEngine {
         ComponentType ChangeLevelOnCollide::GetType() { return Type; }
 
         void ChangeLevelOnCollide::Initialize() {
-            ForLease->Dispatcher.Attach(NULL, this, "Collision", &ChangeLevelOnCollide::CollisionStarted, &Parent);
+            ForLease->Dispatcher.Attach(NULL, this, "CollisionStarted", &ChangeLevelOnCollide::CollisionStarted, &Parent);
         }
 
         void ChangeLevelOnCollide::Update() {
@@ -93,7 +93,7 @@ namespace ForLeaseEngine {
 
             if(collision_e->With->GetName().compare(TriggerObjectName) == 0) {
                 Switching = true;
-                ForLease->sound->PlayEvent(TriggerSoundName);
+                //ForLease->sound->PlayEvent(TriggerSoundName);
                 ForLease->FrameRateController().TimeScaling(OnSwitchTimeScale);
             }
         }

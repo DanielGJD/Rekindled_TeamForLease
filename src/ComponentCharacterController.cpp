@@ -72,12 +72,12 @@ namespace ForLeaseEngine {
             //if(collider->CollidedLastFrame && collider->CollidedWithSide == CollisionSide::Top)
                 //CanJump = true;
 
-            if(couldJump) {
-                JumpSoundTimer = 0;
-            }
-            else {
-                JumpSoundTimer += ForLease->FrameRateController().GetDt();
-            }
+//            if(couldJump) {
+//                JumpSoundTimer = 0;
+//            }
+//            else {
+//                JumpSoundTimer += ForLease->FrameRateController().GetDt();
+//            }
             //std::cout << JumpSoundTimer << std::endl;
 
             Vector accel;
@@ -108,7 +108,6 @@ namespace ForLeaseEngine {
                     model->Looping = true;
                     model->SetAnimation("");
                 }
-                ForLease->sound->PlayEvent(LandSound);
             }
 
             accel[0] = accel[0] - physics->Velocity[0] * Drag;
@@ -181,6 +180,9 @@ namespace ForLeaseEngine {
             const CollisionStartedEvent* collision_e = reinterpret_cast<const CollisionStartedEvent*>(e);
             if(collision_e->SelfSide == CollisionSide::Bottom) {
                 //std::cout << "Collided with bottom" << std::endl;
+                if(FloorContacts.empty()) {
+                    ForLease->sound->PlayEvent(LandSound);
+                }
                 FloorContacts.insert(collision_e->With);
                 CanJump = true;
             }

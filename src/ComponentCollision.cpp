@@ -61,7 +61,7 @@ namespace ForLeaseEngine {
 
         void Collision::Initialize() {
             //std::cout << Parent.GetName() << " collision init." << std::endl;
-            ForLease->Dispatcher.Attach(NULL, this, "Collision", &Collision::OnCollide, &Parent);
+            //ForLease->Dispatcher.Attach(NULL, this, "Collision", &Collision::OnCollide, &Parent);
         }
 
         void Collision::OnCollide(const Event* e) {
