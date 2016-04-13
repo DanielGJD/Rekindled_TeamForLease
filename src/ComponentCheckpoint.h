@@ -44,6 +44,7 @@ namespace ForLeaseEngine {
                 void OnCollide(const Event* e);
                 void Serialize(Serializer& root);
                 void Deserialize(Serializer& root);
+                std::string ActivateSound;
             private:
                 bool Active;
                 Checkpoint() = delete;

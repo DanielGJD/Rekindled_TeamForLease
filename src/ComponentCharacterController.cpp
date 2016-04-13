@@ -108,18 +108,11 @@ namespace ForLeaseEngine {
                     model->Looping = true;
                     model->SetAnimation("");
                 }
+                ForLease->sound->PlayEvent(LandSound);
             }
 
             accel[0] = accel[0] - physics->Velocity[0] * Drag;
             physics->Acceleration = accel;
-            if(!couldJump && CanJump && JumpSoundTimer > 0.1) {
-                SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
-                if(emitter){
-                    emitter->SetVolume(1.0f, LandSound);
-                    emitter->StopEvent(LandSound);
-                    emitter->PlayEvent(LandSound);
-                }
-            }
 
         };
 
@@ -145,13 +138,7 @@ namespace ForLeaseEngine {
                         model->SetAnimation(JumpAnimation);
                         model->Looping = false;
                     }
-                    SoundEmitter* emitter = Parent.GetComponent<SoundEmitter>();
-
-                    if (emitter) {
-                        emitter->SetVolume(1.0f, JumpSound);
-                        emitter->StopEvent(JumpSound);
-                        emitter->PlayEvent(JumpSound);
-                    }
+                    ForLease->sound->PlayEvent(JumpSound);
                     CanJump = false;
                 }
             }

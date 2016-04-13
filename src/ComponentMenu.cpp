@@ -168,7 +168,7 @@ namespace ForLeaseEngine {
                 //sprite->SetSpriteSource(item->Text);
                 //rep->GetComponent<Components::Transform>(true)->ScaleX = UnfocusedScale * sprite->SpriteSource.GetWidth() / sprite->SpriteSource.GetHeight();
                 position += Spacing * FocusedScale;
-                rep->AddComponent(new Components::BackgroundMusic(*rep, "Menu2"));
+//                rep->AddComponent(new Components::BackgroundMusic(*rep, "Menu2"));
             }
 
             if (follow) {

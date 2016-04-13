@@ -12,8 +12,9 @@ namespace ForLeaseEngine
                                               CameraDest(""), Light(""), Eyes(""), Trigger(""), CameraSpeed(0),
                                               CameraSize(0), CameraGrowth(0), WispSpeed(0), PlayerMoveDistance(0),
                                               PlayerMoveSpeed(0), OverlaySpeed(0), LightGrowth(0), TransitionTimer(1),
-                                              TransitionTimer2(1), start(false), distance(0), currentAction(Action::MOVE),
-                                              setup(false), transitionDelay(0), transitionDelay2(0)
+                                              TransitionTimer2(1), WispLightTimer(1), start(false), distance(0),
+                                              currentAction(Action::MOVE),setup(false), transitionDelay(0),
+                                              transitionDelay2(0), wispLightDelay(0), lightSwitch(false)
         { }
 
         FinaleOne::~FinaleOne()
@@ -61,6 +62,14 @@ namespace ForLeaseEngine
             else if (start)
             {
                 float dt = ForLease->FrameRateController().GetDt();
+                wispLightDelay += dt;
+                if (wispLightDelay >= WispLightTimer && !lightSwitch)
+                {
+                    Components::Light* light = ForLease->GameStateManager().CurrentState().GetEntityByName(Wisp)->GetComponent<Components::Light>();
+                    light->Radius = 0;
+                    light->LightColor.SetAll(1, 0, 0, 1);
+                    lightSwitch = true;
+                }
 
                 switch(currentAction)
                 {
@@ -145,6 +154,10 @@ namespace ForLeaseEngine
             Point& position = ForLease->GameStateManager().CurrentState().GetEntityByName(Camera)->GetComponent<Components::Transform>()->Position;
             transitionDelay += dt;
             LevelComponents::Renderer* render = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
+            float& wispRadius = ForLease->GameStateManager().CurrentState().GetEntityByName(Wisp)->GetComponent<Components::Light>()->Radius;
+            if (wispRadius <= 8)
+                wispRadius += dt * 2;
+
             if (transitionDelay >= TransitionTimer)
             {
                 transitionDelay2 += dt;
@@ -195,6 +208,7 @@ namespace ForLeaseEngine
             finale.WriteFloat("LightGrowth", LightGrowth);
             finale.WriteFloat("TransitionTimer", TransitionTimer);
             finale.WriteFloat("TransitionTimer2", TransitionTimer2);
+            finale.WriteFloat("WispLightTimer", WispLightTimer);
 
             root.Append(finale, "FinaleOne");
         }
@@ -221,6 +235,7 @@ namespace ForLeaseEngine
             finale.ReadFloat("LightGrowth", LightGrowth);
             finale.ReadFloat("TransitionTimer", TransitionTimer);
             finale.ReadFloat("TransitionTimer2", TransitionTimer2);
+            finale.ReadFloat("WispLightTimer", WispLightTimer);
         }
     }
 }

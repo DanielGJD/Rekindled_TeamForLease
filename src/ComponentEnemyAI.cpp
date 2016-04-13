@@ -200,11 +200,7 @@ namespace ForLeaseEngine {
             Components::SoundEmitter* emitter = Parent.GetComponent<Components::SoundEmitter>();
 
             if(!wasHappy && Happy) {
-                if(emitter) {
-                    emitter->SetVolume(1.0f, LikedSeenSound);
-                    emitter->StopEvent(LikedSeenSound);
-                    emitter->PlayEvent(LikedSeenSound);
-                }
+                ForLease->sound->PlayEvent(LikedSeenSound);
                 //std::cout << "Object Seen" << std::endl;
                 Event e = Event("ObjectSeen");
                 ForLease->Dispatcher.DispatchToParent(&e, &Parent);
@@ -215,12 +211,7 @@ namespace ForLeaseEngine {
                 ForLease->Dispatcher.DispatchToParent(&e, &Parent);
             }
             else if(!wasAngry && Angry) {
-                if(emitter) {
-                    emitter->SetVolume(1.0f,HatedSeenSound);
-                    emitter->StopEvent(HatedSeenSound);
-                    emitter->PlayEvent(HatedSeenSound);
-                }
-                //std::cout << "Object Seen" << std::endl;
+                ForLease->sound->PlayEvent(HatedSeenSound);
                 Event e = Event("ObjectSeen");
                 ForLease->Dispatcher.DispatchToParent(&e, &Parent);
             }

@@ -179,6 +179,9 @@ namespace ForLeaseEngine
             pace.WriteFloat("PaceSpeed", PaceSpeed);
             pace.WriteFloat("PauseTimer", PauseTimer);
             pace.WriteFloat("ResumeTime", ResumeTime);
+            pace.WriteFloat("Moved", Moved);
+            pace.WriteFloat("dtimer", dtimer);
+            pace.WriteFloat("ptimer", ptimer);
             pace.WriteInt("Direction", Direction);
             pace.WriteInt("CurrentAction", CurrentAction);
             pace.WriteInt("NextAction", NextAction);
@@ -191,13 +194,15 @@ namespace ForLeaseEngine
             Serializer pace = root.GetChild("EnemyPace");
             pace.ReadString("Animation", Animation);
             pace.ReadFloat("MaxPaceDistance", MaxPaceDistance);
-            pace.ReadFloat("MaxPaceDistance", MaxPaceDistance);
+            pace.ReadFloat("Moved", Moved);
             pace.ReadFloat("PaceSpeed", PaceSpeed);
             pace.ReadFloat("PauseTimer", PauseTimer);
             pace.ReadFloat("ResumeTime", ResumeTime);
             pace.ReadInt("CurrentAction", CurrentAction);
             pace.ReadInt("NextAction", NextAction);
             pace.ReadInt("Direction", Direction);
+            pace.ReadFloat("dtimer", dtimer);
+            pace.ReadFloat("ptimer", ptimer);
             rtimer = ResumeTime;
 
             Components::Model* model = Parent.GetComponent<Components::Model>();

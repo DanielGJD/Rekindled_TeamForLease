@@ -450,6 +450,7 @@ namespace ForLeaseEngine
             ImGui::InputFloat("Light Growth##finale1", &(leg::selFinale1->LightGrowth));
             ImGui::InputFloat("Transition Delay##finale1", &(leg::selFinale1->TransitionTimer));
             ImGui::InputFloat("Transition Delay2##finale1", &(leg::selFinale1->TransitionTimer2));
+            ImGui::InputFloat("Wisp Light Delay##finale1", &(leg::selFinale1->WispLightTimer));
 
             ImGui::PopItemWidth();
 
@@ -468,6 +469,8 @@ namespace ForLeaseEngine
             static char logo[128];
             static char credits[128];
             static char camera[128];
+            static char rumble[128];
+            static char music[128];
 
             ImGui::PushItemWidth(width);
 
@@ -505,6 +508,16 @@ namespace ForLeaseEngine
                 leg::selFinale2->Camera = camera;
             ImGui::SameLine();
             ImGui::Text(": %s", leg::selFinale2->Camera.c_str());
+
+            if (ImGui::InputText("Rumble Sound##finaletwo", rumble, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale2->RumbleSound = rumble;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale2->RumbleSound.c_str());
+
+            if (ImGui::InputText("Music##finaletwo", music, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale2->Music = music;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale2->Music.c_str());
 
             ImGui::InputFloat("Start Fade In Time", &(leg::selFinale2->StartFadeInTime));
             ImGui::InputFloat("Delay to Fade Out 1", &(leg::selFinale2->DelayToFadeOut1));

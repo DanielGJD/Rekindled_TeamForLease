@@ -35,6 +35,7 @@ int Start(){
 
     //states.push_back(new Loading("Game.json"));
     states.push_back(new SeanState());
+    std::cout << "Here" << std::endl;
 
     ForLeaseEngine::Modules::Debug debug;
     debug.Draw.Collision = true;
