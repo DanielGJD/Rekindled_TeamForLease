@@ -134,7 +134,8 @@ void MainMenu::Initialize() {
     //creditsMenuComp->AddItem(new MenuItems::Quit("Quit"));
     creditsMenuComp->AddItem(new MenuItems::ActivateAndDeactivateAndMakeVisibleAndMakeInvisible("Back", "Menu", "CreditsMenu", "Logo", "CreditsPic"));
 
-    ForLease->sound->PlayEvent("ambience_forest_night01");
+    Entity* bgMusic = AddEntity("BackgroundMusic");
+    bgMusic->AddComponent(new Components::BackgroundMusic(*bgMusic, "ambience_forest_night01"));
 }
 
 void MainMenu::Update() {
