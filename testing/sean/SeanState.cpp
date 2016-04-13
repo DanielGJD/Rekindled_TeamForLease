@@ -38,9 +38,9 @@ void SeanState::Load() {
     //AddLevelComponent(new LevelComponents::Physics(*this, Vector(0,-100)));
     //AddLevelComponent(new LevelComponents::Collision(*this));
     //AddLevelComponent(new LevelComponents::Menu(*this));
-    //AddLevelComponent(new LevelComponents::UsefulObject(*this, "balloon", "distraction"));
-    //GetLevelComponent<LevelComponents::UsefulObject>()->BalloonMesh = "Balloon.json";
-    //GetLevelComponent<LevelComponents::UsefulObject>()->DistractionMesh = "Color.json";
+    AddLevelComponent(new LevelComponents::UsefulObject(*this, "balloon", "distraction"));
+    GetLevelComponent<LevelComponents::UsefulObject>()->BalloonMesh = "Balloon.json";
+    GetLevelComponent<LevelComponents::UsefulObject>()->DistractionMesh = "Color.json";
 
     ////Entity* checkpoint = AddEntity("Checkpoint");
     ////checkpoint->AddComponent(new Components::Transform(*checkpoint));
@@ -73,7 +73,7 @@ void SeanState::Load() {
     //floor2->AddComponent(new Components::Model(*floor2, true, false, false, "1-1Block.json"));
 
     //Entity* character = AddEntity("Character");
-    //character->AddComponent(new Components::Transform(*character, Point(0, 4), 5, 5));
+    //character->AddComponent(new Components::Transform(*character, Point(0, 0), 5, 5));
     //character->AddComponent(new Components::Physics(*character));
     //character->AddComponent(new Components::Collision(*character, 2.0f, 2.0f, true/*, 20, 20*/));
     //character->AddComponent(new Components::Model(*character, true, false, false, "1-1Block.json"));
@@ -87,21 +87,27 @@ void SeanState::Load() {
     //character->AddComponent(charController);
     //character->GetComponent<Components::UsefulObjectInventory>()->ThrowVector = Vector(20, 20);
     //character->GetComponent<Components::UsefulObjectInventory>()->FollowName = "Follow";
+    //character->GetComponent<Components::UsefulObjectInventory>()->BalloonJumpSpeed = 100.0f;
+    //character->GetComponent<Components::UsefulObjectInventory>()->NormalJumpSpeed = charController->JumpSpeed;
 
-    //Entity* follow = AddEntity("Follow");
-    //follow->AddComponent(new Components::Transform(*follow, Point(0, 10), 5, 5));
-    ////follow->AddComponent(new Components::Physics(*follow));
-    ////follow->AddComponent(new Components::Collision(*follow, 2.0f, 2.0f, false/*, 20, 20*/));
-    //follow->AddComponent(new Components::Model(*follow, true, false, false));
-    //follow->AddComponent(new Components::Follow(*follow, true, 0.0f, 1.0f, character->GetID(), Vector(0,2)));
+    Entity* follow = AddEntity("Follow");
+    follow->AddComponent(new Components::Transform(*follow, Point(0, 10), 5, 5));
+    //follow->AddComponent(new Components::Physics(*follow));
+    //follow->AddComponent(new Components::Collision(*follow, 2.0f, 2.0f, false/*, 20, 20*/));
+    follow->AddComponent(new Components::Model(*follow, true, false, false));
+    follow->AddComponent(new Components::Follow(*follow, true, 0.0f, 1.0f, 5716, Vector(0,2)));
 
-    //Entity* object = AddEntity("Object");
-    //object->AddComponent(new Components::Transform(*object, Point(10, 4), 1, 1));
-    //object->AddComponent(new Components::Physics(*object));
-    //object->AddComponent(new Components::Collision(*object, 2.0f, 2.0f, false/*, 20, 20*/));
-    //object->AddComponent(new Components::Model(*object, true, false, false, "1-1Block.json", "", Color(1,0,0)));
-    //object->AddComponent(new Components::UsefulObject(*object, UsefulObjectCategory::Balloon));
-    //object->CreateArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "balloon");
+    GetEntityByID(5716)->GetComponent<Components::UsefulObjectInventory>()->BalloonJumpSpeed = 100.0f;
+    GetEntityByID(5716)->GetComponent<Components::UsefulObjectInventory>()->NormalJumpSpeed = 50.0f;
+
+
+    Entity* object = AddEntity("Object");
+    object->AddComponent(new Components::Transform(*object, Point(0, 30), 1, 1));
+    object->AddComponent(new Components::Physics(*object));
+    object->AddComponent(new Components::Collision(*object, 2.0f, 2.0f, false/*, 20, 20*/));
+    object->AddComponent(new Components::Model(*object, true, false, false, "1-1Block.json", "", Color(1,0,0)));
+    object->AddComponent(new Components::UsefulObject(*object, UsefulObjectCategory::Balloon));
+    object->CreateArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "balloon");
 
     //Entity* object2 = AddEntity("Object2");
     //object2->AddComponent(new Components::Transform(*object2, Point(-10, 4), 1, 1));
