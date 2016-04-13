@@ -25,7 +25,6 @@ namespace ForLeaseEngine {
         ComponentType BackgroundMusic::GetType() { return Type; }
 
         void BackgroundMusic::Update() {
-            std::cout << MusicName << std::endl;
             if(Active) {
                 ForLease->sound->PlayEvent(MusicName);
                 ForLease->sound->Volume(1.0f, MusicName);
