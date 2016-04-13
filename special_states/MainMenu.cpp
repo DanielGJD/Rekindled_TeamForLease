@@ -99,6 +99,14 @@ void MainMenu::Initialize() {
     follow->GetComponent<Components::Follow>()->Speed = 4;
     follow->GetComponent<Components::Light>()->Radius = 5.0f;
 
+    Entity* l1 = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(-25.0f, 10.0f), "Light1");
+    l1->DeleteComponent(ComponentType::Follow);
+    l1->GetComponent<Components::Light>()->Radius = 10.0f;
+
+    Entity* l2 = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(25.0f, 10.0f), "Light2");
+    l2->DeleteComponent(ComponentType::Follow);
+    l2->GetComponent<Components::Light>()->Radius = 10.0f;
+
     Entity* menu = AddEntity("Menu");
     menu->AddComponent(new Components::Transform(*menu, Point(-35.0f, -6.0f)));
     menu->AddComponent(new Components::Menu(*menu, Vector(0, -1), true, 2.0f, 2.5f, "Liberation_Serif.fnt", "MenuFollow", Color(1, 1, 1), Color(1, 1, 0)));

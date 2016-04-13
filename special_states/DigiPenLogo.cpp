@@ -58,6 +58,9 @@ void DigiPenLogo::Initialize() {
     background->AddComponent(new Components::Transform(*background, 0, 0, 50, 50));
     background->AddComponent(new Components::Model(*background, true, false, false, "1-1Block.json", "", Color(0, 0, 0)));
 
+    ForLease->Resources.LoadTexture("DigiPen_White_1024.png");
+    ForLease->Resources.LoadTexture("TFL_Logo.png");
+
     Entity* logo = AddEntity("Logo");
     logo->AddComponent(new Components::Transform(*logo, Point(0, 0), 20, 20));
     logo->AddComponent(new Components::Sprite(*logo));
@@ -78,7 +81,7 @@ void DigiPenLogo::Initialize() {
 //    Components::Light* lightComp = light->GetComponent<Components::Light>();
 //    lightComp->LightColor = Color(1, 1, 1, 1);
 
-    CurrentFadeState = FadeState::FadingIn;
+    CurrentFadeState = FadeState::DPFadingIn;
 
     ForLease->Dispatcher.Attach(NULL, this, "MouseButtonDown", &DigiPenLogo::EventAndSkip, NULL);
     ForLease->Dispatcher.Attach(NULL, this, "KeyDown", &DigiPenLogo::EventAndSkip, NULL);
@@ -107,57 +110,56 @@ void DigiPenLogo::Update() {
 
     float dt = ForLease->FrameRateController().GetDt();
 
-//    Entity* light = GetEntityByName("Light");
-//    Components::Light* lightComp = light->GetComponent<Components::Light>();
-//    Color currColor = lightComp->LightColor;
-//    float currAlpha = currColor.GetA();
-
     LevelComponents::Light* lcLightComp = GetLevelComponent<LevelComponents::Light>();
     float currAlpha = lcLightComp->AmbientLight.GetA();
 
-    if (CurrentFadeState == FadeState::FadingIn) {
+    if (CurrentFadeState == FadeState::DPFadingIn) {
         currAlpha -= (1 / FadeInTime) * dt;
         if (currAlpha <= 0) {
             currAlpha = 0;
-            CurrentFadeState = FadeState::Hold;
+            CurrentFadeState = FadeState::DPHold;
         }
         lcLightComp->AmbientLight = Color(0, 0, 0, currAlpha);
-    } else if (CurrentFadeState == FadeState::Hold) {
+    } else if (CurrentFadeState == FadeState::DPHold) {
         HoldTime -= dt;
         if (HoldTime <= 0)
-            CurrentFadeState = FadeState::FadingOut;
+            CurrentFadeState = FadeState::DPFadingOut;
         lcLightComp->AmbientLight = Color(0,0,0,0);
-    } else if (CurrentFadeState == FadeState::FadingOut) {
+    } else if (CurrentFadeState == FadeState::DPFadingOut) {
+        currAlpha += (1 / FadeOutTime) * dt;
+        if (currAlpha >= 1) {
+            currAlpha = 1;
+            CurrentFadeState = FadeState::TFLFadingIn;
+            HoldTime = 2.0f;
+
+            Entity* logo = GetEntityByName("Logo");
+            if (logo) {
+                Components::Sprite* sprite = logo->GetComponent<Components::Sprite>();
+                if (sprite) sprite->SetSpriteSource("TFL_Logo.png");
+            }
+        }
+        lcLightComp->AmbientLight = Color(0,0,0,currAlpha);
+    } else if (CurrentFadeState == FadeState::TFLFadingIn) {
+        currAlpha -= (1 / FadeInTime) * dt;
+        if (currAlpha <= 0) {
+            currAlpha = 0;
+            CurrentFadeState = FadeState::TFLHold;
+        }
+        lcLightComp->AmbientLight = Color(0, 0, 0, currAlpha);
+    } else if (CurrentFadeState == FadeState::TFLHold) {
+        HoldTime -= dt;
+        if (HoldTime <= 0)
+            CurrentFadeState = FadeState::TFLFadingOut;
+        lcLightComp->AmbientLight = Color(0, 0, 0, 0);
+    } else if (CurrentFadeState == FadeState::TFLFadingOut) {
         currAlpha += (1 / FadeOutTime) * dt;
         if (currAlpha >= 1) {
             currAlpha = 1;
             ForLease->GameStateManager().SetAction(ForLeaseEngine::Modules::StateAction::Next);
-        }
-        lcLightComp->AmbientLight = Color(0,0,0,currAlpha);
-    }
 
-//    if (CurrentFadeState == FadeState::FadingIn) {
-//        currAlpha += (1 / FadeInTime) * dt;
-//        if (currAlpha >= 1) {
-//            currAlpha = 1;
-//            CurrentFadeState = FadeState::Hold;
-//        }
-//        lightComp->LightColor = Color(1, 1, 1, currAlpha);
-//        lcLightComp->AmbientLight = Color(0, 0, 0, 1 - (currAlpha * .5));
-//    } else if (CurrentFadeState == FadeState::Hold) {
-//        HoldTime -= dt;
-//        if (HoldTime <= 0)
-//            CurrentFadeState = FadeState::FadingOut;
-//        lcLightComp->AmbientLight = Color(0, 0, 0, 0.5);
-//    } else if (CurrentFadeState == FadeState::FadingOut) {
-//        currAlpha -= (1 / FadeOutTime) * dt;
-//        if (currAlpha <= 0) {
-//            currAlpha = 0;
-//            ForLease->GameStateManager().SetAction(ForLeaseEngine::Modules::StateAction::Next);
-//        }
-//        lightComp->LightColor = Color(1, 1, 1, currAlpha);
-//        lcLightComp->AmbientLight = Color(0, 0, 0, 1 - (currAlpha * 0.5));
-//    }
+        }
+        lcLightComp->AmbientLight = Color(0, 0, 0, currAlpha);
+    }
 
     for (FLE::Entity* entity : Entities) {
         entity->Update();
