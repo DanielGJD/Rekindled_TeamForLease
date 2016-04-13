@@ -504,17 +504,15 @@ namespace ForLeaseEngine {
             }
         }
 
-        void ToggleAudio::SetText() {
-            Systems::SoundManager::CurrentMuting currentMuting = ForLease->sound->GetMuting();
-            
+        void ToggleAudio::SetText() {            
             std::stringstream ss;
             ss << FirstText;
 
-            if (currentMuting.BackgroundMuted && currentMuting.EffectsMuted) {
+            if (CurrentMuting == Muting::All) {
                 ss << "All Audio";
-            } else if (currentMuting.BackgroundMuted && !currentMuting.EffectsMuted) {
+            } else if (CurrentMuting == Muting::Music) {
                 ss << "Music/Ambience";
-            } else if (!currentMuting.BackgroundMuted && !currentMuting.EffectsMuted) {
+            } else if (CurrentMuting == Muting::None) {
                 ss << "None";
             }
 
@@ -523,6 +521,7 @@ namespace ForLeaseEngine {
 
         void ToggleAudio::Action() {
             IncrementLocalMuting();
+            SetText();
             if (OriginalMuting != CurrentMuting)
                 Dirty = true;
             else
@@ -530,15 +529,17 @@ namespace ForLeaseEngine {
         }
 
         void ToggleAudio::Accept(Systems::WindowProperties& windowProperties) {
-            OriginalMuting = CurrentMuting;
+            ForLease->sound->UnmuteGlobal();
 
-            if (OriginalMuting == Muting::None) {
+            if (CurrentMuting == Muting::None) {
                 ForLease->sound->UnmuteGlobal();
-            } else if (OriginalMuting == Muting::All) {
+            } else if (CurrentMuting == Muting::All) {
                 ForLease->sound->MuteGlobal();
-            } else if (OriginalMuting == Muting::Music) {
+            } else if (CurrentMuting == Muting::Music) {
                 ForLease->sound->MuteBackground();
             }
+
+            OriginalMuting = CurrentMuting;
 
             Dirty = false;
         }

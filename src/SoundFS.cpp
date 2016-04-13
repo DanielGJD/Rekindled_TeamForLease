@@ -337,7 +337,7 @@ namespace ForLeaseEngine{
         }
 
         void SoundManager::UnmuteEffects() {
-            FMOD_Studio_Bus_SetMute(reinterpret_cast<FMOD_STUDIO_BUS*>(m_Background), false);
+            FMOD_Studio_Bus_SetMute(reinterpret_cast<FMOD_STUDIO_BUS*>(m_Effects), false);
         }
 
         SoundManager::CurrentMuting SoundManager::GetMuting() {
