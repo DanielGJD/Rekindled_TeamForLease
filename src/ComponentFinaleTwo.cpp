@@ -89,7 +89,7 @@ namespace ForLeaseEngine {
                     cameraObject->GetComponent<Components::Transform>()->Position = CameraStartPosition;
                     StateTimer = 0;
                     CurrentState = DELAY_FADE_IN_1;
-                    ForLease->sound->Pause(true, RumbleSound);
+                    ForLease->sound->StopSound(RumbleSound);
                 }
             }
             else if(CurrentState == DELAY_FADE_IN_1) {
@@ -104,6 +104,8 @@ namespace ForLeaseEngine {
                         if(sprite) {
                             sprite->Visible = false;
                         }
+
+                        ForLease->sound->PlayEvent(Music);
                     }
                 }
             }
@@ -209,7 +211,7 @@ namespace ForLeaseEngine {
             }
             else if(CurrentState == CREDITS_DELAY) {
                 if(StateTimer >= CreditsDelay) {
-                    ForLease->sound->Pause(true, Music);
+                    ForLease->sound->StopSound(Music);
                     ForLease->GameStateManager().SetState("MainMenu");
                 }
             }
