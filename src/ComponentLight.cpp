@@ -167,19 +167,19 @@ namespace ForLeaseEngine {
                         else {
                             if(hp1.Dot(tl) <= 0 || hp2.Dot(tl) <= 0) {
                                 castingPoints.push_back(tl);
-                                render->DrawPoint(tl);
+                                //render->DrawPoint(tl);
                             }
                             if(hp1.Dot(tr) <= 0 || hp2.Dot(tr) <= 0) {
                                 castingPoints.push_back(tr);
-                                render->DrawPoint(tr);
+                                //render->DrawPoint(tr);
                             }
                             if(hp1.Dot(br) <= 0 || hp2.Dot(br) <= 0) {
                                 castingPoints.push_back(br);
-                                render->DrawPoint(br);
+                                //render->DrawPoint(br);
                             }
                             if(hp1.Dot(bl) <= 0 || hp2.Dot(bl) <= 0) {
                                 castingPoints.push_back(bl);
-                                render->DrawPoint(bl);
+                                //render->DrawPoint(bl);
                             }
                         }
                     }
@@ -228,7 +228,7 @@ namespace ForLeaseEngine {
                     for(unsigned i = 0; i < preHit.size(); ++i) {
                         render->SetDrawingColor(1, 0, 0, 1);
                         render->SetDebugPointSize(8);
-                        render->DrawPoint(preHit[i].Point);
+                        //render->DrawPoint(preHit[i].Point);
                         if(preHit[i].Entity->HasComponent(ComponentType::Occluder)) {
                             litEntitiyIDs.insert(preHit[i].Entity->GetID());
 
@@ -255,7 +255,7 @@ namespace ForLeaseEngine {
                     for(unsigned i = 0; i < postHit.size(); ++i) {
                         render->SetDrawingColor(1, 0, 0, 1);
                         render->SetDebugPointSize(8);
-                        render->DrawPoint(postHit[i].Point);
+                        //render->DrawPoint(postHit[i].Point);
                         if(postHit[i].Entity->HasComponent(ComponentType::Occluder)) {
                             litEntitiyIDs.insert(postHit[i].Entity->GetID());
 
@@ -282,7 +282,7 @@ namespace ForLeaseEngine {
                     for(unsigned i = 0; i < hit.size(); ++i) {
                         render->SetDrawingColor(1, 0, 0, 1);
                         render->SetDebugPointSize(8);
-                        render->DrawPoint(hit[i].Point);
+                        //render->DrawPoint(hit[i].Point);
                         if(hit[i].Entity->HasComponent(ComponentType::Occluder)) {
                             litEntitiyIDs.insert(hit[i].Entity->GetID());
 
