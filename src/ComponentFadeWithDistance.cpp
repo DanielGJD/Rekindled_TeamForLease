@@ -20,7 +20,7 @@ namespace ForLeaseEngine {
     namespace Components {
         FadeWithDistance::FadeWithDistance(Entity& owner, bool active, bool xdirection, bool ydirection,
                                            float fadeBeginDistance, float fadeEndDistance, unsigned long trackedEntityID)
-                                          : Component(owner, ComponentType::Transform | ComponentType::Sprite),
+                                          : Component(owner, ComponentType::Transform),
                                             Active(active), XDirection(xdirection), YDirection(ydirection),
                                             FadeBeginDistance(fadeBeginDistance), FadeEndDistance(fadeEndDistance),
                                             TrackedEntityID(trackedEntityID) {}
@@ -56,15 +56,30 @@ namespace ForLeaseEngine {
                 }
 
                 Components::Sprite* mySprite = Parent.GetComponent<Components::Sprite>();
-                float alpha;
-                if(distance < FadeBeginDistance)
-                    alpha = 1;
-                else if(distance > FadeEndDistance)
-                    alpha = 0;
-                else
-                    alpha = 1 - (distance - FadeBeginDistance) / (FadeEndDistance - FadeBeginDistance);
+                Components::SpriteText* mySpriteText = Parent.GetComponent<Components::SpriteText>();
 
-                mySprite->SpriteColor.SetA(alpha);
+                if (mySprite) {
+                    float alpha;
+                    if (distance < FadeBeginDistance)
+                        alpha = 1;
+                    else if (distance > FadeEndDistance)
+                        alpha = 0;
+                    else
+                        alpha = 1 - (distance - FadeBeginDistance) / (FadeEndDistance - FadeBeginDistance);
+
+                    mySprite->SpriteColor.SetA(alpha);
+                }
+                if (mySpriteText) {
+                    float alpha;
+                    if (distance < FadeBeginDistance)
+                        alpha = 1;
+                    else if (distance > FadeEndDistance)
+                        alpha = 0;
+                    else
+                        alpha = 1 - (distance - FadeBeginDistance) / (FadeEndDistance - FadeBeginDistance);
+
+                    mySpriteText->TextColor.SetA(alpha);
+                }
             }
         }
 
