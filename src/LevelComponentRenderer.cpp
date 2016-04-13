@@ -174,6 +174,7 @@ namespace ForLeaseEngine {
                 try{
                     Entity* cameraEntity = Owner.GetEntityByID(CurrentCamera, true);
                     Components::Transform* transform = cameraEntity->GetComponent<Components::Transform>(true);
+                    //std::cout << "Render Cam Trans: [" << transform->Position[0] << "," << transform->Position[1] << "]" << std::endl;
                     Components::Camera* camera = cameraEntity->GetComponent<Components::Camera>(true);
                     SetProjection(transform->Position, camera->Size * aspectRatio, camera->Size, camera->Near, camera->Far, transform->Rotation);
                 }
@@ -253,7 +254,10 @@ namespace ForLeaseEngine {
                         Components::Sprite* sprite = entity->GetComponent<Components::Sprite>();
                         if(sprite->Visible) {
                             //Components::Transform* transform = entity->GetComponent<Components::Transform>();
-                            SetModelView(trans->Position + cameraShift * parallaxAmount, trans->ScaleX, trans->ScaleY, trans->Rotation);
+                            if(entity->HasComponent(ComponentType::Parallax))
+                                SetModelView(trans->Position + cameraShift * parallaxAmount, trans->ScaleX, trans->ScaleY, trans->Rotation);
+                            else
+                                SetModelView(trans->Position, trans->ScaleX, trans->ScaleY, trans->Rotation);
                             DrawSprite(sprite);
                         }
                     }
