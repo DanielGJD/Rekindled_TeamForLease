@@ -25,6 +25,7 @@ namespace ForLeaseEngine {
             Serializer damage = root.GetChild("DamageOnCollide");
             damage.WriteFloat("Damage", Damage);
             damage.WriteBool("Continuous", Continuous);
+            damage.WriteBool("Kill", Kill);
             root.Append(damage, "DamageOnCollide");
         }
 
@@ -32,6 +33,7 @@ namespace ForLeaseEngine {
             Serializer damage = root.GetChild("DamageOnCollide");
             damage.ReadBool("Continuous", Continuous);
             damage.ReadFloat("Damage", Damage);
+            damage.ReadBool("Kill", Kill);
         }
 
         void DamageOnCollide::OnCollisionStarted(const Event* e) {
