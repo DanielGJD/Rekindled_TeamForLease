@@ -151,44 +151,44 @@ namespace ForLeaseEngine{
 
             //return true;
 
-            //std::string eventName = "event:/" + name;
+            std::string eventName = "event:/" + name;
 
-            //std::cout << eventName << std::endl;
+            std::cout << eventName << std::endl;
 
-            //FMOD_STUDIO_EVENTDESCRIPTION* eventDescription = 0;
-            //FMOD_STUDIO_EVENTINSTANCE* event = 0;
-            //FMOD_RESULT result = FMOD_Studio_System_GetEvent(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys), eventName.c_str(), &eventDescription);
+            FMOD_STUDIO_EVENTDESCRIPTION* eventDescription = 0;
+            FMOD_STUDIO_EVENTINSTANCE* event = 0;
+            FMOD_RESULT result = FMOD_Studio_System_GetEvent(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys), eventName.c_str(), &eventDescription);
 
-            //if (result != FMOD_OK) {
-            //    std::cout << result << std::endl;
-            //    std::cout << "NOT OK" << std::endl;
-            //    return;
-            //}
+            if (result != FMOD_OK) {
+                std::cout << result << std::endl;
+                std::cout << "NOT OK" << std::endl;
+                return false;
+            }
 
-            //result = FMOD_Studio_EventDescription_CreateInstance(reinterpret_cast<FMOD_STUDIO_EVENTDESCRIPTION*>(eventDescription), &event);
-            //if (result != FMOD_OK) {
-            //    std::cout << result << std::endl;
-            //    std::cout << "NOT OK" << std::endl;
-            //    return;
-            //}
-            //FMOD_BOOL oneShot = false;
-            //FMOD_Studio_EventDescription_IsOneshot(eventDescription, &oneShot);
-            //
-            //result = FMOD_Studio_EventInstance_Start(event);
+            result = FMOD_Studio_EventDescription_CreateInstance(reinterpret_cast<FMOD_STUDIO_EVENTDESCRIPTION*>(eventDescription), &event);
+            if (result != FMOD_OK) {
+                std::cout << result << std::endl;
+                std::cout << "NOT OK" << std::endl;
+                return false;
+            }
+            FMOD_BOOL oneShot = false;
+            FMOD_Studio_EventDescription_IsOneshot(eventDescription, &oneShot);
+            
+            result = FMOD_Studio_EventInstance_Start(event);
 
-            //if (result != FMOD_OK) {
-            //    std::cout << result << std::endl;
-            //    std::cout << "NOT OK" << std::endl;
-            //    return;
-            //}
+            if (result != FMOD_OK) {
+                std::cout << result << std::endl;
+                std::cout << "NOT OK" << std::endl;
+                return false;
+            }
 
-            //if (oneShot) {
-            //    FMOD_Studio_EventInstance_Release(event);
-            //} else {
-            //    m_Sounds.insert(std::pair<std::string, FMOD_STUDIO_EVENTINSTANCE *>(name, event));
-            //}
+            if (oneShot) {
+                FMOD_Studio_EventInstance_Release(event);
+            } else {
+                m_Sounds.insert(std::pair<std::string, FMOD_STUDIO_EVENTINSTANCE *>(name, event));
+            }
 
-            //Update();
+            Update();
 
             return true;
         }
