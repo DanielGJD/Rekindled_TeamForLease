@@ -37,7 +37,9 @@ void HowToPlay::Initialize() {
     AddLevelComponent(new LevelComponents::Light(*this, Color(0.5f, 0.5f, 0.5f)));
     AddLevelComponent(new LevelComponents::Physics(*this, Vector(0, -100)));
     AddLevelComponent(new LevelComponents::Collision(*this));
-
+    AddLevelComponent(new LevelComponents::UsefulObject(*this, "Balloon.json", ""));
+    GetLevelComponent<LevelComponents::UsefulObject>()->BalloonArchetypeName = "Balloon";
+    GetLevelComponent<LevelComponents::UsefulObject>()->DistractionArchetypeName = "FireJar";
 
     Entity* background = AddEntity("Background");
     background->AddComponent(new Components::Transform(*background, Point(), 45, 25, 0, -10));
@@ -59,9 +61,11 @@ void HowToPlay::Initialize() {
 //    logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
 
     Entity* player = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Player");
+    Entity* followMesh = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "FollowMesh");
+    followMesh->GetComponent<Components::Follow>()->FollowEntityID = player->GetID();
 
-    Entity* balloon = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Balloon", Point(-5, 0));
-    Entity* distraction = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "FireJar", Point(5,0));
+    Entity* balloon = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Balloon", Point(-15, 0));
+    Entity* distraction = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "FireJar", Point(15,0));
 
     Entity* floor = AddEntity("Floor");
     floor->AddComponent(new Components::Transform(*floor, Point(0.0f, -10.0f), 9999999.0f, 1.0f, 0.0f, -7));
