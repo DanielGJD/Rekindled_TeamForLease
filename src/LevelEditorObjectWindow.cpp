@@ -139,6 +139,20 @@ namespace ForLeaseEngine
                 leg::selModel = NULL;
             }
         }
+        if (leg::selAutoplay && ImGui::CollapsingHeader("Autoplay"))
+        {
+            ImGui::Checkbox("Active##autoplay", &(leg::selAutoplay->Active));
+            ImGui::InputFloat("Left Toggle Time", &(leg::selAutoplay->LeftToggleTime));
+            ImGui::InputFloat("Right Toggle Time", &(leg::selAutoplay->RightToggleTime));
+            ImGui::InputFloat("Jump Time", &(leg::selAutoplay->JumpTime));
+            ImGui::InputFloat("Random Time", &(leg::selAutoplay->RandomTime));
+
+            if (ImGui::Button("Remove Autoplay"))
+            {
+                leg::selection->DeleteComponent(ComponentType::Autoplay);
+                leg::selAutoplay = NULL;
+            }
+        }
         if (leg::selMusic && ImGui::CollapsingHeader("Background Music"))
         {
             ImGui::Text("Current Sound: %s", leg::selMusic->MusicName.c_str());
@@ -249,6 +263,7 @@ namespace ForLeaseEngine
         {
             ImGui::InputFloat("Damage##damage", &(leg::selDamage->Damage));
             ImGui::Checkbox("Continuous##damage", &(leg::selDamage->Continuous));
+            ImGui::Checkbox("Instant Kill##damage", &(leg::selDamage->Kill));
 
             if (ImGui::Button("Remove Damage on Collide"))
             {

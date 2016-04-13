@@ -72,6 +72,7 @@ namespace ForLeaseEngine
          Components::UsefulObjectInventory*  selInventory;
          Components::FinaleTwo*              selFinale2;
          Components::FinaleOne*              selFinale1;
+         Components::Autoplay*               selAutoplay;
 
          Entity*                levelCamera;
          Entity*                camera;
@@ -136,6 +137,7 @@ namespace ForLeaseEngine
     {
         std::vector<Component*> comps;
         Entity dummy;
+        comps.push_back(new Components::Autoplay(dummy));
         comps.push_back(new Components::BackgroundMusic(dummy));
         comps.push_back(new Components::Camera(dummy, 0, 0, 0));
         comps.push_back(new Components::ChangeLevelOnCollide(dummy));
@@ -209,6 +211,7 @@ namespace ForLeaseEngine
             leg::keyCodes = Keys::GetKeyStrings();
             std::sort(leg::keyCodes.begin(), leg::keyCodes.end());
             LoadFiles();
+            leg::componentNames.push_back("Autoplay");
             leg::componentNames.push_back("Background Music");
             leg::componentNames.push_back("Camera");
             leg::componentNames.push_back("Change Level on Collide");
@@ -302,6 +305,7 @@ namespace ForLeaseEngine
         leg::selInventory    = leg::selection->GetComponent<Components::UsefulObjectInventory>();
         leg::selFinale2      = leg::selection->GetComponent<Components::FinaleTwo>();
         leg::selFinale1      = leg::selection->GetComponent<Components::FinaleOne>();
+        leg::selAutoplay     = leg::selection->GetComponent<Components::Autoplay>();
 
         if (leg::selInventory)
         {
