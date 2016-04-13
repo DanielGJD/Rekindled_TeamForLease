@@ -20,7 +20,7 @@ namespace ForLeaseEngine
                                               PlayerMoveSpeed(0), OverlaySpeed(0), LightGrowth(0), TransitionTimer(1),
                                               TransitionTimer2(1), WispLightTimer(1), start(false), distance(0),
                                               currentAction(Action::MOVE),setup(false), transitionDelay(0),
-                                              transitionDelay2(0), wispLightDelay(0), lightSwitch(false)
+                                              transitionDelay2(0), wispLightDelay(0), lightSwitch(false), playSound(true)
         { }
 
         FinaleOne::~FinaleOne()
@@ -113,15 +113,11 @@ namespace ForLeaseEngine
                 cameraPos = cd->GetComponent<Components::Transform>()->Position;
                 Components::Follow* wispFollow = w->GetComponent<Components::Follow>();
                 wispFollow->Active = true;
-                //wispFollow->FollowBeginDistance = 0;
-                //wispFollow->FollowEndDistance = 0;
                 wispFollow->Speed = WispSpeed;
                 wispFollow->Offset = Vector(0, 0);
                 wispFollow->FollowEntityID = wd->GetID();
                 Components::Follow* cameraFollow = cam->GetComponent<Components::Follow>();
                 cameraFollow->Active = true;
-                //cameraFollow->FollowBeginDistance = 0;
-                //cameraFollow->FollowEndDistance = 0;
                 cameraFollow->Speed = CameraSpeed;
                 cameraFollow->Offset = Vector(0, 0);
                 cameraFollow->FollowEntityID = cd->GetID();
@@ -183,9 +179,19 @@ namespace ForLeaseEngine
                 radius += LightGrowth * dt;
                 if (alpha <= 1 && transitionDelay2 >= TransitionTimer2)
                 {
+                    if (playSound)
+                    {
+                        ForLease->sound->PlayEvent("event_earthquake_cave01");
+                        playSound = false;
+                    }
                     position = cameraPos + Vector(RandomFloat(-2, 2), RandomFloat(-2, 2));
                     alpha += OverlaySpeed * dt;
                     render->SetOverlayColor(1, 1, 1, alpha);
+                }
+
+                if (alpha >= 0.99)
+                {
+                    ForLease->GameStateManager().SetState("FinaleTwo");
                 }
             }
 

@@ -99,13 +99,17 @@ void MainMenu::Initialize() {
     follow->GetComponent<Components::Follow>()->Speed = 4;
     follow->GetComponent<Components::Light>()->Radius = 5.0f;
 
-    Entity* l1 = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(-25.0f, 10.0f), "Light1");
-    l1->DeleteComponent(ComponentType::Follow);
-    l1->GetComponent<Components::Light>()->Radius = 10.0f;
+    Entity* l1 = AddEntity("Light1");
+    l1->AddComponent(new Components::Transform(*l1, Point(-15.0f, 10.0f)));
+    l1->AddComponent(new Components::Light(*l1, true, true, false, Vector(), Vector(-1,0), 2 * PI, Color(0.5f, 0.3f, 0.0f, 1.0f), ADDITIVE, 15.0f, "LinearFalloff.png", true));
 
-    Entity* l2 = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Wisp", Point(25.0f, 10.0f), "Light2");
-    l2->DeleteComponent(ComponentType::Follow);
-    l2->GetComponent<Components::Light>()->Radius = 10.0f;
+    Entity* l2 = AddEntity("Light2");
+    l2->AddComponent(new Components::Transform(*l2, Point(0.0f, 9.0f)));
+    l2->AddComponent(new Components::Light(*l2, true, true, false, Vector(), Vector(-1, 0), 2 * PI, Color(0.5f, 0.5f, 0.0f, 1.0f), ADDITIVE, 13.0f, "LinearFalloff.png", true));
+
+    Entity* l3 = AddEntity("Light3");
+    l3->AddComponent(new Components::Transform(*l3, Point(15.0f, 10.0f)));
+    l3->AddComponent(new Components::Light(*l3, true, true, false, Vector(), Vector(-1, 0), 2 * PI, Color(0.5f, 0.5f, 0.3f, 1.0f), ADDITIVE, 13.0f, "LinearFalloff.png", true));
 
     Entity* menu = AddEntity("Menu");
     menu->AddComponent(new Components::Transform(*menu, Point(-35.0f, -6.0f)));
@@ -154,6 +158,21 @@ void MainMenu::Update() {
 
     for (FLE::Entity* entity : Entities) {
         entity->Update();
+    }
+
+    Entity* mainMenu = GetEntityByName("Menu");
+    Entity* optionsMenu = GetEntityByName("OptionsMenu");
+    Entity* quitMenu = GetEntityByName("QuitConfirm");
+    if (mainMenu->GetComponent<Components::Menu>()->Active
+        || optionsMenu->GetComponent<Components::Menu>()->Active
+        || quitMenu->GetComponent<Components::Menu>()->Active) {
+        GetEntityByName("Light1")->GetComponent<Components::Light>()->Active = true;
+        GetEntityByName("Light2")->GetComponent<Components::Light>()->Active = true;
+        GetEntityByName("Light3")->GetComponent<Components::Light>()->Active = true;
+    } else {
+        GetEntityByName("Light1")->GetComponent<Components::Light>()->Active = false;
+        GetEntityByName("Light2")->GetComponent<Components::Light>()->Active = false;
+        GetEntityByName("Light3")->GetComponent<Components::Light>()->Active = false;
     }
 
     for (FLE::LevelComponent* levelComponent : LevelComponents) {
