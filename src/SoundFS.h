@@ -53,27 +53,46 @@ namespace ForLeaseEngine{
                 // Play/pause controls
                 bool PlayEvent(std::string name);
                 bool StopSound(std::string name);
+
                 void Pause(std::string name);
                 void Resume(std::string name);
+
                 void PauseGlobal();
                 void ResumeGlobal();
+
+                void PauseGameplay();
+                void ResumeGameplay();
+
                 void PauseBackground();
                 void ResumeBackground();
+
                 void PauseEffects();
                 void ResumeEffects();
+
+                void PauseMenus();
+                void ResumeMenus();
 
                 // Volume controls
                 void Volume(float vol, std::string name);
                 void SetGlobalVolume(float volume);
                 void SetBackgroundVolume(float volume);
                 void SetEffectsVolume(float volume);
+                void SetMenusVolume(float volume);
 
                 void MuteGlobal();
-                void MuteBackground();
-                void MuteEffects();
                 void UnmuteGlobal();
+
+                void MuteGameplay();
+                void UnmuteGameplay();
+
+                void MuteBackground();
                 void UnmuteBackground();
+
+                void MuteEffects();
                 void UnmuteEffects();
+
+                void MuteMenus();
+                void UnmuteMenus();
 
                 CurrentMuting GetMuting();
 
@@ -88,6 +107,7 @@ namespace ForLeaseEngine{
                 //FMOD_GUID m_EventID;
                 FMOD::Studio::Bus* m_Background;
                 FMOD::Studio::Bus* m_Effects;
+                FMOD::Studio::Bus* m_Menus;
         };
 
     }

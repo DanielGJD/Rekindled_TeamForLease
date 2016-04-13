@@ -41,7 +41,7 @@ namespace ForLeaseEngine{
 
             if (result_ != FMOD_OK) {
                 std::cout << result_ << std::endl;
-                std::cout << "NOT OK" << std::endl;
+                std::cout << "Failed to load master bankfile." << std::endl;
             }
 
             result_ = FMOD_Studio_System_LoadBankFile(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys),StringBank, FMOD_STUDIO_LOAD_BANK_NORMAL, reinterpret_cast<FMOD_STUDIO_BANK**>(&m_StringsBank));
@@ -49,7 +49,7 @@ namespace ForLeaseEngine{
 
             if (result_ != FMOD_OK) {
                 std::cout << result_ << std::endl;
-                std::cout << "NOT OK" << std::endl;
+                std::cout << "Failed to load master strings file." << std::endl;
             }
 
             result_ = FMOD_Studio_System_GetBus(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys), "bus:/Background", reinterpret_cast<FMOD_STUDIO_BUS**>(&m_Background));
@@ -57,7 +57,7 @@ namespace ForLeaseEngine{
 
             if (result_ != FMOD_OK) {
                 std::cout << result_ << std::endl;
-                std::cout << "NOT OK" << std::endl;
+                std::cout << "Failed to get background bus." << std::endl;
             }
 
             result_ = FMOD_Studio_System_GetBus(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys), "bus:/Effects", reinterpret_cast<FMOD_STUDIO_BUS**>(&m_Effects));
@@ -65,7 +65,15 @@ namespace ForLeaseEngine{
 
             if (result_ != FMOD_OK) {
                 std::cout << result_ << std::endl;
-                std::cout << "NOT OK" << std::endl;
+                std::cout << "Failed to get effects bus." << std::endl;
+            }
+
+            result_ = FMOD_Studio_System_GetBus(reinterpret_cast<FMOD_STUDIO_SYSTEM*>(m_Sys), "bus:/Menus", reinterpret_cast<FMOD_STUDIO_BUS**>(&m_Menus));
+
+
+            if (result_ != FMOD_OK) {
+                std::cout << result_ << std::endl;
+                std::cout << "Failed to get menus bus." << std::endl;
             }
         }
 
@@ -188,11 +196,23 @@ namespace ForLeaseEngine{
 
         void SoundManager::PauseGlobal()
         {
+            PauseGameplay();
+            PauseMenus();
+        }
+
+        void SoundManager::ResumeGlobal()
+        {
+            ResumeGameplay();
+            ResumeMenus();
+        }
+
+        void SoundManager::PauseGameplay()
+        {
             PauseBackground();
             PauseEffects();
         }
 
-        void SoundManager::ResumeGlobal()
+        void SoundManager::ResumeGameplay()
         {
             ResumeBackground();
             ResumeEffects();
@@ -212,6 +232,14 @@ namespace ForLeaseEngine{
 
         void SoundManager::ResumeEffects() {
             FMOD_Studio_Bus_SetPaused(reinterpret_cast<FMOD_STUDIO_BUS*>(m_Effects), false);
+        }
+
+        void SoundManager::PauseMenus() {
+            FMOD_Studio_Bus_SetPaused(reinterpret_cast<FMOD_STUDIO_BUS*>(m_Menus), true);
+        }
+
+        void SoundManager::ResumeMenus() {
+            FMOD_Studio_Bus_SetPaused(reinterpret_cast<FMOD_STUDIO_BUS*>(m_Menus), false);
         }
 
         void SoundManager::Volume(float volume, std::string name)
@@ -240,30 +268,52 @@ namespace ForLeaseEngine{
             FMOD_Studio_Bus_SetFaderLevel(reinterpret_cast<FMOD_STUDIO_BUS*>(m_Effects), volume);
         }
 
+        void SoundManager::SetMenusVolume(float volume) {
+            FMOD_Studio_Bus_SetFaderLevel(reinterpret_cast<FMOD_STUDIO_BUS*>(m_Menus), volume);
+        }
+
         void SoundManager::MuteGlobal() {
+            MuteGameplay();
+            MuteMenus();
+        }
+
+        void SoundManager::UnmuteGlobal() {
+            UnmuteGameplay();
+            UnmuteMenus();
+        }
+
+        void SoundManager::MuteGameplay() {
             MuteBackground();
             MuteEffects();
+        }
+
+        void SoundManager::UnmuteGameplay() {
+            UnmuteBackground();
+            UnmuteEffects();
         }
 
         void SoundManager::MuteBackground() {
             FMOD_Studio_Bus_SetMute(reinterpret_cast<FMOD_STUDIO_BUS*>(m_Background), true);
         }
 
-        void SoundManager::MuteEffects() {
-            FMOD_Studio_Bus_SetMute(reinterpret_cast<FMOD_STUDIO_BUS*>(m_Effects), true);
-        }
-
-        void SoundManager::UnmuteGlobal() {
-            UnmuteBackground();
-            UnmuteEffects();
-        }
-
         void SoundManager::UnmuteBackground() {
             FMOD_Studio_Bus_SetMute(reinterpret_cast<FMOD_STUDIO_BUS*>(m_Background), false);
         }
 
+        void SoundManager::MuteEffects() {
+            FMOD_Studio_Bus_SetMute(reinterpret_cast<FMOD_STUDIO_BUS*>(m_Effects), true);
+        }
+
         void SoundManager::UnmuteEffects() {
             FMOD_Studio_Bus_SetMute(reinterpret_cast<FMOD_STUDIO_BUS*>(m_Effects), false);
+        }
+
+        void SoundManager::MuteMenus() {
+            FMOD_Studio_Bus_SetMute(reinterpret_cast<FMOD_STUDIO_BUS*>(m_Menus), true);
+        }
+
+        void SoundManager::UnmuteMenus() {
+            FMOD_Studio_Bus_SetMute(reinterpret_cast<FMOD_STUDIO_BUS*>(m_Menus), false);
         }
 
         SoundManager::CurrentMuting SoundManager::GetMuting() {
