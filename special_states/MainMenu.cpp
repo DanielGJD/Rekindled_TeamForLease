@@ -136,7 +136,7 @@ void MainMenu::Initialize() {
     creditsMenuComp->AddItem(new MenuItems::ActivateAndDeactivateAndMakeVisibleAndMakeInvisible("Back", "Menu", "CreditsMenu", "Logo", "CreditsPic"));
 
     Entity* bgMusic = AddEntity("BackgroundMusic");
-    bgMusic->AddComponent(new Components::BackgroundMusic(*bgMusic, "ambience_forest_night01"));
+    bgMusic->AddComponent(new Components::BackgroundMusic(*bgMusic, "sunny romp"));
 }
 
 void MainMenu::Update() {
