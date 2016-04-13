@@ -12,12 +12,12 @@ namespace ForLeaseEngine
     namespace Components
     {
         EnemyPace::EnemyPace(Entity& owner, float speed, float maxDistance, float pause, unsigned direction) : Component(owner),
-                                                                                                               PaceSound(""),
+                                                                                                               Animation(""),
                                                                                                                PaceSpeed(speed),
                                                                                                                MaxPaceDistance(maxDistance),
                                                                                                                PauseTimer(pause),
-                                                                                                               Position(Parent.GetComponent<Components::Transform>()->Position),
-                                                                                                               Direction(direction)
+                                                                                                               Direction(direction),
+                                                                                                               Position(Parent.GetComponent<Components::Transform>()->Position)
         {
             MaxPaceDistance = 3.0;
             DetectionDelay = 0.5;
@@ -88,6 +88,8 @@ namespace ForLeaseEngine
                 CurrentAction = NextAction;
                 NextAction = Action::RIGHT;
                 Moved = -MaxPaceDistance;
+                if (Parent.HasComponent(ComponentType::Model))
+                    Parent.GetComponent<Components::Model>()->SetAnimation("");
             }
         }
 
@@ -101,6 +103,8 @@ namespace ForLeaseEngine
                 CurrentAction = NextAction;
                 NextAction = Action::LEFT;
                 Moved = -MaxPaceDistance;
+                if (Parent.HasComponent(ComponentType::Model))
+                    Parent.GetComponent<Components::Model>()->SetAnimation("");
             }
         }
 
@@ -115,7 +119,11 @@ namespace ForLeaseEngine
                 Components::Model* model = Parent.GetComponent<Components::Model>();
                 Components::VisionCone* vision = Parent.GetComponent<Components::VisionCone>();
                 if (model)
+                {
                     model->FlipY = !(model->FlipY);
+                    model->SetAnimation(Animation);
+                }
+
                 if (vision)
                 {
                     vision->Direction[0] *= -1;
@@ -146,6 +154,8 @@ namespace ForLeaseEngine
         void EnemyPace::OnPlayerSeen(Event const* e)
         {
             std::cout << "player seen\n";
+            if (Parent.HasComponent(ComponentType::Model))
+                Parent.GetComponent<Components::Model>()->AnimationActive = false;
             playerDetected = true;
             //rtimer = 0;
         }
@@ -153,6 +163,8 @@ namespace ForLeaseEngine
         void EnemyPace::OnPlayerNotSeen(Event const* e)
         {
             std::cout << "player not seen\n";
+            if (Parent.HasComponent(ComponentType::Model))
+                Parent.GetComponent<Components::Model>()->AnimationActive = true;
             playerDetected = false;
             dtimer = 0;
             rtimer = 0;
@@ -162,6 +174,7 @@ namespace ForLeaseEngine
         {
             root.WriteUlonglong("Type", static_cast<unsigned long long>(Type));
             Serializer pace = root.GetChild("EnemyPace");
+            pace.WriteString("Animation", Animation);
             pace.WriteFloat("MaxPaceDistance", MaxPaceDistance);
             pace.WriteFloat("PaceSpeed", PaceSpeed);
             pace.WriteFloat("PauseTimer", PauseTimer);
@@ -176,6 +189,7 @@ namespace ForLeaseEngine
         void EnemyPace::Deserialize(Serializer& root)
         {
             Serializer pace = root.GetChild("EnemyPace");
+            pace.ReadString("Animation", Animation);
             pace.ReadFloat("MaxPaceDistance", MaxPaceDistance);
             pace.ReadFloat("MaxPaceDistance", MaxPaceDistance);
             pace.ReadFloat("PaceSpeed", PaceSpeed);
@@ -185,6 +199,17 @@ namespace ForLeaseEngine
             pace.ReadInt("NextAction", NextAction);
             pace.ReadInt("Direction", Direction);
             rtimer = ResumeTime;
+
+            Components::Model* model = Parent.GetComponent<Components::Model>();
+
+            if (model)
+            {
+                model->SetAnimation(Animation);
+                model->FrameRate *= 0.5;
+                model->AnimationActive = true;
+                model->Looping = true;
+            }
+
         }
     }
 }

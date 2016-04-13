@@ -355,11 +355,19 @@ namespace ForLeaseEngine
             ImGui::EndChild();
         }
 
+        ImGui::Text("Checkpoint Trigger ID: %lu", leg::levelCheckpoint->TriggerEntityID);
         ImGui::End();
     }
 
     void LevelEditor::AddComponent(const std::string& component)
     {
+        if (!(component.compare("Autoplay")) && !leg::selAutoplay)
+        {
+            leg::selAutoplay = new Components::Autoplay(*leg::selection);
+            if (!leg::selection->AddComponent(leg::selAutoplay))
+                leg::selAutoplay = NULL;
+            return;
+        }
         if (!(component.compare("Background Music")) && !leg::selMusic)
         {
             leg::selMusic = new Components::BackgroundMusic(*leg::selection);
@@ -637,6 +645,13 @@ namespace ForLeaseEngine
             if (counter)
                 tooltip += ", ";
             tooltip += "Particle System";
+            ++counter;
+        }
+        if (static_cast<unsigned long long>(reqMask & ComponentType::PlayerController) != 0)
+        {
+            if (counter)
+                tooltip += ", ";
+            tooltip += "Player Controller";
             ++counter;
         }
         if (static_cast<unsigned long long>(reqMask & ComponentType::VisionCone) != 0)

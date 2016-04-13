@@ -49,6 +49,7 @@ namespace ForLeaseEngine
         extern Components::UsefulObjectInventory*  selInventory;
         extern Components::FinaleTwo*              selFinale2;
         extern Components::FinaleOne*              selFinale1;
+        extern Components::Autoplay*               selAutoplay;
 
         extern Entity*                levelCamera;
         extern Entity*                camera;

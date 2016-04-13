@@ -9,7 +9,8 @@ namespace ForLeaseEngine
                                                                                                     BlinkTime(blinkTimer),
                                                                                                     WatchTime(watchTimer),
                                                                                                     Direction1(dir1),
-                                                                                                    Direction2(dir2)
+                                                                                                    Direction2(dir2),
+                                                                                                    Animation("")
         {
             timer = 0;
             pause = false;
@@ -72,6 +73,11 @@ namespace ForLeaseEngine
                 vision->Direction = *nextDirection;
                 vision->Active = false;
                 vision->Visible = false;
+                if (Parent.HasComponent(ComponentType::Model))
+                {
+                    Parent.GetComponent<Components::Model>()->SetAnimation(Animation);
+                }
+
                 currentState = STATE::BLINK;
                 timer = 0;
                 if (nextDirection == &Direction1)
@@ -91,6 +97,8 @@ namespace ForLeaseEngine
                 Components::VisionCone* vision = Parent.GetComponent<Components::VisionCone>();
                 vision->Active = true;
                 vision->Visible = true;
+                if (Parent.HasComponent(ComponentType::Model))
+                    Parent.GetComponent<Components::Model>()->SetAnimation("");
                 timer = 0;
 
                 if (modelFlip)
@@ -119,6 +127,7 @@ namespace ForLeaseEngine
         {
             root.WriteUlonglong("Type", static_cast<unsigned long long>(Type));
             Serializer owl = root.GetChild("OwlAI");
+            owl.WriteString("Animation", Animation);
             owl.WriteFloat("BlinkTime", BlinkTime);
             owl.WriteFloat("LookTime", WatchTime);
             owl.WriteVec("Direction1", Direction1);
@@ -130,6 +139,7 @@ namespace ForLeaseEngine
         void OwlAI::Deserialize(Serializer& root)
         {
             Serializer owl = root.GetChild("OwlAI");
+            owl.ReadString("Animation", Animation);
             owl.ReadFloat("BlinkTime", BlinkTime);
             owl.ReadFloat("LookTime", WatchTime);
             owl.ReadVec("Direction1", Direction1);
@@ -142,6 +152,12 @@ namespace ForLeaseEngine
 
             Components::VisionCone* vision = Parent.GetComponent<Components::VisionCone>();
             vision->Direction = Direction1;
+
+            if (Parent.HasComponent(ComponentType::Model))
+            {
+                Parent.GetComponent<Components::Model>()->AnimationActive = true;
+            }
+
         }
     }
 }
