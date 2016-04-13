@@ -29,6 +29,7 @@ namespace ForLeaseEngine
             float LightGrowth;
             float TransitionTimer;
             float TransitionTimer2;
+            float WispLightTimer;
 
 
             ~FinaleOne();
@@ -59,6 +60,8 @@ namespace ForLeaseEngine
             bool setup;
             float transitionDelay;
             float transitionDelay2;
+            float wispLightDelay;
+            bool lightSwitch;
         };
     }
 }

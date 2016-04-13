@@ -450,6 +450,7 @@ namespace ForLeaseEngine
             ImGui::InputFloat("Light Growth##finale1", &(leg::selFinale1->LightGrowth));
             ImGui::InputFloat("Transition Delay##finale1", &(leg::selFinale1->TransitionTimer));
             ImGui::InputFloat("Transition Delay2##finale1", &(leg::selFinale1->TransitionTimer2));
+            ImGui::InputFloat("Wisp Light Delay##finale1", &(leg::selFinale1->WispLightTimer));
 
             ImGui::PopItemWidth();
 
