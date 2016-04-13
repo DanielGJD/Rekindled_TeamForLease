@@ -22,7 +22,7 @@ namespace ForLeaseEngine {
                                          unsigned long followEntityID, Vector const& offset, float speed)
                                         : Component(parent, ComponentType::Transform),
                                           Active(active), FollowBeginDistance(followBeginDistance),
-                                          FollowEndDistance(followEndDistance), FollowEntityID(followEntityID), Offset(offset), Speed(speed) {}
+                                          FollowEndDistance(followEndDistance), FollowEntityID(followEntityID), Offset(offset), Speed(speed), AlteredOffset(offset) {}
 
 
         Follow::~Follow() {}
@@ -33,7 +33,33 @@ namespace ForLeaseEngine {
             if(!Active)
                 return;
             Entity* entity = ForLease->GameStateManager().CurrentState().GetEntityByID(FollowEntityID);
+
             if(entity) {
+                Components::Sprite* sprite = entity->GetComponent<Components::Sprite>();
+                Components::Model* model = entity->GetComponent<Components::Model>();
+
+                AlteredOffset[0] = Offset[0];
+
+                if(sprite) {
+                    if(sprite->FlipY) {
+                        AlteredOffset[0] = -Offset[0];
+                    }
+                    else {
+                        AlteredOffset[0] = Offset[0];
+                    }
+                }
+
+                if(model) {
+                    if(model->FlipY) {
+                        AlteredOffset[0] = -Offset[0];
+                    }
+                    else {
+                        AlteredOffset[0] = Offset[0];
+                    }
+                }
+
+                AlteredOffset[1] = Offset[1];
+
                 Transform* followTrans = entity->GetComponent<Components::Transform>();
                 Transform* myTrans = Parent.GetComponent<Components::Transform>();
 //                float distance = Point::Distance(followTrans->Position, myTrans->Position);
@@ -49,7 +75,7 @@ namespace ForLeaseEngine {
 //                float moveScale = Interpolation::PowerIn(2, 0, 1, t);
 //                Vector scaledMovement = Vector::Scale(fullMovement, moveScale * ForLease->FrameRateController().GetDt());
 //                myTrans->Position += scaledMovement;
-                Vector direction = followTrans->Position - myTrans->Position + Offset;
+                Vector direction = followTrans->Position - myTrans->Position + AlteredOffset;
                 double distance = direction.Magnitude();
                 direction.Normalize();
 
@@ -98,6 +124,7 @@ namespace ForLeaseEngine {
             follow.ReadFloat("Speed", Speed);
             if (Speed == 0.0f) Speed = 1.0f; // Fix?
             follow.ReadVec("Offset", Offset);
+            AlteredOffset = Offset;
         }
     }
 }

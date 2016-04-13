@@ -257,6 +257,38 @@ namespace ForLeaseEngine {
             activateOther.ReadString("ToMakeVisible", ToMakeVisible);
         }
 
+        ActivateAndDeactivateAndMakeVisibleAndMakeInvisible::ActivateAndDeactivateAndMakeVisibleAndMakeInvisible(std::string text, std::string toActivate, std::string toDeactivate, std::string toMakeVisible, std::string toMakeInvisible)
+            : MenuItem(MenuItemType::ActDeactVisInvis, text),
+            ToDeactivate(toDeactivate),
+            ToActivate(toActivate),
+            ToMakeVisible(toMakeVisible),
+            ToMakeInvisible(toMakeInvisible) {}
+
+        void ActivateAndDeactivateAndMakeVisibleAndMakeInvisible::Action() {
+            Entity* actEnt = ForLease->GameStateManager().CurrentState().GetEntityByName(ToActivate, true);
+            Components::Menu* activate = actEnt->GetComponent<Components::Menu>(true);
+
+            Entity* deactEnt = ForLease->GameStateManager().CurrentState().GetEntityByName(ToDeactivate, true);
+            Components::Menu* deactivate = deactEnt->GetComponent<Components::Menu>(true);
+
+            deactivate->Deactivate();
+            activate->Activate();
+
+            Entity* visEnt = ForLease->GameStateManager().CurrentState().GetEntityByName(ToMakeVisible, true);
+            Components::Sprite* vis = visEnt->GetComponent<Components::Sprite>(true);
+            Entity* invisEnt = ForLease->GameStateManager().CurrentState().GetEntityByName(ToMakeInvisible, true);
+            Components::Sprite* invis = invisEnt->GetComponent<Components::Sprite>(true);
+
+            vis->Visible = true;
+            invis->Visible = false;
+        }
+
+        RestartLevel::RestartLevel(std::string text) : MenuItem(MenuItemType::RestartLevel, text) {}
+
+        void RestartLevel::Action() {
+            ForLease->GameStateManager().SetAction(Modules::StateAction::Restart);
+        }
+
     } // MenuItems
 
     OptionMenuItem::OptionMenuItem(MenuItemType type, std::string text, bool affectsWindow)

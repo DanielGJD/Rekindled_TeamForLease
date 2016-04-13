@@ -337,6 +337,7 @@ for (unsigned i = 0; i < jsonComponents.Size(); ++i) {
                 break;
             case ComponentType::ChangeLevelOnCollide:
                 component = new Components::ChangeLevelOnCollide(entity);
+                component->Initialize();
                 break;
             case ComponentType::BackgroundMusic:
                 component = new Components::BackgroundMusic(entity);
@@ -384,6 +385,12 @@ for (unsigned i = 0; i < jsonComponents.Size(); ++i) {
             case ComponentType::DamageOnCollide:
                 component = new Components::DamageOnCollide(entity);
                 component->Initialize();
+                break;
+            case ComponentType::FinaleOne:
+                component = Components::FinaleOne::Create(entity);
+                break;
+            case ComponentType::Autoplay:
+                component = new Components::Autoplay(entity);
                 break;
             default:
                 std::cout << "Unknown Type: " << type << std::endl;

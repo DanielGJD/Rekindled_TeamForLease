@@ -12,6 +12,7 @@
 #include "ComponentUsefulObjectInventory.h"
 #include "State.h"
 #include "GameStateManager.h"
+#include "ComponentCharacterController.h"
 
 namespace ForLeaseEngine {
 
@@ -29,7 +30,9 @@ namespace ForLeaseEngine {
             ThrowKey(Keys::Comma),
             ThrowVector(20, 0),
             BalloonMass(0.5f),
-            NormalMass(1.0f) {}
+            NormalMass(1.0f),
+            BalloonJumpSpeed(50.0f),
+            NormalJumpSpeed(50.0f) {}
 
         UsefulObjectInventory::~UsefulObjectInventory() {
             ForLease->Dispatcher.Detach(this, "Collision");
@@ -42,10 +45,16 @@ namespace ForLeaseEngine {
         }
 
         void UsefulObjectInventory::Update() {
-            if (Category == UsefulObjectCategory::Balloon)
+            Components::CharacterController* character = Parent.GetComponent<Components::CharacterController>();
+
+            if (Category == UsefulObjectCategory::Balloon) {
                 Parent.GetComponent<Components::Physics>()->Mass = BalloonMass;
-            else
+                if (character) character->JumpSpeed = BalloonJumpSpeed;
+            }
+            else {
                 Parent.GetComponent<Components::Physics>()->Mass = NormalMass;
+                if (character) character->JumpSpeed = NormalJumpSpeed;
+            }
 
             Entity* follow = ForLease->GameStateManager().CurrentState().GetEntityByName(FollowName);
             if (!follow) return;
@@ -144,6 +153,8 @@ namespace ForLeaseEngine {
             usefulObjectInventory.WriteVec("ThrowVector", ThrowVector);
             usefulObjectInventory.WriteFloat("BalloonMass", BalloonMass);
             usefulObjectInventory.WriteFloat("NormalMass", NormalMass);
+            usefulObjectInventory.WriteFloat("BalloonJumpSpeed", BalloonJumpSpeed);
+            usefulObjectInventory.WriteFloat("NormalJumpSpeed", NormalJumpSpeed);
             usefulObjectInventory.WriteUlonglong("Type", static_cast<unsigned long long>(Type));
             root.Append(usefulObjectInventory, "UsefulObjectInventory");
         }
@@ -158,6 +169,10 @@ namespace ForLeaseEngine {
             usefulObjectInventory.ReadVec("ThrowVector", ThrowVector);
             usefulObjectInventory.ReadFloat("BalloonMass", BalloonMass);
             usefulObjectInventory.ReadFloat("NormalMass", NormalMass);
+            usefulObjectInventory.ReadFloat("BalloonJumpSpeed", BalloonJumpSpeed);
+            usefulObjectInventory.ReadFloat("NormalJumpSpeed", NormalJumpSpeed);
+            if (BalloonJumpSpeed == 0.0f) BalloonJumpSpeed = 50.0f;
+            if (NormalJumpSpeed == 0.0f) NormalJumpSpeed = 50.0f;
         }
 
     } // Components

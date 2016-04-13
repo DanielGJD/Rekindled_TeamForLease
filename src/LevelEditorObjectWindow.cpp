@@ -62,7 +62,6 @@ namespace ForLeaseEngine
 
         if (leg::selTran && ImGui::CollapsingHeader("Transform"))
         {
-            ImGui::Checkbox("UI Layer##transform", &(leg::selTran->UILayer));
             ImGui::PushItemWidth(width);
             ImGui::InputFloat("X##TransformPos", &(leg::selTran->Position[0]));
             ImGui::SameLine();
@@ -231,6 +230,11 @@ namespace ForLeaseEngine
             ImGui::DragFloat("Width##Collision", &(leg::selCollision->Width), 0.05);
             ImGui::SameLine();
             ImGui::DragFloat("Height##Collision", &(leg::selCollision->Height), 0.05);
+            ImGui::DragFloat("X##collision", &(leg::selCollision->OffsetX), 0.05);
+            ImGui::SameLine();
+            ImGui::DragFloat("Y##collision", &(leg::selCollision->OffsetY), 0.05);
+            ImGui::SameLine();
+            ImGui::Text("Offset");
             ImGui::PopItemWidth();
             ImGui::Checkbox("Resolve Collision##Collision", &(leg::selCollision->ResolveCollisions));
 
@@ -238,6 +242,18 @@ namespace ForLeaseEngine
             {
                 leg::selection->DeleteComponent(ComponentType::Collision);
                 leg::selCollision = NULL;
+            }
+        }
+
+        if (leg::selDamage && ImGui::CollapsingHeader("Damage on Collide"))
+        {
+            ImGui::InputFloat("Damage##damage", &(leg::selDamage->Damage));
+            ImGui::Checkbox("Continuous##damage", &(leg::selDamage->Continuous));
+
+            if (ImGui::Button("Remove Damage on Collide"))
+            {
+                leg::selection->DeleteComponent(ComponentType::DamageOnCollide);
+                leg::selDamage = nullptr;
             }
         }
 
@@ -362,6 +378,139 @@ namespace ForLeaseEngine
                 leg::selFade = NULL;
             }
         }
+        if (leg::selFinale1 && ImGui::CollapsingHeader("Finale One"))
+        {
+            static char camera[128];
+            static char wisp[128];
+            static char wispdest[128];
+            static char cameradest[128];
+            static char light[128];
+            static char eyes[128];
+            static char trigger[128];
+
+            ImGui::PushItemWidth(width);
+
+            if (ImGui::InputText("Camera##finale1", camera, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale1->Camera = camera;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale1->Camera.c_str());
+
+            if (ImGui::InputText("Camera Destination##finale1", cameradest, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale1->CameraDest = cameradest;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale1->CameraDest.c_str());
+
+            if (ImGui::InputText("Wisp##finale1", wisp, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale1->Wisp = wisp;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale1->Wisp.c_str());
+
+            if (ImGui::InputText("Wisp Destination##finale1", wispdest, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale1->WispDest = wispdest;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale1->WispDest.c_str());
+
+            if (ImGui::InputText("Light##finale1", light, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale1->Light = light;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale1->Light.c_str());
+
+            if (ImGui::InputText("Eyes##finale1", eyes, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale1->Eyes = eyes;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale1->Eyes.c_str());
+
+            if (ImGui::InputText("Trigger Object##finale1", trigger, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale1->Trigger = trigger;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale1->Trigger.c_str());
+
+            ImGui::InputFloat("Camera Speed##finale1", &(leg::selFinale1->CameraSpeed));
+            ImGui::InputFloat("Camera Size##finale1", &(leg::selFinale1->CameraSize));
+            ImGui::InputFloat("Camera Growth##finale1", &(leg::selFinale1->CameraGrowth));
+            ImGui::InputFloat("Wisp Speed##finale1", &(leg::selFinale1->WispSpeed));
+            ImGui::InputFloat("Player Move Distance##finale1", &(leg::selFinale1->PlayerMoveDistance));
+            ImGui::InputFloat("Player Speed##finale1", &(leg::selFinale1->PlayerMoveSpeed));
+            ImGui::InputFloat("Overlay Speed##finale1", &(leg::selFinale1->OverlaySpeed));
+            ImGui::InputFloat("Light Growth##finale1", &(leg::selFinale1->LightGrowth));
+
+            ImGui::PopItemWidth();
+
+            if (ImGui::Button("Remove Finale One"))
+            {
+                leg::selection->DeleteComponent(ComponentType::FinaleOne);
+                leg::selFinale1 = nullptr;
+            }
+        }
+        if (leg::selFinale2 && ImGui::CollapsingHeader("Finale Two"))
+        {
+            static char dead[128];
+            static char aliveTop[128];
+            static char aliveBot[128];
+            static char pulse[128];
+            static char logo[128];
+            static char credits[128];
+            static char camera[128];
+
+            ImGui::PushItemWidth(width);
+
+            if (ImGui::InputText("Dead Forrest", dead, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale2->DeadForest = dead;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale2->DeadForest.c_str());
+
+            if (ImGui::InputText("Alive Forrest Top", aliveTop, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale2->AliveForestTop = aliveTop;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale2->AliveForestTop.c_str());
+
+            if (ImGui::InputText("Alive Forrest Bot", aliveBot, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale2->AliveForestBottom = aliveBot;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale2->AliveForestBottom.c_str());
+
+            if (ImGui::InputText("Pulse Object", pulse, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale2->PulseObject = pulse;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale2->PulseObject.c_str());
+
+            if (ImGui::InputText("Logo", logo, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale2->Logo = logo;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale2->Logo.c_str());
+
+            if (ImGui::InputText("Credits", credits, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale2->Credits = credits;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale2->Credits.c_str());
+
+            if (ImGui::InputText("Camera##finaletwo", camera, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                leg::selFinale2->Camera = camera;
+            ImGui::SameLine();
+            ImGui::Text(": %s", leg::selFinale2->Camera.c_str());
+
+            ImGui::InputFloat("Start Fade In Time", &(leg::selFinale2->StartFadeInTime));
+            ImGui::InputFloat("Delay to Fade Out 1", &(leg::selFinale2->DelayToFadeOut1));
+            ImGui::InputFloat("Fade Out 1 Time", &(leg::selFinale2->FadeOut1Time));
+            ImGui::InputFloat("Screen Shake Amount", &(leg::selFinale2->ScreenShakeAmount));
+            ImGui::InputFloat("Delay to Fade In 1", &(leg::selFinale2->DelayToFadeIn1));
+            ImGui::InputFloat("Fade In 1 Time", &(leg::selFinale2->FadeIn1Time));
+            ImGui::InputFloat("Pulse Speed", &(leg::selFinale2->PulseSpeed));
+            ImGui::InputFloat("Delay to Fade Out 2", &(leg::selFinale2->DelayToFadeOut2));
+            ImGui::InputFloat("Fade Out 2 Time", &(leg::selFinale2->FadeOut2Time));
+            ImGui::InputFloat("Delay to Fade In 2", &(leg::selFinale2->DelayToFadeIn2));
+            ImGui::InputFloat("Fade In 2 Time", &(leg::selFinale2->FadeIn2Time));
+            ImGui::InputFloat("Scroll Speed", &(leg::selFinale2->ScrollSpeed));
+            ImGui::InputFloat("CreditsDelay", &(leg::selFinale2->CreditsDelay));
+
+            ImGui::PopItemWidth();
+
+            if (ImGui::Button("Remove Finale Two"))
+            {
+                leg::selection->DeleteComponent(ComponentType::FinaleTwo);
+                leg::selFinale2 = nullptr;
+            }
+        }
         if (leg::selFollow && ImGui::CollapsingHeader("Follow"))
         {
             ImGui::Checkbox("Active##follow", &(leg::selFollow->Active));
@@ -373,6 +522,7 @@ namespace ForLeaseEngine
             ImGui::InputFloat("Y##follow", &(leg::selFollow->Offset[1]));
             ImGui::SameLine();
             ImGui::Text("Offset");
+            ImGui::InputFloat("Speed", &(leg::selFollow->Speed));
             ImGui::PopItemWidth();
             ImGui::Checkbox("Follow Target ID: ", &leg::setFollow);
             if (ImGui::IsItemHovered())
@@ -400,6 +550,47 @@ namespace ForLeaseEngine
             {
                 leg::selection->DeleteComponent(ComponentType::Health);
                 leg::selHealth = NULL;
+            }
+        }
+        if (leg::selInventory && ImGui::CollapsingHeader("Inventory"))
+        {
+            ImGui::InputFloat("Balloon Mass##inventory", &(leg::selInventory->BalloonMass));
+            ImGui::InputFloat("Normal Mass##inventory", &(leg::selInventory->NormalMass));
+            ImGui::InputText("Follow Name##inventory", leg::usefulFollowName, 128);
+            leg::selInventory->FollowName = leg::usefulFollowName;
+            ImGui::PushItemWidth(width);
+            ImGui::InputFloat("X##inventory", &(leg::selInventory->ThrowVector[0]));
+            ImGui::SameLine();
+            ImGui::InputFloat("Y##inventory", &(leg::selInventory->ThrowVector[1]));
+            ImGui::SameLine();
+            ImGui::Text("Throw Vector");
+
+            if (ImGui::TreeNode("Edit Controls##inventory"))
+            {
+                ImGui::Text("Throw Key: %d", leg::selInventory->ThrowKey);
+
+                static ImGuiTextFilter keyFilter;
+                keyFilter.Draw("##inventory", 250);
+                ImGui::Text("Available Keys");
+                ImGui::BeginChild("ThrowKey", ImVec2(0, 100), true);
+                for (std::string s : leg::keyCodes)
+                {
+                    if (keyFilter.PassFilter(s.c_str()))
+                    {
+                        if (ImGui::MenuItem(s.c_str()))
+                        {
+                            leg::selInventory->ThrowKey = Keys::GetKeyFromString(s);
+                        }
+                    }
+                }
+                ImGui::EndChild();
+                ImGui::TreePop();
+            }
+
+            if (ImGui::Button("Remove Inventory"))
+            {
+                leg::selection->DeleteComponent(ComponentType::UsefulObjectInventory);
+                leg::selInventory = nullptr;
             }
         }
         if (leg::selLight && ImGui::CollapsingHeader("Light"))
@@ -454,6 +645,22 @@ namespace ForLeaseEngine
             {
                 leg::selection->DeleteComponent(ComponentType::Light);
                 leg::selLight = NULL;
+            }
+        }
+        if (leg::selMoving && ImGui::CollapsingHeader("Moving Platform"))
+        {
+            ImGui::InputFloat("Affected Field Height##platform", &(leg::selMoving->AffectedFieldHeight));
+            ImGui::InputFloat("Max Move Distance##platform", &(leg::selMoving->MaxMove));
+            ImGui::InputFloat("Away Speed##platform", &(leg::selMoving->AwaySpeed));
+            ImGui::InputFloat("Back Speed##platform", &(leg::selMoving->BackSpeed));
+            ImGui::InputFloat("Pause Timer##platform", &(leg::selMoving->PauseTimer));
+            ImGui::RadioButton("Horizontal##platform", reinterpret_cast<int*>(&(leg::selMoving->Direction)), 0);
+            ImGui::RadioButton("Vertical##platform", reinterpret_cast<int*>(&(leg::selMoving->Direction)), 1);
+
+            if (ImGui::Button("Remove Moving Platform"))
+            {
+                leg::selection->DeleteComponent(ComponentType::MovingPlatform);
+                leg::selMoving = nullptr;
             }
         }
         if (leg::selOccluder && ImGui::CollapsingHeader("Occluder"))
@@ -1034,6 +1241,17 @@ namespace ForLeaseEngine
             }
         }
 
+        if (leg::selUseful && ImGui::CollapsingHeader("Useful Object"))
+        {
+            ImGui::Combo("Category##useful", &leg::usefulCategory, "None\0Balloon\0Distraction\0\0");
+            leg::selUseful->Category = static_cast<UsefulObjectCategory>(leg::usefulCategory);
+
+            if (ImGui::Button("Remove Useful Object"))
+            {
+                leg::selection->DeleteComponent(ComponentType::UsefulObject);
+                leg::selUseful = nullptr;
+            }
+        }
         if (leg::selVision && ImGui::CollapsingHeader("Vision Cone"))
         {
             ImGui::Checkbox("Active##VisionCone", &(leg::selVision->Active));

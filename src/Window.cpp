@@ -20,6 +20,7 @@
 #include "Engine.h"
 #include "Filesystem.h"
 #include "WindowEvent.h"
+#include <SDL_image.h>
 
 namespace ForLeaseEngine {
     namespace Systems {
@@ -29,7 +30,7 @@ namespace ForLeaseEngine {
             \brief
                 Creates a WindowProperties containing the default properties
         */
-        WindowProperties::WindowProperties() : windowTitle("For Lease Engine") {
+        WindowProperties::WindowProperties() : windowTitle("Rekindled") {
             xResolution = 1280;
             yResolution = 720;
             visible = true;
@@ -273,6 +274,12 @@ namespace ForLeaseEngine {
                                       windowOptions);
             SDL_GL_MakeCurrent(window, context);
             glViewport(0, 0, currentProperties.xResolution, currentProperties.yResolution);
+
+            // Set window icon
+            SDL_Surface* icon = IMG_Load("Rekindled.ico");
+            if (icon != NULL) {
+                SDL_SetWindowIcon(window, icon);
+            }
         }
 
         /*!
@@ -356,6 +363,12 @@ namespace ForLeaseEngine {
             }
             else {
                 std::cout << "GLEW INITIALIZED" << std::endl;
+            }
+
+            // Set window icon
+            SDL_Surface* icon = IMG_Load("Rekindled.ico");
+            if (icon != NULL) {
+                SDL_SetWindowIcon(window, icon);
             }
         }
 

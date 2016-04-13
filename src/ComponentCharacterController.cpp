@@ -155,18 +155,14 @@ namespace ForLeaseEngine {
                     CanJump = false;
                 }
             }
-            else if (key_e->Key == Keys::Q) {
-                ForLease->GameStateManager().SetAction(Modules::StateAction::Quit);
-            }
 
             // CHEAT CODES //
 
             else if (key_e->Key == Keys::N)
                 ForLease->GameStateManager().SetAction(Modules::StateAction::Next);
-            else if (key_e->Key == Keys::M)
-                ForLease->GameStateManager().SetAction(Modules::StateAction::Restart);
-            else if (key_e->Key == Keys::B) {
-                ForLease->GameStateManager().SetState(ForLease->GameStateManager().NumLevels() - 3);
+            else if (key_e->Key == Keys::M) {
+                Components::Health* health = Parent.GetComponent<Components::Health>();
+                if (health) health->DamageScale = 0.0f;
             }
         }
 
@@ -197,7 +193,7 @@ namespace ForLeaseEngine {
         void CharacterController::OnCollisionStarted(const Event* e) {
             const CollisionStartedEvent* collision_e = reinterpret_cast<const CollisionStartedEvent*>(e);
             if(collision_e->SelfSide == CollisionSide::Bottom) {
-                std::cout << "Collided with bottom" << std::endl;
+                //std::cout << "Collided with bottom" << std::endl;
                 FloorContacts.insert(collision_e->With);
                 CanJump = true;
             }
@@ -205,7 +201,7 @@ namespace ForLeaseEngine {
 
         void CharacterController::OnCollisionEnded(const Event* e) {
             const CollisionEndedEvent* collision_e = reinterpret_cast<const CollisionEndedEvent*>(e);
-                std::cout << "Ended collision" << std::endl;
+                //std::cout << "Ended collision" << std::endl;
             FloorContacts.erase(collision_e->With);
             if(FloorContacts.empty()) {
                 CanJump = false;

@@ -7,8 +7,9 @@ namespace ForLeaseEngine {
     class DamageEvent : public Event {
         public:
             float Damage;
+            bool Kill;
 
-            DamageEvent(float damage);
+            DamageEvent(float damage, bool kill = false);
     };
 }
 
