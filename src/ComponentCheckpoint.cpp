@@ -84,6 +84,7 @@ namespace ForLeaseEngine {
             Serializer checkpoint = root.GetChild("Checkpoint");
             checkpoint.ReadBool("Active", Active);
             checkpoint.ReadString("ActivateSound", ActivateSound);
+            if (ActivateSound == "") ActivateSound = "event_checkpoint_ignite01";
         }
     } // Components
 

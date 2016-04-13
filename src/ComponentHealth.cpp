@@ -92,6 +92,7 @@ namespace ForLeaseEngine {
 
             if(CurrentHealth <= 0) {
                 CurrentHealth = 0;
+                ForLease->sound->PlayEvent("character_fox_death01");
                 LevelComponents::Checkpoint* checkpoints = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Checkpoint>();
                 if(checkpoints) {
                     checkpoints->ResetToCheckpoint();
