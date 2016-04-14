@@ -103,6 +103,9 @@ void HowToPlay::Initialize() {
     htpPic->AddComponent(new Components::Transform(*htpPic, Point(0, 0), 30.0f, 30.0f, 0.0f, -8));
     htpPic->AddComponent(new Components::Sprite(*htpPic, "HowToPlay.png"));
 
+    Entity* BGM = AddEntity("BackgroundMusic");
+    BGM->AddComponent(new Components::BackgroundMusic(*BGM, "ambience_wind01"));
+
     //Entity* header = AddEntity("Header");
     //header->AddComponent(new Components::Transform(*header, Point(-40.0f, 20.0f), 3.0f, 3.0f));
     //header->AddComponent(new Components::SpriteText(*header, "Liberation_Serif.fnt"));
