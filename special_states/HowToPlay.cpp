@@ -61,11 +61,17 @@ void HowToPlay::Initialize() {
 //    logo->GetComponent<Components::Sprite>(true)->AnimationActive = false;
 
     Entity* player = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Player");
-    Entity* followMesh = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "FollowMesh");
+    Entity* followMesh = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "FollowMesh", Point(), "FollowMesh");
     followMesh->GetComponent<Components::Follow>()->FollowEntityID = player->GetID();
+    followMesh->DeleteComponent(ComponentType::Physics);
+    player->GetComponent<Components::UsefulObjectInventory>(true)->FollowName = "FollowMesh";
+    player->GetComponent<Components::UsefulObjectInventory>(true)->ThrowKey = Keys::E;
 
     Entity* balloon = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "Balloon", Point(-15, 0));
     Entity* distraction = SpawnArchetype(ForLease->Filesystem.AssetDirectory(Modules::Filesystem::AssetType::Blueprint) + "FireJar", Point(15,0));
+
+    balloon->GetComponent<Components::UsefulObject>(true);
+    distraction->GetComponent<Components::UsefulObject>(true);
 
     Entity* floor = AddEntity("Floor");
     floor->AddComponent(new Components::Transform(*floor, Point(0.0f, -10.0f), 9999999.0f, 1.0f, 0.0f, -7));
@@ -131,6 +137,8 @@ void HowToPlay::Update() {
     LevelComponents::Renderer* renderer = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Renderer>();
 
     ForLease->GameWindow->UpdateGameWindow();
+
+    PostFrameCleanup();
 }
 
 void HowToPlay::Deinitialize() {

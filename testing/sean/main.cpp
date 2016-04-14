@@ -20,6 +20,7 @@
 #include "Debug.h"
 #include "MainMenu.h"
 #include "PauseMenu.h"
+#include "HowToPlay.h"
 //#include "SegmentPrototypeState.h"
 
 #undef main
@@ -34,7 +35,7 @@ int Start(){
     //states.push_back(new MenuTest());
 
     //states.push_back(new Loading("Game.json"));
-    states.push_back(new SeanState());
+    states.push_back(new HowToPlay());
     std::cout << "Here" << std::endl;
 
     ForLeaseEngine::Modules::Debug debug;
