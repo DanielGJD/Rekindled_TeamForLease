@@ -41,7 +41,7 @@ namespace ForLeaseEngine {
 
             void UpdateDebug();
 
-            void UpdateEntities();
+            virtual void UpdateEntities();
             void AddLevelComponent(LevelComponent* levelComponent);
             void DeleteLevelComponent(LevelComponent* levelComponent);
             Entity* AddEntity(std::string name = "");

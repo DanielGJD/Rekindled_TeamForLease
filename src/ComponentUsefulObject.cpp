@@ -30,6 +30,10 @@ namespace ForLeaseEngine {
             ForLease->Dispatcher.Attach(NULL, this, "Collision", &UsefulObject::OnCollide, &Parent);
         }
 
+        UsefulObject::~UsefulObject() {
+            ForLease->Dispatcher.Detach(this, "Collision");
+        }
+
         void UsefulObject::Update() {
             Components::Collision* collision = Parent.GetComponent<Components::Collision>();
             if (!collision->CollidedLastFrame) return;

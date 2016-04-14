@@ -36,6 +36,7 @@ namespace ForLeaseEngine {
                 virtual ComponentType GetType() { return Type; }
 
                 UsefulObject(Entity& owner, UsefulObjectCategory category = UsefulObjectCategory::None);
+                ~UsefulObject();
                 void Initialize();
 
                 void Update();
