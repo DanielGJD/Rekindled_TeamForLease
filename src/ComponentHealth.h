@@ -38,6 +38,9 @@ namespace ForLeaseEngine {
                 void OnDamage(const Event* e);
             private:
                 bool TookDamage;
+                bool Died;
+                float WispTimer;
+                bool Emitted;
         };
     }
 }

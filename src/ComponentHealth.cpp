@@ -20,7 +20,7 @@
 namespace ForLeaseEngine {
     namespace Components {
         Health::Health(Entity& parent, float maxHealth, float health, float damageScale, float regenScale)
-                      : Component(parent), MaxHealth(maxHealth), CurrentHealth(health), DamageScale(damageScale), RegenScale(regenScale), TookDamage(false) {}
+                      : Component(parent), MaxHealth(maxHealth), CurrentHealth(health), DamageScale(damageScale), RegenScale(regenScale), TookDamage(false), Died(false), WispTimer(0), Emitted(false) {}
 
         Health::Health(Entity& parent, float maxHealth)
                       : Health(parent, maxHealth, maxHealth) {}
@@ -51,6 +51,25 @@ namespace ForLeaseEngine {
             }
 
             TookDamage = false;
+
+            if (Died)
+            {
+                WispTimer += ForLease->FrameRateController().GetDt();
+                if (WispTimer >= 2)
+                {
+                    WispTimer = 0;
+                    Emitted = false;
+
+                    ForLease->sound->PlayEvent("character_fox_death01");
+                    LevelComponents::Checkpoint* checkpoints = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Checkpoint>();
+                    if(checkpoints) {
+                        checkpoints->ResetToCheckpoint();
+                    }
+                    else {
+                        ForLease->GameStateManager().SetAction(Modules::StateAction::Restart);
+                    }
+                    }
+            }
         }
 
         void Health::Serialize(Serializer& root) {
@@ -92,13 +111,24 @@ namespace ForLeaseEngine {
 
             if(CurrentHealth <= 0) {
                 CurrentHealth = 0;
-                ForLease->sound->PlayEvent("character_fox_death01");
-                LevelComponents::Checkpoint* checkpoints = ForLease->GameStateManager().CurrentState().GetLevelComponent<LevelComponents::Checkpoint>();
-                if(checkpoints) {
-                    checkpoints->ResetToCheckpoint();
-                }
-                else {
-                    ForLease->GameStateManager().SetAction(Modules::StateAction::Restart);
+                Died = true;
+                Entity* wisp = ForLease->GameStateManager().CurrentState().GetEntityByName("Wisp");
+                if (wisp)
+                {
+                    Components::ParticleEmitter* wispParticles = wisp->GetComponent<Components::ParticleEmitter>();
+                    if (wispParticles && !Emitted)
+                    {
+                        wispParticles->Active = false;
+                        wispParticles->EmitRandom = 0;
+                        wispParticles->LifeRandom = 0;
+                        wispParticles->Life = 2;
+                        wispParticles->Velocity[0] = 0;
+                        wispParticles->Velocity[1] = 0;
+                        wispParticles->VelocityRandom[0] = 5;
+                        wispParticles->VelocityRandom[1] = 5;
+                        wispParticles->EmitParticles(200);
+                        Emitted = true;
+                    }
                 }
                 //std::cout << Parent.GetName() << " died" << std::endl;
 
