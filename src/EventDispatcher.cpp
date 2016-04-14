@@ -91,8 +91,8 @@ namespace ForLeaseEngine {
 
     void EventDispatcher::DispatchToParent(const Event* e, void* parent) const {
         //std::cout << "Looking for " << parent << " to give event " << e->EventName << std::endl;
-        //if(e->EventName.compare("CollisionStarted") == 0 || e->EventName.compare("Collision") == 0 || e->EventName.compare("CollisionEnded") == 0)
-        //std::cout << "Sending " << e->EventName << " to parent " << reinterpret_cast<Entity*>(parent)->GetName() << std::endl;
+        if(e->EventName.compare("Collision") == 0)
+            std::cout << "Sending " << e->EventName << " to parent " << reinterpret_cast<Entity*>(parent)->GetName() << std::endl;
         if(EventListeners.find(e->EventName) != EventListeners.end()) {
             std::deque<Listener> listeners = EventListeners.at(e->EventName);
             //std::cout << "Found " << listeners.size() << " objects listening for event" << std::endl;
