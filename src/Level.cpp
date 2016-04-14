@@ -38,6 +38,7 @@ namespace ForLeaseEngine {
     }
 
     void Level::Update() {
+        std::cout << "Level Update" << std::endl;
         ForLease->sound->Update();
         ForLease->OSInput.ProcessAllInput();
 
@@ -49,12 +50,18 @@ namespace ForLeaseEngine {
         LevelComponents::Renderer* renderer = 0;
 
         for (LevelComponent* levelComponent : LevelComponents) {
-            if (levelComponent->Type == ComponentType::Light)
+            if (levelComponent->GetType() == ComponentType::Light) {
+                std::cout << "Skipping lighting" << std::endl;
                 light = reinterpret_cast<LevelComponents::Light*>(levelComponent);
-            else if (levelComponent->Type == ComponentType::Renderer)
+            }
+            else if (levelComponent->GetType() == ComponentType::Renderer) {
+                std::cout << "Skipping Renderer" << std::endl;
                 renderer = reinterpret_cast<LevelComponents::Renderer*>(levelComponent);
-            else
+            }
+            else {
+                std::cout << "Updating level component" << std::endl;
                 levelComponent->Update(Entities);
+            }
         }
 
         if (light) light->Update(Entities);

@@ -15,6 +15,7 @@
 #include "Engine.h"
 #include "CollisionEvent.h"
 #include "ComponentCollision.h"
+#include "ComponentAutoplay.h"
 
 namespace ForLeaseEngine {
     namespace Components {
@@ -139,6 +140,13 @@ namespace ForLeaseEngine {
                     }
                     ForLease->sound->PlayEvent(JumpSound);
                     CanJump = false;
+                }
+            }
+            else if(key_e->Key == Keys::B) {
+                Components::Autoplay* autoplay = Parent.GetComponent<Autoplay>();
+
+                if(autoplay) {
+                    autoplay->Active = !autoplay->Active;
                 }
             }
 

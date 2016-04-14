@@ -30,66 +30,68 @@ namespace ForLeaseEngine {
         ComponentType Autoplay::GetType() { return Type; }
 
         void Autoplay::Update() {
-            float dt = ForLease->FrameRateController().GetDt();
-            Components::CharacterController* cont = Parent.GetComponent<Components::CharacterController>();
+            if(Active) {
+                float dt = ForLease->FrameRateController().GetDt();
+                Components::CharacterController* cont = Parent.GetComponent<Components::CharacterController>();
 
-            LeftTimer += dt;
-            RightTimer += dt;
-            JumpTimer += dt;
+                LeftTimer += dt;
+                RightTimer += dt;
+                JumpTimer += dt;
 
-            if(LeftTimer >= LeftToggleTime) {
-                LeftDown = !LeftDown;
+                if(LeftTimer >= LeftToggleTime) {
+                    LeftDown = !LeftDown;
 
-                if(LeftDown) {
-                    KeyboardEvent e = KeyboardEvent("KeyDown");
-                    e.Key = cont->LeftKey;
-                    e.State = KeyState::Pressed;
-                    ForLease->Dispatcher.Dispatch(&e, this);
-                }
-                else {
-                    KeyboardEvent e = KeyboardEvent("KeyUp");
-                    e.Key = cont->LeftKey;
-                    e.State = KeyState::Released;
-                    ForLease->Dispatcher.Dispatch(&e, this);
-                }
+                    if(LeftDown) {
+                        KeyboardEvent e = KeyboardEvent("KeyDown");
+                        e.Key = cont->LeftKey;
+                        e.State = KeyState::Pressed;
+                        ForLease->Dispatcher.Dispatch(&e, this);
+                    }
+                    else {
+                        KeyboardEvent e = KeyboardEvent("KeyUp");
+                        e.Key = cont->LeftKey;
+                        e.State = KeyState::Released;
+                        ForLease->Dispatcher.Dispatch(&e, this);
+                    }
 
-                LeftTimer = RandomFloat(-RandomTime, RandomTime);
-            }
-
-            if(RightTimer >= RightToggleTime) {
-                LeftDown = !LeftDown;
-
-                if(LeftDown) {
-                    KeyboardEvent e = KeyboardEvent("KeyDown");
-                    e.Key = cont->RightKey;
-                    e.State = KeyState::Pressed;
-                    ForLease->Dispatcher.Dispatch(&e, this);
-                }
-                else {
-                    KeyboardEvent e = KeyboardEvent("KeyUp");
-                    e.Key = cont->RightKey;
-                    e.State = KeyState::Released;
-                    ForLease->Dispatcher.Dispatch(&e, this);
+                    LeftTimer = RandomFloat(-RandomTime, RandomTime);
                 }
 
-                RightTimer = RandomFloat(-RandomTime, RandomTime);
-            }
+                if(RightTimer >= RightToggleTime) {
+                    LeftDown = !LeftDown;
 
-            if(JumpTimer >= JumpTime) {
-                {
-                    KeyboardEvent e = KeyboardEvent("KeyDown");
-                    e.Key = cont->JumpKey;
-                    e.State = KeyState::Pressed;
-                    ForLease->Dispatcher.Dispatch(&e, this);
-                }
-                {
-                    KeyboardEvent e = KeyboardEvent("KeyUp");
-                    e.Key = cont->JumpKey;
-                    e.State = KeyState::Released;
-                    ForLease->Dispatcher.Dispatch(&e, this);
+                    if(LeftDown) {
+                        KeyboardEvent e = KeyboardEvent("KeyDown");
+                        e.Key = cont->RightKey;
+                        e.State = KeyState::Pressed;
+                        ForLease->Dispatcher.Dispatch(&e, this);
+                    }
+                    else {
+                        KeyboardEvent e = KeyboardEvent("KeyUp");
+                        e.Key = cont->RightKey;
+                        e.State = KeyState::Released;
+                        ForLease->Dispatcher.Dispatch(&e, this);
+                    }
+
+                    RightTimer = RandomFloat(-RandomTime, RandomTime);
                 }
 
-                JumpTimer = RandomFloat(-RandomTime, RandomTime);
+                if(JumpTimer >= JumpTime) {
+                    {
+                        KeyboardEvent e = KeyboardEvent("KeyDown");
+                        e.Key = cont->JumpKey;
+                        e.State = KeyState::Pressed;
+                        ForLease->Dispatcher.Dispatch(&e, this);
+                    }
+                    {
+                        KeyboardEvent e = KeyboardEvent("KeyUp");
+                        e.Key = cont->JumpKey;
+                        e.State = KeyState::Released;
+                        ForLease->Dispatcher.Dispatch(&e, this);
+                    }
+
+                    JumpTimer = RandomFloat(-RandomTime, RandomTime);
+                }
             }
         }
 
