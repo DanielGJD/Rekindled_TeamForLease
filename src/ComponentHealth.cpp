@@ -55,6 +55,7 @@ namespace ForLeaseEngine {
             if (Died)
             {
                 WispTimer += ForLease->FrameRateController().GetDt();
+                Parent.GetComponent<Components::Model>()->ModelColor.SetAll(0, 0, 0, 1 - (WispTimer/2));
                 if (WispTimer >= 2)
                 {
                     WispTimer = 0;
@@ -111,13 +112,22 @@ namespace ForLeaseEngine {
 
             if(CurrentHealth <= 0) {
                 CurrentHealth = 0;
+                Parent.GetComponent<Components::Autoplay>()->Active = false;
+                Parent.DeleteComponent(ComponentType::PlayerController);
+                Parent.GetComponent<Components::Physics>()->Velocity[0] = 0;
                 Died = true;
                 Entity* wisp = ForLease->GameStateManager().CurrentState().GetEntityByName("Wisp");
                 if (wisp)
                 {
                     Components::ParticleEmitter* wispParticles = wisp->GetComponent<Components::ParticleEmitter>();
+                    Components::SimpleParticleDynamics* wispDynamics = wisp->GetComponent<Components::SimpleParticleDynamics>();
                     if (wispParticles && !Emitted)
                     {
+                        Components::Model* parentModel = Parent.GetComponent<Components::Model>();
+                        parentModel->SetAnimation("");
+                        parentModel->ModelMesh = "FoxSit.json";
+                        parentModel->BlendingMode = BlendMode::ALPHA;
+                        wispDynamics->Force[1] = 0;
                         wispParticles->Active = false;
                         wispParticles->EmitRandom = 0;
                         wispParticles->LifeRandom = 0;
