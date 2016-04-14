@@ -127,6 +127,7 @@ namespace ForLeaseEngine {
         }
 
         void Renderer::Update(std::vector<Entity*>& entities) {
+            std::cout << "Update Renderer" << std::endl;
             //glClear(GL_COLOR_BUFFER_BIT);
             Timer renderTimer = Timer();
             VertexCount = 0;

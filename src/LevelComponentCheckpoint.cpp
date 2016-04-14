@@ -35,7 +35,7 @@ namespace ForLeaseEngine {
         }
 
         void Checkpoint::Update(std::vector<Entity *>& entities) {
-
+            std::cout << "Checkpoint Update" << std::endl;
 //            for (Entity* entity : entities) {
 //                if (CheckEntityCompatibility(entity)) {
 //

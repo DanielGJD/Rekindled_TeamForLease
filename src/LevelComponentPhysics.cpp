@@ -39,7 +39,7 @@ namespace ForLeaseEngine {
         void Physics::Update(std::vector<Entity *>& entities) {
 
             //std::cout << Gravity << std::endl;
-
+            std::cout << "Physics Update" << std::endl;
             for (Entity* entity : entities) {
                 if (CheckEntityCompatibility(entity)) {
                     ApplyGravity(entity);
