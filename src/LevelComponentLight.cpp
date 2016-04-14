@@ -22,6 +22,7 @@ namespace ForLeaseEngine {
         Light::Light(State& owner, Color const& ambientLight) : LevelComponent(owner), AmbientLight(ambientLight) { }
 
         void Light::Update(std::vector<Entity *>& entities) {
+            std::cout << "Light Update" << std::endl;
             LitEntities.clear();
 
             for(unsigned int i = 0; i < entities.size(); ++i) {

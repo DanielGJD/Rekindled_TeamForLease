@@ -60,9 +60,11 @@ namespace ForLeaseEngine {
 
                     do {
                         if (!frozenLastFrame) {
+                            std::cout << "Start frame" << std::endl;
                             Parent.FrameRateController().Start();   // Start the current frame
                             States[StateIndex]->Update();           // Do all the game stuff
                             Parent.FrameRateController().End();     // End the current frame
+                            std::cout << "End frame" << std::endl;
                         }
                         else {
                             frozenLastFrame = false;

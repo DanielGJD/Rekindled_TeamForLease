@@ -216,7 +216,6 @@ namespace ForLeaseEngine
             if (model)
             {
                 model->SetAnimation(Animation);
-                model->FrameRate *= 0.5;
                 model->AnimationActive = true;
                 model->Looping = true;
             }

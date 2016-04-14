@@ -50,6 +50,7 @@ namespace ForLeaseEngine {
             then.
         */
         void Collision::Update(std::vector<Entity *>& entities) {
+            std::cout << "Collision Update" << std::endl;
             std::vector<Entity *> collisionEntities;
             std::vector<Entity *> movingPlatforms;
             std::vector<Entity *> physicsEntities;
